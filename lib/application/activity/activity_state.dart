@@ -1,11 +1,11 @@
 import 'package:activity/infrastructure/models/response/gym_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'gym_state.freezed.dart';
+part 'activity_state.freezed.dart';
 
 @freezed
-class GymState with _$GymState {
-  const factory GymState({
+class ActivityState with _$ActivityState {
+  const factory ActivityState({
     @Default(false) bool isloading,
     @Default(null) GymResponse? gym,
     @Default([]) List<String>? activities,
@@ -19,7 +19,7 @@ class GymState with _$GymState {
     @Default("") String selectedOriginalDate,
     @Default([]) List<String> listOfDates,
     @Default("") String selectedDay,
-  }) = _GymState;
+  }) = _ActivityState;
 
-  const GymState._();
+  const ActivityState._();
 }

@@ -1,5 +1,5 @@
-import 'package:activity/application/gym/gym_notifier.dart';
-import 'package:activity/application/gym/gym_state.dart';
+import 'package:activity/application/activity/activity_notifier.dart';
+import 'package:activity/application/activity/activity_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/components.dart';
@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TheOneWithPhotos extends StatelessWidget {
-  final GymState state;
-  final GymNotifier event;
+  final ActivityState state;
+  final ActivityNotifier event;
   const TheOneWithPhotos({super.key, required this.state, required this.event});
 
   @override

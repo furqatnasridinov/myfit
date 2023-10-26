@@ -17,4 +17,9 @@ class AppConstants{
 
   // photo
   static const String placeholderPhoto = 'assets/images/first.png';
+
+
+  // paths 
+  static const String imagesPath = "assets/images/";
+  static const String svgsPath = "assets/images/";
 }

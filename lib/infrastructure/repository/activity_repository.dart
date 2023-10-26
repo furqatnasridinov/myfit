@@ -2,14 +2,14 @@ import 'package:activity/domain/di/injection.dart';
 import 'package:activity/domain/handlers/api_result.dart';
 import 'package:activity/domain/handlers/http_service.dart';
 import 'package:activity/domain/handlers/network_exceptions.dart';
-import 'package:activity/domain/interface/gym.dart';
+import 'package:activity/domain/interface/activity.dart';
 import 'package:activity/infrastructure/models/request/get_gym_photos_request.dart';
 import 'package:activity/infrastructure/models/response/get_gym_activities_response.dart';
 import 'package:activity/infrastructure/models/response/get_gym_photos_response.dart';
 import 'package:activity/infrastructure/models/response/gym_response.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
 
-class GymRepository implements GymRepositoryInterface {
+class ActivityRepository implements ActivityRepositoryInterface {
   @override
   Future<ApiResult<GymResponse>> getInfoAboutGym() async {
     try {

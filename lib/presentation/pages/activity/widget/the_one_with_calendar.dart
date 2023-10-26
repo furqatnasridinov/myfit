@@ -1,15 +1,13 @@
-import 'package:activity/application/gym/gym_notifier.dart';
-import 'package:activity/application/gym/gym_state.dart';
+import 'package:activity/application/activity/activity_notifier.dart';
+import 'package:activity/application/activity/activity_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class TheOneWithCalendar extends StatefulWidget {
-  final GymState state;
-  final GymNotifier event;
+  final ActivityState state;
+  final ActivityNotifier event;
 
   const TheOneWithCalendar(
       {super.key, required this.state, required this.event});
@@ -86,17 +84,17 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                                       : Colors.transparent,
                                   width: 1.w,
                                 ),
-                                boxShadow:
-                                    widget.state.selectedDay == currentDate
-                                        ? [
-                                            BoxShadow(
-                                              //color: Colors.red,
-                                              color: Color.fromRGBO(0, 0, 0, 0.15),
-                                              offset: Offset(0, 6),
-                                              blurRadius: 3.5,
-                                            ),
-                                          ]
-                                        : [],
+                                boxShadow: widget.state.selectedDay ==
+                                        currentDate
+                                    ? [
+                                        BoxShadow(
+                                          //color: Colors.red,
+                                          color: Color.fromRGBO(0, 0, 0, 0.15),
+                                          offset: Offset(0, 6),
+                                          blurRadius: 3.5,
+                                        ),
+                                      ]
+                                    : [],
                               ),
                               margin: EdgeInsets.only(right: 9.w),
                               child: Column(
@@ -239,6 +237,7 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                                 ),
                                 child: Center(
                                   child: CustomText(
+                                    color: Colors.white,
                                     text: currentTime,
                                     //text: "12:45",
                                     fontSize: 14.sp,

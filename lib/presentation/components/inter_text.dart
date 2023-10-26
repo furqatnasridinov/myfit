@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // ignore: must_be_immutable
-class CustomText extends StatelessWidget {
+class InterText extends StatelessWidget {
   final String text;
   int? maxLines;
   TextOverflow? overflow;
@@ -11,7 +11,7 @@ class CustomText extends StatelessWidget {
   FontWeight? fontWeight;
   Color? color;
   bool? isUppercase;
-  CustomText({
+  InterText({
     Key? key,
     this.isUppercase = false,
     required this.text,
@@ -30,7 +30,7 @@ class CustomText extends StatelessWidget {
       maxLines: maxLines,
       overflow: overflow,
       textAlign: textAlign,
-      style: GoogleFonts.raleway(
+      style: GoogleFonts.inter(
         fontSize: fontSize,
         fontWeight: fontWeight,
         color: color,

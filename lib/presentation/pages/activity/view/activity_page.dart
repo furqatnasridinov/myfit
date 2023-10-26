@@ -1,4 +1,4 @@
-import 'package:activity/application/gym/gym_provider.dart';
+import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,38 +20,38 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
     super.initState();
     print("initstate called");
 
-    ref.read(gymProvider.notifier).getActivitiesList().then(
+    ref.read(activityProvider.notifier).getActivitiesList().then(
           (value) =>
-              ref.read(gymProvider.notifier).determineDefaultActivity().then(
+              ref.read(activityProvider.notifier).determineDefaultActivity().then(
                     (value) => ref
-                        .read(gymProvider.notifier)
-                        .getGymPhotos(ref.watch(gymProvider).selectedActivity),
+                        .read(activityProvider.notifier)
+                        .getGymPhotos(ref.watch(activityProvider).selectedActivity),
                   ),
         );
 
     ref
-        .read(gymProvider.notifier)
+        .read(activityProvider.notifier)
         .getSchedulesDates(id: 1)
         .then(
-          (value) => ref.read(gymProvider.notifier).selectADay(
-                ref.watch(gymProvider).availableDates[0],
+          (value) => ref.read(activityProvider.notifier).selectADay(
+                ref.watch(activityProvider).availableDates[0],
               ),
         )
         .then(
           (value) => ref
-              .read(gymProvider.notifier)
+              .read(activityProvider.notifier)
               .setSelectedOriginalDate(
-                ref.watch(gymProvider).availableDates[0],
+                ref.watch(activityProvider).availableDates[0],
               )
               .then(
-                (value) => ref.read(gymProvider.notifier).getSchedulesList(
-                    ref.watch(gymProvider).selectedOriginalDate),
+                (value) => ref.read(activityProvider.notifier).getSchedulesList(
+                    ref.watch(activityProvider).selectedOriginalDate),
               ),
         );
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
-        ref.read(gymProvider.notifier).getListOfDates();
-        ref.read(gymProvider.notifier).getGymInfo();
+        ref.read(activityProvider.notifier).getListOfDates();
+        ref.read(activityProvider.notifier).getGymInfo();
         //ref.read(gymProvider.notifier).getActivitiesList();
       },
     );
@@ -59,8 +59,8 @@ class _ActivityPageState extends ConsumerState<ActivityPage> {
 
   @override
   Widget build(BuildContext context) {
-    final event = ref.read(gymProvider.notifier);
-    final state = ref.watch(gymProvider);
+    final event = ref.read(activityProvider.notifier);
+    final state = ref.watch(activityProvider);
 /*     print("state.activities >> ${state.activities} ");
     print("selected activity ${state.selectedActivity}");
     print("photos >>> ${state.photos}");

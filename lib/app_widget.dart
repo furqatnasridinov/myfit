@@ -1,5 +1,5 @@
 import 'package:activity/domain/di/dependency_manager.dart';
-import 'package:activity/presentation/pages/activity/view/activity_page.dart';
+import 'package:activity/presentation/pages/pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -18,7 +18,8 @@ class AppWidget extends StatelessWidget {
           builder: (context, child) {
             return const MaterialApp(
               debugShowCheckedModeBanner: false,
-              home: ActivityPage(id: 1),
+              //home: ActivityPage(id: 1),
+              home: ScheduleScreen(),
             );
           },
         );
