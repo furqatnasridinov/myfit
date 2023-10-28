@@ -1,19 +1,20 @@
 import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widget/widget.dart';
 
-class ActivityPage extends ConsumerStatefulWidget {
-  final int id;
-  const ActivityPage({required this.id, super.key});
+@RoutePage()
+class ActivityScreen extends ConsumerStatefulWidget {
+  const ActivityScreen({ super.key});
 
   @override
-  ConsumerState<ActivityPage> createState() => _ActivityPageState();
+  ConsumerState<ActivityScreen> createState() => _ActivityPageState();
 }
 
-class _ActivityPageState extends ConsumerState<ActivityPage> {
+class _ActivityPageState extends ConsumerState<ActivityScreen> {
   @override
   void initState() {
     // TODO: implement initState

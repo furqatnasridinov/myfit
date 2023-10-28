@@ -212,7 +212,6 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                     itemBuilder: (context, index) {
                       final currentSchedule = widget
                           .state.listOfSchedules[index] as Map<String, dynamic>;
-
                       String times = currentSchedule["date"];
                       List<String> parts = times.split("@");
                       final currentTime = parts[1];

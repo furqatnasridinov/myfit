@@ -1,8 +1,5 @@
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/ui_button_filled.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class Header extends StatefulWidget implements PreferredSizeWidget {
@@ -46,7 +43,7 @@ class _Header extends State<Header> {
       if (focusNode.hasFocus) {
         showOverlay();
       } else {
-        // hideOverlay();
+        hideOverlay();
       }
     });
   }
@@ -64,14 +61,17 @@ class _Header extends State<Header> {
     // final offset = renderBox.localToGlobal(Offset.zero);
 
     entry = OverlayEntry(
-        builder: (context) => Positioned(
-            // left: offset.dx,
-            // top: offset.dy + size.height + 2.5,
-            width: size.width,
-            child: CompositedTransformFollower(
-                offset: Offset(-15, size.height + 2.5),
-                link: layerLink,
-                child: _listItems())));
+      builder: (context) => Positioned(
+        // left: offset.dx,
+        // top: offset.dy + size.height + 2.5,
+        width: size.width,
+        child: CompositedTransformFollower(
+          offset: Offset(-15, size.height + 2.5),
+          link: layerLink,
+          child: _listItems(),
+        ),
+      ),
+    );
 
     overlay.insert(entry!);
   }
@@ -84,13 +84,12 @@ class _Header extends State<Header> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      //backgroundColor: Colors.red,
       backgroundColor: Colors.transparent,
       elevation: 0.0,
       title: _headerSearchBar(),
 
       // Если обратный роутер указан, то он отрисовывается
-      leading: /* widget.backRoute != '' &&  */ isSearchBarOpened == false
+      leading: widget.backRoute != '' && isSearchBarOpened == false
           ? _headerBackButton(widget.backRoute, context)
           : null,
 
@@ -104,23 +103,23 @@ class _Header extends State<Header> {
 
   _headerBackButton(String router, BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 10.h, left: 16.w),
+      margin: const EdgeInsets.only(top: 10.0, left: 16.0),
       child: Ink(
         decoration: BoxDecoration(
           border: Border.all(
-            color: const Color.fromRGBO(233, 233, 233, 1),
-            width: 1.w,
-          ),
+              color: const Color.fromRGBO(233, 233, 233, 1), width: 1),
           color: Colors.white,
           shape: BoxShape.circle,
         ),
         child: InkWell(
-          borderRadius: BorderRadius.circular(500.r),
+          borderRadius: BorderRadius.circular(500.0),
           //onTap: () => {context.go(router)},
-          child: SizedBox(
-            child: Icon(
+          child: Container(
+            padding: const EdgeInsets.only(
+                top: 8.0, bottom: 8.0, left: 7.0, right: 9.0),
+            child: const Icon(
               Icons.keyboard_arrow_left,
-              size: 24.r,
+              size: 24.0,
               color: Colors.black,
             ),
           ),
@@ -134,86 +133,57 @@ class _Header extends State<Header> {
       color: Colors.transparent,
       child: TapRegion(
         child: Container(
-          height: 294.h,
-          margin: EdgeInsets.only(left: 16.w, top: 2.5.h, right: 16.w),
+          height: 294.0,
+          margin: const EdgeInsets.only(left: 16.0, top: 2.5, right: 16.0),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16.r),
-            color: Colors.white,
-            border: Border.all(
-              width: 1.w,
-              color: const Color.fromRGBO(
-                119,
-                170,
-                249,
-                1,
-              ),
-            ),
-          ),
-          padding: EdgeInsets.symmetric(vertical: 12.w, horizontal: 16.0.h),
+              borderRadius: BorderRadius.circular(16.0),
+              color: Colors.white,
+              border: Border.all(
+                  width: 1.0, color: Color.fromRGBO(119, 170, 249, 1))),
+          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
           child: Column(children: [
             Expanded(
-              child: MediaQuery.removePadding(
-                removeTop: true,
-                context: context,
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    ListTile(
-                      title: CustomText(text: 'TEXT TEST'),
-                      subtitle: CustomText(
-                        text: '234м от вас От 1000 ₽',
-                        fontWeight: FontWeight.w300,
-                        fontSize: 14.sp,
-                        color: Colors.grey,
-                      ),
+              child: ListView(shrinkWrap: true, children: [
+                ListTile(
+                    title: Text(
+                      'TEXT TEST',
+                      //style: MyFitAppFonts.label2(MyFitAppColors.txtBlack),
                     ),
-                    ListTile(
-                      title: CustomText(text: 'TEXT TEST'),
-                      subtitle: CustomText(
-                        text: '234м от вас От 1000 ₽',
-                        fontWeight: FontWeight.w300,
-                        fontSize: 14.sp,
-                        color: Colors.grey,
-                      ),
-                      onTap: () {
-                        _searchController.text = 'Text test';
-                        hideOverlay();
-                        focusNode.unfocus();
-                        setState(() {
-                          isSearchBarOpened = false;
-                        });
-                      },
-                    ),
-                    ListTile(
-                      title: CustomText(text: 'TEXT TEST'),
-                      subtitle: CustomText(
-                        text: '234м от вас От 1000 ₽',
-                        fontWeight: FontWeight.w300,
-                        fontSize: 14.sp,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    ListTile(
-                      title: CustomText(text: 'TEXT TEST'),
-                      subtitle: CustomText(
-                        text: '234м от вас От 1000 ₽',
-                        fontWeight: FontWeight.w300,
-                        fontSize: 14.sp,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    ListTile(
-                      title: CustomText(text: 'TEXT TEST'),
-                      subtitle: CustomText(
-                        text: '234м от вас От 1000 ₽',
-                        fontWeight: FontWeight.w300,
-                        fontSize: 14.sp,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
+                    subtitle: Text('234м от вас От 1000 ₽')),
+                ListTile(
+                  title: Text(
+                    'TEXT TEST',
+                    //style: MyFitAppFonts.label2(MyFitAppColors.txtBlack),
+                  ),
+                  subtitle: Text('234м от вас От 1000 ₽'),
+                  onTap: () {
+                    _searchController.text = 'Text test';
+                    hideOverlay();
+                    focusNode.unfocus();
+                    setState(() {
+                      isSearchBarOpened = false;
+                    });
+                  },
                 ),
-              ),
+                ListTile(
+                    title: Text(
+                      'TEXT TEST',
+                      //style: MyFitAppFonts.label2(MyFitAppColors.txtBlack),
+                    ),
+                    subtitle: Text('234м от вас От 1000 ₽')),
+                ListTile(
+                    title: Text(
+                      'TEXT TEST',
+                      //style: MyFitAppFonts.label2(MyFitAppColors.txtBlack),
+                    ),
+                    subtitle: Text('234м от вас От 1000 ₽')),
+                ListTile(
+                    title: Text(
+                      'TEXT TEST',
+                      //style: MyFitAppFonts.label2(MyFitAppColors.txtBlack),
+                    ),
+                    subtitle: Text('234м от вас От 1000 ₽')),
+              ]),
             ),
             const SizedBox(height: 10.0),
             UiButtonFilled(
@@ -238,98 +208,66 @@ class _Header extends State<Header> {
     return CompositedTransformTarget(
       link: layerLink,
       child: Padding(
-        padding: EdgeInsets.only(top: 9.h),
+        padding: const EdgeInsets.only(top: 9.0),
         child: Stack(
           children: [
             TapRegion(
               child: Container(
                 decoration: BoxDecoration(
-                  //color: Colors.green,
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(100.r),
-                  border: Border.all(
-                    color: isSearchBarOpened
-                        ? const Color.fromRGBO(119, 170, 249, 1)
-                        : const Color.fromRGBO(233, 233, 233, 1),
-                    width: 1.w,
-                  ),
-                ),
-                height: 40.h,
-                padding: EdgeInsets.only(
-                  top: 6.h,
-                  bottom: 6.h,
-                  left: 8.w,
-                  right: 22.w,
-                ),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(100.0),
+                    border: Border.all(
+                        color: isSearchBarOpened
+                            ? const Color.fromRGBO(119, 170, 249, 1)
+                            : const Color.fromRGBO(233, 233, 233, 1),
+                        width: 1.0)),
+                height: 40.0,
+                padding: const EdgeInsets.only(
+                    top: 6.0, bottom: 6.0, left: 8.0, right: 22.0),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(100.r),
+                      borderRadius: BorderRadius.circular(100.0),
                       child: Container(
                         color: const Color.fromRGBO(245, 249, 255, 1),
-                        padding: EdgeInsets.all(5.r),
-                        child: Icon(
+                        padding: const EdgeInsets.all(5.0),
+                        child: const Icon(
                           Icons.search,
-                          color: const Color.fromRGBO(62, 134, 245, 1),
-                          size: 18.r,
+                          color: Color.fromRGBO(62, 134, 245, 1),
+                          size: 18.0,
                         ),
                       ),
                     ),
-                    10.horizontalSpace,
+                    const SizedBox(width: 10.0),
                     Flexible(
-                      child: Container(
-                        //padding: EdgeInsets.only(top: 14.h),
-                        //color: Colors.amber,
-                        child: TextField(
-                          controller: _searchController,
-                          focusNode: focusNode,
-                          maxLines: 1,
-                          onChanged: (String val) {
-                            if (val.length > 0) {
-                              print('123');
-                            }
-                          },
-                          decoration: InputDecoration(
+                      child: TextField(
+                        controller: _searchController,
+                        focusNode: focusNode,
+                        maxLines: 1,
+                        onChanged: (String val) {
+                          if (val.length > 0) {
+                            print('123');
+                          }
+                        },
+                        decoration: InputDecoration(
                             suffixIcon: isSearchBarOpened == true
-                                ? InkWell(
-                                    onTap: () {
-                                      _searchController.clear();
-                                      focusNode.unfocus();
-                                      hideOverlay();
-                                      isSearchBarOpened = false;
-                                      setState(() {});
-                                    },
-                                    child: Icon(
-                                      Icons.close,
-                                      size: 24.r,
-                                      color:
-                                          const Color.fromRGBO(37, 37, 37, 1),
-                                    ),
+                                ? const Icon(
+                                    Icons.close,
+                                    size: 24.0,
+                                    color: Color.fromRGBO(37, 37, 37, 1),
                                   )
                                 : const SizedBox.shrink(),
                             border: InputBorder.none,
                             hintText: 'Найти занятие',
                             hintStyle: TextStyle(
-                              fontSize: 14.sp,
-                              color: const Color.fromRGBO(
-                                176,
-                                176,
-                                176,
-                                1,
-                              ),
-                            ),
-                            //contentPadding: EdgeInsets.zero,
-                          ),
-                          style: TextStyle(
-                            fontSize: 14.r,
-                            color: const Color.fromRGBO(
-                              37,
-                              37,
-                              37,
-                              1,
-                            ),
-                          ),
-                        ),
+                                fontSize: 14.0,
+                                color: Color.fromRGBO(176, 176, 176, 1)),
+                            contentPadding: EdgeInsets.only(bottom: 19.0)),
+                        style: const TextStyle(
+                            fontSize: 14.0,
+                            color: Color.fromRGBO(37, 37, 37, 1)),
                       ),
                     ),
                   ],
@@ -350,46 +288,38 @@ class _Header extends State<Header> {
 
   _headerActions(BuildContext context) {
     return Container(
-        height: 40.h,
+        height: 40.0,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(100.r),
+          borderRadius: BorderRadius.circular(100.0),
           border: Border.all(
-            color: const Color.fromRGBO(233, 233, 233, 1),
-            width: 1.w,
-          ),
+              color: const Color.fromRGBO(233, 233, 233, 1), width: 1),
           color: Colors.white,
         ),
-        margin: EdgeInsets.only(top: 10.h, right: 16.w),
+        margin: const EdgeInsets.only(top: 10.0, right: 16.0),
         child: Row(
           children: [
             Padding(
-              padding:  EdgeInsets.only(
-                left: 20.w,
-                top: 8.h,
-                bottom: 8.h,
-              ),
+              padding: const EdgeInsets.only(left: 20.0, top: 8.0, bottom: 8.0),
               child: GestureDetector(
                 child: SvgPicture.asset(
-                  "assets/svg/calendar.svg",
-                  width: 24.w,
-                  height: 24.h,
+                  'lib/assets/icons/calendar.svg',
+                  width: 24.0,
+                  height: 24.0,
                 ),
                 //onTap: () => {context.go('/schedule')},
               ),
             ),
-            10.horizontalSpace,
+            const SizedBox(width: 12.0),
             SizedOverflowBox(
-              size: Size(40.w, 40.h),
+              size: const Size(40, 40),
               child: CircleAvatar(
-                radius: 100.r,
+                radius: 100.0,
                 backgroundColor: const Color.fromRGBO(119, 170, 249, 1),
                 child: Padding(
-                  padding: EdgeInsets.all(2.r),
+                  padding: const EdgeInsets.all(2),
                   child: ClipOval(
-                    child: Image.network(
-                      'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
-                    ),
-                  ),
+                      child: Image.network(
+                          'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg')),
                 ),
               ),
             ),
