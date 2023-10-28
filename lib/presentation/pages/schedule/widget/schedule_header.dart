@@ -2,6 +2,7 @@ import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/ui_button_filled.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -100,6 +101,7 @@ class _ScheduleHeaderState extends State<ScheduleHeader> {
                       shape: BoxShape.circle,
                     ),
                     child: InkWell(
+                      onTap: () => context.popRoute(),
                       borderRadius: BorderRadius.circular(500.r),
                       child: SizedBox(
                         child: Icon(

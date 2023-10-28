@@ -63,13 +63,7 @@ class TheOneWithImage extends StatelessWidget {
               children: [
                 InkWell(
                   onTap: () {
-                    //Navigator.pop(context);
-                    context.router.push(
-                      ScheduleRoute(
-                        event: scheduleEvent,
-                        state: scheduleState,
-                      ),
-                    );
+                    context.popRoute();
                   },
                   child: Container(
                     width: 40.w,

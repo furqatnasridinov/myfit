@@ -8,6 +8,8 @@ import 'package:activity/presentation/components/ui_button_outlined.dart';
 import 'package:activity/presentation/components/ui_date_picker.dart';
 import 'package:activity/presentation/components/ui_time_picker.dart';
 import 'package:activity/presentation/pages/schedule/schedule.dart';
+import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:activity/presentation/components/custom_text.dart';
@@ -208,7 +210,9 @@ class _SchedulesListState extends State<SchedulesList> {
                                 height: 18.h,
                                 width: 18.w,
                               ),
-                              'action': () => {print('123')}
+                              'action': () {
+                                context.router.push(const NotesRoute());
+                              }
                             },
                             {
                               'title': 'Продублировать на другую дату',

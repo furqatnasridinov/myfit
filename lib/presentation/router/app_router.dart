@@ -7,7 +7,7 @@ class AppRouter extends $AppRouter {
   List<AutoRoute> get routes => [
         AutoRoute(
           page: ActivityRoute.page,
-          path: '/',
+          //path: '/',
         ),
         AutoRoute(
           page: ScheduleRoute.page,
@@ -17,8 +17,15 @@ class AppRouter extends $AppRouter {
         AutoRoute(
           page: MainRoute.page,
           //path: "/main",
-          //path: "/"
+          path: "/"
         ),
-        
+        AutoRoute(
+          page: NotesRoute.page,
+          //path: "/",
+        ),
+        AutoRoute(
+          page: Main2Route.page,
+          //path: "/"
+        )
       ];
 }

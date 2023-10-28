@@ -2,6 +2,8 @@ import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/components/ui_button_filled.dart';
 import 'package:activity/presentation/components/ui_card.dart';
+import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -41,6 +43,7 @@ class _TheOneWithButtonState extends State<TheOneWithButton> {
             isFullWidth: true,
             btnText: 'То, что нужно! Вперёд!',
             onPressedAction: () {
+              context.router.push(const Main2Route());
               /*   setState(() {
                 activeStepState++;
               }); */

@@ -1,5 +1,7 @@
 import 'package:activity/presentation/components/ui_button_filled.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class Header extends StatefulWidget implements PreferredSizeWidget {
@@ -107,19 +109,27 @@ class _Header extends State<Header> {
       child: Ink(
         decoration: BoxDecoration(
           border: Border.all(
-              color: const Color.fromRGBO(233, 233, 233, 1), width: 1),
+            color: const Color.fromRGBO(233, 233, 233, 1),
+            width: 1.w,
+          ),
           color: Colors.white,
           shape: BoxShape.circle,
         ),
         child: InkWell(
           borderRadius: BorderRadius.circular(500.0),
-          //onTap: () => {context.go(router)},
+          onTap: () {
+            context.popRoute();
+          },
           child: Container(
             padding: const EdgeInsets.only(
-                top: 8.0, bottom: 8.0, left: 7.0, right: 9.0),
-            child: const Icon(
+              top: 8.0,
+              bottom: 8.0,
+              left: 7.0,
+              right: 9.0,
+            ),
+            child: Icon(
               Icons.keyboard_arrow_left,
-              size: 24.0,
+              size: 24.r,
               color: Colors.black,
             ),
           ),
@@ -133,13 +143,21 @@ class _Header extends State<Header> {
       color: Colors.transparent,
       child: TapRegion(
         child: Container(
-          height: 294.0,
-          margin: const EdgeInsets.only(left: 16.0, top: 2.5, right: 16.0),
+          height: 294.h,
+          margin: EdgeInsets.only(left: 16.w, top: 2.5.h, right: 16.w),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.0),
-              color: Colors.white,
-              border: Border.all(
-                  width: 1.0, color: Color.fromRGBO(119, 170, 249, 1))),
+            borderRadius: BorderRadius.circular(16.0),
+            color: Colors.white,
+            border: Border.all(
+              width: 1.0,
+              color: Color.fromRGBO(
+                119,
+                170,
+                249,
+                1,
+              ),
+            ),
+          ),
           padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
           child: Column(children: [
             Expanded(
