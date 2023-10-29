@@ -1,5 +1,10 @@
+import 'dart:ui';
+
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
+import 'package:activity/presentation/components/custom_text.dart';
+import 'package:activity/presentation/components/dummy_data.dart';
+import 'package:activity/presentation/components/ui_button_filled.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,7 +21,112 @@ class ScheduleHeader extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _MainHeaderState extends State<ScheduleHeader> {
+  TextEditingController controller = TextEditingController();
   FocusNode textfieldFocusnode = FocusNode();
+  final layerlink = LayerLink();
+  final listofaddresses = DummyData().dummyAddresses;
+
+  OverlayEntry? entry;
+
+  void showOverlay() {
+    final overlay = Overlay.of(context);
+    final renderBox = context.findRenderObject() as RenderBox;
+    final size = renderBox.size;
+    // final offset = renderBox.localToGlobal(Offset.zero);
+
+    entry = OverlayEntry(
+      builder: (context) => Positioned(
+        // left: offset.dx,
+        // top: offset.dy + size.height + 2.5,
+        width: size.width,
+        child: CompositedTransformFollower(
+          offset: Offset(-16, 50.h),
+          link: layerlink,
+          child: Material(
+            color: Colors.transparent,
+            child: TapRegion(
+              onTapOutside: (event) {
+                textfieldFocusnode.unfocus();
+                setState(() {});
+              },
+              child: Container(
+                height: 294.h,
+                margin: EdgeInsets.only(left: 16.w, right: 16.w),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16.0),
+                  color: Colors.white,
+                  border: Border.all(
+                    width: 1.0,
+                    color: const Color.fromRGBO(119, 170, 249, 1),
+                  ),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+                child: Column(children: [
+                  Expanded(
+                    child: MediaQuery.removePadding(
+                      context: context,
+                      removeTop: true,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: listofaddresses.length,
+                        itemBuilder: (context, index) {
+                          final currentGym = listofaddresses[index];
+                          return ListTile(
+                            onTap: () {
+                              controller.text = currentGym.name;
+                              textfieldFocusnode.unfocus();
+                              setState(() {});
+                            },
+                            title: CustomText(
+                              text: currentGym.name,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            subtitle: CustomText(
+                              text: currentGym.destination,
+                              color: AppColors.greyText,
+                              fontSize: 10.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10.0),
+                  UiButtonFilled(
+                    btnText: 'Показать на карте',
+                    onPressedAction: () => print('123'),
+                    isFullWidth: true,
+                  )
+                ]),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    overlay.insert(entry!);
+  }
+
+  void hideOverlay() {
+    entry?.remove();
+    entry = null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    textfieldFocusnode.addListener(() {
+      if (textfieldFocusnode.hasFocus) {
+        showOverlay();
+      } else {
+        hideOverlay();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +138,28 @@ class _MainHeaderState extends State<ScheduleHeader> {
 
     return AppBar(
       automaticallyImplyLeading: false,
-      //backgroundColor: const Color.fromRGBO(245, 249, 255, 0.976),
-      backgroundColor: Colors.white.withOpacity(0.96),
+      //backgroundColor: Colors.amber,
+      backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
       elevation: 0,
       centerTitle: false,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(32.r),
+          bottomRight: Radius.circular(32.r),
+        ),
+      ),
+      flexibleSpace: ClipRRect(
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(32.r),
+          bottomRight: Radius.circular(32.r),
+        ),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+          child: Container(
+            color: Colors.transparent,
+          ),
+        ),
+      ),
 
       // leading
       leading: textfieldFocusnode.hasFocus
@@ -66,10 +194,10 @@ class _MainHeaderState extends State<ScheduleHeader> {
       // title
       title: AnimatedContainer(
         duration: const Duration(milliseconds: 500),
-        width: textfieldFocusnode.hasFocus ? double.maxFinite : 300.w,
+        width: textfieldFocusnode.hasFocus ? double.maxFinite : 350.w,
         height: 40.h,
         decoration: BoxDecoration(
-          //color: Colors.red,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(100.r),
           border: Border.all(
             color: textfieldFocusnode.hasFocus
@@ -78,35 +206,35 @@ class _MainHeaderState extends State<ScheduleHeader> {
             width: 1.w,
           ),
         ),
-        child: TextField(
-          onTap: () {
-            textfieldFocusnode.requestFocus();
-            setState(() {});
-          },
-          onTapOutside: (event) {
-            textfieldFocusnode.unfocus();
-            setState(() {});
-          },
-          focusNode: textfieldFocusnode,
-          decoration: InputDecoration(
-            prefixIcon: Container(
-              margin: EdgeInsets.all(2.r),
-              decoration: const BoxDecoration(
-                color: AppColors.backgroundColor,
-                shape: BoxShape.circle,
+        child: CompositedTransformTarget(
+          link: layerlink,
+          child: TextField(
+            controller: controller,
+            onTap: () {
+              textfieldFocusnode.requestFocus();
+              setState(() {});
+            },
+            focusNode: textfieldFocusnode,
+            decoration: InputDecoration(
+              prefixIcon: Container(
+                margin: EdgeInsets.all(2.r),
+                decoration: const BoxDecoration(
+                  color: AppColors.backgroundColor,
+                  shape: BoxShape.circle,
+                ),
+                padding: EdgeInsets.all(10.r),
+                child: SvgPicture.asset(
+                  "assets/svg/search.svg",
+                  // ignore: deprecated_member_use
+                  color: AppColors.blueColor,
+                ),
               ),
-              padding: EdgeInsets.all(10.r),
-              child: SvgPicture.asset(
-                "assets/svg/search.svg",
-                // ignore: deprecated_member_use
-                color: AppColors.blueColor,
+              hintText: "Занятие, зал",
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.zero.copyWith(
+                left: 12.w,
+                top: 8.h,
               ),
-            ),
-            hintText: "Занятие, зал",
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.zero.copyWith(
-              left: 12.w,
-              top: 8.h,
             ),
           ),
         ),
@@ -119,7 +247,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
             : Container(
                 height: 40.h,
                 decoration: BoxDecoration(
-                  //color: Colors.amber,
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(100.r),
                   border: Border.all(
                     color: AppColors.greyBorder,
@@ -171,355 +299,3 @@ class _MainHeaderState extends State<ScheduleHeader> {
     );
   }
 }
-
-
-/* import 'package:activity/application/schedule/schedule_notifier.dart';
-import 'package:activity/application/schedule/schedule_state.dart';
-import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/ui_button_filled.dart';
-import 'package:auto_route/auto_route.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-
-class ScheduleHeader extends StatefulWidget {
-  final ScheduleNotifier event;
-  final ScheduleState state;
-  const ScheduleHeader({super.key, required this.event, required this.state});
-
-  @override
-  State<ScheduleHeader> createState() => _ScheduleHeaderState();
-}
-
-class _ScheduleHeaderState extends State<ScheduleHeader> {
-  late TextEditingController _searchController;
-  final textFieldFocusNode = FocusNode();
-  final layerLink = LayerLink();
-  OverlayEntry? entry;
-  bool isSearchbarOpened = false;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _searchController = TextEditingController();
-    textFieldFocusNode.addListener(
-      () {
-        if (textFieldFocusNode.hasFocus) {
-          showOverlay();
-          print("focusnode has focus");
-        } else {
-          print("focusnode has no focus");
-          hideOverlay();
-        }
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  void showOverlay() {
-    final overlay = Overlay.of(context);
-    final renderBox = context.findRenderObject() as RenderBox;
-    final size = renderBox.size;
-    final offset = renderBox.localToGlobal(Offset.zero);
-
-    entry = OverlayEntry(
-      builder: (context) => Positioned(
-        left: offset.dx,
-        top: offset.dy + size.height + 2.5,
-        width: size.width,
-        child: CompositedTransformFollower(
-          offset: Offset(0, size.height + 2.5),
-          link: layerLink,
-          showWhenUnlinked: false,
-          child: _listItems(),
-        ),
-      ),
-    );
-
-    overlay.insert(entry!);
-  }
-
-  void hideOverlay() {
-    entry?.remove();
-    entry = null;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.maxFinite,
-      height: 40.h,
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
-      //color: Colors.red,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // back button
-          textFieldFocusNode.hasFocus
-              ? const SizedBox()
-              : SizedBox(
-                  width: 40.w,
-                  height: 40.h,
-                  child: Ink(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: const Color.fromRGBO(233, 233, 233, 1),
-                        width: 1.w,
-                      ),
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: InkWell(
-                      onTap: () => context.popRoute(),
-                      borderRadius: BorderRadius.circular(500.r),
-                      child: SizedBox(
-                        child: Icon(
-                          Icons.keyboard_arrow_left,
-                          size: 24.r,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
-          // main search field
-          Container(
-            width: textFieldFocusNode.hasFocus ? 340.w : 200.w,
-            decoration: BoxDecoration(
-              //color: Colors.green,
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(100.r),
-              border: Border.all(
-                color: textFieldFocusNode.hasFocus
-                    ? const Color.fromRGBO(119, 170, 249, 1)
-                    : const Color.fromRGBO(233, 233, 233, 1),
-                width: 1.w,
-              ),
-            ),
-            padding: EdgeInsets.only(left: 10.w),
-            child: TextField(
-              onTap: () {
-                //textFieldFocusNode.requestFocus();
-                //showOverlay();
-                setState(() {});
-              },
-              onTapOutside: (event) {
-                textFieldFocusNode.unfocus();
-                //hideOverlay();
-                setState(() {});
-              },
-              controller: _searchController,
-              focusNode: textFieldFocusNode,
-              maxLines: 1,
-              onChanged: (String val) {
-                if (val.length > 0) {
-                  print('123');
-                }
-              },
-              decoration: InputDecoration(
-                //contentPadding: EdgeInsets.zero,
-               /*  prefix: Container(
-                  width: 28.w,
-                  height: 28.h,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    //color: Color.fromRGBO(245, 249, 255, 1),
-                    color: Colors.red
-                  ),
-                ), */
-                suffixIcon: textFieldFocusNode.hasFocus
-                    ? InkWell(
-                        onTap: () {
-                          _searchController.clear();
-                          //textFieldFocusNode.unfocus();
-                          //hideOverlay();
-                          //isSearchBarOpened == false;
-                          setState(() {});
-                        },
-                        child: Icon(
-                          Icons.close,
-                          size: 24.r,
-                          color: const Color.fromRGBO(37, 37, 37, 1),
-                        ),
-                      )
-                    : const SizedBox.shrink(),
-                border: InputBorder.none,
-                hintText: 'Занятие, зал',
-                hintStyle: TextStyle(
-                  fontSize: 14.sp,
-                  color: const Color.fromRGBO(
-                    176,
-                    176,
-                    176,
-                    1,
-                  ),
-                ),
-                //contentPadding: EdgeInsets.zero,
-              ),
-              style: TextStyle(
-                fontSize: 14.r,
-                color: const Color.fromRGBO(
-                  37,
-                  37,
-                  37,
-                  1,
-                ),
-              ),
-            ),
-          ),
-
-          // actions part
-          textFieldFocusNode.hasFocus
-              ? const SizedBox()
-              : Container(
-                  width: 96.w,
-                  height: 40.h,
-                  padding: EdgeInsets.only(left: 20.w),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(100.r),
-                    border: Border.all(
-                      color: const Color.fromRGBO(233, 233, 233, 1),
-                      width: 1.w,
-                    ),
-                    color: Colors.white,
-                  ),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        child: SvgPicture.asset(
-                          "assets/svg/pencil.svg",
-                          width: 24.w,
-                          height: 24.h,
-                        ),
-                        //onTap: () => {context.go('/schedule')},
-                      ),
-                      10.horizontalSpace,
-                      SizedOverflowBox(
-                        size: Size(40.w, 40.h),
-                        child: CircleAvatar(
-                          radius: 100.r,
-                          backgroundColor:
-                              const Color.fromRGBO(119, 170, 249, 1),
-                          child: Padding(
-                            padding: EdgeInsets.all(2.r),
-                            child: ClipOval(
-                              child: Image.network(
-                                'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-        ],
-      ),
-    );
-  }
-
-  _listItems() {
-    return Material(
-      color: Colors.red,
-      child: Container(
-        height: 294.h,
-        margin: EdgeInsets.only(left: 16.w, /* top: 100.h, */ right: 16.w),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16.r),
-          color: Colors.white,
-          border: Border.all(
-            width: 1.w,
-            color: const Color.fromRGBO(
-              119,
-              170,
-              249,
-              1,
-            ),
-          ),
-        ),
-        padding: EdgeInsets.symmetric(vertical: 12.w, horizontal: 16.0.h),
-        child: Column(
-          children: [
-            Expanded(
-              child: MediaQuery.removePadding(
-                removeTop: true,
-                context: context,
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    ListTile(
-                      title: CustomText(text: 'TEXT TEST'),
-                      subtitle: CustomText(
-                        text: '234м от вас От 1000 ₽',
-                        fontWeight: FontWeight.w300,
-                        fontSize: 14.sp,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    ListTile(
-                      title: CustomText(text: 'TEXT TEST'),
-                      subtitle: CustomText(
-                        text: '234м от вас От 1000 ₽',
-                        fontWeight: FontWeight.w300,
-                        fontSize: 14.sp,
-                        color: Colors.grey,
-                      ),
-                      onTap: () {
-                        _searchController.text = 'Text test';
-                        hideOverlay();
-                        textFieldFocusNode.unfocus();
-                        isSearchbarOpened = false;
-                        setState(() {});
-                      },
-                    ),
-                    ListTile(
-                      title: CustomText(text: 'TEXT TEST'),
-                      subtitle: CustomText(
-                        text: '234м от вас От 1000 ₽',
-                        fontWeight: FontWeight.w300,
-                        fontSize: 14.sp,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    ListTile(
-                      title: CustomText(text: 'TEXT TEST'),
-                      subtitle: CustomText(
-                        text: '234м от вас От 1000 ₽',
-                        fontWeight: FontWeight.w300,
-                        fontSize: 14.sp,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    ListTile(
-                      title: CustomText(text: 'TEXT TEST'),
-                      subtitle: CustomText(
-                        text: '234м от вас От 1000 ₽',
-                        fontWeight: FontWeight.w300,
-                        fontSize: 14.sp,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 10.0),
-            UiButtonFilled(
-              btnText: 'Показать на карте',
-              onPressedAction: () => print('123'),
-              isFullWidth: true,
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
- */

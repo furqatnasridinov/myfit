@@ -1,5 +1,4 @@
 import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/presentation/components/header.dart';
 import 'package:activity/presentation/pages/notes/widget/notes_header.dart';
 import 'package:activity/presentation/pages/notes/widget/widget.dart';
 import 'package:auto_route/auto_route.dart';
@@ -25,14 +24,19 @@ class _ScheduleItemScreen extends State<NotesScreen> {
       extendBodyBehindAppBar: true,
       backgroundColor: AppColors.backgroundColor,
       appBar: const NotesHeader(),
-      body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        margin:  EdgeInsets.only(top: 127.h),
+      body: SafeArea(
         child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: Column(
             children: [
               const SelectPeriodOne(),
               32.verticalSpace,
+              const ScheduleItemCard(),
+              25.verticalSpace,
+              const ScheduleItemCard(),
+               25.verticalSpace,
+              const ScheduleItemCard(),
+               25.verticalSpace,
               const ScheduleItemCard(),
             ],
           ),
