@@ -1,3 +1,4 @@
+import 'package:activity/infrastructure/models/data/addresses.dart';
 import 'package:activity/infrastructure/models/data/calendar.dart';
 import 'package:activity/infrastructure/models/data/schedule.dart';
 
@@ -36,6 +37,28 @@ class DummyData {
       startingTime: "16:35",
       title: "Персональная тренировка c тренером сборной России",
       finishingTime: "17:35",
+    ),
+  ];
+    final List<Addresses> dummyAddresses = [
+    Addresses(
+      name: "Зал Чердак",
+      destination: "234м от вас",
+    ),
+    Addresses(
+      name: "Спорткомплекс “Газпром”",
+      destination: "570м от вас",
+    ),
+    Addresses(
+      name: "Элитный массажный салон “Дикая Выдрочка”",
+      destination: "624м от вас",
+    ),
+    Addresses(
+      name: "Зал “Фиолетка”",
+      destination: "686м от вас",
+    ),
+    Addresses(
+      name: "Бассейн “Таёжный”",
+      destination: "1,2км от вас",
     ),
   ];
 }

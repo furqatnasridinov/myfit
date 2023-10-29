@@ -1,13 +1,13 @@
-import 'package:activity/application/gym/gym_notifier.dart';
-import 'package:activity/application/gym/gym_state.dart';
+import 'package:activity/application/activity/activity_notifier.dart';
+import 'package:activity/application/activity/activity_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../components/components.dart';
 
 class TheOneWithChips extends StatefulWidget {
-  final GymState state;
-  final GymNotifier event;
+  final ActivityState state;
+  final ActivityNotifier event;
 
   const TheOneWithChips({
     super.key,

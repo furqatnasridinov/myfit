@@ -20,7 +20,7 @@ class CustomText extends StatelessWidget {
     this.textAlign,
     this.fontSize = 18,
     this.fontWeight,
-    this.color = Colors.white,
+    this.color = Colors.black,
   }) : super(key: key);
 
   @override

@@ -1,20 +1,26 @@
-import 'package:activity/application/gym/gym_notifier.dart';
-import 'package:activity/application/gym/gym_state.dart';
+import 'package:activity/application/activity/activity_notifier.dart';
+import 'package:activity/application/activity/activity_state.dart';
+import 'package:activity/application/schedule/schedule_notifier.dart';
+import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/presentation/components/custom_text.dart';
+import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class TheOneWithImage extends StatelessWidget {
-  final GymState state;
-  final GymNotifier event;
+  final ActivityState state;
+  final ActivityNotifier event;
 
   const TheOneWithImage({Key? key, required this.state, required this.event})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    ScheduleNotifier scheduleEvent = ScheduleNotifier();
+    ScheduleState scheduleState = ScheduleState();
     return Stack(
       children: [
         Container(
@@ -57,7 +63,7 @@ class TheOneWithImage extends StatelessWidget {
               children: [
                 InkWell(
                   onTap: () {
-                    Navigator.pop(context);
+                    context.popRoute();
                   },
                   child: Container(
                     width: 40.w,
@@ -82,6 +88,7 @@ class TheOneWithImage extends StatelessWidget {
                     SizedBox(
                       width: 300.w,
                       child: CustomText(
+                        color: Colors.white,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         fontSize: 19.sp,
@@ -94,6 +101,7 @@ class TheOneWithImage extends StatelessWidget {
                     SizedBox(
                       width: 300.w,
                       child: CustomText(
+                        color: Colors.white,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         fontWeight: FontWeight.w500,
@@ -124,6 +132,7 @@ class TheOneWithImage extends StatelessWidget {
                       )),
                   7.horizontalSpace,
                   CustomText(
+                    color: Colors.white,
                     text: state.gym?.address ?? "",
                     fontWeight: FontWeight.w400,
                     fontSize: 14.sp,

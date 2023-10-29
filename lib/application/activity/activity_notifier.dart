@@ -1,16 +1,13 @@
-import 'package:activity/application/gym/gym_state.dart';
-import 'package:activity/domain/interface/gym.dart';
+import 'package:activity/application/activity/activity_state.dart';
+import 'package:activity/domain/interface/activity.dart';
 import 'package:activity/infrastructure/models/request/get_gym_photos_request.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'dart:ui' as ui;
 
-class GymNotifier extends StateNotifier<GymState> {
-  GymNotifier(this._gymRepositoryInterface) : super(const GymState());
-  final GymRepositoryInterface _gymRepositoryInterface;
+class ActivityNotifier extends StateNotifier<ActivityState> {
+  ActivityNotifier(this._activityRepositoryInterface) : super(const ActivityState());
+  final ActivityRepositoryInterface _activityRepositoryInterface;
 
   Future<void> determineDefaultActivity() async {
     await Future.delayed(const Duration(seconds: 1));
@@ -29,7 +26,7 @@ class GymNotifier extends StateNotifier<GymState> {
 
   Future<void> getGymInfo() async {
     state = state.copyWith(isloading: true);
-    final response = await _gymRepositoryInterface.getInfoAboutGym();
+    final response = await _activityRepositoryInterface.getInfoAboutGym();
     response.when(
       success: (data) {
         state = state.copyWith(gym: data);
@@ -44,7 +41,7 @@ class GymNotifier extends StateNotifier<GymState> {
   Future<void> getActivitiesList() async {
     await Future.delayed(const Duration(milliseconds: 10));
     state = state.copyWith(isloading: true);
-    final response = await _gymRepositoryInterface.getActivities();
+    final response = await _activityRepositoryInterface.getActivities();
     response.when(
       success: (data) {
         //print("notifier get activitis success");
@@ -72,7 +69,7 @@ class GymNotifier extends StateNotifier<GymState> {
     final request = GetGymPhotosRequest(lessonType: lessonType);
     //print("request to get photos LessonType >> ${request.toJson()}");
     final response =
-        await _gymRepositoryInterface.getGymPhotos(request: request);
+        await _activityRepositoryInterface.getGymPhotos(request: request);
     response.when(
       success: (data) {
         //print("getGymPhotos notifier success");
@@ -91,7 +88,7 @@ class GymNotifier extends StateNotifier<GymState> {
 
   Future<void> getSchedulesDates({required int id}) async {
     //print("(notifier) >>> getSchedules strted ");
-    final response = await _gymRepositoryInterface.getSchedules(id: id);
+    final response = await _activityRepositoryInterface.getSchedules(id: id);
     response.when(
       success: (data) {
         //print("(notifier success)");

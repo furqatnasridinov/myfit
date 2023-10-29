@@ -4,7 +4,7 @@ import 'package:activity/infrastructure/models/response/get_gym_activities_respo
 import 'package:activity/infrastructure/models/response/get_gym_photos_response.dart';
 import 'package:activity/infrastructure/models/response/gym_response.dart';
 
-abstract class GymRepositoryInterface {
+abstract class ActivityRepositoryInterface {
   Future<ApiResult<GymResponse>> getInfoAboutGym();
   Future<ApiResult<GetGymActivitiesResponse>> getActivities();
   Future<ApiResult<GetGymPhotosResponse>> getGymPhotos(
