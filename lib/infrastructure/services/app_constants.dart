@@ -1,12 +1,11 @@
-class AppConstants{
-
+class AppConstants {
   // base url
   static const String baseUrl = "http://94.241.143.241:8080/";
 
-  // gym 
+  // gym
   static const String gym = "api/gym/1";
 
-  // activities 
+  // activities
   static const String activities = "api/gym/1/types";
 
   // photos
@@ -14,12 +13,14 @@ class AppConstants{
 
   // schedules
 
-
   // photo
   static const String placeholderPhoto = 'assets/images/first.png';
 
-
-  // paths 
+  // paths
   static const String imagesPath = "assets/images/";
   static const String svgsPath = "assets/images/";
+
+  // dummy data
+  static const String owlNetworkImage =
+      "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg";
 }

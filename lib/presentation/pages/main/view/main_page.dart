@@ -1,3 +1,4 @@
+import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/header.dart';
 import 'package:activity/presentation/pages/main/widget/widget.dart';
 import 'package:auto_route/auto_route.dart';
@@ -19,7 +20,9 @@ class _BlogScreen extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Header(),
+      backgroundColor: AppColors.backgroundColor,
+      extendBodyBehindAppBar: true,
+      appBar: const MainHeader(),
       body: Container(
         margin: EdgeInsets.only(top: 27.h),
         padding: EdgeInsets.symmetric(horizontal: 16.w),

@@ -1,3 +1,4 @@
+import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/pages/schedule/widget/widget.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,20 +37,13 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /*  appBar: Header(
-        event: widget.event,
-        state: widget.state,
-        backRoute: '/',
-      ), */
+      backgroundColor: AppColors.backgroundColor,
+      extendBodyBehindAppBar: true,
+      appBar: const ScheduleHeader(),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // header
-              ScheduleHeader(
-                event: widget.event,
-                state: widget.state,
-              ),
               // body
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),

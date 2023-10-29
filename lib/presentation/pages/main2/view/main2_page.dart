@@ -1,7 +1,8 @@
 import 'dart:async';
+import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/header.dart';
 import 'package:activity/presentation/components/ya_map.dart';
+import 'package:activity/presentation/pages/main2/widget/main2_header.dart';
 import 'package:activity/presentation/pages/main2/widget/widget.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,9 @@ class _LoginScreen extends State<Main2Screen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Header(),
+      backgroundColor: AppColors.backgroundColor,
+      extendBodyBehindAppBar: true,
+      appBar: const Main2Header(),
       body: SafeArea(
         child: Stack(
           children: [

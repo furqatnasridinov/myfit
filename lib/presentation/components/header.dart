@@ -86,7 +86,8 @@ class _Header extends State<Header> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.red,
+      //backgroundColor: Colors.transparent,
       elevation: 0.0,
       title: _headerSearchBar(),
 
@@ -336,8 +337,9 @@ class _Header extends State<Header> {
                 child: Padding(
                   padding: const EdgeInsets.all(2),
                   child: ClipOval(
-                      child: Image.network(
-                          'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg')),
+                    child: Image.network(
+                        'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
+                  ),
                 ),
               ),
             ),
