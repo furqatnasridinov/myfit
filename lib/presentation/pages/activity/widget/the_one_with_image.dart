@@ -19,8 +19,8 @@ class TheOneWithImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ScheduleNotifier scheduleEvent = ScheduleNotifier();
-    ScheduleState scheduleState = ScheduleState();
+    /* ScheduleNotifier scheduleEvent = ScheduleNotifier();
+    ScheduleState scheduleState = ScheduleState(); */
     return Stack(
       children: [
         Container(
@@ -124,18 +124,23 @@ class TheOneWithImage extends StatelessWidget {
               child: Row(
                 children: [
                   SizedBox(
-                      width: 18.w,
-                      height: 18.h,
-                      child: SvgPicture.asset(
-                        "assets/svg/location.svg",
-                        fit: BoxFit.cover,
-                      )),
+                    width: 18.w,
+                    height: 18.h,
+                    child: SvgPicture.asset(
+                      "assets/svg/location.svg",
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                   7.horizontalSpace,
-                  CustomText(
-                    color: Colors.white,
-                    text: state.gym?.address ?? "",
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14.sp,
+                  SizedBox(
+                    width: 330.w,
+                    child: CustomText(
+                      //overflow: TextOverflow.ellipsis,
+                      color: Colors.white,
+                      text: state.gym?.address ?? "",
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14.sp,
+                    ),
                   ),
                 ],
               ),

@@ -8,11 +8,13 @@ import '../../../components/components.dart';
 class TheOneWithChips extends StatefulWidget {
   final ActivityState state;
   final ActivityNotifier event;
+  final int gymId;
 
   const TheOneWithChips({
     super.key,
     required this.state,
     required this.event,
+    required this.gymId,
   });
 
   @override
@@ -73,7 +75,7 @@ class _TheOneWithChipsState extends State<TheOneWithChips> {
                           onSelected: (selected) {
                             if (selected) {
                               widget.event.setSingleSelectedActivity(activity);
-                              widget.event.getGymPhotos(activity);
+                              widget.event.getGymPhotos(activity, widget.gymId);
                               int index =
                                   widget.state.activities!.indexOf(activity) +
                                       1;
@@ -91,16 +93,16 @@ class _TheOneWithChipsState extends State<TheOneWithChips> {
                                   .then(
                                     (value) => widget.event
                                         .setSelectedOriginalDate(
-                                          widget.state.availableDates[0],
-                                        ).then((value) async {
-                                          await Future.delayed(const Duration(milliseconds: 100));
-                                        })
-                                        .then(
-                                          (value) =>
-                                              widget.event.getSchedulesList(
-                                            widget.state.selectedOriginalDate,
-                                          ),
-                                        ),
+                                      widget.state.availableDates[0],
+                                    )
+                                        .then((value) async {
+                                      await Future.delayed(
+                                          const Duration(milliseconds: 100));
+                                    }).then(
+                                      (value) => widget.event.getSchedulesList(
+                                        widget.state.selectedOriginalDate,
+                                      ),
+                                    ),
                                   );
                             }
                           },

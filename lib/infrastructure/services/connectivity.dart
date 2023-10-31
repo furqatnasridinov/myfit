@@ -1,4 +1,4 @@
-/* import 'package:connectivity_plus/connectivity_plus.dart';
+ import 'package:connectivity_plus/connectivity_plus.dart';
 
 class AppConnectivity {
   Future<bool> connectivity() async {
@@ -11,4 +11,4 @@ class AppConnectivity {
       return false;
     }
   }
-} */
+} 

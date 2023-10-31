@@ -129,7 +129,7 @@ class ComingActivity extends StatelessWidget {
               const Spacer(),
               InkWell(
                 onTap: () {
-                  context.router.push(const ActivityRoute());
+                  context.router.push( ActivityRoute(gymId: 1));
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(6.r),
