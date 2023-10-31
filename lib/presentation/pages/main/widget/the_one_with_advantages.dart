@@ -54,7 +54,6 @@ class TheOneWithAdvantages extends StatelessWidget {
                   }
                 },
                 autoPlay: state.advantagesAutoPlayMode,
-                autoPlayAnimationDuration: const Duration(seconds: 1),
               ),
             ),
           ),
@@ -112,10 +111,11 @@ class TheOneWithAdvantages extends StatelessWidget {
       children: [
         SizedBox(
           //color: Colors.red,
-          height: 70.h,
+          height: 75.h,
           width: 120.w,
           child: CustomText(
-            //overflow: TextOverflow.ellipsis,
+            maxLines: 4,
+            overflow: TextOverflow.ellipsis,
             text: firstText,
             fontWeight: FontWeight.w600,
             fontSize: 16.sp,
@@ -125,7 +125,10 @@ class TheOneWithAdvantages extends StatelessWidget {
         SizedBox(
           //color: Colors.amber,
           width: 170.w,
+          height: double.maxFinite,
           child: CustomText(
+            maxLines: 6,
+            overflow: TextOverflow.ellipsis,
             text: secondText,
             fontWeight: FontWeight.w400,
             fontSize: 12.sp,

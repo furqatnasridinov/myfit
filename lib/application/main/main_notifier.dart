@@ -10,6 +10,7 @@ class MainNotifier extends StateNotifier<MainState> {
   final MainRepositoryInterface _mainRepositoryInterface;
 
   Future<void> getAdvantages(BuildContext context) async {
+    state = state.copyWith(isloading: true);
     final connect = await AppConnectivity().connectivity();
     if (connect) {
       final response = await _mainRepositoryInterface.getAdvantages();
@@ -26,9 +27,11 @@ class MainNotifier extends StateNotifier<MainState> {
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
+    state = state.copyWith(isloading: false);
   }
 
   Future<void> getSubscribtions(BuildContext context) async {
+    state = state.copyWith(isloading: true);
     final connect = await AppConnectivity().connectivity();
     if (connect) {
       final response = await _mainRepositoryInterface.getSubscribtions();
@@ -45,9 +48,11 @@ class MainNotifier extends StateNotifier<MainState> {
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
+    state = state.copyWith(isloading: false);
   }
 
   Future<void> getComments(BuildContext context) async {
+    state = state.copyWith(isloading: true);
     final connect = await AppConnectivity().connectivity();
     if (connect) {
       final response = await _mainRepositoryInterface.getComments();
@@ -64,12 +69,22 @@ class MainNotifier extends StateNotifier<MainState> {
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
+    state = state.copyWith(isloading: false);
   }
 
-  void setStep(int index){
+  void setStep(int index) {
     state = state.copyWith(activeStepState: index);
   }
-  void stopAdvantagesAutoPlayMode(){
+
+  void stopAdvantagesAutoPlayMode() {
     state = state.copyWith(advantagesAutoPlayMode: false);
+  }
+  
+  void commenSetStep(int index){
+    state = state.copyWith(commentActiveStepper: index);
+  }
+  
+   void stopCommentsAutoPlayMode() {
+    state = state.copyWith(commentsAutoPlayMode: false);
   }
 }

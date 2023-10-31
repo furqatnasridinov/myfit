@@ -14,6 +14,8 @@ class MainState with _$MainState{
     @Default(null)GetCommentsResponse? comments,
     @Default(1)int activeStepState,
     @Default(true) bool advantagesAutoPlayMode,
+    @Default(0) int commentActiveStepper,
+    @Default(true) bool commentsAutoPlayMode,
   }) = _MainState;
   const MainState._();
 }

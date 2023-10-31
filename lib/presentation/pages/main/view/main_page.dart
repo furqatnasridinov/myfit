@@ -21,9 +21,11 @@ class _BlogScreen extends ConsumerState<MainScreen> {
   @override
   void initState() {
     super.initState();
-    ref.read(mainProvider.notifier).getAdvantages(context);
-    ref.read(mainProvider.notifier).getSubscribtions(context);
-    ref.read(mainProvider.notifier).getComments(context);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(mainProvider.notifier).getAdvantages(context);
+      ref.read(mainProvider.notifier).getSubscribtions(context);
+      ref.read(mainProvider.notifier).getComments(context);
+    });
   }
 
   @override
@@ -40,43 +42,51 @@ class _BlogScreen extends ConsumerState<MainScreen> {
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
       appBar: const MainHeader(),
-      body: SafeArea(
-        bottom: false,
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 15.h),
-          child: Column(
-            children: [
-              const TheOneWithCards(),
-              32.verticalSpace,
-              Padding(
-                padding: EdgeInsets.only(
-                  left: 10.w,
-                  bottom: 10.0.h,
-                ),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: CustomText(
-                    text: 'О преимуществах',
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
+      body: state.isloading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : SafeArea(
+              bottom: false,
+              child: SingleChildScrollView(
+                padding:
+                    EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 15.h),
+                child: Column(
+                  children: [
+                    const TheOneWithCards(),
+                    32.verticalSpace,
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: 10.w,
+                        bottom: 10.0.h,
+                      ),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: CustomText(
+                          text: 'О преимуществах',
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    TheOneWithAdvantages(
+                      state: state,
+                      event: event,
+                    ),
+                    32.verticalSpace,
+                    const TheOneWithMap(),
+                    32.verticalSpace,
+                    const TheOneWithButton(),
+                    32.verticalSpace,
+                    TheOneWithComments(
+                      event: event,
+                      state: state,
+                    ),
+                    32.verticalSpace,
+                  ],
                 ),
               ),
-              TheOneWithAdvantages(
-                state: state,
-                event: event,
-              ),
-              32.verticalSpace,
-              const TheOneWithMap(),
-              32.verticalSpace,
-              const TheOneWithButton(),
-              32.verticalSpace,
-              const TheOneWithReview(),
-              32.verticalSpace,
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

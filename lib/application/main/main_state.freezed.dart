@@ -23,6 +23,8 @@ mixin _$MainState {
   GetCommentsResponse? get comments => throw _privateConstructorUsedError;
   int get activeStepState => throw _privateConstructorUsedError;
   bool get advantagesAutoPlayMode => throw _privateConstructorUsedError;
+  int get commentActiveStepper => throw _privateConstructorUsedError;
+  bool get commentsAutoPlayMode => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $MainStateCopyWith<MainState> get copyWith =>
@@ -40,7 +42,9 @@ abstract class $MainStateCopyWith<$Res> {
       GetSubscribtionsResponse? subscribtions,
       GetCommentsResponse? comments,
       int activeStepState,
-      bool advantagesAutoPlayMode});
+      bool advantagesAutoPlayMode,
+      int commentActiveStepper,
+      bool commentsAutoPlayMode});
 }
 
 /// @nodoc
@@ -62,6 +66,8 @@ class _$MainStateCopyWithImpl<$Res, $Val extends MainState>
     Object? comments = freezed,
     Object? activeStepState = null,
     Object? advantagesAutoPlayMode = null,
+    Object? commentActiveStepper = null,
+    Object? commentsAutoPlayMode = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -88,6 +94,14 @@ class _$MainStateCopyWithImpl<$Res, $Val extends MainState>
           ? _value.advantagesAutoPlayMode
           : advantagesAutoPlayMode // ignore: cast_nullable_to_non_nullable
               as bool,
+      commentActiveStepper: null == commentActiveStepper
+          ? _value.commentActiveStepper
+          : commentActiveStepper // ignore: cast_nullable_to_non_nullable
+              as int,
+      commentsAutoPlayMode: null == commentsAutoPlayMode
+          ? _value.commentsAutoPlayMode
+          : commentsAutoPlayMode // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -106,7 +120,9 @@ abstract class _$$MainStateImplCopyWith<$Res>
       GetSubscribtionsResponse? subscribtions,
       GetCommentsResponse? comments,
       int activeStepState,
-      bool advantagesAutoPlayMode});
+      bool advantagesAutoPlayMode,
+      int commentActiveStepper,
+      bool commentsAutoPlayMode});
 }
 
 /// @nodoc
@@ -126,6 +142,8 @@ class __$$MainStateImplCopyWithImpl<$Res>
     Object? comments = freezed,
     Object? activeStepState = null,
     Object? advantagesAutoPlayMode = null,
+    Object? commentActiveStepper = null,
+    Object? commentsAutoPlayMode = null,
   }) {
     return _then(_$MainStateImpl(
       isloading: null == isloading
@@ -152,6 +170,14 @@ class __$$MainStateImplCopyWithImpl<$Res>
           ? _value.advantagesAutoPlayMode
           : advantagesAutoPlayMode // ignore: cast_nullable_to_non_nullable
               as bool,
+      commentActiveStepper: null == commentActiveStepper
+          ? _value.commentActiveStepper
+          : commentActiveStepper // ignore: cast_nullable_to_non_nullable
+              as int,
+      commentsAutoPlayMode: null == commentsAutoPlayMode
+          ? _value.commentsAutoPlayMode
+          : commentsAutoPlayMode // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -165,7 +191,9 @@ class _$MainStateImpl extends _MainState {
       this.subscribtions = null,
       this.comments = null,
       this.activeStepState = 1,
-      this.advantagesAutoPlayMode = true})
+      this.advantagesAutoPlayMode = true,
+      this.commentActiveStepper = 0,
+      this.commentsAutoPlayMode = true})
       : super._();
 
   @override
@@ -186,10 +214,16 @@ class _$MainStateImpl extends _MainState {
   @override
   @JsonKey()
   final bool advantagesAutoPlayMode;
+  @override
+  @JsonKey()
+  final int commentActiveStepper;
+  @override
+  @JsonKey()
+  final bool commentsAutoPlayMode;
 
   @override
   String toString() {
-    return 'MainState(isloading: $isloading, advantages: $advantages, subscribtions: $subscribtions, comments: $comments, activeStepState: $activeStepState, advantagesAutoPlayMode: $advantagesAutoPlayMode)';
+    return 'MainState(isloading: $isloading, advantages: $advantages, subscribtions: $subscribtions, comments: $comments, activeStepState: $activeStepState, advantagesAutoPlayMode: $advantagesAutoPlayMode, commentActiveStepper: $commentActiveStepper, commentsAutoPlayMode: $commentsAutoPlayMode)';
   }
 
   @override
@@ -208,12 +242,24 @@ class _$MainStateImpl extends _MainState {
             (identical(other.activeStepState, activeStepState) ||
                 other.activeStepState == activeStepState) &&
             (identical(other.advantagesAutoPlayMode, advantagesAutoPlayMode) ||
-                other.advantagesAutoPlayMode == advantagesAutoPlayMode));
+                other.advantagesAutoPlayMode == advantagesAutoPlayMode) &&
+            (identical(other.commentActiveStepper, commentActiveStepper) ||
+                other.commentActiveStepper == commentActiveStepper) &&
+            (identical(other.commentsAutoPlayMode, commentsAutoPlayMode) ||
+                other.commentsAutoPlayMode == commentsAutoPlayMode));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, isloading, advantages,
-      subscribtions, comments, activeStepState, advantagesAutoPlayMode);
+  int get hashCode => Object.hash(
+      runtimeType,
+      isloading,
+      advantages,
+      subscribtions,
+      comments,
+      activeStepState,
+      advantagesAutoPlayMode,
+      commentActiveStepper,
+      commentsAutoPlayMode);
 
   @JsonKey(ignore: true)
   @override
@@ -229,7 +275,9 @@ abstract class _MainState extends MainState {
       final GetSubscribtionsResponse? subscribtions,
       final GetCommentsResponse? comments,
       final int activeStepState,
-      final bool advantagesAutoPlayMode}) = _$MainStateImpl;
+      final bool advantagesAutoPlayMode,
+      final int commentActiveStepper,
+      final bool commentsAutoPlayMode}) = _$MainStateImpl;
   const _MainState._() : super._();
 
   @override
@@ -244,6 +292,10 @@ abstract class _MainState extends MainState {
   int get activeStepState;
   @override
   bool get advantagesAutoPlayMode;
+  @override
+  int get commentActiveStepper;
+  @override
+  bool get commentsAutoPlayMode;
   @override
   @JsonKey(ignore: true)
   _$$MainStateImplCopyWith<_$MainStateImpl> get copyWith =>
