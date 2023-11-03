@@ -79,12 +79,31 @@ class MainNotifier extends StateNotifier<MainState> {
   void stopAdvantagesAutoPlayMode() {
     state = state.copyWith(advantagesAutoPlayMode: false);
   }
-  
-  void commenSetStep(int index){
+
+  void commenSetStep(int index) {
     state = state.copyWith(commentActiveStepper: index);
   }
-  
-   void stopCommentsAutoPlayMode() {
+
+  void stopCommentsAutoPlayMode() {
     state = state.copyWith(commentsAutoPlayMode: false);
+  }
+
+  Future<void> getGymsList(BuildContext context) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response = await _mainRepositoryInterface.getGymsList();
+      response.when(
+        success: (data) {
+          print("getGymsList notifier success");
+          print(" getGymsList data ${data}");
+          state = state.copyWith(gymsWithActivities: data["object"]);
+        },
+        failure: (error, statusCode) {
+          print("getGymsList notifier failure");
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
   }
 }

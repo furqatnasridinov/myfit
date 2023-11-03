@@ -25,6 +25,8 @@ mixin _$MainState {
   bool get advantagesAutoPlayMode => throw _privateConstructorUsedError;
   int get commentActiveStepper => throw _privateConstructorUsedError;
   bool get commentsAutoPlayMode => throw _privateConstructorUsedError;
+  Map<String, dynamic> get gymsWithActivities =>
+      throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $MainStateCopyWith<MainState> get copyWith =>
@@ -44,7 +46,8 @@ abstract class $MainStateCopyWith<$Res> {
       int activeStepState,
       bool advantagesAutoPlayMode,
       int commentActiveStepper,
-      bool commentsAutoPlayMode});
+      bool commentsAutoPlayMode,
+      Map<String, dynamic> gymsWithActivities});
 }
 
 /// @nodoc
@@ -68,6 +71,7 @@ class _$MainStateCopyWithImpl<$Res, $Val extends MainState>
     Object? advantagesAutoPlayMode = null,
     Object? commentActiveStepper = null,
     Object? commentsAutoPlayMode = null,
+    Object? gymsWithActivities = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -102,6 +106,10 @@ class _$MainStateCopyWithImpl<$Res, $Val extends MainState>
           ? _value.commentsAutoPlayMode
           : commentsAutoPlayMode // ignore: cast_nullable_to_non_nullable
               as bool,
+      gymsWithActivities: null == gymsWithActivities
+          ? _value.gymsWithActivities
+          : gymsWithActivities // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>,
     ) as $Val);
   }
 }
@@ -122,7 +130,8 @@ abstract class _$$MainStateImplCopyWith<$Res>
       int activeStepState,
       bool advantagesAutoPlayMode,
       int commentActiveStepper,
-      bool commentsAutoPlayMode});
+      bool commentsAutoPlayMode,
+      Map<String, dynamic> gymsWithActivities});
 }
 
 /// @nodoc
@@ -144,6 +153,7 @@ class __$$MainStateImplCopyWithImpl<$Res>
     Object? advantagesAutoPlayMode = null,
     Object? commentActiveStepper = null,
     Object? commentsAutoPlayMode = null,
+    Object? gymsWithActivities = null,
   }) {
     return _then(_$MainStateImpl(
       isloading: null == isloading
@@ -178,6 +188,10 @@ class __$$MainStateImplCopyWithImpl<$Res>
           ? _value.commentsAutoPlayMode
           : commentsAutoPlayMode // ignore: cast_nullable_to_non_nullable
               as bool,
+      gymsWithActivities: null == gymsWithActivities
+          ? _value._gymsWithActivities
+          : gymsWithActivities // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>,
     ));
   }
 }
@@ -193,8 +207,10 @@ class _$MainStateImpl extends _MainState {
       this.activeStepState = 1,
       this.advantagesAutoPlayMode = true,
       this.commentActiveStepper = 0,
-      this.commentsAutoPlayMode = true})
-      : super._();
+      this.commentsAutoPlayMode = true,
+      final Map<String, dynamic> gymsWithActivities = const {}})
+      : _gymsWithActivities = gymsWithActivities,
+        super._();
 
   @override
   @JsonKey()
@@ -220,10 +236,19 @@ class _$MainStateImpl extends _MainState {
   @override
   @JsonKey()
   final bool commentsAutoPlayMode;
+  final Map<String, dynamic> _gymsWithActivities;
+  @override
+  @JsonKey()
+  Map<String, dynamic> get gymsWithActivities {
+    if (_gymsWithActivities is EqualUnmodifiableMapView)
+      return _gymsWithActivities;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_gymsWithActivities);
+  }
 
   @override
   String toString() {
-    return 'MainState(isloading: $isloading, advantages: $advantages, subscribtions: $subscribtions, comments: $comments, activeStepState: $activeStepState, advantagesAutoPlayMode: $advantagesAutoPlayMode, commentActiveStepper: $commentActiveStepper, commentsAutoPlayMode: $commentsAutoPlayMode)';
+    return 'MainState(isloading: $isloading, advantages: $advantages, subscribtions: $subscribtions, comments: $comments, activeStepState: $activeStepState, advantagesAutoPlayMode: $advantagesAutoPlayMode, commentActiveStepper: $commentActiveStepper, commentsAutoPlayMode: $commentsAutoPlayMode, gymsWithActivities: $gymsWithActivities)';
   }
 
   @override
@@ -246,7 +271,9 @@ class _$MainStateImpl extends _MainState {
             (identical(other.commentActiveStepper, commentActiveStepper) ||
                 other.commentActiveStepper == commentActiveStepper) &&
             (identical(other.commentsAutoPlayMode, commentsAutoPlayMode) ||
-                other.commentsAutoPlayMode == commentsAutoPlayMode));
+                other.commentsAutoPlayMode == commentsAutoPlayMode) &&
+            const DeepCollectionEquality()
+                .equals(other._gymsWithActivities, _gymsWithActivities));
   }
 
   @override
@@ -259,7 +286,8 @@ class _$MainStateImpl extends _MainState {
       activeStepState,
       advantagesAutoPlayMode,
       commentActiveStepper,
-      commentsAutoPlayMode);
+      commentsAutoPlayMode,
+      const DeepCollectionEquality().hash(_gymsWithActivities));
 
   @JsonKey(ignore: true)
   @override
@@ -277,7 +305,8 @@ abstract class _MainState extends MainState {
       final int activeStepState,
       final bool advantagesAutoPlayMode,
       final int commentActiveStepper,
-      final bool commentsAutoPlayMode}) = _$MainStateImpl;
+      final bool commentsAutoPlayMode,
+      final Map<String, dynamic> gymsWithActivities}) = _$MainStateImpl;
   const _MainState._() : super._();
 
   @override
@@ -296,6 +325,8 @@ abstract class _MainState extends MainState {
   int get commentActiveStepper;
   @override
   bool get commentsAutoPlayMode;
+  @override
+  Map<String, dynamic> get gymsWithActivities;
   @override
   @JsonKey(ignore: true)
   _$$MainStateImplCopyWith<_$MainStateImpl> get copyWith =>

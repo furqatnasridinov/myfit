@@ -1,5 +1,6 @@
 import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/application/schedule/schedule_state.dart';
+import 'package:activity/domain/di/dependency_manager.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/ui_card.dart';
@@ -11,7 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class ComingActivity extends StatelessWidget {
   ComingActivity({super.key});
 
-  ScheduleNotifier scheduleNotifier = ScheduleNotifier();
+  ScheduleNotifier scheduleNotifier = ScheduleNotifier(scheduleRepo);
   ScheduleState scheduleState = const ScheduleState();
   @override
   Widget build(BuildContext context) {
@@ -113,10 +114,7 @@ class ComingActivity extends StatelessWidget {
               InkWell(
                 onTap: () {
                   context.router.push(
-                    ScheduleRoute(
-                      event: scheduleNotifier,
-                      state: scheduleState,
-                    ),
+                    const ScheduleRoute(),
                   );
                 },
                 child: CustomText(
@@ -129,7 +127,7 @@ class ComingActivity extends StatelessWidget {
               const Spacer(),
               InkWell(
                 onTap: () {
-                  context.router.push( ActivityRoute(gymId: 1));
+                  context.router.push(ActivityRoute(gymId: 1));
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(6.r),

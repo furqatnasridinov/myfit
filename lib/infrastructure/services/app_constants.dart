@@ -6,6 +6,8 @@ class AppConstants {
   static const String getAdvantages = "api/main/advantages";
   static const String getSubscribtions = "api/main/subscription";
   static const String getComments = "api/main/comments";
+  static const String getGymsList = "api/gym/gymActiveList";
+  static const String getUsersSchedules = "api/schedule/search";
 
 
 

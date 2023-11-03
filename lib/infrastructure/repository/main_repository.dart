@@ -6,6 +6,7 @@ import 'package:activity/domain/interface/main.dart';
 import 'package:activity/infrastructure/models/response/get_advantages_response.dart';
 import 'package:activity/infrastructure/models/response/get_comments_response.dart';
 import 'package:activity/infrastructure/models/response/get_subscribtions_response.dart';
+import 'package:activity/infrastructure/models/response/gym_active_list.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
 
 class MainRepository implements MainRepositoryInterface {
@@ -18,11 +19,11 @@ class MainRepository implements MainRepositoryInterface {
         data: GetAdvantagesResponse.fromJson(response.data),
       );
     } catch (e) {
-      throw e;
-      /* return ApiResult.failure(
+      //throw e;
+      return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      ); */
+      );
     }
   }
 
@@ -35,11 +36,11 @@ class MainRepository implements MainRepositoryInterface {
         data: GetSubscribtionsResponse.fromJson(response.data),
       );
     } catch (e) {
-      throw e;
-      /* return ApiResult.failure(
+      //throw e;
+      return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      ); */
+      );
     }
   }
 
@@ -50,6 +51,24 @@ class MainRepository implements MainRepositoryInterface {
       final response = await client.get(AppConstants.getComments);
       return ApiResult.success(
         data: GetCommentsResponse.fromJson(response.data),
+      );
+    } catch (e) {
+      //throw e;
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      );
+    }
+  }
+
+  @override
+  Future<ApiResult<Map<String,dynamic>>>
+      getGymsList() async {
+    try {
+      final client = inject<HttpService>().clientDio();
+      final response = await client.get(AppConstants.getGymsList);
+      return ApiResult.success(
+        data: response.data
       );
     } catch (e) {
       throw e;

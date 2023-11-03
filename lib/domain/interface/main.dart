@@ -3,8 +3,9 @@ import 'package:activity/infrastructure/models/response/get_advantages_response.
 import 'package:activity/infrastructure/models/response/get_comments_response.dart';
 import 'package:activity/infrastructure/models/response/get_subscribtions_response.dart';
 
-abstract class MainRepositoryInterface{
-  Future<ApiResult<GetAdvantagesResponse>>getAdvantages();
-  Future<ApiResult<GetSubscribtionsResponse>>getSubscribtions();
-  Future<ApiResult<GetCommentsResponse>>getComments();
+abstract class MainRepositoryInterface {
+  Future<ApiResult<GetAdvantagesResponse>> getAdvantages();
+  Future<ApiResult<GetSubscribtionsResponse>> getSubscribtions();
+  Future<ApiResult<GetCommentsResponse>> getComments();
+  Future<ApiResult<Map<String,dynamic>>> getGymsList();
 }

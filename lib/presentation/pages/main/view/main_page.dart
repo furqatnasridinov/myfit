@@ -16,8 +16,6 @@ class MainScreen extends ConsumerStatefulWidget {
 }
 
 class _BlogScreen extends ConsumerState<MainScreen> {
-  int activeStepState = 1;
-  int dotCount = 3;
   @override
   void initState() {
     super.initState();
@@ -25,6 +23,7 @@ class _BlogScreen extends ConsumerState<MainScreen> {
       ref.read(mainProvider.notifier).getAdvantages(context);
       ref.read(mainProvider.notifier).getSubscribtions(context);
       ref.read(mainProvider.notifier).getComments(context);
+      ref.read(mainProvider.notifier).getGymsList(context);
     });
   }
 
@@ -38,12 +37,13 @@ class _BlogScreen extends ConsumerState<MainScreen> {
         "state.subscribtions?.bodyData.lenth>>  ${state.subscribtions?.bodyData?.length}");
     print(
         "state.comments?.bodyData.lenth>>  ${state.comments?.bodyData?.length}");
+    print("state.gymsWithActivities >>  ${state.gymsWithActivities}");
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
       appBar: const MainHeader(),
       body: state.isloading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(),
             )
           : SafeArea(
@@ -53,7 +53,10 @@ class _BlogScreen extends ConsumerState<MainScreen> {
                     EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 15.h),
                 child: Column(
                   children: [
-                    const TheOneWithCards(),
+                    TheOneWithCards(
+                      event: event,
+                      state: state,
+                    ),
                     32.verticalSpace,
                     Padding(
                       padding: EdgeInsets.only(
@@ -74,7 +77,10 @@ class _BlogScreen extends ConsumerState<MainScreen> {
                       event: event,
                     ),
                     32.verticalSpace,
-                    const TheOneWithMap(),
+                    TheOneWithMap(
+                      event: event,
+                      state: state,
+                    ),
                     32.verticalSpace,
                     const TheOneWithButton(),
                     32.verticalSpace,

@@ -1,6 +1,8 @@
 import 'package:activity/infrastructure/models/data/addresses.dart';
 import 'package:activity/infrastructure/models/data/calendar.dart';
+import 'package:activity/infrastructure/models/data/gym_activity.dart';
 import 'package:activity/infrastructure/models/data/schedule.dart';
+import 'package:flutter/material.dart';
 
 class DummyData {
   final List<Calendar> dates = [
@@ -39,7 +41,7 @@ class DummyData {
       finishingTime: "17:35",
     ),
   ];
-    final List<Addresses> dummyAddresses = [
+  final List<Addresses> dummyAddresses = [
     Addresses(
       name: "Зал Чердак",
       destination: "234м от вас",
@@ -60,5 +62,27 @@ class DummyData {
       name: "Бассейн “Таёжный”",
       destination: "1,2км от вас",
     ),
+  ];
+  final List<GymActivity> listOFDummyActivities = [
+    GymActivity(name: "POOL", count: "3", icon: Icons.waves),
+    GymActivity(name: "MASSAGE", count: "2", icon: Icons.hotel_sharp),
+    GymActivity(name: "GYM", count: "1", icon: Icons.sports_handball_sharp),
+  ];
+  final List<String> days30 = [
+    "2023-10-01",
+    "2023-10-02",
+    "2023-10-03",
+    "2023-10-04",
+    "2023-10-05",
+    "2023-10-06",
+    "2023-10-07",
+    "2023-10-08",
+    "2023-10-09",
+    "2023-10-10",
+    "2023-10-11",
+    "2023-10-12",
+    "2023-10-13",
+    "2023-10-14",
+    "2023-10-15",
   ];
 }

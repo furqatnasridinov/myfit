@@ -8,8 +8,6 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:activity/application/schedule/schedule_notifier.dart' as _i8;
-import 'package:activity/application/schedule/schedule_state.dart' as _i9;
 import 'package:activity/presentation/pages/activity/view/activity_page.dart'
     as _i1;
 import 'package:activity/presentation/pages/main/view/main_page.dart' as _i3;
@@ -54,14 +52,9 @@ abstract class $AppRouter extends _i6.RootStackRouter {
       );
     },
     ScheduleRoute.name: (routeData) {
-      final args = routeData.argsAs<ScheduleRouteArgs>();
       return _i6.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i5.ScheduleScreen(
-          event: args.event,
-          state: args.state,
-          key: args.key,
-        ),
+        child: const _i5.ScheduleScreen(),
       );
     },
   };
@@ -149,43 +142,14 @@ class NotesRoute extends _i6.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i5.ScheduleScreen]
-class ScheduleRoute extends _i6.PageRouteInfo<ScheduleRouteArgs> {
-  ScheduleRoute({
-    required _i8.ScheduleNotifier event,
-    required _i9.ScheduleState state,
-    _i7.Key? key,
-    List<_i6.PageRouteInfo>? children,
-  }) : super(
+class ScheduleRoute extends _i6.PageRouteInfo<void> {
+  const ScheduleRoute({List<_i6.PageRouteInfo>? children})
+      : super(
           ScheduleRoute.name,
-          args: ScheduleRouteArgs(
-            event: event,
-            state: state,
-            key: key,
-          ),
           initialChildren: children,
         );
 
   static const String name = 'ScheduleRoute';
 
-  static const _i6.PageInfo<ScheduleRouteArgs> page =
-      _i6.PageInfo<ScheduleRouteArgs>(name);
-}
-
-class ScheduleRouteArgs {
-  const ScheduleRouteArgs({
-    required this.event,
-    required this.state,
-    this.key,
-  });
-
-  final _i8.ScheduleNotifier event;
-
-  final _i9.ScheduleState state;
-
-  final _i7.Key? key;
-
-  @override
-  String toString() {
-    return 'ScheduleRouteArgs{event: $event, state: $state, key: $key}';
-  }
+  static const _i6.PageInfo<void> page = _i6.PageInfo<void>(name);
 }

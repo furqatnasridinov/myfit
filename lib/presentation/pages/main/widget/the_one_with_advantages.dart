@@ -6,6 +6,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 class TheOneWithAdvantages extends StatelessWidget {
@@ -28,77 +29,81 @@ class TheOneWithAdvantages extends StatelessWidget {
         ),
       ),
       padding: EdgeInsets.all(16.r),
-      child: Stack(
-        children: [
-          SizedBox(
-            width: double.maxFinite,
-            //color: Colors.black26,
-            child: CarouselSlider.builder(
-              carouselController: carouselController,
-              itemCount: state.advantages?.bodyData?.length,
-              itemBuilder: (context, index, realIndex) {
-                final currentAdvantage = state.advantages?.bodyData?[index];
-                return scrollableTexts(
-                  currentAdvantage?.heading ?? "",
-                  currentAdvantage?.description ?? "",
-                );
-              },
-              options: CarouselOptions(
-                scrollDirection: Axis.horizontal,
-                enableInfiniteScroll: false,
-                viewportFraction: 1,
-                onPageChanged: (index, reason) {
-                  event.setStep(index + 1);
-                  if (reason == CarouselPageChangedReason.manual) {
-                    event.stopAdvantagesAutoPlayMode();
-                  }
-                },
-                autoPlay: state.advantagesAutoPlayMode,
-              ),
-            ),
-          ),
-
-          // stepper
-          Positioned(
-            bottom: 0,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+      child: state.advantages == null
+          ? const SizedBox()
+          : Stack(
               children: [
-                RichText(
-                  text: TextSpan(
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: state.activeStepState.toString(),
-                        style: GoogleFonts.raleway(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
+                SizedBox(
+                  width: double.maxFinite,
+                  //color: Colors.black26,
+                  child: CarouselSlider.builder(
+                    carouselController: carouselController,
+                    itemCount: state.advantages?.bodyData?.length,
+                    itemBuilder: (context, index, realIndex) {
+                      final currentAdvantage =
+                          state.advantages?.bodyData?[index];
+                      return scrollableTexts(
+                        currentAdvantage?.heading ?? "",
+                        currentAdvantage?.description ?? "",
+                      );
+                    },
+                    options: CarouselOptions(
+                      scrollDirection: Axis.horizontal,
+                      enableInfiniteScroll: false,
+                      viewportFraction: 1,
+                      onPageChanged: (index, reason) {
+                        event.setStep(index + 1);
+                        if (reason == CarouselPageChangedReason.manual) {
+                          event.stopAdvantagesAutoPlayMode();
+                        }
+                      },
+                      autoPlay: state.advantagesAutoPlayMode,
+                    ),
+                  ),
+                ),
+
+                // stepper
+                Positioned(
+                  left: 0,
+                  bottom: 0,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: state.activeStepState.toString(),
+                              style: GoogleFonts.raleway(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '/${state.advantages?.bodyData?.length}',
+                              style: GoogleFonts.inter(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      TextSpan(
-                        text: '/${state.advantages?.bodyData?.length}',
-                        style: GoogleFonts.inter(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black,
-                        ),
+                      2.horizontalSpace,
+                      StepProgressIndicator(
+                        //selectedColor: Colors.
+                        totalSteps: state.advantages!.bodyData!.length,
+                        currentStep: state.activeStepState,
+                        size: 3.w,
+                        unselectedColor: Colors.grey.shade300,
                       ),
                     ],
                   ),
                 ),
-                2.horizontalSpace,
-                StepProgressIndicator(
-                  //selectedColor: Colors.
-                  totalSteps: state.advantages!.bodyData!.length,
-                  currentStep: state.activeStepState,
-                  size: 3.w,
-                  unselectedColor: Colors.grey.shade300,
-                ),
               ],
             ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -135,6 +140,33 @@ class TheOneWithAdvantages extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget progress() {
+    return LinearPercentIndicator(
+      //backgroundColor: Colors.blue,
+      width: 30.w,
+      lineHeight: 3.h,
+      animation: true,
+      animationDuration: 4000,
+      //fillColor: Colors.grey.shade300,
+      progressColor: Colors.blue,
+      percent: 1,
+    );
+  }
+
+  Widget _buildDelayedProgress(int index) {
+    return FutureBuilder(
+      future: Future.delayed(Duration(milliseconds: 500 * index),
+          () => true), // Задержка в миллисекундах
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return progress();
+        } else {
+          return SizedBox(width: 30.w);
+        }
+      },
     );
   }
 }

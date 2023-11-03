@@ -46,7 +46,7 @@ class _LoginScreen extends State<Main2Screen> {
             10.verticalSpace,
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: const FirstTwoCards(),
+              child:  FirstTwoCards(),
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),

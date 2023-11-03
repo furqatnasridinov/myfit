@@ -8,6 +8,9 @@ class ScheduleState with _$ScheduleState{
   const factory ScheduleState({
     @Default(false) bool isloading,
     @Default(false) bool isSearchbarOpened,
+    @Default({})Map<String,dynamic> schedulesInMapForm,
+    @Default([])List listOfUserSchedulesvalues,
+    @Default(false)bool showTillWhen,
   }) = _ScheduleState;
   const ScheduleState._();
 }

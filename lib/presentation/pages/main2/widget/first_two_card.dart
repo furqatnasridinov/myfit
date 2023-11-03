@@ -1,89 +1,224 @@
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/ui_card.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:im_stepper/stepper.dart';
 
 class FirstTwoCards extends StatelessWidget {
-  const FirstTwoCards({super.key});
+  FirstTwoCards({super.key});
+  int touchedIndex = -1;
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
-      Expanded(
-        child: UiCard(
-          cardValue: Column(children: [
-            RichText(
-              text: TextSpan(
-                children: <TextSpan>[
-                  TextSpan(
-                    text: '17',
-                    style: GoogleFonts.raleway(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13.sp,
-                        color: Colors.black),
-                  ),
-                  TextSpan(
-                    text: ' посещений Запланированов этом месяце',
-                    style: GoogleFonts.raleway(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 13.sp,
-                        color: Colors.black),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 5.0),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: CustomText(
-                text: 'Изменить расписание',
-                fontWeight: FontWeight.w500,
-                fontSize: 10.sp,
-                color: AppColors.blueColor,
-              ),
-            )
-          ]),
-        ),
-      ),
-      SizedBox(width: 5.w),
-      UiCard(
-        cardHeight: 99.0,
-        cardValue:
-            Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          CustomText(
-            text: 'Premium абонемент',
-            fontSize: 13.sp,
-            fontWeight: FontWeight.w400,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // first container
+        Container(
+          width: 169.w,
+          height: 143.h,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16.r),
+            border: Border.all(color: AppColors.greyBorder, width: 1.w),
           ),
-          SizedBox(height: 5.w),
-          Row(
+          padding: EdgeInsets.all(16.r),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(6.0),
-                child: Container(
-                  color: const Color.fromRGBO(245, 249, 255, 1),
-                  padding: const EdgeInsets.all(5.0),
-                  child: CustomText(
-                    text: '121 день',
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w400,
-                  ),
+              CustomText(
+                text: "Статистика за месяц",
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w600,
+              ),
+              SizedBox(
+                //color: Colors.red,
+                height: 63.h,
+                width: double.maxFinite,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // pie chart part
+                    Container(
+                      width: 62.w,
+                      height: 62.h,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.backgroundColor,
+                        border: Border.all(
+                          color: AppColors.fadedBlueBorder,
+                          width: 1.w,
+                        ),
+                      ),
+                      padding: EdgeInsets.all(4.r),
+                      child: Stack(
+                        children: [
+                          PieChart(
+                            PieChartData(
+                              sections: showingSections(),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.center,
+                            child: Icon(
+                              Icons.favorite,
+                              color: AppColors.goldText,
+                              size: 20.r,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    // texts
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _indicator(AppColors.goldText, "Бассейн"),
+                        _indicator(AppColors.purpleText, "Силовые"),
+                        _indicator(AppColors.blueColor, "Массаж"),
+                        _indicator(Colors.grey.shade400, "Другое"),
+                        1.verticalSpace,
+                      ],
+                    )
+                  ],
                 ),
               ),
-              const SizedBox(width: 15),
               CustomText(
-                text: 'Продлить',
-                fontWeight: FontWeight.w500,
+                text: "Детальная статистика",
                 fontSize: 10.sp,
-                color: AppColors.blueColor,
+                fontWeight: FontWeight.w500,
+                color: Colors.blue,
               ),
             ],
           ),
-        ]),
-      ),
-    ]);
+        ),
+
+        // second container
+        Container(
+          width: 169.w,
+          height: 143.h,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16.r),
+            border: Border.all(color: AppColors.greyBorder, width: 1.w),
+          ),
+          padding: EdgeInsets.all(16.r),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CustomText(
+                text: "Ваш абонемент",
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w600,
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16.w,
+                  vertical: 5.h,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.backgroundColor,
+                  borderRadius: BorderRadius.circular(6.r),
+                  border:
+                      Border.all(color: AppColors.fadedBlueBorder, width: 1.w),
+                ),
+                child: CustomText(
+                  text: "121 день",
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16.w,
+                  vertical: 5.h,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.backgroundColor,
+                  borderRadius: BorderRadius.circular(6.r),
+                  border:
+                      Border.all(color: AppColors.fadedBlueBorder, width: 1.w),
+                ),
+                child: CustomText(
+                  text: "3275 баллов",
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              CustomText(
+                text: "Продлить",
+                fontSize: 10.sp,
+                fontWeight: FontWeight.w500,
+                color: Colors.blue,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  List<PieChartSectionData> showingSections() {
+    return List.generate(4, (i) {
+      //final isTouched = i == touchedIndex;
+      final radius = 4.0;
+      switch (i) {
+        case 0:
+          return PieChartSectionData(
+            color: AppColors.goldText,
+            value: 40,
+            showTitle: false,
+            radius: radius,
+          );
+        case 1:
+          return PieChartSectionData(
+            color: AppColors.purpleText,
+            value: 30,
+            showTitle: false,
+            radius: radius,
+          );
+        case 2:
+          return PieChartSectionData(
+            color: AppColors.blueColor,
+            value: 30,
+            showTitle: false,
+            radius: radius,
+          );
+        case 3:
+          return PieChartSectionData(
+            color: Colors.grey.shade400,
+            //value: 35,
+            showTitle: false,
+            radius: radius,
+          );
+        default:
+          throw Error();
+      }
+    });
+  }
+
+  Widget _indicator(Color color, String text) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          width: 6.w,
+          height: 6.h,
+          decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+        ),
+        10.horizontalSpace,
+        CustomText(
+          text: text,
+          fontSize: 10.sp,
+          fontWeight: FontWeight.w500,
+        ),
+      ],
+    );
   }
 }

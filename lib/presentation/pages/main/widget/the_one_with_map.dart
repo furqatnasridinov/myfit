@@ -1,15 +1,21 @@
+import 'package:activity/application/main/main_notifier.dart';
+import 'package:activity/application/main/main_state.dart';
+import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/ui_card.dart';
+import 'package:activity/presentation/components/dummy_data.dart';
+import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/components/ya_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class TheOneWithMap extends StatelessWidget {
-  const TheOneWithMap({super.key});
+  final MainState state;
+  final MainNotifier event;
+  const TheOneWithMap({super.key, required this.state, required this.event});
 
   @override
   Widget build(BuildContext context) {
+    final _list = DummyData().listOFDummyActivities;
     return Column(
       children: [
         Padding(
@@ -23,67 +29,70 @@ class TheOneWithMap extends StatelessWidget {
             ),
           ),
         ),
-        UiCard(
-          cardMaxWidth: MediaQuery.of(context).size.width * 1,
-          cardValue: Column(
+        Container(
+          width: double.maxFinite,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16.r),
+            border: Border.all(
+              color: AppColors.greyBorder,
+              width: 1.w,
+            ),
+          ),
+          padding: EdgeInsets.all(16.r),
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Wrap(
-                alignment: WrapAlignment.start,
-                crossAxisAlignment: WrapCrossAlignment.start,
-                spacing: 10.0,
-                runSpacing: 10.0,
-                children: [
-                  _taskRow(Icons.adb, 'Силовые тренировки', '5'),
-                  _taskRow(Icons.adb, 'Йога', '5'),
-                ],
+                runSpacing: 10.w,
+                spacing: 10.w,
+                children: _list
+                    .map(
+                      (e) => _tasks(e.name, e.count, e.icon),
+                    )
+                    .toList(),
               ),
               10.verticalSpace,
-              const UiYaMap()
+              UiYaMap(),
             ],
           ),
-        )
+        ),
       ],
     );
   }
 
-  _taskRow(IconData? icon, String? name, String? count) {
-    return Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
-      ClipRRect(
-        borderRadius: BorderRadius.circular(6.0),
-        child: Container(
-          color: const Color.fromRGBO(245, 249, 255, 1),
-          padding: const EdgeInsets.all(5.0),
-          child: Icon(
-            icon,
-            color: const Color.fromRGBO(62, 134, 245, 1),
-            size: 18.0,
+  Widget _tasks(String title, String count, IconData icon) {
+    return Container(
+      width: 120.w,
+      //color: Colors.red,
+      child: Row(
+        children: [
+          Container(
+            width: 24.w,
+            height: 24.h,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6.r),
+              color: AppColors.backgroundColor,
+            ),
+            child: Icon(
+              icon,
+              color: Colors.blue,
+              size: 16.sp,
+            ),
           ),
-        ),
+          3.horizontalSpace,
+          InterText(
+            text: title,
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w400,
+          ),
+          InterText(
+            text: " - $count",
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w400,
+          ),
+        ],
       ),
-      const SizedBox(
-        width: 6.0,
-      ),
-      RichText(
-        text: TextSpan(
-          children: <TextSpan>[
-            TextSpan(
-              text: '$name - ',
-              style: GoogleFonts.inter(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 12.sp,
-                  color: Colors.black),
-            ),
-            TextSpan(
-              text: count,
-              style: GoogleFonts.inter(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 12.sp,
-                  color: Colors.black),
-            ),
-          ],
-        ),
-      ),
-    ]);
+    );
   }
 }
