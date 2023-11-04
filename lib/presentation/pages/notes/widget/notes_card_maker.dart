@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
-import 'package:activity/domain/handlers/api_result.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_textfield.dart';
 import 'package:activity/presentation/components/inter_text.dart';
-import 'package:activity/presentation/components/ui_button_outlined.dart';
 
 class NotesCardMaker extends StatelessWidget {
   final String address;

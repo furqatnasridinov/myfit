@@ -12,6 +12,8 @@ class ScheduleState with _$ScheduleState{
     @Default([])List listOfUserSchedulesvalues,
     @Default(false)bool showTillWhen,
     @Default(false)bool plusState,
+    @Default(false) bool isLocationButtonActivated,
+    @Default(false) bool isFlashButtonActivated,
   }) = _ScheduleState;
   const ScheduleState._();
 }

@@ -24,6 +24,8 @@ mixin _$ScheduleState {
       throw _privateConstructorUsedError;
   bool get showTillWhen => throw _privateConstructorUsedError;
   bool get plusState => throw _privateConstructorUsedError;
+  bool get isLocationButtonActivated => throw _privateConstructorUsedError;
+  bool get isFlashButtonActivated => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ScheduleStateCopyWith<ScheduleState> get copyWith =>
@@ -42,7 +44,9 @@ abstract class $ScheduleStateCopyWith<$Res> {
       Map<String, dynamic> schedulesInMapForm,
       List<dynamic> listOfUserSchedulesvalues,
       bool showTillWhen,
-      bool plusState});
+      bool plusState,
+      bool isLocationButtonActivated,
+      bool isFlashButtonActivated});
 }
 
 /// @nodoc
@@ -64,6 +68,8 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
     Object? listOfUserSchedulesvalues = null,
     Object? showTillWhen = null,
     Object? plusState = null,
+    Object? isLocationButtonActivated = null,
+    Object? isFlashButtonActivated = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -90,6 +96,14 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
           ? _value.plusState
           : plusState // ignore: cast_nullable_to_non_nullable
               as bool,
+      isLocationButtonActivated: null == isLocationButtonActivated
+          ? _value.isLocationButtonActivated
+          : isLocationButtonActivated // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isFlashButtonActivated: null == isFlashButtonActivated
+          ? _value.isFlashButtonActivated
+          : isFlashButtonActivated // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -108,7 +122,9 @@ abstract class _$$ScheduleStateImplCopyWith<$Res>
       Map<String, dynamic> schedulesInMapForm,
       List<dynamic> listOfUserSchedulesvalues,
       bool showTillWhen,
-      bool plusState});
+      bool plusState,
+      bool isLocationButtonActivated,
+      bool isFlashButtonActivated});
 }
 
 /// @nodoc
@@ -128,6 +144,8 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
     Object? listOfUserSchedulesvalues = null,
     Object? showTillWhen = null,
     Object? plusState = null,
+    Object? isLocationButtonActivated = null,
+    Object? isFlashButtonActivated = null,
   }) {
     return _then(_$ScheduleStateImpl(
       isloading: null == isloading
@@ -154,6 +172,14 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
           ? _value.plusState
           : plusState // ignore: cast_nullable_to_non_nullable
               as bool,
+      isLocationButtonActivated: null == isLocationButtonActivated
+          ? _value.isLocationButtonActivated
+          : isLocationButtonActivated // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isFlashButtonActivated: null == isFlashButtonActivated
+          ? _value.isFlashButtonActivated
+          : isFlashButtonActivated // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -167,7 +193,9 @@ class _$ScheduleStateImpl extends _ScheduleState {
       final Map<String, dynamic> schedulesInMapForm = const {},
       final List<dynamic> listOfUserSchedulesvalues = const [],
       this.showTillWhen = false,
-      this.plusState = false})
+      this.plusState = false,
+      this.isLocationButtonActivated = false,
+      this.isFlashButtonActivated = false})
       : _schedulesInMapForm = schedulesInMapForm,
         _listOfUserSchedulesvalues = listOfUserSchedulesvalues,
         super._();
@@ -204,10 +232,16 @@ class _$ScheduleStateImpl extends _ScheduleState {
   @override
   @JsonKey()
   final bool plusState;
+  @override
+  @JsonKey()
+  final bool isLocationButtonActivated;
+  @override
+  @JsonKey()
+  final bool isFlashButtonActivated;
 
   @override
   String toString() {
-    return 'ScheduleState(isloading: $isloading, isSearchbarOpened: $isSearchbarOpened, schedulesInMapForm: $schedulesInMapForm, listOfUserSchedulesvalues: $listOfUserSchedulesvalues, showTillWhen: $showTillWhen, plusState: $plusState)';
+    return 'ScheduleState(isloading: $isloading, isSearchbarOpened: $isSearchbarOpened, schedulesInMapForm: $schedulesInMapForm, listOfUserSchedulesvalues: $listOfUserSchedulesvalues, showTillWhen: $showTillWhen, plusState: $plusState, isLocationButtonActivated: $isLocationButtonActivated, isFlashButtonActivated: $isFlashButtonActivated)';
   }
 
   @override
@@ -226,7 +260,12 @@ class _$ScheduleStateImpl extends _ScheduleState {
             (identical(other.showTillWhen, showTillWhen) ||
                 other.showTillWhen == showTillWhen) &&
             (identical(other.plusState, plusState) ||
-                other.plusState == plusState));
+                other.plusState == plusState) &&
+            (identical(other.isLocationButtonActivated,
+                    isLocationButtonActivated) ||
+                other.isLocationButtonActivated == isLocationButtonActivated) &&
+            (identical(other.isFlashButtonActivated, isFlashButtonActivated) ||
+                other.isFlashButtonActivated == isFlashButtonActivated));
   }
 
   @override
@@ -237,7 +276,9 @@ class _$ScheduleStateImpl extends _ScheduleState {
       const DeepCollectionEquality().hash(_schedulesInMapForm),
       const DeepCollectionEquality().hash(_listOfUserSchedulesvalues),
       showTillWhen,
-      plusState);
+      plusState,
+      isLocationButtonActivated,
+      isFlashButtonActivated);
 
   @JsonKey(ignore: true)
   @override
@@ -253,7 +294,9 @@ abstract class _ScheduleState extends ScheduleState {
       final Map<String, dynamic> schedulesInMapForm,
       final List<dynamic> listOfUserSchedulesvalues,
       final bool showTillWhen,
-      final bool plusState}) = _$ScheduleStateImpl;
+      final bool plusState,
+      final bool isLocationButtonActivated,
+      final bool isFlashButtonActivated}) = _$ScheduleStateImpl;
   const _ScheduleState._() : super._();
 
   @override
@@ -268,6 +311,10 @@ abstract class _ScheduleState extends ScheduleState {
   bool get showTillWhen;
   @override
   bool get plusState;
+  @override
+  bool get isLocationButtonActivated;
+  @override
+  bool get isFlashButtonActivated;
   @override
   @JsonKey(ignore: true)
   _$$ScheduleStateImplCopyWith<_$ScheduleStateImpl> get copyWith =>

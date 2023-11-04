@@ -175,14 +175,28 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     state = state.copyWith(showTillWhen: false);
   }
 
-  void triggerPlusState(){
+  void triggerPlusState() {
     state = state.copyWith(plusState: true);
   }
 
-   void removePlusState(){
+  void removePlusState() {
     state = state.copyWith(plusState: false);
   }
 
+  void enableLocationButton() {
+    state = state.copyWith(isLocationButtonActivated: true);
+  }
 
+  void disnableLocationButton() {
+    state = state.copyWith(isLocationButtonActivated: false);
+  }
 
+  void enableFlashButton() {
+    state = state.copyWith(isFlashButtonActivated: true);
+  }
+
+  void disnableFlashButton() {
+    state = state.copyWith(isFlashButtonActivated: false);
+  }
+  
 }
