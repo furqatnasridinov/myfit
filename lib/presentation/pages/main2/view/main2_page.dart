@@ -26,55 +26,48 @@ class _LoginScreen extends State<Main2Screen> {
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
       appBar: const Main2Header(),
-      body: SafeArea(
-        child: Stack(
+      body: ScrollConfiguration(
+        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+        child: ListView(
+          //padding: EdgeInsets.symmetric(horizontal: 16.w),
           children: [
-            ScrollConfiguration(
-              behavior:
-                  ScrollConfiguration.of(context).copyWith(scrollbars: false),
-              child: ListView(
-                //padding: EdgeInsets.symmetric(horizontal: 16.w),
-                children: [
-                  10.verticalSpace,
-                  Padding(
-                    padding: const EdgeInsets.only(left: 36.0),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: CustomText(
-                        text: 'Привет, George!',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20.sp,
-                      ),
-                    ),
-                  ),
-                  10.verticalSpace,
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: const FirstTwoCards(),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child:  ComingActivity(),
-                  ),
-                  32.verticalSpace, 
-                  Padding(
-                    padding: EdgeInsets.only(left: 25.w),
-                    child: CustomText(
-                      text: 'Бассейны поблизости',
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  10.verticalSpace,
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: const UiYaMap(),
-                  ),
-                  70.verticalSpace,
-                  const DecoratedTextOne(),
-                ],
+            10.verticalSpace,
+            Padding(
+              padding: const EdgeInsets.only(left: 36.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: CustomText(
+                  text: 'Привет, George!',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 20.sp,
+                ),
               ),
             ),
+            10.verticalSpace,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child:  FirstTwoCards(),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: ComingActivity(),
+            ),
+            32.verticalSpace,
+            Padding(
+              padding: EdgeInsets.only(left: 25.w),
+              child: CustomText(
+                text: 'Бассейны поблизости',
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            10.verticalSpace,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: const UiYaMap(),
+            ),
+            70.verticalSpace,
+            const DecoratedTextOne(),
           ],
         ),
       ),

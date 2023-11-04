@@ -8,7 +8,9 @@ class ScheduleItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Container();
+    
+    /* Column(
       children: [
         Card(
           color: const Color.fromRGBO(89, 154, 254, 1),
@@ -54,6 +56,7 @@ class ScheduleItemCard extends StatelessWidget {
                     ],
                   )
                 ]),
+                // bottom part
                 10.verticalSpace,
                 Row(
                   children: [
@@ -151,6 +154,6 @@ class ScheduleItemCard extends StatelessWidget {
           ),
         ),
       ],
-    );
+    ); */
   }
 }

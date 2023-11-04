@@ -136,9 +136,7 @@ class _MainHeaderState extends State<MainHeader> {
     }
 
     return AppBar(
-      //backgroundColor: Color.fromRGBO(245, 249, 255, 0.5),
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
-      //backgroundColor: Colors.white.withOpacity(0.96),
       elevation: 0,
       centerTitle: false,
       shape: RoundedRectangleBorder(

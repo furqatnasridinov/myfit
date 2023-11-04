@@ -8,8 +8,6 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:activity/application/schedule/schedule_notifier.dart' as _i7;
-import 'package:activity/application/schedule/schedule_state.dart' as _i8;
 import 'package:activity/presentation/pages/activity/view/activity_page.dart'
     as _i1;
 import 'package:activity/presentation/pages/main/view/main_page.dart' as _i3;
@@ -18,7 +16,7 @@ import 'package:activity/presentation/pages/notes/view/notes_page.dart' as _i4;
 import 'package:activity/presentation/pages/schedule/view/schedule_page.dart'
     as _i5;
 import 'package:auto_route/auto_route.dart' as _i6;
-import 'package:flutter/material.dart' as _i9;
+import 'package:flutter/material.dart' as _i7;
 
 abstract class $AppRouter extends _i6.RootStackRouter {
   $AppRouter({super.navigatorKey});
@@ -26,9 +24,13 @@ abstract class $AppRouter extends _i6.RootStackRouter {
   @override
   final Map<String, _i6.PageFactory> pagesMap = {
     ActivityRoute.name: (routeData) {
+      final args = routeData.argsAs<ActivityRouteArgs>();
       return _i6.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i1.ActivityScreen(),
+        child: _i1.ActivityScreen(
+          gymId: args.gymId,
+          key: args.key,
+        ),
       );
     },
     Main2Route.name: (routeData) {
@@ -44,20 +46,19 @@ abstract class $AppRouter extends _i6.RootStackRouter {
       );
     },
     NotesRoute.name: (routeData) {
+      final args = routeData.argsAs<NotesRouteArgs>();
       return _i6.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i4.NotesScreen(),
+        child: _i4.NotesScreen(
+          key: args.key,
+          day: args.day,
+        ),
       );
     },
     ScheduleRoute.name: (routeData) {
-      final args = routeData.argsAs<ScheduleRouteArgs>();
       return _i6.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i5.ScheduleScreen(
-          event: args.event,
-          state: args.state,
-          key: args.key,
-        ),
+        child: const _i5.ScheduleScreen(),
       );
     },
   };
@@ -65,16 +66,40 @@ abstract class $AppRouter extends _i6.RootStackRouter {
 
 /// generated route for
 /// [_i1.ActivityScreen]
-class ActivityRoute extends _i6.PageRouteInfo<void> {
-  const ActivityRoute({List<_i6.PageRouteInfo>? children})
-      : super(
+class ActivityRoute extends _i6.PageRouteInfo<ActivityRouteArgs> {
+  ActivityRoute({
+    required int gymId,
+    _i7.Key? key,
+    List<_i6.PageRouteInfo>? children,
+  }) : super(
           ActivityRoute.name,
+          args: ActivityRouteArgs(
+            gymId: gymId,
+            key: key,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'ActivityRoute';
 
-  static const _i6.PageInfo<void> page = _i6.PageInfo<void>(name);
+  static const _i6.PageInfo<ActivityRouteArgs> page =
+      _i6.PageInfo<ActivityRouteArgs>(name);
+}
+
+class ActivityRouteArgs {
+  const ActivityRouteArgs({
+    required this.gymId,
+    this.key,
+  });
+
+  final int gymId;
+
+  final _i7.Key? key;
+
+  @override
+  String toString() {
+    return 'ActivityRouteArgs{gymId: $gymId, key: $key}';
+  }
 }
 
 /// generated route for
@@ -107,57 +132,52 @@ class MainRoute extends _i6.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i4.NotesScreen]
-class NotesRoute extends _i6.PageRouteInfo<void> {
-  const NotesRoute({List<_i6.PageRouteInfo>? children})
-      : super(
+class NotesRoute extends _i6.PageRouteInfo<NotesRouteArgs> {
+  NotesRoute({
+    _i7.Key? key,
+    required String day,
+    List<_i6.PageRouteInfo>? children,
+  }) : super(
           NotesRoute.name,
+          args: NotesRouteArgs(
+            key: key,
+            day: day,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'NotesRoute';
 
-  static const _i6.PageInfo<void> page = _i6.PageInfo<void>(name);
+  static const _i6.PageInfo<NotesRouteArgs> page =
+      _i6.PageInfo<NotesRouteArgs>(name);
+}
+
+class NotesRouteArgs {
+  const NotesRouteArgs({
+    this.key,
+    required this.day,
+  });
+
+  final _i7.Key? key;
+
+  final String day;
+
+  @override
+  String toString() {
+    return 'NotesRouteArgs{key: $key, day: $day}';
+  }
 }
 
 /// generated route for
 /// [_i5.ScheduleScreen]
-class ScheduleRoute extends _i6.PageRouteInfo<ScheduleRouteArgs> {
-  ScheduleRoute({
-    required _i7.ScheduleNotifier event,
-    required _i8.ScheduleState state,
-    _i9.Key? key,
-    List<_i6.PageRouteInfo>? children,
-  }) : super(
+class ScheduleRoute extends _i6.PageRouteInfo<void> {
+  const ScheduleRoute({List<_i6.PageRouteInfo>? children})
+      : super(
           ScheduleRoute.name,
-          args: ScheduleRouteArgs(
-            event: event,
-            state: state,
-            key: key,
-          ),
           initialChildren: children,
         );
 
   static const String name = 'ScheduleRoute';
 
-  static const _i6.PageInfo<ScheduleRouteArgs> page =
-      _i6.PageInfo<ScheduleRouteArgs>(name);
-}
-
-class ScheduleRouteArgs {
-  const ScheduleRouteArgs({
-    required this.event,
-    required this.state,
-    this.key,
-  });
-
-  final _i7.ScheduleNotifier event;
-
-  final _i8.ScheduleState state;
-
-  final _i9.Key? key;
-
-  @override
-  String toString() {
-    return 'ScheduleRouteArgs{event: $event, state: $state, key: $key}';
-  }
+  static const _i6.PageInfo<void> page = _i6.PageInfo<void>(name);
 }

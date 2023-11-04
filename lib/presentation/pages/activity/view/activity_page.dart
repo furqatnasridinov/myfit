@@ -8,7 +8,8 @@ import '../widget/widget.dart';
 
 @RoutePage()
 class ActivityScreen extends ConsumerStatefulWidget {
-  const ActivityScreen({ super.key});
+  final int gymId;
+  const ActivityScreen({required this.gymId, super.key});
 
   @override
   ConsumerState<ActivityScreen> createState() => _ActivityPageState();
@@ -21,13 +22,19 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
     super.initState();
     print("initstate called");
 
-    ref.read(activityProvider.notifier).getActivitiesList().then(
-          (value) =>
-              ref.read(activityProvider.notifier).determineDefaultActivity().then(
-                    (value) => ref
-                        .read(activityProvider.notifier)
-                        .getGymPhotos(ref.watch(activityProvider).selectedActivity),
-                  ),
+    ref
+        .read(activityProvider.notifier)
+        .getActivitiesList(gymId: widget.gymId)
+        .then(
+          (value) => ref
+              .read(activityProvider.notifier)
+              .determineDefaultActivity()
+              .then(
+                (value) => ref.read(activityProvider.notifier).getGymPhotos(
+                      ref.watch(activityProvider).selectedActivity,
+                      widget.gymId,
+                    ),
+              ),
         );
 
     ref
@@ -52,7 +59,7 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
         ref.read(activityProvider.notifier).getListOfDates();
-        ref.read(activityProvider.notifier).getGymInfo();
+        ref.read(activityProvider.notifier).getGymInfo(gymId: widget.gymId);
         //ref.read(gymProvider.notifier).getActivitiesList();
       },
     );
@@ -92,6 +99,7 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
                     ),
                     32.verticalSpace,
                     TheOneWithChips(
+                      gymId: widget.gymId,
                       state: state,
                       event: event,
                     ),

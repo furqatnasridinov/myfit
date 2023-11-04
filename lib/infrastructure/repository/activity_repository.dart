@@ -7,14 +7,14 @@ import 'package:activity/infrastructure/models/request/get_gym_photos_request.da
 import 'package:activity/infrastructure/models/response/get_gym_activities_response.dart';
 import 'package:activity/infrastructure/models/response/get_gym_photos_response.dart';
 import 'package:activity/infrastructure/models/response/gym_response.dart';
-import 'package:activity/infrastructure/services/app_constants.dart';
+
 
 class ActivityRepository implements ActivityRepositoryInterface {
   @override
-  Future<ApiResult<GymResponse>> getInfoAboutGym() async {
+  Future<ApiResult<GymResponse>> getInfoAboutGym({required int id}) async {
     try {
       final client = inject<HttpService>().clientDio();
-      final response = await client.get(AppConstants.gym);
+      final response = await client.get("api/gym/$id");
       //print("response data ${response.data["object"]}");
       return ApiResult.success(
         data: GymResponse.fromJson(response.data["object"]),
@@ -28,10 +28,10 @@ class ActivityRepository implements ActivityRepositoryInterface {
   }
 
   @override
-  Future<ApiResult<GetGymActivitiesResponse>> getActivities() async {
+  Future<ApiResult<GetGymActivitiesResponse>> getActivities({required int gymId}) async {
     try {
       final client = inject<HttpService>().clientDio();
-      final response = await client.get(AppConstants.activities);
+      final response = await client.get("api/gym/$gymId/types");
       //print("respotitory response data ${response.data}");
       return ApiResult.success(
           data: GetGymActivitiesResponse.fromJson(response.data));
@@ -45,11 +45,11 @@ class ActivityRepository implements ActivityRepositoryInterface {
 
   @override
   Future<ApiResult<GetGymPhotosResponse>> getGymPhotos(
-      {required GetGymPhotosRequest request}) async {
+      {required GetGymPhotosRequest request, required int gymId}) async {
     try {
       final client = inject<HttpService>().clientDio();
       final response = await client.get(
-        AppConstants.photos,
+        "api/gym/$gymId/photo",
         queryParameters: request.toJson(),
       );
       //print("request.toJson ${request.toJson()}");

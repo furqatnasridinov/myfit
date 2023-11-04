@@ -6,7 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 class ActivityNotifier extends StateNotifier<ActivityState> {
-  ActivityNotifier(this._activityRepositoryInterface) : super(const ActivityState());
+  ActivityNotifier(this._activityRepositoryInterface)
+      : super(const ActivityState());
   final ActivityRepositoryInterface _activityRepositoryInterface;
 
   Future<void> determineDefaultActivity() async {
@@ -24,9 +25,10 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
-  Future<void> getGymInfo() async {
+  Future<void> getGymInfo({required int gymId}) async {
     state = state.copyWith(isloading: true);
-    final response = await _activityRepositoryInterface.getInfoAboutGym();
+    final response =
+        await _activityRepositoryInterface.getInfoAboutGym(id: gymId);
     response.when(
       success: (data) {
         state = state.copyWith(gym: data);
@@ -38,10 +40,11 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     state = state.copyWith(isloading: false);
   }
 
-  Future<void> getActivitiesList() async {
+  Future<void> getActivitiesList({required int gymId}) async {
     await Future.delayed(const Duration(milliseconds: 10));
     state = state.copyWith(isloading: true);
-    final response = await _activityRepositoryInterface.getActivities();
+    final response =
+        await _activityRepositoryInterface.getActivities(gymId: gymId);
     response.when(
       success: (data) {
         //print("notifier get activitis success");
@@ -64,12 +67,14 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
-  Future<void> getGymPhotos(String? lessonType) async {
+  Future<void> getGymPhotos(String? lessonType, int gymId) async {
     //print("notifier getGymPhotos started ");
     final request = GetGymPhotosRequest(lessonType: lessonType);
     //print("request to get photos LessonType >> ${request.toJson()}");
-    final response =
-        await _activityRepositoryInterface.getGymPhotos(request: request);
+    final response = await _activityRepositoryInterface.getGymPhotos(
+      request: request,
+      gymId: gymId,
+    );
     response.when(
       success: (data) {
         //print("getGymPhotos notifier success");

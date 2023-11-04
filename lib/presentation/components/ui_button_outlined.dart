@@ -34,7 +34,9 @@ class UiButtonOutlined extends StatelessWidget {
             minimumSize:
                 isFullWidth == true ? const Size.fromHeight(50.0) : null,
             side: const BorderSide(
-                width: 1.0, color: Color.fromRGBO(89, 154, 254, 1)),
+              width: 1.0,
+              color: Color.fromRGBO(89, 154, 254, 1),
+            ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
             )),
@@ -45,9 +47,10 @@ class UiButtonOutlined extends StatelessWidget {
             Text(
               btnText,
               style: const TextStyle(
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black),
+                fontSize: 14.0,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+              ),
             ),
             Icon(btnTrailingIcon),
           ],

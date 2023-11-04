@@ -5,10 +5,10 @@ import 'package:activity/infrastructure/models/response/get_gym_photos_response.
 import 'package:activity/infrastructure/models/response/gym_response.dart';
 
 abstract class ActivityRepositoryInterface {
-  Future<ApiResult<GymResponse>> getInfoAboutGym();
-  Future<ApiResult<GetGymActivitiesResponse>> getActivities();
+  Future<ApiResult<GymResponse>> getInfoAboutGym({required int id});
+  Future<ApiResult<GetGymActivitiesResponse>> getActivities(
+      {required int gymId});
   Future<ApiResult<GetGymPhotosResponse>> getGymPhotos(
-      {required GetGymPhotosRequest request});
-  Future<ApiResult<Map<String,dynamic>>> getSchedules(
-      {required int id});
+      {required GetGymPhotosRequest request, required int gymId});
+  Future<ApiResult<Map<String, dynamic>>> getSchedules({required int id});
 }
