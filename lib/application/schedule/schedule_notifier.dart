@@ -12,6 +12,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
   final ScheduleRepositoryInterface _scheduleRepositoryInterface;
 
   Future<void> getUsersSchedules(BuildContext context) async {
+    state = state.copyWith(isloading: true);
     final connect = await AppConnectivity().connectivity();
     if (connect) {
       final response = await _scheduleRepositoryInterface.getUsersSchedules();
@@ -28,6 +29,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
+    state = state.copyWith(isloading: false);
   }
 
   String formatDay(String day) {
@@ -159,16 +161,28 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     int durationMinutes = int.parse(durationParts[1]);
     int totalMinutes =
         startHours * 60 + startMinutes + durationHours * 60 + durationMinutes;
-    int newHours = totalMinutes ~/ 60; 
+    int newHours = totalMinutes ~/ 60;
     int newMinutes = totalMinutes % 60;
     String formattedTime = '$newHours:${newMinutes.toString().padLeft(2, '0')}';
     return formattedTime;
   }
 
-  void showTilWhen(){
+  void showTilWhen() {
     state = state.copyWith(showTillWhen: true);
   }
-  void hideTilWhen(){
+
+  void hideTilWhen() {
     state = state.copyWith(showTillWhen: false);
   }
+
+  void triggerPlusState(){
+    state = state.copyWith(plusState: true);
+  }
+
+   void removePlusState(){
+    state = state.copyWith(plusState: false);
+  }
+
+
+
 }

@@ -46,9 +46,13 @@ abstract class $AppRouter extends _i6.RootStackRouter {
       );
     },
     NotesRoute.name: (routeData) {
+      final args = routeData.argsAs<NotesRouteArgs>();
       return _i6.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i4.NotesScreen(),
+        child: _i4.NotesScreen(
+          key: args.key,
+          day: args.day,
+        ),
       );
     },
     ScheduleRoute.name: (routeData) {
@@ -128,16 +132,40 @@ class MainRoute extends _i6.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i4.NotesScreen]
-class NotesRoute extends _i6.PageRouteInfo<void> {
-  const NotesRoute({List<_i6.PageRouteInfo>? children})
-      : super(
+class NotesRoute extends _i6.PageRouteInfo<NotesRouteArgs> {
+  NotesRoute({
+    _i7.Key? key,
+    required String day,
+    List<_i6.PageRouteInfo>? children,
+  }) : super(
           NotesRoute.name,
+          args: NotesRouteArgs(
+            key: key,
+            day: day,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'NotesRoute';
 
-  static const _i6.PageInfo<void> page = _i6.PageInfo<void>(name);
+  static const _i6.PageInfo<NotesRouteArgs> page =
+      _i6.PageInfo<NotesRouteArgs>(name);
+}
+
+class NotesRouteArgs {
+  const NotesRouteArgs({
+    this.key,
+    required this.day,
+  });
+
+  final _i7.Key? key;
+
+  final String day;
+
+  @override
+  String toString() {
+    return 'NotesRouteArgs{key: $key, day: $day}';
+  }
 }
 
 /// generated route for

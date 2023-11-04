@@ -23,6 +23,7 @@ mixin _$ScheduleState {
   List<dynamic> get listOfUserSchedulesvalues =>
       throw _privateConstructorUsedError;
   bool get showTillWhen => throw _privateConstructorUsedError;
+  bool get plusState => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ScheduleStateCopyWith<ScheduleState> get copyWith =>
@@ -40,7 +41,8 @@ abstract class $ScheduleStateCopyWith<$Res> {
       bool isSearchbarOpened,
       Map<String, dynamic> schedulesInMapForm,
       List<dynamic> listOfUserSchedulesvalues,
-      bool showTillWhen});
+      bool showTillWhen,
+      bool plusState});
 }
 
 /// @nodoc
@@ -61,6 +63,7 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
     Object? schedulesInMapForm = null,
     Object? listOfUserSchedulesvalues = null,
     Object? showTillWhen = null,
+    Object? plusState = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -83,6 +86,10 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
           ? _value.showTillWhen
           : showTillWhen // ignore: cast_nullable_to_non_nullable
               as bool,
+      plusState: null == plusState
+          ? _value.plusState
+          : plusState // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -100,7 +107,8 @@ abstract class _$$ScheduleStateImplCopyWith<$Res>
       bool isSearchbarOpened,
       Map<String, dynamic> schedulesInMapForm,
       List<dynamic> listOfUserSchedulesvalues,
-      bool showTillWhen});
+      bool showTillWhen,
+      bool plusState});
 }
 
 /// @nodoc
@@ -119,6 +127,7 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
     Object? schedulesInMapForm = null,
     Object? listOfUserSchedulesvalues = null,
     Object? showTillWhen = null,
+    Object? plusState = null,
   }) {
     return _then(_$ScheduleStateImpl(
       isloading: null == isloading
@@ -141,6 +150,10 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
           ? _value.showTillWhen
           : showTillWhen // ignore: cast_nullable_to_non_nullable
               as bool,
+      plusState: null == plusState
+          ? _value.plusState
+          : plusState // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -153,7 +166,8 @@ class _$ScheduleStateImpl extends _ScheduleState {
       this.isSearchbarOpened = false,
       final Map<String, dynamic> schedulesInMapForm = const {},
       final List<dynamic> listOfUserSchedulesvalues = const [],
-      this.showTillWhen = false})
+      this.showTillWhen = false,
+      this.plusState = false})
       : _schedulesInMapForm = schedulesInMapForm,
         _listOfUserSchedulesvalues = listOfUserSchedulesvalues,
         super._();
@@ -187,10 +201,13 @@ class _$ScheduleStateImpl extends _ScheduleState {
   @override
   @JsonKey()
   final bool showTillWhen;
+  @override
+  @JsonKey()
+  final bool plusState;
 
   @override
   String toString() {
-    return 'ScheduleState(isloading: $isloading, isSearchbarOpened: $isSearchbarOpened, schedulesInMapForm: $schedulesInMapForm, listOfUserSchedulesvalues: $listOfUserSchedulesvalues, showTillWhen: $showTillWhen)';
+    return 'ScheduleState(isloading: $isloading, isSearchbarOpened: $isSearchbarOpened, schedulesInMapForm: $schedulesInMapForm, listOfUserSchedulesvalues: $listOfUserSchedulesvalues, showTillWhen: $showTillWhen, plusState: $plusState)';
   }
 
   @override
@@ -207,7 +224,9 @@ class _$ScheduleStateImpl extends _ScheduleState {
             const DeepCollectionEquality().equals(
                 other._listOfUserSchedulesvalues, _listOfUserSchedulesvalues) &&
             (identical(other.showTillWhen, showTillWhen) ||
-                other.showTillWhen == showTillWhen));
+                other.showTillWhen == showTillWhen) &&
+            (identical(other.plusState, plusState) ||
+                other.plusState == plusState));
   }
 
   @override
@@ -217,7 +236,8 @@ class _$ScheduleStateImpl extends _ScheduleState {
       isSearchbarOpened,
       const DeepCollectionEquality().hash(_schedulesInMapForm),
       const DeepCollectionEquality().hash(_listOfUserSchedulesvalues),
-      showTillWhen);
+      showTillWhen,
+      plusState);
 
   @JsonKey(ignore: true)
   @override
@@ -232,7 +252,8 @@ abstract class _ScheduleState extends ScheduleState {
       final bool isSearchbarOpened,
       final Map<String, dynamic> schedulesInMapForm,
       final List<dynamic> listOfUserSchedulesvalues,
-      final bool showTillWhen}) = _$ScheduleStateImpl;
+      final bool showTillWhen,
+      final bool plusState}) = _$ScheduleStateImpl;
   const _ScheduleState._() : super._();
 
   @override
@@ -245,6 +266,8 @@ abstract class _ScheduleState extends ScheduleState {
   List<dynamic> get listOfUserSchedulesvalues;
   @override
   bool get showTillWhen;
+  @override
+  bool get plusState;
   @override
   @JsonKey(ignore: true)
   _$$ScheduleStateImplCopyWith<_$ScheduleStateImpl> get copyWith =>

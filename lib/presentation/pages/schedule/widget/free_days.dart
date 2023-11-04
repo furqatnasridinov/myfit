@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:activity/application/schedule/schedule_notifier.dart';
+import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/components/ui_dropdown_menu.dart';
@@ -7,17 +9,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
-class FreeDays extends StatefulWidget {
+class FreeDays extends StatelessWidget {
   final String dayOfWeek;
   final String date;
-  const FreeDays({super.key, required this.dayOfWeek, required this.date});
-
-  @override
-  State<FreeDays> createState() => _FreeDaysState();
-}
-
-class _FreeDaysState extends State<FreeDays> {
-  bool plusState = false;
+  final ScheduleNotifier event;
+  final ScheduleState state;
+  const FreeDays(
+      {super.key,
+      required this.dayOfWeek,
+      required this.date,
+      required this.event,
+      required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ class _FreeDaysState extends State<FreeDays> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomText(
-            text: "${widget.dayOfWeek} ${widget.date}",
+            text: "$dayOfWeek $date",
             fontWeight: FontWeight.w600,
           ),
           10.verticalSpace,
@@ -82,16 +84,8 @@ class _FreeDaysState extends State<FreeDays> {
           'action': () => {}
         },
       ],
-      onOpenedAction: () => {
-        setState(() {
-          plusState = true;
-        }),
-      },
-      onClosedAction: () => {
-        setState(() {
-          plusState = false;
-        }),
-      },
+      onOpenedAction: () => {event.triggerPlusState()},
+      onClosedAction: () => {event.removePlusState()},
       dropDownChild: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8.r),
@@ -103,7 +97,7 @@ class _FreeDaysState extends State<FreeDays> {
         ),
         padding: EdgeInsets.all(11.r),
         child: Transform.rotate(
-          angle: plusState == true ? (45 * pi / 180) : (0 * pi / 180),
+          angle: state.plusState == true ? (45 * pi / 180) : (0 * pi / 180),
           child: Icon(
             Icons.add,
             color: Colors.white,

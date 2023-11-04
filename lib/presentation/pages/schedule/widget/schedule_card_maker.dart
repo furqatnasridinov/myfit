@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:activity/application/schedule/schedule_notifier.dart';
+import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/ui_dropdown_menu.dart';
 import 'package:activity/presentation/pages/schedule/widget/schedule_item.dart';
@@ -7,25 +9,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
-class ScheduleCardMaker extends StatefulWidget {
+class ScheduleCardMaker extends StatelessWidget {
   final String date;
   final String dayOfWeek;
   final List<ScheduleItemWidget> scheduleItems;
+  final ScheduleNotifier event;
+  final ScheduleState state;
 
   ScheduleCardMaker({
     super.key,
     required this.date,
     required this.scheduleItems,
     required this.dayOfWeek,
+    required this.event,
+    required this.state,
   });
 
-  @override
-  State<ScheduleCardMaker> createState() => _ScheduleCardState();
-}
-
-bool plusState = false;
-
-class _ScheduleCardState extends State<ScheduleCardMaker> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -38,7 +37,7 @@ class _ScheduleCardState extends State<ScheduleCardMaker> {
           Row(
             children: [
               CustomText(
-                text: "${widget.dayOfWeek} ${widget.date}",
+                text: "$dayOfWeek $date",
                 fontWeight: FontWeight.w600,
               ),
               const Spacer(),
@@ -46,9 +45,9 @@ class _ScheduleCardState extends State<ScheduleCardMaker> {
             ],
           ),
           10.verticalSpace,
-          // Отобразите список элементов расписания
+          // list
           Column(
-            children: widget.scheduleItems,
+            children: scheduleItems,
           ),
         ],
       ),
@@ -86,16 +85,8 @@ class _ScheduleCardState extends State<ScheduleCardMaker> {
           'action': () => {}
         },
       ],
-      onOpenedAction: () => {
-        setState(() {
-          plusState = true;
-        }),
-      },
-      onClosedAction: () => {
-        setState(() {
-          plusState = false;
-        }),
-      },
+      onOpenedAction: () => {event.triggerPlusState()},
+      onClosedAction: () => {event.removePlusState()},
       dropDownChild: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8.r),
@@ -107,7 +98,7 @@ class _ScheduleCardState extends State<ScheduleCardMaker> {
         ),
         padding: EdgeInsets.all(11.r),
         child: Transform.rotate(
-          angle: plusState == true ? (45 * pi / 180) : (0 * pi / 180),
+          angle: state.plusState == true ? (45 * pi / 180) : (0 * pi / 180),
           child: Icon(
             Icons.add,
             color: Colors.white,

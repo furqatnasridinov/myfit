@@ -42,70 +42,74 @@ class TheOneWithComments extends StatelessWidget {
             color: Colors.white,
           ),
           padding: EdgeInsets.all(16.r),
-          child: Stack(
-            children: [
-              Container(
-                width: 290.w,
-                //color: Colors.black26,
-                child: CarouselSlider.builder(
-                  itemCount: state.comments?.bodyData?.length,
-                  itemBuilder: (context, index, realIndex) {
-                    final currentComment = state.comments?.bodyData?[index];
-                    final yearFromBack = currentComment?.user?.birthdayDate;
-                    final parts = yearFromBack?.split("-");
-                    final formattedYear =
-                        DateTime.now().year - int.parse(parts![0]);
-                    return _comments(
-                      currentComment?.message ?? "",
-                      AppConstants.owlNetworkImage,
-                      "${currentComment?.user?.lastName} ${currentComment?.user?.firstName}",
-                      currentComment?.user?.city ?? "null",
-                      "$formattedYear лет",
-                    );
-                  },
-                  options: CarouselOptions(
-                    viewportFraction: 1,
-                    enableInfiniteScroll: false,
-                    scrollDirection: Axis.vertical,
-                    autoPlay: state.commentsAutoPlayMode,
-                    onPageChanged: (index, reason) {
-                      event.commenSetStep(index);
-                      if (reason == CarouselPageChangedReason.manual) {
-                        event.stopCommentsAutoPlayMode();
-                      }
-                    },
-                  ),
+          child: state.isloading || state.comments!.bodyData!.isEmpty
+              ? const SizedBox()
+              : Stack(
+                  children: [
+                    SizedBox(
+                      width: 290.w,
+                      //color: Colors.black26,
+                      child: CarouselSlider.builder(
+                        itemCount: state.comments?.bodyData?.length,
+                        itemBuilder: (context, index, realIndex) {
+                          final currentComment =
+                              state.comments?.bodyData?[index];
+                          final yearFromBack =
+                              currentComment?.user?.birthdayDate;
+                          final parts = yearFromBack?.split("-");
+                          final formattedYear =
+                              DateTime.now().year - int.parse(parts![0]);
+                          return _comments(
+                            currentComment?.message ?? "",
+                            AppConstants.owlNetworkImage,
+                            "${currentComment?.user?.lastName} ${currentComment?.user?.firstName}",
+                            currentComment?.user?.city ?? "null",
+                            "$formattedYear лет",
+                          );
+                        },
+                        options: CarouselOptions(
+                          viewportFraction: 1,
+                          enableInfiniteScroll: false,
+                          scrollDirection: Axis.vertical,
+                          autoPlay: state.commentsAutoPlayMode,
+                          onPageChanged: (index, reason) {
+                            event.commenSetStep(index);
+                            if (reason == CarouselPageChangedReason.manual) {
+                              event.stopCommentsAutoPlayMode();
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: DotStepper(
+                        activeStep: state.commentActiveStepper,
+                        dotCount: state.comments?.bodyData?.length ?? 2,
+                        direction: Axis.vertical,
+                        dotRadius: 6,
+                        spacing: 35.w,
+                        lineConnectorsEnabled: true,
+                        fixedDotDecoration: FixedDotDecoration(
+                          color: Colors.white,
+                          strokeColor: Colors.blue,
+                          strokeWidth: 1.w,
+                        ),
+                        indicatorDecoration: const IndicatorDecoration(
+                          color: Colors.blue,
+                        ),
+                        indicator: Indicator.jump,
+                        lineConnectorDecoration: LineConnectorDecoration(
+                          linePadding: 3.w,
+                          color: Colors.blue,
+                          strokeWidth: 1.w,
+                        ),
+                        tappingEnabled: false,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              Positioned(
-                top: 0,
-                right: 0,
-                child: DotStepper(
-                  activeStep: state.commentActiveStepper,
-                  dotCount: state.comments?.bodyData?.length ?? 2,
-                  direction: Axis.vertical,
-                  dotRadius: 6,
-                  spacing: 35.w,
-                  lineConnectorsEnabled: true,
-                  fixedDotDecoration: FixedDotDecoration(
-                    color: Colors.white,
-                    strokeColor: Colors.blue,
-                    strokeWidth: 1.w,
-                  ),
-                  indicatorDecoration: const IndicatorDecoration(
-                    color: Colors.blue,
-                  ),
-                  indicator: Indicator.jump,
-                  lineConnectorDecoration: LineConnectorDecoration(
-                    linePadding: 3.w,
-                    color: Colors.blue,
-                    strokeWidth: 1.w,
-                  ),
-                  tappingEnabled: false,
-                ),
-              ),
-            ],
-          ),
         ),
       ],
     );

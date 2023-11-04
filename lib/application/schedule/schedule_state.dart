@@ -11,6 +11,7 @@ class ScheduleState with _$ScheduleState{
     @Default({})Map<String,dynamic> schedulesInMapForm,
     @Default([])List listOfUserSchedulesvalues,
     @Default(false)bool showTillWhen,
+    @Default(false)bool plusState,
   }) = _ScheduleState;
   const ScheduleState._();
 }

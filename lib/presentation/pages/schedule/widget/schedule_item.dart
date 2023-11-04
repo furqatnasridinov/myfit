@@ -5,6 +5,8 @@ import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/pages/schedule/widget/drop_down_menu_inside_card.dart';
+import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -107,7 +109,13 @@ class ScheduleItemWidget extends StatelessWidget {
                           ),
                         ),
                         10.horizontalSpace,
-                        DropDownMenuInsideCard(),
+                        DropDownMenuInsideCard(
+                          onTap: () => context.router.push(
+                            NotesRoute(
+                              day: time,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -124,7 +132,7 @@ class ScheduleItemWidget extends StatelessWidget {
                           onTap: () {
                             if (state.showTillWhen) {
                               event.hideTilWhen();
-                            } else{
+                            } else {
                               event.showTilWhen();
                             }
                           },

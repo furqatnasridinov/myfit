@@ -51,59 +51,67 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
       appBar: const ScheduleHeader(),
-      body: SafeArea(
-        bottom: false,
-        child: CustomScrollView(
-          slivers: [
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              sliver: SliverToBoxAdapter(
-                child: ScheduleTitle(),
+      body: state.isloading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : SafeArea(
+              bottom: false,
+              child: CustomScrollView(
+                slivers: [
+                  SliverPadding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    sliver: SliverToBoxAdapter(
+                      child: ScheduleTitle(),
+                    ),
+                  ),
+
+                  // body builder
+                  SliverPadding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w)
+                        .copyWith(top: 16.h),
+                    sliver: SliverList.builder(
+                      itemCount: allDayOfMonth.length,
+                      itemBuilder: (context, index) {
+                        final date = allDayOfMonth[index];
+                        final formattedDay = event.formatDay(date);
+                        final formattedDayOfWeek = event.determineWeekday(date);
+                        if (state.schedulesInMapForm.containsKey(date)) {
+                          final scheduleItemsData =
+                              state.schedulesInMapForm[date];
+                          List<ScheduleItemWidget> scheduleItems =
+                              (scheduleItemsData as List).map((itemData) {
+                            return ScheduleItemWidget(
+                              event: event,
+                              state: state,
+                              id: itemData['id'],
+                              time: itemData['date'],
+                              description: itemData['description'],
+                              duration: itemData["duration"],
+                              address: itemData['gym']['address'],
+                            );
+                          }).toList();
+                          return ScheduleCardMaker(
+                            event: event,
+                            state: state,
+                            dayOfWeek: formattedDayOfWeek,
+                            date: formattedDay,
+                            scheduleItems: scheduleItems,
+                          );
+                        } else {
+                          return FreeDays(
+                            event: event,
+                            state: state,
+                            dayOfWeek: formattedDayOfWeek,
+                            date: formattedDay,
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
-
-            // body builder
-
-            SliverPadding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 16.h),
-              sliver: SliverList.builder(
-                itemCount: allDayOfMonth.length,
-                itemBuilder: (context, index) {
-                  final date = allDayOfMonth[index];
-                  final formattedDay = event.formatDay(date);
-                  final formattedDayOfWeek = event.determineWeekday(date);
-                  if (state.schedulesInMapForm.containsKey(date)) {
-                    final scheduleItemsData = state.schedulesInMapForm[date];
-                    List<ScheduleItemWidget> scheduleItems =
-                        (scheduleItemsData as List).map((itemData) {
-                      return ScheduleItemWidget(
-                        event: event,
-                        state: state,
-                        id: itemData['id'],
-                        time: itemData['date'],
-                        description: itemData['description'],
-                        duration: itemData["duration"],
-                        address: itemData['gym']['address'],
-                      );
-                    }).toList();
-                    return ScheduleCardMaker(
-                      dayOfWeek: formattedDayOfWeek,
-                      date: formattedDay,
-                      scheduleItems: scheduleItems,
-                    );
-                  } else {
-                    return FreeDays(
-                      dayOfWeek: formattedDayOfWeek,
-                      date: formattedDay,
-                    );
-                  }
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

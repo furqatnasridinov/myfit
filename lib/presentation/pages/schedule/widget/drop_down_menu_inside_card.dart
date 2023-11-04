@@ -15,7 +15,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class DropDownMenuInsideCard extends StatelessWidget {
-   DropDownMenuInsideCard({super.key});
+  void Function()? onTap;
+  DropDownMenuInsideCard({super.key,this.onTap});
   TimeOfDay? selectedTime =
       TimeOfDay(hour: TimeOfDay.now().hour, minute: TimeOfDay.now().minute);
   DateTime? selectedDate = DateTime.now();
@@ -36,9 +37,7 @@ class DropDownMenuInsideCard extends StatelessWidget {
             height: 18.h,
             width: 18.w,
           ),
-          'action': () {
-            context.router.push(const NotesRoute());
-          }
+          'action': onTap,
         },
         {
           'title': 'Продублировать на другую дату',
