@@ -42,14 +42,14 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
         .getSchedulesDates(id: 1)
         .then(
           (value) => ref.read(activityProvider.notifier).selectADay(
-                ref.watch(activityProvider).availableDates[0],
+                ref.watch(activityProvider).availableFormattedDates[0],
               ),
         )
         .then(
           (value) => ref
               .read(activityProvider.notifier)
               .setSelectedOriginalDate(
-                ref.watch(activityProvider).availableDates[0],
+                ref.watch(activityProvider).availableFormattedDates[0],
               )
               .then(
                 (value) => ref.read(activityProvider.notifier).getSchedulesList(
@@ -58,8 +58,10 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
         );
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
-        ref.read(activityProvider.notifier).getListOfDates();
-        ref.read(activityProvider.notifier).getGymInfo(gymId: widget.gymId);
+        ref.read(activityProvider.notifier).getListOfDatesFrom1To30currentMonth();
+        ref.read(activityProvider.notifier).getGymInfo(
+              gymId: widget.gymId,
+            );
         //ref.read(gymProvider.notifier).getActivitiesList();
       },
     );
@@ -81,6 +83,12 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
     print("availableDates >>> ${state.availableDates}");
     print("state.selectedDay ${state.selectedDay}");
     print("state.selectedOriginalDate ${state.selectedOriginalDate}"); */
+    print("state.originalDates >> ${state.originalDates}");
+    print("state.defaultDate ${state.defaultDate}");
+    print("availableFormattedDates >>> ${state.availableFormattedDates}");
+    print("state.selectedFormattedDay ${state.selectedFormattedDay}");
+    print("state.selectedOriginalDate ${state.selectedOriginalDate}");
+    print("state.listOfFormattedDaysFrom1To30currentMonth ${state.listOfFormattedDaysFrom1To30currentMonth}");
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,

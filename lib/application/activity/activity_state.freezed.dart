@@ -23,12 +23,14 @@ mixin _$ActivityState {
   List<dynamic>? get photos => throw _privateConstructorUsedError;
   List<String> get originalDates => throw _privateConstructorUsedError;
   Map<String, dynamic> get scheddules => throw _privateConstructorUsedError;
-  List<dynamic> get availableDates => throw _privateConstructorUsedError;
+  List<dynamic> get availableFormattedDates =>
+      throw _privateConstructorUsedError;
   List<dynamic> get listOfSchedules => throw _privateConstructorUsedError;
   String get defaultDate => throw _privateConstructorUsedError;
   String get selectedOriginalDate => throw _privateConstructorUsedError;
-  List<String> get listOfDates => throw _privateConstructorUsedError;
-  String get selectedDay => throw _privateConstructorUsedError;
+  List<String> get listOfFormattedDaysFrom1To30currentMonth =>
+      throw _privateConstructorUsedError;
+  String get selectedFormattedDay => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ActivityStateCopyWith<ActivityState> get copyWith =>
@@ -49,12 +51,12 @@ abstract class $ActivityStateCopyWith<$Res> {
       List<dynamic>? photos,
       List<String> originalDates,
       Map<String, dynamic> scheddules,
-      List<dynamic> availableDates,
+      List<dynamic> availableFormattedDates,
       List<dynamic> listOfSchedules,
       String defaultDate,
       String selectedOriginalDate,
-      List<String> listOfDates,
-      String selectedDay});
+      List<String> listOfFormattedDaysFrom1To30currentMonth,
+      String selectedFormattedDay});
 }
 
 /// @nodoc
@@ -77,12 +79,12 @@ class _$ActivityStateCopyWithImpl<$Res, $Val extends ActivityState>
     Object? photos = freezed,
     Object? originalDates = null,
     Object? scheddules = null,
-    Object? availableDates = null,
+    Object? availableFormattedDates = null,
     Object? listOfSchedules = null,
     Object? defaultDate = null,
     Object? selectedOriginalDate = null,
-    Object? listOfDates = null,
-    Object? selectedDay = null,
+    Object? listOfFormattedDaysFrom1To30currentMonth = null,
+    Object? selectedFormattedDay = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -113,9 +115,9 @@ class _$ActivityStateCopyWithImpl<$Res, $Val extends ActivityState>
           ? _value.scheddules
           : scheddules // ignore: cast_nullable_to_non_nullable
               as Map<String, dynamic>,
-      availableDates: null == availableDates
-          ? _value.availableDates
-          : availableDates // ignore: cast_nullable_to_non_nullable
+      availableFormattedDates: null == availableFormattedDates
+          ? _value.availableFormattedDates
+          : availableFormattedDates // ignore: cast_nullable_to_non_nullable
               as List<dynamic>,
       listOfSchedules: null == listOfSchedules
           ? _value.listOfSchedules
@@ -129,13 +131,14 @@ class _$ActivityStateCopyWithImpl<$Res, $Val extends ActivityState>
           ? _value.selectedOriginalDate
           : selectedOriginalDate // ignore: cast_nullable_to_non_nullable
               as String,
-      listOfDates: null == listOfDates
-          ? _value.listOfDates
-          : listOfDates // ignore: cast_nullable_to_non_nullable
+      listOfFormattedDaysFrom1To30currentMonth: null ==
+              listOfFormattedDaysFrom1To30currentMonth
+          ? _value.listOfFormattedDaysFrom1To30currentMonth
+          : listOfFormattedDaysFrom1To30currentMonth // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      selectedDay: null == selectedDay
-          ? _value.selectedDay
-          : selectedDay // ignore: cast_nullable_to_non_nullable
+      selectedFormattedDay: null == selectedFormattedDay
+          ? _value.selectedFormattedDay
+          : selectedFormattedDay // ignore: cast_nullable_to_non_nullable
               as String,
     ) as $Val);
   }
@@ -157,12 +160,12 @@ abstract class _$$ActivityStateImplCopyWith<$Res>
       List<dynamic>? photos,
       List<String> originalDates,
       Map<String, dynamic> scheddules,
-      List<dynamic> availableDates,
+      List<dynamic> availableFormattedDates,
       List<dynamic> listOfSchedules,
       String defaultDate,
       String selectedOriginalDate,
-      List<String> listOfDates,
-      String selectedDay});
+      List<String> listOfFormattedDaysFrom1To30currentMonth,
+      String selectedFormattedDay});
 }
 
 /// @nodoc
@@ -183,12 +186,12 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
     Object? photos = freezed,
     Object? originalDates = null,
     Object? scheddules = null,
-    Object? availableDates = null,
+    Object? availableFormattedDates = null,
     Object? listOfSchedules = null,
     Object? defaultDate = null,
     Object? selectedOriginalDate = null,
-    Object? listOfDates = null,
-    Object? selectedDay = null,
+    Object? listOfFormattedDaysFrom1To30currentMonth = null,
+    Object? selectedFormattedDay = null,
   }) {
     return _then(_$ActivityStateImpl(
       isloading: null == isloading
@@ -219,9 +222,9 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
           ? _value._scheddules
           : scheddules // ignore: cast_nullable_to_non_nullable
               as Map<String, dynamic>,
-      availableDates: null == availableDates
-          ? _value._availableDates
-          : availableDates // ignore: cast_nullable_to_non_nullable
+      availableFormattedDates: null == availableFormattedDates
+          ? _value._availableFormattedDates
+          : availableFormattedDates // ignore: cast_nullable_to_non_nullable
               as List<dynamic>,
       listOfSchedules: null == listOfSchedules
           ? _value._listOfSchedules
@@ -235,13 +238,14 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
           ? _value.selectedOriginalDate
           : selectedOriginalDate // ignore: cast_nullable_to_non_nullable
               as String,
-      listOfDates: null == listOfDates
-          ? _value._listOfDates
-          : listOfDates // ignore: cast_nullable_to_non_nullable
+      listOfFormattedDaysFrom1To30currentMonth: null ==
+              listOfFormattedDaysFrom1To30currentMonth
+          ? _value._listOfFormattedDaysFrom1To30currentMonth
+          : listOfFormattedDaysFrom1To30currentMonth // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      selectedDay: null == selectedDay
-          ? _value.selectedDay
-          : selectedDay // ignore: cast_nullable_to_non_nullable
+      selectedFormattedDay: null == selectedFormattedDay
+          ? _value.selectedFormattedDay
+          : selectedFormattedDay // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
@@ -258,19 +262,20 @@ class _$ActivityStateImpl extends _ActivityState {
       final List<dynamic>? photos = const [],
       final List<String> originalDates = const [],
       final Map<String, dynamic> scheddules = const {},
-      final List<dynamic> availableDates = const [],
+      final List<dynamic> availableFormattedDates = const [],
       final List<dynamic> listOfSchedules = const [],
       this.defaultDate = "",
       this.selectedOriginalDate = "",
-      final List<String> listOfDates = const [],
-      this.selectedDay = ""})
+      final List<String> listOfFormattedDaysFrom1To30currentMonth = const [],
+      this.selectedFormattedDay = ""})
       : _activities = activities,
         _photos = photos,
         _originalDates = originalDates,
         _scheddules = scheddules,
-        _availableDates = availableDates,
+        _availableFormattedDates = availableFormattedDates,
         _listOfSchedules = listOfSchedules,
-        _listOfDates = listOfDates,
+        _listOfFormattedDaysFrom1To30currentMonth =
+            listOfFormattedDaysFrom1To30currentMonth,
         super._();
 
   @override
@@ -322,13 +327,14 @@ class _$ActivityStateImpl extends _ActivityState {
     return EqualUnmodifiableMapView(_scheddules);
   }
 
-  final List<dynamic> _availableDates;
+  final List<dynamic> _availableFormattedDates;
   @override
   @JsonKey()
-  List<dynamic> get availableDates {
-    if (_availableDates is EqualUnmodifiableListView) return _availableDates;
+  List<dynamic> get availableFormattedDates {
+    if (_availableFormattedDates is EqualUnmodifiableListView)
+      return _availableFormattedDates;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_availableDates);
+    return EqualUnmodifiableListView(_availableFormattedDates);
   }
 
   final List<dynamic> _listOfSchedules;
@@ -346,22 +352,23 @@ class _$ActivityStateImpl extends _ActivityState {
   @override
   @JsonKey()
   final String selectedOriginalDate;
-  final List<String> _listOfDates;
+  final List<String> _listOfFormattedDaysFrom1To30currentMonth;
   @override
   @JsonKey()
-  List<String> get listOfDates {
-    if (_listOfDates is EqualUnmodifiableListView) return _listOfDates;
+  List<String> get listOfFormattedDaysFrom1To30currentMonth {
+    if (_listOfFormattedDaysFrom1To30currentMonth is EqualUnmodifiableListView)
+      return _listOfFormattedDaysFrom1To30currentMonth;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_listOfDates);
+    return EqualUnmodifiableListView(_listOfFormattedDaysFrom1To30currentMonth);
   }
 
   @override
   @JsonKey()
-  final String selectedDay;
+  final String selectedFormattedDay;
 
   @override
   String toString() {
-    return 'ActivityState(isloading: $isloading, gym: $gym, activities: $activities, selectedActivity: $selectedActivity, photos: $photos, originalDates: $originalDates, scheddules: $scheddules, availableDates: $availableDates, listOfSchedules: $listOfSchedules, defaultDate: $defaultDate, selectedOriginalDate: $selectedOriginalDate, listOfDates: $listOfDates, selectedDay: $selectedDay)';
+    return 'ActivityState(isloading: $isloading, gym: $gym, activities: $activities, selectedActivity: $selectedActivity, photos: $photos, originalDates: $originalDates, scheddules: $scheddules, availableFormattedDates: $availableFormattedDates, listOfSchedules: $listOfSchedules, defaultDate: $defaultDate, selectedOriginalDate: $selectedOriginalDate, listOfFormattedDaysFrom1To30currentMonth: $listOfFormattedDaysFrom1To30currentMonth, selectedFormattedDay: $selectedFormattedDay)';
   }
 
   @override
@@ -381,18 +388,19 @@ class _$ActivityStateImpl extends _ActivityState {
                 .equals(other._originalDates, _originalDates) &&
             const DeepCollectionEquality()
                 .equals(other._scheddules, _scheddules) &&
-            const DeepCollectionEquality()
-                .equals(other._availableDates, _availableDates) &&
+            const DeepCollectionEquality().equals(
+                other._availableFormattedDates, _availableFormattedDates) &&
             const DeepCollectionEquality()
                 .equals(other._listOfSchedules, _listOfSchedules) &&
             (identical(other.defaultDate, defaultDate) ||
                 other.defaultDate == defaultDate) &&
             (identical(other.selectedOriginalDate, selectedOriginalDate) ||
                 other.selectedOriginalDate == selectedOriginalDate) &&
-            const DeepCollectionEquality()
-                .equals(other._listOfDates, _listOfDates) &&
-            (identical(other.selectedDay, selectedDay) ||
-                other.selectedDay == selectedDay));
+            const DeepCollectionEquality().equals(
+                other._listOfFormattedDaysFrom1To30currentMonth,
+                _listOfFormattedDaysFrom1To30currentMonth) &&
+            (identical(other.selectedFormattedDay, selectedFormattedDay) ||
+                other.selectedFormattedDay == selectedFormattedDay));
   }
 
   @override
@@ -405,12 +413,13 @@ class _$ActivityStateImpl extends _ActivityState {
       const DeepCollectionEquality().hash(_photos),
       const DeepCollectionEquality().hash(_originalDates),
       const DeepCollectionEquality().hash(_scheddules),
-      const DeepCollectionEquality().hash(_availableDates),
+      const DeepCollectionEquality().hash(_availableFormattedDates),
       const DeepCollectionEquality().hash(_listOfSchedules),
       defaultDate,
       selectedOriginalDate,
-      const DeepCollectionEquality().hash(_listOfDates),
-      selectedDay);
+      const DeepCollectionEquality()
+          .hash(_listOfFormattedDaysFrom1To30currentMonth),
+      selectedFormattedDay);
 
   @JsonKey(ignore: true)
   @override
@@ -428,12 +437,12 @@ abstract class _ActivityState extends ActivityState {
       final List<dynamic>? photos,
       final List<String> originalDates,
       final Map<String, dynamic> scheddules,
-      final List<dynamic> availableDates,
+      final List<dynamic> availableFormattedDates,
       final List<dynamic> listOfSchedules,
       final String defaultDate,
       final String selectedOriginalDate,
-      final List<String> listOfDates,
-      final String selectedDay}) = _$ActivityStateImpl;
+      final List<String> listOfFormattedDaysFrom1To30currentMonth,
+      final String selectedFormattedDay}) = _$ActivityStateImpl;
   const _ActivityState._() : super._();
 
   @override
@@ -451,7 +460,7 @@ abstract class _ActivityState extends ActivityState {
   @override
   Map<String, dynamic> get scheddules;
   @override
-  List<dynamic> get availableDates;
+  List<dynamic> get availableFormattedDates;
   @override
   List<dynamic> get listOfSchedules;
   @override
@@ -459,9 +468,9 @@ abstract class _ActivityState extends ActivityState {
   @override
   String get selectedOriginalDate;
   @override
-  List<String> get listOfDates;
+  List<String> get listOfFormattedDaysFrom1To30currentMonth;
   @override
-  String get selectedDay;
+  String get selectedFormattedDay;
   @override
   @JsonKey(ignore: true)
   _$$ActivityStateImplCopyWith<_$ActivityStateImpl> get copyWith =>

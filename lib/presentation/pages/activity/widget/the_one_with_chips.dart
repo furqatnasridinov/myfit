@@ -88,12 +88,12 @@ class _TheOneWithChipsState extends State<TheOneWithChips> {
                                   })
                                   .then(
                                     (value) => widget.event.selectADay(
-                                        widget.state.availableDates[0]),
+                                        widget.state.availableFormattedDates[0]),
                                   )
                                   .then(
                                     (value) => widget.event
                                         .setSelectedOriginalDate(
-                                      widget.state.availableDates[0],
+                                      widget.state.availableFormattedDates[0],
                                     )
                                         .then((value) async {
                                       await Future.delayed(
