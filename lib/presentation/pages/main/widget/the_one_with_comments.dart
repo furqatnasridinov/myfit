@@ -17,7 +17,8 @@ class TheOneWithComments extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return 
+    Column(
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 10.0, bottom: 10.0),
@@ -42,7 +43,7 @@ class TheOneWithComments extends StatelessWidget {
             color: Colors.white,
           ),
           padding: EdgeInsets.all(16.r),
-          child: state.isloading || state.comments!.bodyData!.isEmpty
+          child: state.isloading || state.comments == null 
               ? const SizedBox()
               : Stack(
                   children: [

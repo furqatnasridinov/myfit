@@ -11,6 +11,7 @@ class CustomText extends StatelessWidget {
   FontWeight? fontWeight;
   Color? color;
   bool? isUppercase;
+  double? opacity;
   CustomText({
     Key? key,
     this.isUppercase = false,
@@ -21,6 +22,7 @@ class CustomText extends StatelessWidget {
     this.fontSize = 18,
     this.fontWeight,
     this.color = Colors.black,
+    this.opacity = 1,
   }) : super(key: key);
 
   @override
@@ -33,7 +35,7 @@ class CustomText extends StatelessWidget {
       style: GoogleFonts.raleway(
         fontSize: fontSize,
         fontWeight: fontWeight,
-        color: color,
+        color: color?.withOpacity(opacity!),
       ),
     );
   }

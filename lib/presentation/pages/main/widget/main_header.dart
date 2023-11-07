@@ -5,6 +5,7 @@ import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:activity/presentation/components/ui_button_filled.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -45,9 +46,21 @@ class _MainHeaderState extends State<MainHeader> {
             color: Colors.transparent,
             child: TapRegion(
               onTapOutside: (event) {
+                final position = event.position;
+                final textFieldRenderBox =
+                    context.findRenderObject() as RenderBox;
+                final textFieldRect =
+                    textFieldRenderBox.localToGlobal(Offset.zero) &
+                        textFieldRenderBox.size;
+                if (!textFieldRect.contains(position)) {
+                  textfieldFocusnode.unfocus();
+                  setState(() {});
+                }
+              },
+              /*  onTapOutside: (event) {
                 textfieldFocusnode.unfocus();
                 setState(() {});
-              },
+              }, */
               child: Container(
                 height: 294.h,
                 margin: EdgeInsets.only(left: 16.w, right: 16.w),
@@ -121,8 +134,10 @@ class _MainHeaderState extends State<MainHeader> {
     textfieldFocusnode.addListener(() {
       if (textfieldFocusnode.hasFocus) {
         showOverlay();
+        print("focusnode addlistener showOverlay ");
       } else {
         hideOverlay();
+        print("focusnode addlistener hideOverlay ");
       }
     });
   }
@@ -173,27 +188,39 @@ class _MainHeaderState extends State<MainHeader> {
             width: 1.w,
           ),
         ),
+        padding: EdgeInsets.only(right: 7.w, top: 3.h),
         child: CompositedTransformTarget(
           link: layerlink,
           child: TextField(
             controller: controller,
             onTap: () {
-              if (textfieldFocusnode.hasFocus) {
-                return;
-              } else {
-                textfieldFocusnode.requestFocus();
-                setState(() {});
-              }
+              textfieldFocusnode.requestFocus();
+              setState(() {});
             },
+            onEditingComplete: () {
+              textfieldFocusnode.unfocus();
+              setState(() {});
+            },
+            /* onTapOutside: (event) {
+              if (event.) {
+                textfieldFocusnode.unfocus();
+              }
+            }, */
             focusNode: textfieldFocusnode,
             decoration: InputDecoration(
-              /* suffixIcon: textfieldFocusnode.hasFocus
-                  ? InkWell(
+              isDense: true,
+              suffixIcon: textfieldFocusnode.hasFocus
+                  ? GestureDetector(
                       onTap: () {
-                        controller.clear();
+                        if (controller.text.isEmpty) {
+                          textfieldFocusnode.unfocus();
+                          setState(() {});
+                        } else {
+                          controller.clear();
+                        }
                       },
                       child: Padding(
-                        padding: EdgeInsets.only(right: 15.w),
+                        padding: EdgeInsets.only(right: 0.w),
                         child: Icon(
                           Icons.clear,
                           color: Colors.black,
@@ -201,7 +228,7 @@ class _MainHeaderState extends State<MainHeader> {
                         ),
                       ),
                     )
-                  : null, */
+                  : null,
               prefixIcon: Container(
                 margin: EdgeInsets.all(3.r),
                 decoration: const BoxDecoration(
@@ -217,10 +244,10 @@ class _MainHeaderState extends State<MainHeader> {
               ),
               hintText: "Найти занятие",
               border: InputBorder.none,
-              contentPadding: EdgeInsets.zero.copyWith(
-                left: 12.w,
-                top: 8.h,
-              ),
+              /* contentPadding: EdgeInsets.zero.copyWith(
+                 left: 12.w,
+                top: 2.h, 
+              ),  */
             ),
           ),
         ),
@@ -240,7 +267,13 @@ class _MainHeaderState extends State<MainHeader> {
                   shape: BoxShape.circle,
                 ),
                 child: ClipOval(
-                  child: Image.network(AppConstants.owlNetworkImage),
+                  child: CachedNetworkImage(
+                    imageUrl: AppConstants.owlNetworkImage,
+                    fit: BoxFit.cover,
+                    errorWidget: (context, url, error) {
+                      return const SizedBox();
+                    },
+                  ),
                 ),
               )
       ],

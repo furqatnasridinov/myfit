@@ -112,11 +112,7 @@ class ComingActivity extends StatelessWidget {
           Row(
             children: [
               InkWell(
-                onTap: () {
-                  context.router.push(
-                    const ScheduleRoute(),
-                  );
-                },
+                onTap: () {},
                 child: CustomText(
                   text: 'Посмотреть детали',
                   fontSize: 10.sp,
@@ -126,9 +122,7 @@ class ComingActivity extends StatelessWidget {
               ),
               const Spacer(),
               InkWell(
-                onTap: () {
-                  context.router.push(ActivityRoute(gymId: 1));
-                },
+                onTap: () {},
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(6.r),
                   child: Container(

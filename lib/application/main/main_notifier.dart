@@ -106,4 +106,10 @@ class MainNotifier extends StateNotifier<MainState> {
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
+
+  void determineContainerHeight(GlobalKey key){
+    RenderBox renderBox = key.currentContext?.findRenderObject() as RenderBox;
+    final containerHeight = renderBox.size.height;
+    state = state.copyWith(commentsContainerHeight: containerHeight);
+  }
 }

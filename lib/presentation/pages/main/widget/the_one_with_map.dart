@@ -46,14 +46,16 @@ class TheOneWithMap extends StatelessWidget {
               Wrap(
                 runSpacing: 10.w,
                 spacing: 10.w,
-                children: _list
-                    .map(
-                      (e) => _tasks(e.name, e.count, e.icon),
-                    )
-                    .toList(),
+                children: List.generate(state.gymsWithActivities.keys.length,
+                    (index) {
+                  return _tasks(
+                    state.gymsWithActivities.keys.toList()[index],
+                    "2",
+                  );
+                }),
               ),
               10.verticalSpace,
-              UiYaMap(),
+              const UiYaMap(),
             ],
           ),
         ),
@@ -61,7 +63,10 @@ class TheOneWithMap extends StatelessWidget {
     );
   }
 
-  Widget _tasks(String title, String count, IconData icon) {
+  Widget _tasks(
+    String title,
+    String count,
+  ) {
     return Container(
       width: 120.w,
       //color: Colors.red,
@@ -75,7 +80,11 @@ class TheOneWithMap extends StatelessWidget {
               color: AppColors.backgroundColor,
             ),
             child: Icon(
-              icon,
+              title == "POOL"
+                  ? Icons.waves
+                  : title == "GYM"
+                      ? Icons.sports_handball_sharp
+                      : Icons.hotel_sharp,
               color: Colors.blue,
               size: 16.sp,
             ),

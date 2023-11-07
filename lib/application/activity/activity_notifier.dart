@@ -173,7 +173,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
           }).toList();
         }
 
-        state = state.copyWith(availableDates: formattedDates());
+        state = state.copyWith(availableFormattedDates: formattedDates());
       },
       failure: (error, statusCode) {
         //print("(notifier failure)");
@@ -182,10 +182,14 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   }
 
   getSchedulesList(String data) {
-    final Map<String, dynamic> mapData = state.scheddules;
-    if (mapData.containsKey(data)) {
-      //print("Найден ключ: $data");
-      state = state.copyWith(listOfSchedules: mapData[data]);
+    if (state.listOfFormattedDaysFrom1To30currentMonth.contains(data)) {
+      final Map<String, dynamic> mapData = state.scheddules;
+      if (mapData.containsKey(data)) {
+        //print("Найден ключ: $data");
+        state = state.copyWith(listOfSchedules: mapData[data]);
+      }
+    }else{
+      print("data is not in listOfFormattedDaysFrom1To30currentMonth list");
     }
   }
 
@@ -246,7 +250,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     state = state.copyWith(selectedOriginalDate: "");
   }
 
-  List<String> getListOfDates() {
+  List<String> getListOfDatesFrom1To30currentMonth() {
     String month = DateFormat("MMM").format(DateTime.now());
     switch (month) {
       case 'Jan':
@@ -318,12 +322,12 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       _dates.add(formattedDate);
       currentDate = currentDate.add(const Duration(days: 1));
     }
-    state = state.copyWith(listOfDates: _dates);
+    state = state.copyWith(listOfFormattedDaysFrom1To30currentMonth: _dates);
     return _dates;
   }
 
   void selectADay(String day) {
-    state = state.copyWith(selectedDay: day);
+    state = state.copyWith(selectedFormattedDay: day);
   }
 
   String getEndingTime(String startingTime, String duration) {

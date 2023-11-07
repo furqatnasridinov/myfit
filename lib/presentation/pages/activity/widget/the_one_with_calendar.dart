@@ -19,9 +19,7 @@ class TheOneWithCalendar extends StatefulWidget {
 class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
   @override
   Widget build(BuildContext context) {
-    return widget.state.availableDates.isEmpty
-        ? const SizedBox()
-        : Padding(
+    return  Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,13 +36,14 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                   width: double.maxFinite,
                   child: ListView.builder(
                     itemExtent: 67,
-                    itemCount: widget.state.listOfDates.length,
+                    itemCount:
+                        widget.state.listOfFormattedDaysFrom1To30currentMonth.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
                       final String currentDate =
-                          widget.state.listOfDates[index];
+                          widget.state.listOfFormattedDaysFrom1To30currentMonth[index];
                       bool isAvailable =
-                          widget.state.availableDates.contains(currentDate);
+                          widget.state.availableFormattedDates.contains(currentDate);
                       final parts = currentDate.split(" ");
                       return GestureDetector(
                         onTap: () async {
@@ -62,9 +61,11 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                                       const Duration(milliseconds: 100),
                                     );
                                   },
-                                ).whenComplete(() => widget.event
-                                      .getSchedulesList(
-                                          widget.state.selectedOriginalDate))
+                                ).whenComplete(
+                                  () => widget.event.getSchedulesList(
+                                    widget.state.selectedOriginalDate,
+                                  ),
+                                )
                               : null;
                         },
                         child: Column(
@@ -72,9 +73,12 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                           children: [
                             Container(
                               padding: EdgeInsets.only(
-                                  left: 11.w, right: 11.w, bottom: 10.h),
+                                left: 8.w,
+                                right: 8.w,
+                                bottom: 8.h,
+                              ),
                               decoration: BoxDecoration(
-                                color: widget.state.selectedDay == currentDate
+                                color: widget.state.selectedFormattedDay == currentDate
                                     ? AppColors.blueColor
                                     : Colors.white,
                                 borderRadius: BorderRadius.circular(8.r),
@@ -84,10 +88,10 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                                       : Colors.transparent,
                                   width: 1.w,
                                 ),
-                                boxShadow: widget.state.selectedDay ==
+                                boxShadow: widget.state.selectedFormattedDay ==
                                         currentDate
                                     ? [
-                                        BoxShadow(
+                                        const BoxShadow(
                                           //color: Colors.red,
                                           color: Color.fromRGBO(0, 0, 0, 0.15),
                                           offset: Offset(0, 6),
@@ -108,7 +112,7 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                                         text: parts[0],
                                         fontSize: 15.sp,
                                         fontWeight: FontWeight.w500,
-                                        color: widget.state.selectedDay ==
+                                        color: widget.state.selectedFormattedDay ==
                                                 currentDate
                                             ? Colors.white
                                             : isAvailable
@@ -124,7 +128,7 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                                         fontSize: 14.sp,
                                         fontWeight: FontWeight.w500,
                                         text: parts[1],
-                                        color: widget.state.selectedDay ==
+                                        color: widget.state.selectedFormattedDay ==
                                                 currentDate
                                             ? Colors.white
                                             : isAvailable
@@ -141,7 +145,7 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                                         fontSize: 14.sp,
                                         fontWeight: FontWeight.w500,
                                         text: parts[2],
-                                        color: widget.state.selectedDay ==
+                                        color: widget.state.selectedFormattedDay ==
                                                 currentDate
                                             ? Colors.white
                                             : isAvailable
@@ -158,34 +162,6 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                                 ],
                               ),
                             ),
-                            /*    6.verticalSpace,
-                            Container(
-                              margin: EdgeInsets.only(left: 9.w),
-                              height: 3.h,
-                              width: 32.w,
-                              decoration: BoxDecoration(
-                                // color: Colors.green,
-                                boxShadow: widget.state.selectedDay ==
-                                        currentDate
-                                    ? const [
-                                        BoxShadow(
-                                          blurStyle: BlurStyle.normal,
-                                          offset: Offset(0, -8), // Top shadow
-                                          blurRadius: 2.5,
-                                          spreadRadius: 1,
-                                          //color: Color.fromRGBO(0, 0, 0, 0.15),
-                                          color: Colors.red,
-                                        ),
-                                        /* BoxShadow(
-                                          offset: Offset(0, 5), // Bottom shadow
-                                          blurRadius: 5,
-                                          spreadRadius: 0,
-                                          color: Color.fromRGBO(0, 0, 0, 0.15),
-                                        ), */
-                                      ]
-                                    : [],
-                              ),
-                            ), */
                           ],
                         ),
                       );
@@ -205,73 +181,83 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                       width: 1.w,
                     ),
                   ),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: widget.state.listOfSchedules.length,
-                    itemBuilder: (context, index) {
-                      final currentSchedule = widget
-                          .state.listOfSchedules[index] as Map<String, dynamic>;
-                      String times = currentSchedule["date"];
-                      List<String> parts = times.split("@");
-                      final currentTime = parts[1];
-                      final String endingTime = widget.event.getEndingTime(
-                          currentTime, currentSchedule["duration"]);
-                      /* final String endingTime = widget.event.getEndingTime(
+                  child: widget.state.listOfSchedules.isEmpty
+                      ? CustomText(
+                          text: "Список занятий пуст!",
+                          textAlign: TextAlign.center,
+                        )
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: widget.state.listOfSchedules.length,
+                          itemBuilder: (context, index) {
+                            final currentSchedule = widget.state
+                                .listOfSchedules[index] as Map<String, dynamic>;
+                            String times = currentSchedule["date"];
+                            List<String> parts = times.split("@");
+                            final currentTime = parts[1];
+                            final String endingTime = widget.event
+                                .getEndingTime(
+                                    currentTime, currentSchedule["duration"]);
+                            /* final String endingTime = widget.event.getEndingTime(
                           "13:15", "01:30"); */
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: IntrinsicHeight(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              // starting time
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 16.w,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: AppColors.blueColor,
-                                  borderRadius: BorderRadius.circular(8.r),
-                                ),
-                                child: Center(
-                                  child: CustomText(
-                                    color: Colors.white,
-                                    text: currentTime,
-                                    //text: "12:45",
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: IntrinsicHeight(
+                                child: Row(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    // starting time
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 16.w,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.blueColor,
+                                        borderRadius:
+                                            BorderRadius.circular(8.r),
+                                      ),
+                                      child: Center(
+                                        child: CustomText(
+                                          color: Colors.white,
+                                          text: currentTime,
+                                          //text: "12:45",
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                    16.horizontalSpace,
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          width: 226.w,
+                                          child: CustomText(
+                                            text:
+                                                currentSchedule["description"],
+                                            fontSize: 13.sp,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        1.verticalSpace,
+                                        CustomText(
+                                          text: "до $endingTime",
+                                          color: AppColors.greyText,
+                                          fontSize: 10.sp,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ],
+                                    )
+                                  ],
                                 ),
                               ),
-                              16.horizontalSpace,
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: 226.w,
-                                    child: CustomText(
-                                      text: currentSchedule["description"],
-                                      fontSize: 13.sp,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  1.verticalSpace,
-                                  CustomText(
-                                    text: "до $endingTime",
-                                    color: AppColors.greyText,
-                                    fontSize: 10.sp,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
                 ),
                 15.verticalSpace,
               ],
