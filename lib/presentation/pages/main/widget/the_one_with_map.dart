@@ -49,7 +49,9 @@ class TheOneWithMap extends StatelessWidget {
                 children: List.generate(state.gymsWithActivities.keys.length,
                     (index) {
                   return _tasks(
-                      state.gymsWithActivities.keys.toList()[index], "2");
+                    state.gymsWithActivities.keys.toList()[index],
+                    "2",
+                  );
                 }),
               ),
               10.verticalSpace,
@@ -78,7 +80,11 @@ class TheOneWithMap extends StatelessWidget {
               color: AppColors.backgroundColor,
             ),
             child: Icon(
-              Icons.snowboarding,
+              title == "POOL"
+                  ? Icons.waves
+                  : title == "GYM"
+                      ? Icons.sports_handball_sharp
+                      : Icons.hotel_sharp,
               color: Colors.blue,
               size: 16.sp,
             ),

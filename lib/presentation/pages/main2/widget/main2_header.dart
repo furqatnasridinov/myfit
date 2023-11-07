@@ -5,6 +5,9 @@ import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:activity/presentation/components/ui_button_filled.dart';
+import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -46,14 +49,22 @@ class _MainHeaderState extends State<Main2Header> {
             color: Colors.transparent,
             child: TapRegion(
               onTapOutside: (event) {
-                textfieldFocusnode.unfocus();
-                setState(() {});
+                final position = event.position;
+                final textFieldRenderBox =
+                    context.findRenderObject() as RenderBox;
+                final textFieldRect =
+                    textFieldRenderBox.localToGlobal(Offset.zero) &
+                        textFieldRenderBox.size;
+                if (!textFieldRect.contains(position)) {
+                  textfieldFocusnode.unfocus();
+                  setState(() {});
+                }
               },
               child: Container(
                 height: 294.h,
                 margin: EdgeInsets.only(left: 16.w, right: 16.w),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.0),
+                  borderRadius: BorderRadius.circular(16.r),
                   color: Colors.white,
                   border: Border.all(
                     width: 1.0,
@@ -177,6 +188,7 @@ class _MainHeaderState extends State<Main2Header> {
             width: 1.w,
           ),
         ),
+        padding: EdgeInsets.only(right: 7.w, top: 3.h),
         child: CompositedTransformTarget(
           link: layerlink,
           child: TextField(
@@ -185,10 +197,35 @@ class _MainHeaderState extends State<Main2Header> {
               textfieldFocusnode.requestFocus();
               setState(() {});
             },
+            onEditingComplete: () {
+              textfieldFocusnode.unfocus();
+              setState(() {});
+            },
             focusNode: textfieldFocusnode,
             decoration: InputDecoration(
+              isDense: true,
+              suffixIcon: textfieldFocusnode.hasFocus
+                  ? GestureDetector(
+                      onTap: () {
+                        if (controller.text.isEmpty) {
+                          textfieldFocusnode.unfocus();
+                          setState(() {});
+                        } else {
+                          controller.clear();
+                        }
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 0.w),
+                        child: Icon(
+                          Icons.clear,
+                          color: Colors.black,
+                          size: 18.r,
+                        ),
+                      ),
+                    )
+                  : null,
               prefixIcon: Container(
-                margin: EdgeInsets.all(2.r),
+                margin: EdgeInsets.all(3.r),
                 decoration: const BoxDecoration(
                   color: AppColors.backgroundColor,
                   shape: BoxShape.circle,
@@ -202,10 +239,10 @@ class _MainHeaderState extends State<Main2Header> {
               ),
               hintText: "Найти занятие",
               border: InputBorder.none,
-              contentPadding: EdgeInsets.zero.copyWith(
+              /* contentPadding: EdgeInsets.zero.copyWith(
                 left: 12.w,
                 top: 8.h,
-              ),
+              ), */
             ),
           ),
         ),
@@ -238,7 +275,12 @@ class _MainHeaderState extends State<Main2Header> {
                         top: 8.h,
                         bottom: 8.h,
                       ),
-                      child: GestureDetector(
+                      child: InkWell(
+                        onTap: () {
+                          context.router.push(
+                            const ScheduleRoute(),
+                          );
+                        },
                         child: SvgPicture.asset(
                           'assets/svg/calendar.svg',
                           width: 24.w,
@@ -247,7 +289,7 @@ class _MainHeaderState extends State<Main2Header> {
                         //onTap: () => {context.go('/schedule')},
                       ),
                     ),
-                    SizedBox(width: 12.w),
+                    12.horizontalSpace,
                     SizedOverflowBox(
                       size: Size(40.w, 40.h),
                       child: CircleAvatar(
@@ -256,8 +298,12 @@ class _MainHeaderState extends State<Main2Header> {
                         child: Padding(
                           padding: EdgeInsets.all(2.r),
                           child: ClipOval(
-                            child: Image.network(
-                              AppConstants.owlNetworkImage,
+                            child: CachedNetworkImage(
+                              imageUrl: AppConstants.owlNetworkImage,
+                              fit: BoxFit.cover,
+                              errorWidget: (context, url, error) {
+                                return const SizedBox();
+                              },
                             ),
                           ),
                         ),

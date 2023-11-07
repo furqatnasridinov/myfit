@@ -80,9 +80,9 @@ class NotesCardMaker extends StatelessWidget {
                     ),
                   ],
                 ),
-    
+
                 10.verticalSpace,
-    
+
                 // botoom section
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,28 +111,42 @@ class NotesCardMaker extends StatelessWidget {
             ),
           ),
           5.verticalSpace,
-    
+
           // texfields
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(
+                //color: Colors.red,
                 width: 113.w,
                 child: CustomTextField(
                   hintText: "Заметка",
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: 10.w,
+                    horizontal: 3.h,
+                  ),
                 ),
               ),
               SizedBox(
                 width: 225.w,
                 child: CustomTextField(
                   hintText: "Описание",
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: 10.w,
+                    horizontal: 3.h,
+                  ),
                 ),
               ),
             ],
           ),
-    
+
           10.verticalSpace,
-    
+
           // button
           CustomButton(
             onPressed: () {},

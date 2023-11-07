@@ -8,19 +8,27 @@ import 'package:google_fonts/google_fonts.dart';
 class CustomTextField extends StatelessWidget {
   String? hintText;
   TextEditingController? controller;
+  int? maxLines;
+  TextInputType? keyboardType;
+  EdgeInsetsGeometry? contentPadding;
   CustomTextField({
     Key? key,
     this.hintText,
     this.controller,
+    this.contentPadding,
+    this.maxLines,
+    this.keyboardType,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      maxLines:maxLines,
+      keyboardType: keyboardType,
       controller: controller,
       cursorColor: AppColors.greyText,
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.zero.copyWith(left: 7.w),
+        contentPadding: contentPadding,
         hintText: hintText,
         hintStyle: GoogleFonts.inter(fontSize: 13.sp,fontWeight: FontWeight.w400),
         fillColor: Colors.white,

@@ -18,6 +18,7 @@ class MainState with _$MainState {
     @Default(0) int commentActiveStepper,
     @Default(true) bool commentsAutoPlayMode,
     @Default({})Map<String,dynamic> gymsWithActivities,
+    @Default(0) double? commentsContainerHeight,  
   }) = _MainState;
   const MainState._();
 }

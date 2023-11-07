@@ -19,9 +19,7 @@ class TheOneWithCalendar extends StatefulWidget {
 class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
   @override
   Widget build(BuildContext context) {
-    return widget.state.availableFormattedDates.isEmpty
-        ? const SizedBox()
-        : Padding(
+    return  Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

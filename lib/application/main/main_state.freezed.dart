@@ -27,6 +27,7 @@ mixin _$MainState {
   bool get commentsAutoPlayMode => throw _privateConstructorUsedError;
   Map<String, dynamic> get gymsWithActivities =>
       throw _privateConstructorUsedError;
+  double? get commentsContainerHeight => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $MainStateCopyWith<MainState> get copyWith =>
@@ -47,7 +48,8 @@ abstract class $MainStateCopyWith<$Res> {
       bool advantagesAutoPlayMode,
       int commentActiveStepper,
       bool commentsAutoPlayMode,
-      Map<String, dynamic> gymsWithActivities});
+      Map<String, dynamic> gymsWithActivities,
+      double? commentsContainerHeight});
 }
 
 /// @nodoc
@@ -72,6 +74,7 @@ class _$MainStateCopyWithImpl<$Res, $Val extends MainState>
     Object? commentActiveStepper = null,
     Object? commentsAutoPlayMode = null,
     Object? gymsWithActivities = null,
+    Object? commentsContainerHeight = freezed,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -110,6 +113,10 @@ class _$MainStateCopyWithImpl<$Res, $Val extends MainState>
           ? _value.gymsWithActivities
           : gymsWithActivities // ignore: cast_nullable_to_non_nullable
               as Map<String, dynamic>,
+      commentsContainerHeight: freezed == commentsContainerHeight
+          ? _value.commentsContainerHeight
+          : commentsContainerHeight // ignore: cast_nullable_to_non_nullable
+              as double?,
     ) as $Val);
   }
 }
@@ -131,7 +138,8 @@ abstract class _$$MainStateImplCopyWith<$Res>
       bool advantagesAutoPlayMode,
       int commentActiveStepper,
       bool commentsAutoPlayMode,
-      Map<String, dynamic> gymsWithActivities});
+      Map<String, dynamic> gymsWithActivities,
+      double? commentsContainerHeight});
 }
 
 /// @nodoc
@@ -154,6 +162,7 @@ class __$$MainStateImplCopyWithImpl<$Res>
     Object? commentActiveStepper = null,
     Object? commentsAutoPlayMode = null,
     Object? gymsWithActivities = null,
+    Object? commentsContainerHeight = freezed,
   }) {
     return _then(_$MainStateImpl(
       isloading: null == isloading
@@ -192,6 +201,10 @@ class __$$MainStateImplCopyWithImpl<$Res>
           ? _value._gymsWithActivities
           : gymsWithActivities // ignore: cast_nullable_to_non_nullable
               as Map<String, dynamic>,
+      commentsContainerHeight: freezed == commentsContainerHeight
+          ? _value.commentsContainerHeight
+          : commentsContainerHeight // ignore: cast_nullable_to_non_nullable
+              as double?,
     ));
   }
 }
@@ -208,7 +221,8 @@ class _$MainStateImpl extends _MainState {
       this.advantagesAutoPlayMode = true,
       this.commentActiveStepper = 0,
       this.commentsAutoPlayMode = true,
-      final Map<String, dynamic> gymsWithActivities = const {}})
+      final Map<String, dynamic> gymsWithActivities = const {},
+      this.commentsContainerHeight = 0})
       : _gymsWithActivities = gymsWithActivities,
         super._();
 
@@ -247,8 +261,12 @@ class _$MainStateImpl extends _MainState {
   }
 
   @override
+  @JsonKey()
+  final double? commentsContainerHeight;
+
+  @override
   String toString() {
-    return 'MainState(isloading: $isloading, advantages: $advantages, subscribtions: $subscribtions, comments: $comments, activeStepState: $activeStepState, advantagesAutoPlayMode: $advantagesAutoPlayMode, commentActiveStepper: $commentActiveStepper, commentsAutoPlayMode: $commentsAutoPlayMode, gymsWithActivities: $gymsWithActivities)';
+    return 'MainState(isloading: $isloading, advantages: $advantages, subscribtions: $subscribtions, comments: $comments, activeStepState: $activeStepState, advantagesAutoPlayMode: $advantagesAutoPlayMode, commentActiveStepper: $commentActiveStepper, commentsAutoPlayMode: $commentsAutoPlayMode, gymsWithActivities: $gymsWithActivities, commentsContainerHeight: $commentsContainerHeight)';
   }
 
   @override
@@ -273,7 +291,10 @@ class _$MainStateImpl extends _MainState {
             (identical(other.commentsAutoPlayMode, commentsAutoPlayMode) ||
                 other.commentsAutoPlayMode == commentsAutoPlayMode) &&
             const DeepCollectionEquality()
-                .equals(other._gymsWithActivities, _gymsWithActivities));
+                .equals(other._gymsWithActivities, _gymsWithActivities) &&
+            (identical(
+                    other.commentsContainerHeight, commentsContainerHeight) ||
+                other.commentsContainerHeight == commentsContainerHeight));
   }
 
   @override
@@ -287,7 +308,8 @@ class _$MainStateImpl extends _MainState {
       advantagesAutoPlayMode,
       commentActiveStepper,
       commentsAutoPlayMode,
-      const DeepCollectionEquality().hash(_gymsWithActivities));
+      const DeepCollectionEquality().hash(_gymsWithActivities),
+      commentsContainerHeight);
 
   @JsonKey(ignore: true)
   @override
@@ -306,7 +328,8 @@ abstract class _MainState extends MainState {
       final bool advantagesAutoPlayMode,
       final int commentActiveStepper,
       final bool commentsAutoPlayMode,
-      final Map<String, dynamic> gymsWithActivities}) = _$MainStateImpl;
+      final Map<String, dynamic> gymsWithActivities,
+      final double? commentsContainerHeight}) = _$MainStateImpl;
   const _MainState._() : super._();
 
   @override
@@ -327,6 +350,8 @@ abstract class _MainState extends MainState {
   bool get commentsAutoPlayMode;
   @override
   Map<String, dynamic> get gymsWithActivities;
+  @override
+  double? get commentsContainerHeight;
   @override
   @JsonKey(ignore: true)
   _$$MainStateImplCopyWith<_$MainStateImpl> get copyWith =>

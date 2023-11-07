@@ -58,7 +58,9 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
         );
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
-        ref.read(activityProvider.notifier).getListOfDatesFrom1To30currentMonth();
+        ref
+            .read(activityProvider.notifier)
+            .getListOfDatesFrom1To30currentMonth();
         ref.read(activityProvider.notifier).getGymInfo(
               gymId: widget.gymId,
             );
@@ -82,13 +84,13 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
 /*     print("state.defaultDate ${state.defaultDate}");
     print("availableDates >>> ${state.availableDates}");
     print("state.selectedDay ${state.selectedDay}");
-    print("state.selectedOriginalDate ${state.selectedOriginalDate}"); */
+    print("state.selectedOriginalDate ${state.selectedOriginalDate}"); 
     print("state.originalDates >> ${state.originalDates}");
     print("state.defaultDate ${state.defaultDate}");
     print("availableFormattedDates >>> ${state.availableFormattedDates}");
     print("state.selectedFormattedDay ${state.selectedFormattedDay}");
     print("state.selectedOriginalDate ${state.selectedOriginalDate}");
-    print("state.listOfFormattedDaysFrom1To30currentMonth ${state.listOfFormattedDaysFrom1To30currentMonth}");
+    print("state.listOfFormattedDaysFrom1To30currentMonth ${state.listOfFormattedDaysFrom1To30currentMonth}");*/
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
