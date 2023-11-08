@@ -1,145 +1,160 @@
 import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/application/schedule/schedule_state.dart';
-import 'package:activity/domain/di/dependency_manager.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/ui_card.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ComingActivity extends StatelessWidget {
-  ComingActivity({super.key});
+  final ScheduleState state;
+  final ScheduleNotifier event;
+  const ComingActivity({super.key, required this.state, required this.event});
 
-  ScheduleNotifier scheduleNotifier = ScheduleNotifier(scheduleRepo);
-  ScheduleState scheduleState = const ScheduleState();
   @override
   Widget build(BuildContext context) {
+    List<String> parts = state.nearestLesson!.bodyData!.date!.split("@");
+    final String formattedDay = event.formatDay(parts[0]);
     return UiCard(
-      cardValue: Column(
-        children: [
-          Row(
-            children: [
-              CustomText(
-                text: 'Ваше ближайшее событие:',
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w600,
-              ),
-              const Spacer(),
-              CustomText(
-                text: 'через 1ч 16м',
-                fontSize: 10.sp,
-                fontWeight: FontWeight.w500,
-                color: AppColors.greyText,
-              )
-            ],
-          ),
-          const SizedBox(height: 10),
-          Column(children: [
-            Container(
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                  color: const Color.fromRGBO(245, 249, 255, 1),
-                  borderRadius: BorderRadius.circular(8.0)),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.flash_on_outlined,
-                    size: 18.0,
-                    color: Color.fromRGBO(119, 170, 249, 1),
-                  ),
-                  7.horizontalSpace,
-                  CustomText(
-                    text: 'Массаж расслабляющий',
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ],
-              ),
-            ),
-            10.verticalSpace,
-            Container(
-              padding: EdgeInsets.all(10.r),
-              decoration: BoxDecoration(
-                color: const Color.fromRGBO(245, 249, 255, 1),
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.watch,
-                    size: 18.r,
-                    color: const Color.fromRGBO(119, 170, 249, 1),
-                  ),
-                  7.horizontalSpace,
-                  CustomText(
-                    text: '13:30 Сегодня',
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ],
-              ),
-            ),
-            10.verticalSpace,
-            Container(
-              padding: EdgeInsets.all(10.r),
-              decoration: BoxDecoration(
-                color: const Color.fromRGBO(245, 249, 255, 1),
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.location_on_outlined,
-                    size: 18.r,
-                    color: const Color.fromRGBO(119, 170, 249, 1),
-                  ),
-                  7.horizontalSpace,
-                  Flexible(
-                    child: CustomText(
-                      text:
-                          'Салон красоты “Viva-Vite”.ул. Лёни Ленина, д. 12, БЦ “Big Мук”',
+      cardValue: state.nearestLesson == null
+          ? const SizedBox()
+          : Column(
+              children: [
+                Row(
+                  children: [
+                    CustomText(
+                      text: 'Ваше ближайшее событие:',
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
                     ),
-                  )
-                ],
-              ),
-            ),
-          ]),
-          10.verticalSpace,
-          Row(
-            children: [
-              InkWell(
-                onTap: () {},
-                child: CustomText(
-                  text: 'Посмотреть детали',
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.blueColor,
+                    const Spacer(),
+                    /* CustomText(
+                      //text: 'через 1ч 16м',
+                      text: state.whenActivityStarts?.inDays == 0
+                          ? "через ${state.whenActivityStarts?.inHours} часов"
+                          : state.whenActivityStarts?.inHours == 0
+                              ? "через ${state.whenActivityStarts?.inMinutes} минут"
+                              : "через ${state.whenActivityStarts?.inDays} дня",
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.greyText,
+                    ) */
+                  ],
                 ),
-              ),
-              const Spacer(),
-              InkWell(
-                onTap: () {},
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(6.r),
-                  child: Container(
-                    color: const Color.fromRGBO(245, 249, 255, 1),
-                    padding: EdgeInsets.all(3.r),
-                    child: Icon(
-                      Icons.edit_note,
-                      color: const Color.fromRGBO(119, 170, 249, 1),
-                      size: 18.r,
+                const SizedBox(height: 10),
+                Column(children: [
+                  Container(
+                    padding: const EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                        color: const Color.fromRGBO(245, 249, 255, 1),
+                        borderRadius: BorderRadius.circular(8.0)),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.flash_on_outlined,
+                          size: 18.0,
+                          color: Color.fromRGBO(119, 170, 249, 1),
+                        ),
+                        7.horizontalSpace,
+                        SizedBox(
+                          width: 263.w,
+                          //color: Colors.red,
+                          child: CustomText(
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            text: state.nearestLesson?.bodyData?.description ??
+                                "Empty",
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
+                  10.verticalSpace,
+                  Container(
+                    padding: EdgeInsets.all(10.r),
+                    decoration: BoxDecoration(
+                      color: const Color.fromRGBO(245, 249, 255, 1),
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.watch,
+                          size: 18.r,
+                          color: const Color.fromRGBO(119, 170, 249, 1),
+                        ),
+                        7.horizontalSpace,
+                        CustomText(
+                          text: "$formattedDay  ${parts[1]} часа",
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ],
+                    ),
+                  ),
+                  10.verticalSpace,
+                  Container(
+                    padding: EdgeInsets.all(10.r),
+                    decoration: BoxDecoration(
+                      color: const Color.fromRGBO(245, 249, 255, 1),
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.location_on_outlined,
+                          size: 18.r,
+                          color: const Color.fromRGBO(119, 170, 249, 1),
+                        ),
+                        7.horizontalSpace,
+                        Flexible(
+                          child: CustomText(
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 3,
+                            text: state.nearestLesson?.bodyData?.gym?.address ??
+                                "Empty",
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ]),
+                10.verticalSpace,
+                Row(
+                  children: [
+                    InkWell(
+                      onTap: () {},
+                      child: CustomText(
+                        text: 'Посмотреть детали',
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.blueColor,
+                      ),
+                    ),
+                    const Spacer(),
+                    InkWell(
+                      onTap: () {},
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(6.r),
+                        child: Container(
+                          color: const Color.fromRGBO(245, 249, 255, 1),
+                          padding: EdgeInsets.all(3.r),
+                          child: Icon(
+                            Icons.edit_note,
+                            color: const Color.fromRGBO(119, 170, 249, 1),
+                            size: 18.r,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
     );
   }
 }

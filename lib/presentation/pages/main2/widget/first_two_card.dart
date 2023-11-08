@@ -1,15 +1,14 @@
+import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/ui_card.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:im_stepper/stepper.dart';
 
 class FirstTwoCards extends StatelessWidget {
-  FirstTwoCards({super.key});
-  int touchedIndex = -1;
+  final ScheduleState state;
+  const FirstTwoCards({super.key, required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -17,15 +16,9 @@ class FirstTwoCards extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         // first container
-        Container(
+        CustomCard(
           width: 169.w,
           height: 143.h,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16.r),
-            border: Border.all(color: AppColors.greyBorder, width: 1.w),
-          ),
-          padding: EdgeInsets.all(16.r),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -62,6 +55,8 @@ class FirstTwoCards extends StatelessWidget {
                               sections: showingSections(),
                             ),
                           ),
+
+                          // heart icon
                           Align(
                             alignment: Alignment.center,
                             child: Icon(
@@ -73,7 +68,25 @@ class FirstTwoCards extends StatelessWidget {
                         ],
                       ),
                     ),
+
                     // texts
+
+                    /* Container(
+                      color: Colors.red,
+                      width: 60.w,
+                      child: state.statsForMonth!.bodyData!.isEmpty
+                          ? CustomText(text: "")
+                          : ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: state.statsForMonth?.bodyData?.length,
+                              itemBuilder: (context, index) {
+                                final currentAct =
+                                    state.statsForMonth?.bodyData?[index];
+                                return _indicator(AppColors.goldText,
+                                    currentAct?.lessonType ?? "Empty");
+                              },
+                            ),
+                    ), */
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

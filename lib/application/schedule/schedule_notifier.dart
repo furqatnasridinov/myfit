@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/domain/interface/schedule.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
@@ -167,6 +169,55 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     return formattedTime;
   }
 
+  String determineWhenActivityStarts(String startTime) {
+    // startTime 2023-11-11@13:15
+    List<String> parts = startTime.split("@");
+    String formatted = "${parts[0]} ${parts[1]}:00";
+    DateTime startingTimeInDTFormat = DateTime.parse(formatted);
+    DateTime now = DateTime.now();
+    Duration resultOnDuration = startingTimeInDTFormat.difference(now);
+    state = state.copyWith(whenActivityStarts: resultOnDuration);
+    return resultOnDuration.toString();
+  }
+
+  Future<void> getNearestLesson(BuildContext context) async {
+    state = state.copyWith(isloading: true);
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response = await _scheduleRepositoryInterface.getNearestLesson();
+      response.when(
+        success: (data) {
+          print("getNearestLesson notifier success, data >> $data");
+          state = state.copyWith(nearestLesson: data);
+        },
+        failure: (error, statusCode) {
+          print("getNearestLesson notifier failure");
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+    state = state.copyWith(isloading: false);
+  }
+
+  Future<void> getUserStatsMonth(BuildContext context) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response = await _scheduleRepositoryInterface.getUserStatsMonth();
+      response.when(
+        success: (data) {
+          print("notifier getUserStatsMonth success, data >>  ${data.bodyData}");
+          state = state.copyWith(statsForMonth: data);
+        },
+        failure: (error, statusCode) {
+          print("notifier getUserStatsMonth failure");
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
   void showTilWhen() {
     state = state.copyWith(showTillWhen: true);
   }
@@ -198,5 +249,4 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
   void disnableFlashButton() {
     state = state.copyWith(isFlashButtonActivated: false);
   }
-  
 }
