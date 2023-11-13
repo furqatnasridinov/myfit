@@ -27,7 +27,7 @@ mixin _$ScheduleState {
   bool get isLocationButtonActivated => throw _privateConstructorUsedError;
   bool get isFlashButtonActivated => throw _privateConstructorUsedError;
   GetNearestLesson? get nearestLesson => throw _privateConstructorUsedError;
-  Duration? get whenActivityStarts => throw _privateConstructorUsedError;
+  String get whenActivityStarts => throw _privateConstructorUsedError;
   GetUserStatsMonthResponse? get statsForMonth =>
       throw _privateConstructorUsedError;
 
@@ -52,7 +52,7 @@ abstract class $ScheduleStateCopyWith<$Res> {
       bool isLocationButtonActivated,
       bool isFlashButtonActivated,
       GetNearestLesson? nearestLesson,
-      Duration? whenActivityStarts,
+      String whenActivityStarts,
       GetUserStatsMonthResponse? statsForMonth});
 }
 
@@ -78,7 +78,7 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
     Object? isLocationButtonActivated = null,
     Object? isFlashButtonActivated = null,
     Object? nearestLesson = freezed,
-    Object? whenActivityStarts = freezed,
+    Object? whenActivityStarts = null,
     Object? statsForMonth = freezed,
   }) {
     return _then(_value.copyWith(
@@ -118,10 +118,10 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
           ? _value.nearestLesson
           : nearestLesson // ignore: cast_nullable_to_non_nullable
               as GetNearestLesson?,
-      whenActivityStarts: freezed == whenActivityStarts
+      whenActivityStarts: null == whenActivityStarts
           ? _value.whenActivityStarts
           : whenActivityStarts // ignore: cast_nullable_to_non_nullable
-              as Duration?,
+              as String,
       statsForMonth: freezed == statsForMonth
           ? _value.statsForMonth
           : statsForMonth // ignore: cast_nullable_to_non_nullable
@@ -148,7 +148,7 @@ abstract class _$$ScheduleStateImplCopyWith<$Res>
       bool isLocationButtonActivated,
       bool isFlashButtonActivated,
       GetNearestLesson? nearestLesson,
-      Duration? whenActivityStarts,
+      String whenActivityStarts,
       GetUserStatsMonthResponse? statsForMonth});
 }
 
@@ -172,7 +172,7 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
     Object? isLocationButtonActivated = null,
     Object? isFlashButtonActivated = null,
     Object? nearestLesson = freezed,
-    Object? whenActivityStarts = freezed,
+    Object? whenActivityStarts = null,
     Object? statsForMonth = freezed,
   }) {
     return _then(_$ScheduleStateImpl(
@@ -212,10 +212,10 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
           ? _value.nearestLesson
           : nearestLesson // ignore: cast_nullable_to_non_nullable
               as GetNearestLesson?,
-      whenActivityStarts: freezed == whenActivityStarts
+      whenActivityStarts: null == whenActivityStarts
           ? _value.whenActivityStarts
           : whenActivityStarts // ignore: cast_nullable_to_non_nullable
-              as Duration?,
+              as String,
       statsForMonth: freezed == statsForMonth
           ? _value.statsForMonth
           : statsForMonth // ignore: cast_nullable_to_non_nullable
@@ -237,7 +237,7 @@ class _$ScheduleStateImpl extends _ScheduleState {
       this.isLocationButtonActivated = false,
       this.isFlashButtonActivated = false,
       this.nearestLesson = null,
-      this.whenActivityStarts = null,
+      this.whenActivityStarts = "",
       this.statsForMonth = null})
       : _schedulesInMapForm = schedulesInMapForm,
         _listOfUserSchedulesvalues = listOfUserSchedulesvalues,
@@ -286,7 +286,7 @@ class _$ScheduleStateImpl extends _ScheduleState {
   final GetNearestLesson? nearestLesson;
   @override
   @JsonKey()
-  final Duration? whenActivityStarts;
+  final String whenActivityStarts;
   @override
   @JsonKey()
   final GetUserStatsMonthResponse? statsForMonth;
@@ -359,7 +359,7 @@ abstract class _ScheduleState extends ScheduleState {
       final bool isLocationButtonActivated,
       final bool isFlashButtonActivated,
       final GetNearestLesson? nearestLesson,
-      final Duration? whenActivityStarts,
+      final String whenActivityStarts,
       final GetUserStatsMonthResponse? statsForMonth}) = _$ScheduleStateImpl;
   const _ScheduleState._() : super._();
 
@@ -382,7 +382,7 @@ abstract class _ScheduleState extends ScheduleState {
   @override
   GetNearestLesson? get nearestLesson;
   @override
-  Duration? get whenActivityStarts;
+  String get whenActivityStarts;
   @override
   GetUserStatsMonthResponse? get statsForMonth;
   @override

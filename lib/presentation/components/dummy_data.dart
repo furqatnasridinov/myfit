@@ -1,6 +1,7 @@
 import 'package:activity/infrastructure/models/data/addresses.dart';
 import 'package:activity/infrastructure/models/data/calendar.dart';
 import 'package:activity/infrastructure/models/data/gym_activity.dart';
+import 'package:activity/infrastructure/models/data/map_dummy_activity.dart';
 import 'package:activity/infrastructure/models/data/schedule.dart';
 import 'package:flutter/material.dart';
 
@@ -69,20 +70,62 @@ class DummyData {
     GymActivity(name: "GYM", count: "1", icon: Icons.sports_handball_sharp),
   ];
   final List<String> days30 = [
-    "2023-10-01",
-    "2023-10-02",
-    "2023-10-03",
-    "2023-10-04",
-    "2023-10-05",
-    "2023-10-06",
-    "2023-10-07",
-    "2023-10-08",
-    "2023-10-09",
-    "2023-10-10",
-    "2023-10-11",
-    "2023-10-12",
-    "2023-10-13",
-    "2023-10-14",
-    "2023-10-15",
+    "2023-11-01",
+    "2023-11-02",
+    "2023-11-03",
+    "2023-11-04",
+    "2023-11-05",
+    "2023-11-06",
+    "2023-11-07",
+    "2023-11-08",
+    "2023-11-09",
+    "2023-11-10",
+    "2023-11-11",
+    "2023-11-12",
+    "2023-11-13",
+    "2023-11-14",
+    "2023-11-15",
+  ];
+  final List<MapDummyActivity> mapDummyActivities = [
+    MapDummyActivity(
+      distance: "230",
+      icon: "assets/svg/activity.svg",
+      title: "Бокс на пресненской",
+    ),
+    MapDummyActivity(
+      distance: "230",
+      icon: "assets/svg/activity.svg",
+      title: "Бокс на пресненской",
+    ),
+    MapDummyActivity(
+      distance: "230",
+      icon: "assets/svg/activity.svg",
+      title: "Бокс на пресненской",
+    ),
+    MapDummyActivity(
+      distance: "230",
+      icon: "assets/svg/activity.svg",
+      title: "Бокс на пресненской",
+    ),
+    MapDummyActivity(
+      distance: "230",
+      icon: "assets/svg/activity.svg",
+      title: "Бокс на пресненской",
+    ),
+    MapDummyActivity(
+      distance: "230",
+      icon: "assets/svg/activity.svg",
+      title: "Бокс на пресненской",
+    ),
+    MapDummyActivity(
+      distance: "230",
+      icon: "assets/svg/activity.svg",
+      title: "Бокс на пресненской",
+    ),
+    MapDummyActivity(
+      distance: "230",
+      icon: "assets/svg/activity.svg",
+      title: "Бокс на пресненской",
+    ),
   ];
 }

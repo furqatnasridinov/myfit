@@ -70,7 +70,9 @@ class FreeDays extends StatelessWidget {
             height: 18.h,
             width: 18.w,
           ),
-          'action': () => {}
+          'action': () => {
+            context.router.push(const MapRoute())
+          }
         },
         {
           'title': 'Выбрать из уже знакомых занятий',

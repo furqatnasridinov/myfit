@@ -169,15 +169,28 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     return formattedTime;
   }
 
-  String determineWhenActivityStarts(String startTime) {
+  void determineWhenActivityStarts(String startTime) {
     // startTime 2023-11-11@13:15
     List<String> parts = startTime.split("@");
     String formatted = "${parts[0]} ${parts[1]}:00";
     DateTime startingTimeInDTFormat = DateTime.parse(formatted);
     DateTime now = DateTime.now();
     Duration resultOnDuration = startingTimeInDTFormat.difference(now);
-    state = state.copyWith(whenActivityStarts: resultOnDuration);
-    return resultOnDuration.toString();
+    String formattedDifference = formatDuration(resultOnDuration);
+    state = state.copyWith(whenActivityStarts: formattedDifference);
+  }
+
+  String formatDuration(Duration duration) {
+    String days = duration.inDays > 0 ? "${duration.inDays} дня" : "";
+    String hours =
+        duration.inHours % 24 > 0 ? "${duration.inHours % 24} час" : "";
+    String minutes =
+        duration.inMinutes % 60 > 0 ? "${duration.inMinutes % 60} минут" : "";
+
+    List<String> parts = [days, hours, minutes];
+    parts.removeWhere((part) => part.isEmpty);
+
+    return parts.join(' ');
   }
 
   Future<void> getNearestLesson(BuildContext context) async {
@@ -188,6 +201,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       response.when(
         success: (data) {
           print("getNearestLesson notifier success, data >> $data");
+          determineWhenActivityStarts(data.bodyData!.date!);
           state = state.copyWith(nearestLesson: data);
         },
         failure: (error, statusCode) {
@@ -206,7 +220,8 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       final response = await _scheduleRepositoryInterface.getUserStatsMonth();
       response.when(
         success: (data) {
-          print("notifier getUserStatsMonth success, data >>  ${data.bodyData}");
+          print(
+              "notifier getUserStatsMonth success, data >>  ${data.bodyData}");
           state = state.copyWith(statsForMonth: data);
         },
         failure: (error, statusCode) {

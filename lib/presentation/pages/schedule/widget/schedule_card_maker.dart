@@ -71,7 +71,9 @@ class ScheduleCardMaker extends StatelessWidget {
             height: 18.h,
             width: 18.w,
           ),
-          'action': () => {}
+          'action': () => {
+                context.router.push(const MapRoute()),
+              }
         },
         {
           'title': 'Выбрать из уже знакомых занятий',
@@ -85,8 +87,8 @@ class ScheduleCardMaker extends StatelessWidget {
             width: 18.w,
           ),
           'action': () => {
-            context.router.push(ActivityRoute(gymId: 1)),
-          }
+                context.router.push(ActivityRoute(gymId: 1)),
+              }
         },
       ],
       onOpenedAction: () => {event.triggerPlusState()},

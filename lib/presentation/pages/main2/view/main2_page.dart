@@ -27,8 +27,8 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(scheduleProvider.notifier)
-      ..getNearestLesson(context)
-      ..getUserStatsMonth(context);
+        ..getNearestLesson(context)
+        ..getUserStatsMonth(context);
     });
   }
 

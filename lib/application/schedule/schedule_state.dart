@@ -17,7 +17,7 @@ class ScheduleState with _$ScheduleState{
     @Default(false) bool isLocationButtonActivated,
     @Default(false) bool isFlashButtonActivated,
     @Default(null) GetNearestLesson? nearestLesson,
-    @Default(null)Duration? whenActivityStarts,
+    @Default("") String whenActivityStarts,
     @Default(null)GetUserStatsMonthResponse? statsForMonth,
   }) = _ScheduleState;
   const ScheduleState._();

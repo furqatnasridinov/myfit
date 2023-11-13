@@ -5,7 +5,6 @@ import 'dart:async';
 
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
-
 class UiYaMap extends StatefulWidget {
   const UiYaMap({super.key});
 
@@ -18,8 +17,9 @@ class _UiYaMap extends State<UiYaMap> {
 
   final placemarksList = [
     const PlacemarkMapObject(
-        mapId: MapObjectId('1321'),
-        point: Point(latitude: 45.055755, longitude: 38.970497)),
+      mapId: MapObjectId('1321'),
+      point: Point(latitude: 45.055755, longitude: 38.970497),
+    ),
   ];
 
   @override

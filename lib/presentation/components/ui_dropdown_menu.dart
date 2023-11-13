@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class UiDropDownMenu extends StatelessWidget {
   // Список в виде массива объектов
   final List<Map<String, dynamic>> dropDownItemsList;
@@ -33,17 +32,18 @@ class UiDropDownMenu extends StatelessWidget {
       onOpened: onOpenedAction,
       onCanceled: onClosedAction,
       shape: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color.fromRGBO(119, 170, 249, 1)),
-          borderRadius: BorderRadius.only(
-            bottomLeft: const Radius.circular(16.0),
-            bottomRight: const Radius.circular(16.0),
-            topLeft: leftCornerShape == true
-                ? const Radius.circular(4.0)
-                : const Radius.circular(16.0),
-            topRight: leftCornerShape == true
-                ? const Radius.circular(16.0)
-                : const Radius.circular(4.0),
-          )),
+        borderSide: const BorderSide(color: Color.fromRGBO(119, 170, 249, 1)),
+        borderRadius: BorderRadius.only(
+          bottomLeft: const Radius.circular(16.0),
+          bottomRight: const Radius.circular(16.0),
+          topLeft: leftCornerShape == true
+              ? const Radius.circular(4.0)
+              : const Radius.circular(16.0),
+          topRight: leftCornerShape == true
+              ? const Radius.circular(16.0)
+              : const Radius.circular(4.0),
+        ),
+      ),
       color: Colors.white,
       position: PopupMenuPosition.under,
       itemBuilder: (BuildContext context) => [

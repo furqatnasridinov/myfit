@@ -28,17 +28,13 @@ class ComingActivity extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                     const Spacer(),
-                    /* CustomText(
+                     CustomText(
                       //text: 'через 1ч 16м',
-                      text: state.whenActivityStarts?.inDays == 0
-                          ? "через ${state.whenActivityStarts?.inHours} часов"
-                          : state.whenActivityStarts?.inHours == 0
-                              ? "через ${state.whenActivityStarts?.inMinutes} минут"
-                              : "через ${state.whenActivityStarts?.inDays} дня",
+                      text: state.whenActivityStarts,
                       fontSize: 10.sp,
                       fontWeight: FontWeight.w500,
                       color: AppColors.greyText,
-                    ) */
+                    ) 
                   ],
                 ),
                 const SizedBox(height: 10),

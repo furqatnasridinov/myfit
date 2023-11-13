@@ -1,7 +1,6 @@
 import 'package:activity/infrastructure/models/response/get_advantages_response.dart';
 import 'package:activity/infrastructure/models/response/get_comments_response.dart';
 import 'package:activity/infrastructure/models/response/get_subscribtions_response.dart';
-import 'package:activity/infrastructure/models/response/gym_active_list.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'main_state.freezed.dart';
