@@ -7,7 +7,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class PopUpMap extends StatelessWidget {
   final String name;
   final String address;
-  const PopUpMap({super.key, required this.name, required this.address});
+  void Function()? onTap;
+   PopUpMap({
+    super.key,
+    this.onTap,
+    required this.name,
+    required this.address,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -48,56 +54,61 @@ class PopUpMap extends StatelessWidget {
           // name
           SizedBox(
             //color: Colors.red,
-            child: IntrinsicHeight(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: 60.h,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SizedBox(
-                      width: 160.w,
-                      //color: Colors.amber,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          InterText(
-                            //text: "Спорткомплекс “Газпром”",
-                            text: name,
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          InterText(
-                            //text: "ул. Казимира, Строение 12, корпус 42б”",
-                            text: address,
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.greyText,
-                          ),
-                        ],
+            child: Material(
+              child: IntrinsicHeight(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: 60.h,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SizedBox(
+                        width: 160.w,
+                        //color: Colors.amber,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            InterText(
+                              //text: "Спорткомплекс “Газпром”",
+                              text: name,
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            InterText(
+                              //text: "ул. Казимира, Строение 12, корпус 42б”",
+                              text: address,
+                              fontSize: 10.sp,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.greyText,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    10.horizontalSpace,
+                      10.horizontalSpace,
 
-                    // button
-                    Container(
-                      width: 60.w,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.r),
-                        border: Border.all(
-                          color: AppColors.blueColor,
+                      // button
+                      InkWell(
+                        onTap: onTap,
+                        child: Container(
+                          width: 60.w,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.r),
+                            border: Border.all(
+                              color: AppColors.blueColor,
+                            ),
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.arrow_forward_ios,
+                              color: AppColors.blueColor,
+                            ),
+                          ),
                         ),
                       ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.arrow_forward_ios,
-                          color: AppColors.blueColor,
-                        ),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

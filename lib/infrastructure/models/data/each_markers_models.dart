@@ -9,6 +9,7 @@ class EachMarkersModel extends Equatable {
    required this.latitude,
    required this.longitude,
    required this.address,
+   required this.id,
  });
 
 
@@ -28,6 +29,9 @@ class EachMarkersModel extends Equatable {
 
  // address
  final String address;
+
+ // id
+ final int id;
 
 
  @override

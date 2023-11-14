@@ -6,6 +6,8 @@ import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:activity/presentation/pages/map/widget/pop_up_map.dart';
+import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -72,6 +74,7 @@ class MapNotifier extends StateNotifier<MapState> {
         latitude: element.latitude ?? 0,
         longitude: element.longitude ?? 0,
         address: element.address ?? "",
+        id: element.id ?? 0,
       );
       markers.add(marker);
     });
@@ -87,6 +90,7 @@ class MapNotifier extends StateNotifier<MapState> {
         latitude: state.userPosition!.latitude,
         longitude: state.userPosition!.longitude,
         address: "",
+        id: 0,
       ),
     );
     state = state.copyWith(listOfMarkers: allMarkers);
@@ -184,6 +188,10 @@ class MapNotifier extends StateNotifier<MapState> {
   }
 
   Future<void> setMarkerAsOpened(double lat, double lon) async {
+    if (state.activeMarker?.latitude == lat ||
+        state.activeMarker?.longitude == lon) {
+      return;
+    }
     state.listOfMarkers.forEach((element) {
       if (element.latitude == lat && element.longitude == lon) {
         state = state.copyWith(activeMarker: element);
@@ -192,6 +200,7 @@ class MapNotifier extends StateNotifier<MapState> {
   }
 
   void showPopUpOnMap(BuildContext context) {
+    removePopUp();
     final overlay = Overlay.of(context);
     entry = OverlayEntry(
       builder: (context) {
@@ -202,6 +211,12 @@ class MapNotifier extends StateNotifier<MapState> {
           child: PopUpMap(
             name: state.activeMarker!.name,
             address: state.activeMarker?.address ?? "??",
+            onTap: () {
+              entry!.remove();
+              context.router.push(
+                ActivityRoute(gymId: state.activeMarker!.id),
+              );
+            },
           ),
         );
       },
@@ -210,8 +225,32 @@ class MapNotifier extends StateNotifier<MapState> {
   }
 
   void removePopUp() {
-    if (entry!.mounted) {
+    if (entry != null && entry!.mounted) {
       entry?.remove();
     }
+  }
+
+  void calCulateDistance() {
+    List<double> _distances = [];
+    state.listOfActivities.forEach(
+      (element) {
+        final double distance = Geolocator.distanceBetween(
+          state.userPosition!.latitude,
+          state.userPosition!.longitude,
+          element.latitude!,
+          element.longitude!,
+        );
+        List<String> parts = distance.toString().split(".");
+        double distanceInMeter = double.parse(parts[0]);
+        double distanceInKm = distanceInMeter / 1000;
+        double formattedDistance = double.parse(
+          distanceInKm
+              .toStringAsFixed(2)
+              .replaceAll(RegExp(r"([.]*0)(?!.*\d)"), ""),
+        );
+        _distances.add(formattedDistance);
+      },
+    );
+    state = state.copyWith(distances: _distances);
   }
 }

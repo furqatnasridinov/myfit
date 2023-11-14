@@ -14,6 +14,7 @@ class MapState with _$MapState {
     @Default([]) List<EachMarkersModel> listOfMarkers,
     @Default([]) List<GymData> listOfActivities,
     @Default(null) EachMarkersModel? activeMarker,
+    @Default([]) List<double> distances,
   }) = _MapState;
   const MapState._();
 }

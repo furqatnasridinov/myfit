@@ -22,6 +22,7 @@ mixin _$MapState {
       throw _privateConstructorUsedError;
   List<GymData> get listOfActivities => throw _privateConstructorUsedError;
   EachMarkersModel? get activeMarker => throw _privateConstructorUsedError;
+  List<double> get distances => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $MapStateCopyWith<MapState> get copyWith =>
@@ -38,7 +39,8 @@ abstract class $MapStateCopyWith<$Res> {
       Position? userPosition,
       List<EachMarkersModel> listOfMarkers,
       List<GymData> listOfActivities,
-      EachMarkersModel? activeMarker});
+      EachMarkersModel? activeMarker,
+      List<double> distances});
 }
 
 /// @nodoc
@@ -59,6 +61,7 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
     Object? listOfMarkers = null,
     Object? listOfActivities = null,
     Object? activeMarker = freezed,
+    Object? distances = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -81,6 +84,10 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
           ? _value.activeMarker
           : activeMarker // ignore: cast_nullable_to_non_nullable
               as EachMarkersModel?,
+      distances: null == distances
+          ? _value.distances
+          : distances // ignore: cast_nullable_to_non_nullable
+              as List<double>,
     ) as $Val);
   }
 }
@@ -98,7 +105,8 @@ abstract class _$$MapStateImplCopyWith<$Res>
       Position? userPosition,
       List<EachMarkersModel> listOfMarkers,
       List<GymData> listOfActivities,
-      EachMarkersModel? activeMarker});
+      EachMarkersModel? activeMarker,
+      List<double> distances});
 }
 
 /// @nodoc
@@ -117,6 +125,7 @@ class __$$MapStateImplCopyWithImpl<$Res>
     Object? listOfMarkers = null,
     Object? listOfActivities = null,
     Object? activeMarker = freezed,
+    Object? distances = null,
   }) {
     return _then(_$MapStateImpl(
       isloading: null == isloading
@@ -139,6 +148,10 @@ class __$$MapStateImplCopyWithImpl<$Res>
           ? _value.activeMarker
           : activeMarker // ignore: cast_nullable_to_non_nullable
               as EachMarkersModel?,
+      distances: null == distances
+          ? _value._distances
+          : distances // ignore: cast_nullable_to_non_nullable
+              as List<double>,
     ));
   }
 }
@@ -151,9 +164,11 @@ class _$MapStateImpl extends _MapState {
       this.userPosition = null,
       final List<EachMarkersModel> listOfMarkers = const [],
       final List<GymData> listOfActivities = const [],
-      this.activeMarker = null})
+      this.activeMarker = null,
+      final List<double> distances = const []})
       : _listOfMarkers = listOfMarkers,
         _listOfActivities = listOfActivities,
+        _distances = distances,
         super._();
 
   @override
@@ -184,10 +199,18 @@ class _$MapStateImpl extends _MapState {
   @override
   @JsonKey()
   final EachMarkersModel? activeMarker;
+  final List<double> _distances;
+  @override
+  @JsonKey()
+  List<double> get distances {
+    if (_distances is EqualUnmodifiableListView) return _distances;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_distances);
+  }
 
   @override
   String toString() {
-    return 'MapState(isloading: $isloading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, listOfActivities: $listOfActivities, activeMarker: $activeMarker)';
+    return 'MapState(isloading: $isloading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, listOfActivities: $listOfActivities, activeMarker: $activeMarker, distances: $distances)';
   }
 
   @override
@@ -204,7 +227,9 @@ class _$MapStateImpl extends _MapState {
             const DeepCollectionEquality()
                 .equals(other._listOfActivities, _listOfActivities) &&
             (identical(other.activeMarker, activeMarker) ||
-                other.activeMarker == activeMarker));
+                other.activeMarker == activeMarker) &&
+            const DeepCollectionEquality()
+                .equals(other._distances, _distances));
   }
 
   @override
@@ -214,7 +239,8 @@ class _$MapStateImpl extends _MapState {
       userPosition,
       const DeepCollectionEquality().hash(_listOfMarkers),
       const DeepCollectionEquality().hash(_listOfActivities),
-      activeMarker);
+      activeMarker,
+      const DeepCollectionEquality().hash(_distances));
 
   @JsonKey(ignore: true)
   @override
@@ -229,7 +255,8 @@ abstract class _MapState extends MapState {
       final Position? userPosition,
       final List<EachMarkersModel> listOfMarkers,
       final List<GymData> listOfActivities,
-      final EachMarkersModel? activeMarker}) = _$MapStateImpl;
+      final EachMarkersModel? activeMarker,
+      final List<double> distances}) = _$MapStateImpl;
   const _MapState._() : super._();
 
   @override
@@ -242,6 +269,8 @@ abstract class _MapState extends MapState {
   List<GymData> get listOfActivities;
   @override
   EachMarkersModel? get activeMarker;
+  @override
+  List<double> get distances;
   @override
   @JsonKey(ignore: true)
   _$$MapStateImplCopyWith<_$MapStateImpl> get copyWith =>

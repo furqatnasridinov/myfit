@@ -46,7 +46,7 @@ class MapListOfActivities extends StatelessWidget {
                 //print("eachData ${eachData[index]["name"]}");
                 return _listBuilder(
                   currentActivity.name,
-                  "km",
+                  state.distances[index],
                   "",
                   () {
                     event.changeCameraPosition(
@@ -71,7 +71,7 @@ class MapListOfActivities extends StatelessWidget {
 
   _listBuilder(
     String? title,
-    String? distance,
+    double distance,
     String? icon,
     void Function()? onTap,
   ) {
@@ -98,7 +98,7 @@ class MapListOfActivities extends StatelessWidget {
           fontWeight: FontWeight.w400,
         ),
         trailing: CustomText(
-          text: distance ?? "",
+          text: "${distance.toString()} km",
           fontSize: 14.sp,
           fontWeight: FontWeight.w400,
         ),

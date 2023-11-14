@@ -1,14 +1,9 @@
-import 'dart:math';
-
 import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/presentation/components/ui_dropdown_menu.dart';
-import 'package:activity/presentation/pages/map/widget/pop_up_map.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 import '../widget/widget.dart';
 
@@ -32,6 +27,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ..getGymsList(context).then(
           (value) => ref.read(mapProvider.notifier)
             ..getAllMarkers()
+            ..calCulateDistance()
             ..addUserLocationMarker(),
         );
     });
@@ -41,8 +37,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(mapProvider);
     final event = ref.read(mapProvider.notifier);
-    print("markers count ${state.listOfMarkers.length}");
-    print("active marker's name >> ${state.activeMarker?.name}");
+    // print("markers count ${state.listOfMarkers.length}");
+    //print("active marker's name >> ${state.activeMarker?.name}");
+    print("list of distances ${state.distances}");
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar: const MapHeader(),
@@ -56,6 +53,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 // Карта активностей
                 const MapPageTopSection(),
                 10.verticalSpace,
+
                 // listview builder
                 state.isloading
                     ? const SizedBox()
@@ -85,6 +83,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       );
                 },
               ),
+
               // on map created
               onMapCreated: (controller) {
                 yandexMapController = controller;
@@ -92,30 +91,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   controller: yandexMapController!,
                 );
               },
+              //
               onCameraPositionChanged: (cameraPosition, reason, finished) {
                 if (reason == CameraUpdateReason.gestures) {
-                  //print("onCameraPositionChanged gestures triggered");
-
+                  print("onCameraPositionChanged gestures triggered");
                   event.removePopUp();
-                }
-              },
-              onObjectTap: (geoObject) {
-                print("geoObject is PlacemarkMapObject");
-                if (geoObject is PlacemarkMapObject) {
-                  final points = geoObject.geometry.map((e) {
-                    return Point(
-                      latitude: e.point!.latitude,
-                      longitude: e.point!.longitude,
-                    );
-                  }).toList();
-                  event
-                      .setMarkerAsOpened(
-                        points.first.latitude,
-                        points.first.longitude,
-                      )
-                      .then(
-                        (value) => event.showPopUpOnMap(context),
-                      );
                 }
               },
             ),
