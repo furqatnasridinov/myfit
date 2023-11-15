@@ -22,14 +22,21 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref.read(mapProvider.notifier)
-        ..getUserLocation()
-        ..getGymsList(context).then(
-          (value) => ref.read(mapProvider.notifier)
-            ..getAllMarkers()
-            ..calCulateDistance()
-            ..addUserLocationMarker(),
-        );
+      ref
+          .read(mapProvider.notifier)
+          .getUserLocation()
+          .then(
+            (value) => ref.read(mapProvider.notifier).getGymsList(
+                  context,
+                ),
+          )
+          .then((value) => ref.read(mapProvider.notifier)
+            ..getGetListOfActivitiesFromDiapozone())
+          .whenComplete(
+            () => ref.read(mapProvider.notifier).getAllMarkers(),
+          )
+          .then((value) =>
+              ref.read(mapProvider.notifier).addUserLocationMarker());
     });
   }
 
@@ -37,71 +44,86 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(mapProvider);
     final event = ref.read(mapProvider.notifier);
+    //event.getGetListOfActivitiesFromDiapozone();
     // print("markers count ${state.listOfMarkers.length}");
     //print("active marker's name >> ${state.activeMarker?.name}");
     print("list of distances ${state.distances}");
+    print("selected diapozone ${state.selectedDiapozone}");
+    print("list of bool ${state.listOfBool}");
+    print(
+        "listOfActivitiesFromSelectedDiapozone ${state.listOfActivitiesFromSelectedDiapozone.length}");
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar: const MapHeader(),
-      body: Column(
-        children: [
-          10.verticalSpace,
-          Expanded(
-            flex: 4,
-            child: Column(
+      body: state.isloading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Column(
               children: [
-                // Карта активностей
-                const MapPageTopSection(),
                 10.verticalSpace,
-
-                // listview builder
-                state.isloading
-                    ? const SizedBox()
-                    : MapListOfActivities(
-                        yandexMapController,
+                Expanded(
+                  flex: 4,
+                  child: Column(
+                    children: [
+                      // Карта активностей
+                      MapPageTopSection(
                         event: event,
                         state: state,
                       ),
+                      10.verticalSpace,
+
+                      // listview builder
+                      state.isloading
+                          ? const SizedBox()
+                          : MapListOfActivities(
+                              yandexMapController,
+                              event: event,
+                              state: state,
+                            ),
+                    ],
+                  ),
+                ),
+
+                // map
+                Expanded(
+                  flex: 5,
+                  child: YandexMap(
+                    // map objects
+                    mapObjects: event.getPlacemarkObjects(
+                      onTap: (placemarkMapObject, point) {
+                        event
+                            .setMarkerAsOpened(
+                              placemarkMapObject.point.latitude,
+                              placemarkMapObject.point.longitude,
+                            )
+                            .then(
+                              (value) => event.showPopUpOnMap(context),
+                            );
+                      },
+                    ),
+
+                    // on map created
+                    onMapCreated: (controller) {
+                      yandexMapController = controller;
+                      setState(() {});
+                      event.setInitialCameraPosition(
+                        controller: yandexMapController!,
+                      );
+                    },
+                    //
+                    onCameraPositionChanged:
+                        (cameraPosition, reason, finished) {
+                      if (reason == CameraUpdateReason.gestures) {
+                        print("onCameraPositionChanged gestures triggered");
+                        event.removePopUp();
+                      }
+                    },
+                  ),
+                ),
               ],
             ),
-          ),
-
-          // map
-          Expanded(
-            flex: 5,
-            child: YandexMap(
-              // map objects
-              mapObjects: event.getPlacemarkObjects(
-                onTap: (placemarkMapObject, point) {
-                  event
-                      .setMarkerAsOpened(
-                        placemarkMapObject.point.latitude,
-                        placemarkMapObject.point.longitude,
-                      )
-                      .then(
-                        (value) => event.showPopUpOnMap(context),
-                      );
-                },
-              ),
-
-              // on map created
-              onMapCreated: (controller) {
-                yandexMapController = controller;
-                event.setInitialCameraPosition(
-                  controller: yandexMapController!,
-                );
-              },
-              //
-              onCameraPositionChanged: (cameraPosition, reason, finished) {
-                if (reason == CameraUpdateReason.gestures) {
-                  print("onCameraPositionChanged gestures triggered");
-                  event.removePopUp();
-                }
-              },
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

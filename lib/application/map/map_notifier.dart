@@ -56,8 +56,8 @@ class MapNotifier extends StateNotifier<MapState> {
           const CameraPosition(
             zoom: 15.5,
             target: Point(
-              latitude: 55.755825,
-              longitude: 37.617519,
+              latitude: 61.004851,
+              longitude: 30.223219,
             ),
           ),
         ),
@@ -66,9 +66,10 @@ class MapNotifier extends StateNotifier<MapState> {
     }
   }
 
-  void getAllMarkers() {
+  Future<void> getAllMarkers() async {
+    await Future.delayed(const Duration(milliseconds: 200));
     List<EachMarkersModel> markers = [];
-    state.listOfActivities.forEach((element) {
+    state.listOfActivitiesFromSelectedDiapozone.forEach((element) {
       final marker = EachMarkersModel(
         name: element.name ?? "",
         latitude: element.latitude ?? 0,
@@ -81,7 +82,7 @@ class MapNotifier extends StateNotifier<MapState> {
     state = state.copyWith(listOfMarkers: markers);
   }
 
-  void addUserLocationMarker() {
+  Future<void> addUserLocationMarker() async {
     List<EachMarkersModel> allMarkers = [];
     allMarkers.addAll(state.listOfMarkers);
     allMarkers.add(
@@ -98,13 +99,14 @@ class MapNotifier extends StateNotifier<MapState> {
 
   List<PlacemarkMapObject> getPlacemarkObjects(
       {required Function(PlacemarkMapObject, Point)? onTap}) {
+    print("notif ${state.listOfActivitiesFromSelectedDiapozone.length}");
     return state.listOfMarkers
         .map(
           (e) => PlacemarkMapObject(
             mapId: MapObjectId("MapObject $e"),
             point: Point(
-              latitude: e.latitude,
-              longitude: e.longitude,
+              latitude: e.latitude!,
+              longitude: e.longitude!,
             ),
             consumeTapEvents: true,
             icon: PlacemarkIcon.single(
@@ -167,6 +169,12 @@ class MapNotifier extends StateNotifier<MapState> {
                 address: gym['address'],
                 latitude: double.parse(gym['latitude']),
                 longitude: double.parse(gym['longitude']),
+                distanceFromClient: calCulateDistanceSrazy(
+                  state.userPosition!.latitude,
+                  state.userPosition!.longitude,
+                  double.parse(gym['latitude']),
+                  double.parse(gym['longitude']),
+                ),
               );
               // сортируем чтобы в лист не добавили одинаковые Gymdata
               if (!activities.any((element) => element.id == gymData.id)) {
@@ -187,6 +195,29 @@ class MapNotifier extends StateNotifier<MapState> {
     state = state.copyWith(isloading: false);
   }
 
+  double calCulateDistanceSrazy(
+    double startLatitude,
+    double startLongitude,
+    double endLatitude,
+    double endLongitude,
+  ) {
+    final double result = Geolocator.distanceBetween(
+      startLatitude,
+      startLongitude,
+      endLatitude,
+      endLongitude,
+    );
+    List<String> parts = result.toString().split(".");
+    double distanceInMeter = double.parse(parts[0]);
+    double distanceInKm = distanceInMeter / 1000;
+    double formattedDistance = double.parse(
+      distanceInKm
+          .toStringAsFixed(2)
+          .replaceAll(RegExp(r"([.]*0)(?!.*\d)"), ""),
+    );
+    return formattedDistance;
+  }
+
   Future<void> setMarkerAsOpened(double lat, double lon) async {
     if (state.activeMarker?.latitude == lat ||
         state.activeMarker?.longitude == lon) {
@@ -197,6 +228,11 @@ class MapNotifier extends StateNotifier<MapState> {
         state = state.copyWith(activeMarker: element);
       }
     });
+  }
+
+  Future<void> changeSelectedDiapozone(double diapozone) async {
+    await Future.delayed(Duration(milliseconds: 100));
+    state = state.copyWith(selectedDiapozone: diapozone);
   }
 
   void showPopUpOnMap(BuildContext context) {
@@ -230,27 +266,43 @@ class MapNotifier extends StateNotifier<MapState> {
     }
   }
 
-  void calCulateDistance() {
-    List<double> _distances = [];
-    state.listOfActivities.forEach(
-      (element) {
-        final double distance = Geolocator.distanceBetween(
-          state.userPosition!.latitude,
-          state.userPosition!.longitude,
-          element.latitude!,
-          element.longitude!,
-        );
-        List<String> parts = distance.toString().split(".");
-        double distanceInMeter = double.parse(parts[0]);
-        double distanceInKm = distanceInMeter / 1000;
-        double formattedDistance = double.parse(
-          distanceInKm
-              .toStringAsFixed(2)
-              .replaceAll(RegExp(r"([.]*0)(?!.*\d)"), ""),
-        );
-        _distances.add(formattedDistance);
-      },
+  void changListOFBoolToTrue(int index) {
+    List<bool> _bools = List<bool>.from(state.listOfBool);
+    _bools.fillRange(0, _bools.length, false);
+    _bools[index] = true;
+    state = state.copyWith(listOfBool: _bools);
+  }
+
+  Future<void> getGetListOfActivitiesFromDiapozone() async {
+    await Future.delayed(const Duration(milliseconds: 100));
+    List<GymData> _list = <GymData>[];
+
+    double selectedDiapozone = state.selectedDiapozone;
+    if (selectedDiapozone == 5) {
+      _list.addAll(state.listOfActivities);
+    }
+    if (selectedDiapozone != 5) {
+      state.listOfActivities.forEach((element) {
+        if (element.distanceFromClient! < selectedDiapozone) {
+          _list.add(element);
+        }
+      });
+    }
+
+    state = state.copyWith(listOfActivitiesFromSelectedDiapozone: _list);
+  }
+
+  void changeDiapozoneAndPop(
+      int index, double diapozone, BuildContext context) {
+    changListOFBoolToTrue(index);
+    changeSelectedDiapozone(diapozone).then(
+      (value) => getGetListOfActivitiesFromDiapozone().then(
+        (value) => getAllMarkers().then(
+          (value) => addUserLocationMarker().then(
+            (value) => context.popRoute(),
+          ),
+        ),
+      ),
     );
-    state = state.copyWith(distances: _distances);
   }
 }

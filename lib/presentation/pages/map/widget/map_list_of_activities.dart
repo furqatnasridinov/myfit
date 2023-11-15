@@ -23,7 +23,7 @@ class MapListOfActivities extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print("alyo ${state.listOfActivities}");
-    return state.listOfActivities.isEmpty
+    return state.listOfActivitiesFromSelectedDiapozone.isEmpty
         ? Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: CustomCard(
@@ -38,15 +38,15 @@ class MapListOfActivities extends StatelessWidget {
         : Expanded(
             child: ListView.builder(
               padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(),
-              itemCount: state.listOfActivities.length,
+              itemCount: state.listOfActivitiesFromSelectedDiapozone.length,
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemBuilder: (context, index) {
-                final currentActivity = state.listOfActivities[index];
+                final currentActivity = state.listOfActivitiesFromSelectedDiapozone[index];
                 //print("eachData ${eachData[index]["name"]}");
                 return _listBuilder(
                   currentActivity.name,
-                  state.distances[index],
+                  currentActivity.distanceFromClient!,
                   "",
                   () {
                     event.changeCameraPosition(

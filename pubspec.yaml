@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   date_picker_timeline: ^1.2.5
   dio: ^5.3.3
+  easy_stepper: ^0.8.1
   fl_chart: ^0.64.0
   flutter:
     sdk: flutter

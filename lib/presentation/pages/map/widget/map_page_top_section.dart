@@ -1,22 +1,23 @@
+import 'package:activity/application/map/map_notifier.dart';
+import 'package:activity/application/map/map_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/radio_button.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
-class MapPageTopSection extends StatefulWidget {
-  const MapPageTopSection({super.key});
+class MapPageTopSection extends StatelessWidget {
+  final MapNotifier event;
+  final MapState state;
+  const MapPageTopSection(
+      {super.key, required this.event, required this.state});
 
-  @override
-  State<MapPageTopSection> createState() => _MapPageTopSectionState();
-}
-
-class _MapPageTopSectionState extends State<MapPageTopSection> {
   @override
   Widget build(BuildContext context) {
-    List items700 = [false, true, false, false];
+    print("build called");
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Row(
@@ -29,6 +30,7 @@ class _MapPageTopSectionState extends State<MapPageTopSection> {
           ),
           InkWell(
             onTap: () {
+              event.removePopUp();
               showModalBottomSheet(
                 // isDismissible: false,
                 backgroundColor: Colors.transparent,
@@ -53,7 +55,6 @@ class _MapPageTopSectionState extends State<MapPageTopSection> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         10.verticalSpace,
-    
                         // серая полоска
                         Center(
                           child: Container(
@@ -67,7 +68,7 @@ class _MapPageTopSectionState extends State<MapPageTopSection> {
                           ),
                         ),
                         32.verticalSpace,
-    
+
                         // text Настройки поиска
                         CustomText(
                           text: "Настройки поиска",
@@ -80,68 +81,57 @@ class _MapPageTopSectionState extends State<MapPageTopSection> {
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
                         ),
-                        5.verticalSpace,
+                        20.verticalSpace,
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             RadioButton700(
-                              title: '700 м',
+                              title: '1 км',
                               ontap: () {
-                                /*  setState(() {
-                                        dzone = '700 m';
-                                        dddd(0.7);
-                                        // Обновите состояние выбора, чтобы включить или выключить элементы.
-                                        items700 = [true, false, false, false];
-                                      }); */
+                                event.changeDiapozoneAndPop(0, 1, context);
                               },
-                              isFalse700: items700[0],
+                              isSelected: state.listOfBool[0],
                             ),
+                            Expanded(
+                              child: Divider(
+                                color: Colors.blue.shade100,
+                              ),
+                            ),
+                            RadioButton700(
+                                title: '2 км',
+                                ontap: () {
+                                  event.changeDiapozoneAndPop(1, 2, context);
+                                },
+                                isSelected: state.listOfBool[1]),
                             Expanded(
                               child: Divider(color: Colors.blue.shade100),
                             ),
                             RadioButton700(
-                              title: '1.5 км',
-                              ontap: () {
-                                /*   setState(() {
-                                        dzone = '1.5 km';
-                                        dddd(1.5);
-                                        items700 = [false, true, false, false];
-                                      }); */
-                              },
-                              isFalse700: items700[1],
-                            ),
-                            Expanded(
-                              child: Divider(color: Colors.blue.shade100),
-                            ),
-                            RadioButton700(
-                              title: '3 км',
-                              ontap: () {
-                                /* setState(() {
-                                        dzone = '3 km';
-                                        dddd(3);
-                                        items700 = [false, false, true, false];
-                                      }); */
-                              },
-                              isFalse700: items700[2],
-                            ),
+                                title: '3 км',
+                                ontap: () {
+                                  event.changeDiapozoneAndPop(2, 3, context);
+                                },
+                                isSelected: state.listOfBool[2]),
                             Expanded(
                               child: Divider(color: Colors.blue.shade100),
                             ),
                             RadioButton700(
                               title: '5+ km',
                               ontap: () {
-                                /* setState(() {
-                                        dzone = '5+ км';
-                                        dddd(5);
-                                        items700 = [false, false, false, true];
-                                      }); */
+                              event.changeDiapozoneAndPop(3, 5, context);
                               },
-                              isFalse700: items700[3],
+                              isSelected: state.listOfBool[3],
                             ),
                           ],
                         ),
-                        32.verticalSpace,
-                        Row(
+                        30.verticalSpace,
+                        CustomButton(
+                          onPressed: () {
+                            context.popRoute();
+                          },
+                          text: "Отменить",
+                        )
+                        /* Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
@@ -150,7 +140,9 @@ class _MapPageTopSectionState extends State<MapPageTopSection> {
                                     Navigator.pop(context);
                                   },
                                   child: CustomButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      context.popRoute();
+                                    },
                                     text: "Отменить",
                                     buttonColor: Colors.white,
                                   )),
@@ -162,14 +154,31 @@ class _MapPageTopSectionState extends State<MapPageTopSection> {
                                   Navigator.pop(context);
                                 },
                                 child: CustomButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    if (state.listOfBool ==
+                                        [false, false, false, true]) {
+                                      event.changeSelectedDiapozone(5);
+                                    }
+                                    if (state.listOfBool ==
+                                        [false, false, true, false]) {
+                                      event.changeSelectedDiapozone(3);
+                                    }
+                                    if (state.listOfBool ==
+                                        [false, true, false, false]) {
+                                      event.changeSelectedDiapozone(2);
+                                    }
+                                    if (state.listOfBool ==
+                                        [true, false, false, false]) {
+                                      event.changeSelectedDiapozone(1);
+                                    }
+                                  },
                                   buttonColor: AppColors.blueColor,
                                   text: "Сохранить",
                                 ),
                               ),
                             ),
                           ],
-                        ),
+                        ), */
                       ],
                     ),
                   );
@@ -188,11 +197,31 @@ class _MapPageTopSectionState extends State<MapPageTopSection> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(8.r),
               ),
-              child: SvgPicture.asset("assets/svg/icon_filter.svg"),
+              child: SvgPicture.asset(
+                "assets/svg/icon_filter.svg",
+              ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  List<Step> getSteps() {
+    List<Step> steps = [
+      Step(
+        title: CustomText(text: "1"),
+        content: SizedBox(),
+      ),
+      Step(
+        title: CustomText(text: "2"),
+        content: SizedBox(),
+      ),
+      Step(
+        title: CustomText(text: "3"),
+        content: SizedBox(),
+      ),
+    ];
+    return steps;
   }
 }

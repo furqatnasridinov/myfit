@@ -4,6 +4,7 @@ class GymData {
   double? latitude;
   double? longitude;
   String? address;
+  double? distanceFromClient;
 
   GymData({
     this.id,
@@ -11,5 +12,6 @@ class GymData {
     this.latitude,
     this.longitude,
     this.address,
+    this.distanceFromClient,
   });
 }
