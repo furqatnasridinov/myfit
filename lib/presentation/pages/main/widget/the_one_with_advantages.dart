@@ -1,6 +1,5 @@
 import 'package:activity/application/main/main_notifier.dart';
 import 'package:activity/application/main/main_state.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -169,37 +168,40 @@ i   nt activePageIndex = 0;
     String secondText,
     double opacity,
   ) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          //color: Colors.red,
-          //height: 75.h,
-          width: 120.w,
-          child: CustomText(
-            maxLines: 4,
-            overflow: TextOverflow.ellipsis,
-            text: firstText,
-            fontWeight: FontWeight.w600,
-            fontSize: 16.sp,
-            opacity: opacity,
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            //color: Colors.red,
+            //height: 75.h,
+            width: 120.w,
+            child: CustomText(
+              maxLines: 4,
+              overflow: TextOverflow.ellipsis,
+              text: firstText,
+              fontWeight: FontWeight.w600,
+              fontSize: 16.sp,
+              opacity: opacity,
+            ),
           ),
-        ),
-        16.horizontalSpace,
-        SizedBox(
-          //color: Colors.amber,
-          //height: 180.h,
-          width: 170.w,
-          child: CustomText(
-            maxLines: 6,
-            overflow: TextOverflow.ellipsis,
-            text: secondText,
-            fontWeight: FontWeight.w400,
-            fontSize: 12.sp,
-            opacity: opacity,
+          16.horizontalSpace,
+          SizedBox(
+            //color: Colors.amber,
+            //height: 180.h,
+            width: 170.w,
+            child: CustomText(
+              maxLines: 6,
+              overflow: TextOverflow.ellipsis,
+              text: secondText,
+              fontWeight: FontWeight.w400,
+              fontSize: 12.sp,
+              opacity: opacity,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

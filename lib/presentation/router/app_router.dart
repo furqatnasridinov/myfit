@@ -25,12 +25,12 @@ class AppRouter extends $AppRouter {
         ),
         AutoRoute(
           page: Main2Route.page,
-          //path: "/"
+          path: "/"
         ),
         AutoRoute(
           page: MapRoute.page,
           //path: "/map"
-          path: "/",
+          //path: "/",
         ),
       ];
 }

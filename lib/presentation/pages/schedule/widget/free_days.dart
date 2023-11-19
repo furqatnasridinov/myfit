@@ -57,7 +57,9 @@ class FreeDays extends StatelessWidget {
 
   Widget _plusButton(BuildContext context) {
     return UiDropDownMenu(
-      customOffset: const [-50.0, -40.0],
+      width: double.maxFinite,
+      maxWidth: 263.w,
+      customOffset:  [-48.0.w, -45.0.h],
       dropDownItemsList: [
         {
           'title': 'Найти что то новое',

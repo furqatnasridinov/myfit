@@ -2,6 +2,8 @@ import 'dart:ffi';
 
 import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/domain/interface/schedule.dart';
+import 'package:activity/infrastructure/models/request/add_note_request.dart';
+import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:flutter/material.dart';
@@ -200,9 +202,11 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       final response = await _scheduleRepositoryInterface.getNearestLesson();
       response.when(
         success: (data) {
-          print("getNearestLesson notifier success, data >> $data");
-          determineWhenActivityStarts(data.bodyData!.date!);
-          state = state.copyWith(nearestLesson: data);
+          if (data.bodyData != null) {
+            print("getNearestLesson notifier success, data >> $data");
+            determineWhenActivityStarts(data.bodyData!.date!);
+            state = state.copyWith(nearestLesson: data);
+          }
         },
         failure: (error, statusCode) {
           print("getNearestLesson notifier failure");
@@ -221,11 +225,39 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       response.when(
         success: (data) {
           print(
-              "notifier getUserStatsMonth success, data >>  ${data.bodyData}");
-          state = state.copyWith(statsForMonth: data);
+              "notifier getUserStatsMonth success, data >>  ${data.bodyData?.length}");
+          // sorting list by its count
+          final _list = data.bodyData;
+          _list?.sort(
+            (a, b) => a.count!.compareTo(b.count!),
+          );
+          state = state.copyWith(statsForMonth: _list!.reversed.toList());
         },
         failure: (error, statusCode) {
           print("notifier getUserStatsMonth failure");
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> addNote(
+      String tag, String description, int id, BuildContext context) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final request = AddNoteRequest(
+        tag: tag,
+        description: description,
+        lesson: Lesson(id: id),
+      );
+      final response = await _scheduleRepositoryInterface.addNotes(request);
+      response.when(
+        success: (data) {
+          print("addNote notifier success");
+        },
+        failure: (error, statusCode) {
+          print("addNote notifier failure");
         },
       );
     } else {
@@ -263,5 +295,22 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
 
   void disnableFlashButton() {
     state = state.copyWith(isFlashButtonActivated: false);
+  }
+
+  Color getColors(int index) {
+    if (index == 0) {
+      return AppColors.goldText;
+    }
+    if (index == 1) {
+      return AppColors.purpleText;
+    }
+    if (index == 2) {
+      return AppColors.blueColor;
+    } else {
+      return Colors.grey.shade400;
+    }
+  }
+  void changeNotificationTime(String newTime){
+    state = state.copyWith(notificationTime: newTime);
   }
 }

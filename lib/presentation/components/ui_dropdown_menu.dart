@@ -1,4 +1,6 @@
+import 'package:activity/presentation/components/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class UiDropDownMenu extends StatelessWidget {
   // Список в виде массива объектов
@@ -9,28 +11,36 @@ class UiDropDownMenu extends StatelessWidget {
   final bool? leftCornerShape;
   // Кастомное расположение
   final List? customOffset;
+  double? width;
+  double? height;
+  double? maxWidth;
 
   // Коллбэки
   final VoidCallback? onOpenedAction;
   final VoidCallback? onClosedAction;
 
-  const UiDropDownMenu(
-      {super.key,
-      required this.dropDownItemsList,
-      this.dropDownChild,
-      this.customOffset,
-      this.leftCornerShape,
-      this.onOpenedAction,
-      this.onClosedAction});
+  UiDropDownMenu({
+    super.key,
+    required this.dropDownItemsList,
+    this.dropDownChild,
+    this.width,
+    this.height,
+    this.customOffset,
+    this.leftCornerShape,
+    this.onOpenedAction,
+    this.onClosedAction,
+    this.maxWidth = 200,
+  });
 
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
       offset: customOffset != null
           ? Offset(customOffset?[0], customOffset?[1])
-          : const Offset(0, 10),
+          : const Offset(0, -10),
       onOpened: onOpenedAction,
       onCanceled: onClosedAction,
+      constraints: BoxConstraints(maxWidth: maxWidth!),
       shape: OutlineInputBorder(
         borderSide: const BorderSide(color: Color.fromRGBO(119, 170, 249, 1)),
         borderRadius: BorderRadius.only(
@@ -60,29 +70,31 @@ class UiDropDownMenu extends StatelessWidget {
       String? title, Widget? icon, Color? iconColor, VoidCallback? action) {
     return PopupMenuItem(
       onTap: action,
-      child: Row(
-        children: [
-          icon != null
-              ? Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(6.0),
-                      child: Container(
-                          color: const Color.fromRGBO(245, 249, 255, 1),
-                          padding: const EdgeInsets.all(3.0),
-                          child: icon),
+      child: SizedBox(
+        width: width,
+        height: height,
+        child: Row(
+          children: [
+            icon != null
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(6.0),
+                    child: Container(
+                      color: const Color.fromRGBO(245, 249, 255, 1),
+                      padding: const EdgeInsets.all(3.0),
+                      child: icon,
                     ),
-                    const SizedBox(width: 13.0),
-                  ],
-                )
-              : const SizedBox(),
-          Flexible(
-            child: Text(
-              title.toString(),
-              //style: MyFitAppFonts.label2(MyFitAppColors.txtBlack),
-            ),
-          )
-        ],
+                  )
+                : const SizedBox(),
+            13.horizontalSpace,
+            Flexible(
+              child: CustomText(
+                text: title!,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

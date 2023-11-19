@@ -3,12 +3,13 @@ import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 
 class PopUpMap extends StatelessWidget {
   final String name;
   final String address;
   void Function()? onTap;
-   PopUpMap({
+  PopUpMap({
     super.key,
     this.onTap,
     required this.name,
@@ -99,12 +100,12 @@ class PopUpMap extends StatelessWidget {
                               color: AppColors.blueColor,
                             ),
                           ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.arrow_forward_ios,
-                              color: AppColors.blueColor,
-                            ),
-                          ),
+                          child: Center(
+                              child: SvgPicture.asset(
+                            "assets/svg/arrow_map.svg",
+                            width: 22.w,
+                            height: 22.h,
+                          )),
                         ),
                       ),
                     ],

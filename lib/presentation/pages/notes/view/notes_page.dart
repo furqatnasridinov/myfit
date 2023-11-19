@@ -9,7 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 @RoutePage()
 class NotesScreen extends ConsumerStatefulWidget {
-  final String day;
+  final String day; //2023-11-11@15:15
   const NotesScreen({super.key, required this.day});
 
   @override
@@ -18,12 +18,23 @@ class NotesScreen extends ConsumerStatefulWidget {
 
 class _ScheduleItemScreen extends ConsumerState<NotesScreen> {
   @override
+  void initState() {
+    super.initState();
+    ref.read(scheduleProvider.notifier).addNote(
+          "Проверка",
+          "Номер 1 ",
+          6,
+          context,
+        );
+  }
+
+  @override
   Widget build(BuildContext context) {
     final state = ref.watch(scheduleProvider);
     final event = ref.read(scheduleProvider.notifier);
-    List<String> parts = widget.day.split("@");
-    String dayToFormat = parts[0];
-    final formattedDay = event.formatDay(dayToFormat);
+    List<String> parts = widget.day.split("@"); //2023-11-11@15:15
+    String dayToFormat = parts[0]; //2023-11-11
+    final formattedDay = event.formatDay(dayToFormat); // Ноябрь 11
     print(formattedDay);
     final List<dynamic> scheduleItemsData =
         state.schedulesInMapForm[dayToFormat];
@@ -55,7 +66,7 @@ class _ScheduleItemScreen extends ConsumerState<NotesScreen> {
                 itemCount: scheduleItemsData.length,
                 itemBuilder: (context, index) {
                   return NotesCardMaker(
-                    address: scheduleItemsData[index]["gym"]["address"],
+                    name: scheduleItemsData[index]["gym"]["name"],
                     startTime: scheduleItemsData[index]["date"],
                     description: scheduleItemsData[index]["description"],
                   );

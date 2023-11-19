@@ -25,7 +25,7 @@ class MapListOfActivities extends StatelessWidget {
     print("alyo ${state.listOfActivities}");
     return state.listOfActivitiesFromSelectedDiapozone.isEmpty
         ? Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(bottom: 10.h),
             child: CustomCard(
               child: CustomText(
                 text:
@@ -35,37 +35,36 @@ class MapListOfActivities extends StatelessWidget {
               ),
             ),
           )
-        : Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(),
-              itemCount: state.listOfActivitiesFromSelectedDiapozone.length,
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                final currentActivity = state.listOfActivitiesFromSelectedDiapozone[index];
-                //print("eachData ${eachData[index]["name"]}");
-                return _listBuilder(
-                  currentActivity.name,
-                  currentActivity.distanceFromClient!,
-                  "",
-                  () {
-                    event.changeCameraPosition(
-                      controller!,
-                      currentActivity.latitude!,
-                      currentActivity.longitude!,
-                    );
-                    event
-                        .setMarkerAsOpened(
-                          currentActivity.latitude!,
-                          currentActivity.longitude!,
-                        )
-                        .then(
-                          (value) => event.showPopUpOnMap(context),
-                        );
-                  },
-                );
-              },
-            ),
+        : ListView.builder(
+            padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(bottom: 10.h),
+            itemCount: state.listOfActivitiesFromSelectedDiapozone.length,
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              final currentActivity =
+                  state.listOfActivitiesFromSelectedDiapozone[index];
+              //print("eachData ${eachData[index]["name"]}");
+              return _listBuilder(
+                currentActivity.name,
+                currentActivity.distanceFromClient!,
+                "",
+                () {
+                  event.changeCameraPosition(
+                    controller!,
+                    currentActivity.latitude!,
+                    currentActivity.longitude!,
+                  );
+                  event
+                      .setMarkerAsOpened(
+                        currentActivity.latitude!,
+                        currentActivity.longitude!,
+                      )
+                      .then(
+                        (value) => event.showPopUpOnMap(context),
+                      );
+                },
+              );
+            },
           );
   }
 

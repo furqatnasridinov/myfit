@@ -4,6 +4,7 @@ import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/dummy_data.dart';
+import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/components/ui_button_filled.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -83,23 +84,14 @@ class _MainHeaderState extends State<MainHeader> {
                         itemCount: listofaddresses.length,
                         itemBuilder: (context, index) {
                           final currentGym = listofaddresses[index];
-                          return ListTile(
-                            onTap: () {
+                          return _listiles(
+                            currentGym.name,
+                            currentGym.destination,
+                            () {
                               controller.text = currentGym.name;
                               textfieldFocusnode.unfocus();
                               setState(() {});
                             },
-                            title: CustomText(
-                              text: currentGym.name,
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            subtitle: CustomText(
-                              text: currentGym.destination,
-                              color: AppColors.greyText,
-                              fontSize: 10.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
                           );
                         },
                       ),
@@ -176,7 +168,7 @@ class _MainHeaderState extends State<MainHeader> {
       // title
       title: AnimatedContainer(
         duration: const Duration(milliseconds: 400),
-        width: textfieldFocusnode.hasFocus ? 340.w : 300.w,
+        width: textfieldFocusnode.hasFocus ? 350.w : 300.w,
         height: 40.h,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -193,6 +185,10 @@ class _MainHeaderState extends State<MainHeader> {
           link: layerlink,
           child: TextField(
             controller: controller,
+            onChanged: (value) {
+              controller.text = value;
+              setState(() {});
+            },
             onTap: () {
               textfieldFocusnode.requestFocus();
               setState(() {});
@@ -201,41 +197,38 @@ class _MainHeaderState extends State<MainHeader> {
               textfieldFocusnode.unfocus();
               setState(() {});
             },
-            /* onTapOutside: (event) {
-              if (event.) {
-                textfieldFocusnode.unfocus();
-              }
-            }, */
             focusNode: textfieldFocusnode,
             decoration: InputDecoration(
               isDense: true,
-              suffixIcon: textfieldFocusnode.hasFocus
-                  ? GestureDetector(
-                      onTap: () {
-                        if (controller.text.isEmpty) {
-                          textfieldFocusnode.unfocus();
-                          setState(() {});
-                        } else {
-                          controller.clear();
-                        }
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.only(right: 0.w),
-                        child: Icon(
-                          Icons.clear,
-                          color: Colors.black,
-                          size: 18.r,
-                        ),
-                      ),
-                    )
-                  : null,
+              suffixIcon:  
+                  textfieldFocusnode.hasFocus && controller.text.isNotEmpty
+                      ? GestureDetector(
+                          onTap: () {
+                            if (controller.text.isEmpty) {
+                              textfieldFocusnode.unfocus();
+                              setState(() {});
+                            } else {
+                              controller.clear();
+                              setState(() {});
+                            }
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 0.w),
+                            child: Icon(
+                              Icons.clear,
+                              color: Colors.black,
+                              size: 15.5.r,
+                            ),
+                          ),
+                        )
+                      : null,
               prefixIcon: Container(
                 margin: EdgeInsets.all(3.r),
                 decoration: const BoxDecoration(
                   color: AppColors.backgroundColor,
                   shape: BoxShape.circle,
                 ),
-                padding: EdgeInsets.all(10.r),
+                padding: EdgeInsets.all(7.r),
                 child: SvgPicture.asset(
                   "assets/svg/search.svg",
                   // ignore: deprecated_member_use
@@ -260,7 +253,7 @@ class _MainHeaderState extends State<MainHeader> {
             : Container(
                 width: 40.w,
                 height: 40.h,
-                margin: EdgeInsets.all(4.r),
+                margin: EdgeInsets.all(4.r).copyWith(right: 10.w),
                 padding: EdgeInsets.all(2.r),
                 decoration: const BoxDecoration(
                   color: AppColors.blueColor,
@@ -279,4 +272,34 @@ class _MainHeaderState extends State<MainHeader> {
       ],
     );
   }
+}
+
+Widget _listiles(
+  String name,
+  String km,
+  void Function()? onTap,
+) {
+  return InkWell(
+    onTap: onTap,
+    child: Container(
+      margin: EdgeInsets.only(left: 10.w, bottom: 15.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomText(
+            text: name,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+          ),
+          3.verticalSpace,
+          InterText(
+            text: km,
+            color: AppColors.greyText,
+            fontSize: 10.sp,
+            fontWeight: FontWeight.w500,
+          ),
+        ],
+      ),
+    ),
+  );
 }

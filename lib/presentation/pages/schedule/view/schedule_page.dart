@@ -59,10 +59,12 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
                   SliverPadding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
                     sliver: SliverToBoxAdapter(
-                      child: ScheduleTitle(),
+                      child: ScheduleTitle(
+                        event: event,
+                        state: state,
+                      ),
                     ),
                   ),
-
                   // body builder
                   SliverPadding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w)
@@ -70,7 +72,8 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
                     sliver: SliverList.builder(
                       itemCount: allDayOfMonth.length,
                       itemBuilder: (context, index) {
-                        final date = allDayOfMonth[index]; // "2023-11-01" till "2023-11-15",
+                        final date = allDayOfMonth[
+                            index]; // "2023-11-01" till "2023-11-15",
                         final formattedDay = event.formatDay(date); // Ноябрь 1
                         final formattedDayOfWeek =
                             event.determineWeekday(date); // Понедельник
@@ -86,7 +89,7 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
                               time: itemData['date'],
                               description: itemData['description'],
                               duration: itemData["duration"],
-                              address: itemData['gym']['address'],
+                              name: itemData['gym']['name'],
                             );
                           }).toList();
                           return ScheduleCardMaker(

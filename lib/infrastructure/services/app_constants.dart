@@ -8,6 +8,7 @@ class AppConstants {
   static const String getUsersSchedules = "api/schedule/search";
   static const String getNearestLesson = "api/user/lessons/nearest";
   static const String getUserStatsMonth = "api/user/stat/month";
+  static const String addNote = "api/schedule/addNote";
 
   // photo
   static const String placeholderPhoto = 'assets/images/first.png';

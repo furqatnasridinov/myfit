@@ -141,6 +141,7 @@ class TheOneWithComments extends StatelessWidget {
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
                 text: comment,
+                //text: "cndjcndjcn nj nj n j n jn jnjcdcdcdc   cd c dc d cd CBHCHBHBCHCBCH cdjcndjcn JNJNCJNCJNCC JNJNJN",
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w400,
               ),

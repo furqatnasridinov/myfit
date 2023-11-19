@@ -16,7 +16,7 @@ class ScheduleItemWidget extends StatelessWidget {
   final String time;
   final String description;
   final String duration;
-  final String address;
+  final String name;
   final ScheduleNotifier event;
   final ScheduleState state;
 
@@ -24,7 +24,7 @@ class ScheduleItemWidget extends StatelessWidget {
     required this.time,
     required this.description,
     required this.duration,
-    required this.address,
+    required this.name,
     required this.id,
     required this.event,
     required this.state,
@@ -98,6 +98,7 @@ class ScheduleItemWidget extends StatelessWidget {
                     width: 265.w,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // describtion
                         SizedBox(
@@ -109,6 +110,7 @@ class ScheduleItemWidget extends StatelessWidget {
                           ),
                         ),
                         10.horizontalSpace,
+                        // three dots 
                         DropDownMenuInsideCard(
                           onTap: () => context.router.push(
                             NotesRoute(
@@ -176,7 +178,7 @@ class ScheduleItemWidget extends StatelessWidget {
                                 child: InterText(
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  text: address,
+                                  text: name,
                                   color: AppColors.greyText,
                                   fontSize: 13.sp,
                                   fontWeight: FontWeight.w400,

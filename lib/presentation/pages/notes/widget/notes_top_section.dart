@@ -48,7 +48,7 @@ class NotesTopSection extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        _scheduleItemAction(),
+        //_scheduleItemAction(),
       ],
     );
   }

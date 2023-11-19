@@ -28,8 +28,8 @@ mixin _$ScheduleState {
   bool get isFlashButtonActivated => throw _privateConstructorUsedError;
   GetNearestLesson? get nearestLesson => throw _privateConstructorUsedError;
   String get whenActivityStarts => throw _privateConstructorUsedError;
-  GetUserStatsMonthResponse? get statsForMonth =>
-      throw _privateConstructorUsedError;
+  List<UserStats> get statsForMonth => throw _privateConstructorUsedError;
+  String get notificationTime => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ScheduleStateCopyWith<ScheduleState> get copyWith =>
@@ -53,7 +53,8 @@ abstract class $ScheduleStateCopyWith<$Res> {
       bool isFlashButtonActivated,
       GetNearestLesson? nearestLesson,
       String whenActivityStarts,
-      GetUserStatsMonthResponse? statsForMonth});
+      List<UserStats> statsForMonth,
+      String notificationTime});
 }
 
 /// @nodoc
@@ -79,7 +80,8 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
     Object? isFlashButtonActivated = null,
     Object? nearestLesson = freezed,
     Object? whenActivityStarts = null,
-    Object? statsForMonth = freezed,
+    Object? statsForMonth = null,
+    Object? notificationTime = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -122,10 +124,14 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
           ? _value.whenActivityStarts
           : whenActivityStarts // ignore: cast_nullable_to_non_nullable
               as String,
-      statsForMonth: freezed == statsForMonth
+      statsForMonth: null == statsForMonth
           ? _value.statsForMonth
           : statsForMonth // ignore: cast_nullable_to_non_nullable
-              as GetUserStatsMonthResponse?,
+              as List<UserStats>,
+      notificationTime: null == notificationTime
+          ? _value.notificationTime
+          : notificationTime // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -149,7 +155,8 @@ abstract class _$$ScheduleStateImplCopyWith<$Res>
       bool isFlashButtonActivated,
       GetNearestLesson? nearestLesson,
       String whenActivityStarts,
-      GetUserStatsMonthResponse? statsForMonth});
+      List<UserStats> statsForMonth,
+      String notificationTime});
 }
 
 /// @nodoc
@@ -173,7 +180,8 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
     Object? isFlashButtonActivated = null,
     Object? nearestLesson = freezed,
     Object? whenActivityStarts = null,
-    Object? statsForMonth = freezed,
+    Object? statsForMonth = null,
+    Object? notificationTime = null,
   }) {
     return _then(_$ScheduleStateImpl(
       isloading: null == isloading
@@ -216,10 +224,14 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
           ? _value.whenActivityStarts
           : whenActivityStarts // ignore: cast_nullable_to_non_nullable
               as String,
-      statsForMonth: freezed == statsForMonth
-          ? _value.statsForMonth
+      statsForMonth: null == statsForMonth
+          ? _value._statsForMonth
           : statsForMonth // ignore: cast_nullable_to_non_nullable
-              as GetUserStatsMonthResponse?,
+              as List<UserStats>,
+      notificationTime: null == notificationTime
+          ? _value.notificationTime
+          : notificationTime // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -238,9 +250,11 @@ class _$ScheduleStateImpl extends _ScheduleState {
       this.isFlashButtonActivated = false,
       this.nearestLesson = null,
       this.whenActivityStarts = "",
-      this.statsForMonth = null})
+      final List<UserStats> statsForMonth = const [],
+      this.notificationTime = "30 мин"})
       : _schedulesInMapForm = schedulesInMapForm,
         _listOfUserSchedulesvalues = listOfUserSchedulesvalues,
+        _statsForMonth = statsForMonth,
         super._();
 
   @override
@@ -287,13 +301,22 @@ class _$ScheduleStateImpl extends _ScheduleState {
   @override
   @JsonKey()
   final String whenActivityStarts;
+  final List<UserStats> _statsForMonth;
   @override
   @JsonKey()
-  final GetUserStatsMonthResponse? statsForMonth;
+  List<UserStats> get statsForMonth {
+    if (_statsForMonth is EqualUnmodifiableListView) return _statsForMonth;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_statsForMonth);
+  }
+
+  @override
+  @JsonKey()
+  final String notificationTime;
 
   @override
   String toString() {
-    return 'ScheduleState(isloading: $isloading, isSearchbarOpened: $isSearchbarOpened, schedulesInMapForm: $schedulesInMapForm, listOfUserSchedulesvalues: $listOfUserSchedulesvalues, showTillWhen: $showTillWhen, plusState: $plusState, isLocationButtonActivated: $isLocationButtonActivated, isFlashButtonActivated: $isFlashButtonActivated, nearestLesson: $nearestLesson, whenActivityStarts: $whenActivityStarts, statsForMonth: $statsForMonth)';
+    return 'ScheduleState(isloading: $isloading, isSearchbarOpened: $isSearchbarOpened, schedulesInMapForm: $schedulesInMapForm, listOfUserSchedulesvalues: $listOfUserSchedulesvalues, showTillWhen: $showTillWhen, plusState: $plusState, isLocationButtonActivated: $isLocationButtonActivated, isFlashButtonActivated: $isFlashButtonActivated, nearestLesson: $nearestLesson, whenActivityStarts: $whenActivityStarts, statsForMonth: $statsForMonth, notificationTime: $notificationTime)';
   }
 
   @override
@@ -322,8 +345,10 @@ class _$ScheduleStateImpl extends _ScheduleState {
                 other.nearestLesson == nearestLesson) &&
             (identical(other.whenActivityStarts, whenActivityStarts) ||
                 other.whenActivityStarts == whenActivityStarts) &&
-            (identical(other.statsForMonth, statsForMonth) ||
-                other.statsForMonth == statsForMonth));
+            const DeepCollectionEquality()
+                .equals(other._statsForMonth, _statsForMonth) &&
+            (identical(other.notificationTime, notificationTime) ||
+                other.notificationTime == notificationTime));
   }
 
   @override
@@ -339,7 +364,8 @@ class _$ScheduleStateImpl extends _ScheduleState {
       isFlashButtonActivated,
       nearestLesson,
       whenActivityStarts,
-      statsForMonth);
+      const DeepCollectionEquality().hash(_statsForMonth),
+      notificationTime);
 
   @JsonKey(ignore: true)
   @override
@@ -360,7 +386,8 @@ abstract class _ScheduleState extends ScheduleState {
       final bool isFlashButtonActivated,
       final GetNearestLesson? nearestLesson,
       final String whenActivityStarts,
-      final GetUserStatsMonthResponse? statsForMonth}) = _$ScheduleStateImpl;
+      final List<UserStats> statsForMonth,
+      final String notificationTime}) = _$ScheduleStateImpl;
   const _ScheduleState._() : super._();
 
   @override
@@ -384,7 +411,9 @@ abstract class _ScheduleState extends ScheduleState {
   @override
   String get whenActivityStarts;
   @override
-  GetUserStatsMonthResponse? get statsForMonth;
+  List<UserStats> get statsForMonth;
+  @override
+  String get notificationTime;
   @override
   @JsonKey(ignore: true)
   _$$ScheduleStateImplCopyWith<_$ScheduleStateImpl> get copyWith =>

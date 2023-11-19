@@ -48,55 +48,62 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : ScrollConfiguration(
-              behavior:
-                  ScrollConfiguration.of(context).copyWith(scrollbars: false),
-              child: ListView(
-                //padding: EdgeInsets.symmetric(horizontal: 16.w),
-                children: [
-                  10.verticalSpace,
-                  Padding(
-                    padding: const EdgeInsets.only(left: 36.0),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: CustomText(
-                        text: 'Привет, George!',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20.sp,
+          : SafeArea(
+            bottom: false,
+            child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    10.verticalSpace,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 36.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: CustomText(
+                          text: 'Привет, George!',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 20.sp,
+                        ),
                       ),
                     ),
-                  ),
-                  10.verticalSpace,
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: FirstTwoCards(state: state),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: ComingActivity(
-                      state: state,
-                      event: event,
+                    10.verticalSpace,
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: FirstTwoCards(
+                        state: state,
+                        event: event,
+                      ),
                     ),
-                  ),
-                  32.verticalSpace,
-                  Padding(
-                    padding: EdgeInsets.only(left: 25.w),
-                    child: CustomText(
-                      text: 'Бассейны поблизости',
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w600,
+                    10.verticalSpace,
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: state.nearestLesson == null
+                          ? const PlaceholderComingActivity()
+                          : ComingActivity(
+                              state: state,
+                              event: event,
+                            ),
                     ),
-                  ),
-                  10.verticalSpace,
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: const UiYaMap(),
-                  ),
-                  70.verticalSpace,
-                  const DecoratedTextOne(),
-                ],
+                    32.verticalSpace,
+                    Padding(
+                      padding: EdgeInsets.only(left: 25.w),
+                      child: CustomText(
+                        text: 'Бассейны поблизости',
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    10.verticalSpace,
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: const UiYaMap(),
+                    ),
+                    70.verticalSpace,
+                    const DecoratedTextOne(),
+                  ],
+                ),
               ),
-            ),
+          ),
     );
   }
 }

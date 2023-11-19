@@ -63,32 +63,28 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           : Column(
               children: [
                 10.verticalSpace,
-                Expanded(
-                  flex: 4,
-                  child: Column(
-                    children: [
-                      // Карта активностей
-                      MapPageTopSection(
-                        event: event,
-                        state: state,
-                      ),
-                      10.verticalSpace,
-
-                      // listview builder
-                      state.isloading
-                          ? const SizedBox()
-                          : MapListOfActivities(
-                              yandexMapController,
-                              event: event,
-                              state: state,
-                            ),
-                    ],
-                  ),
+                Column(
+                  children: [
+                    // Карта активностей
+                    MapPageTopSection(
+                      event: event,
+                      state: state,
+                    ),
+                    10.verticalSpace,
+                    // listview builder
+                    state.isloading
+                        ? const SizedBox()
+                        : MapListOfActivities(
+                            yandexMapController,
+                            event: event,
+                            state: state,
+                          ),
+                  ],
                 ),
 
                 // map
                 Expanded(
-                  flex: 5,
+                  //flex: 5,
                   child: YandexMap(
                     // map objects
                     mapObjects: event.getPlacemarkObjects(

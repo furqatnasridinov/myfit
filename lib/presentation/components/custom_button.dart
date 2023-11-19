@@ -8,6 +8,7 @@ class CustomButton extends StatelessWidget {
   Color buttonColor;
   Color borderColor;
   final String text;
+  Color textColor;
   double? width;
   double? height;
   CustomButton({
@@ -15,6 +16,7 @@ class CustomButton extends StatelessWidget {
     required this.onPressed,
     required this.text,
     this.width = double.maxFinite,
+    this.textColor = Colors.black,
     this.height = 34,
     this.borderColor = AppColors.blueColor,
     this.buttonColor = AppColors.backgroundColor,
@@ -45,6 +47,7 @@ class CustomButton extends StatelessWidget {
           ),
         ),
         child: CustomText(
+          color: textColor,
           text: text,
           fontSize: 14.sp,
           fontWeight: FontWeight.w500,

@@ -73,7 +73,7 @@ class TheOneWithImage extends StatelessWidget {
                       color: Colors.white,
                     ),
                     child: Padding(
-                      padding: EdgeInsets.only(left: 5.w),
+                      padding: EdgeInsets.only(left: 7.w),
                       child: Icon(
                         Icons.arrow_back_ios,
                         size: 17.r,

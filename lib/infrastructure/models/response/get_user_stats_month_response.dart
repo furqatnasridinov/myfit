@@ -1,15 +1,15 @@
 class GetUserStatsMonthResponse {
   String? operationResult;
-  List<BodyData>? bodyData;
+  List<UserStats>? bodyData;
 
   GetUserStatsMonthResponse({this.operationResult, this.bodyData});
 
   GetUserStatsMonthResponse.fromJson(Map<String, dynamic> json) {
     operationResult = json['operationResult'];
-    if (json['bodyData'] != null) {
-      bodyData = <BodyData>[];
-      json['bodyData'].forEach((v) {
-        bodyData!.add(new BodyData.fromJson(v));
+    if (json['object'] != null) {
+      bodyData = <UserStats>[];
+      json['object'].forEach((v) {
+        bodyData!.add(new UserStats.fromJson(v));
       });
     }
   }
@@ -18,19 +18,19 @@ class GetUserStatsMonthResponse {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['operationResult'] = this.operationResult;
     if (this.bodyData != null) {
-      data['bodyData'] = this.bodyData!.map((v) => v.toJson()).toList();
+      data['object'] = this.bodyData!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
-class BodyData {
+class UserStats {
   int? count;
   String? lessonType;
 
-  BodyData({this.count, this.lessonType});
+  UserStats({this.count, this.lessonType});
 
-  BodyData.fromJson(Map<String, dynamic> json) {
+  UserStats.fromJson(Map<String, dynamic> json) {
     count = json['count'];
     lessonType = json['lessonType'];
   }

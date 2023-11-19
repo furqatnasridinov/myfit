@@ -10,12 +10,12 @@ import 'package:activity/presentation/components/custom_textfield.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 
 class NotesCardMaker extends StatelessWidget {
-  final String address;
+  final String name;
   final String startTime;
   final String description;
   const NotesCardMaker({
     Key? key,
-    required this.address,
+    required this.name,
     required this.startTime,
     required this.description,
   }) : super(key: key);
@@ -52,7 +52,7 @@ class NotesCardMaker extends StatelessWidget {
                             child: InterText(
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
-                              text: address,
+                              text: name,
                               fontSize: 13.sp,
                               fontWeight: FontWeight.w400,
                               color: Colors.white,

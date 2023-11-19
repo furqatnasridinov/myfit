@@ -18,7 +18,8 @@ class ScheduleState with _$ScheduleState{
     @Default(false) bool isFlashButtonActivated,
     @Default(null) GetNearestLesson? nearestLesson,
     @Default("") String whenActivityStarts,
-    @Default(null)GetUserStatsMonthResponse? statsForMonth,
+    @Default([])List<UserStats> statsForMonth,
+    @Default("30 мин") String notificationTime,
   }) = _ScheduleState;
   const ScheduleState._();
 }
