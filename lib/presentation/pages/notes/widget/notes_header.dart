@@ -141,6 +141,7 @@ class _MainHeaderState extends State<NotesHeader> {
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
       elevation: 0,
       centerTitle: false,
+      titleSpacing: textfieldFocusnode.hasFocus ? 14.w : 5.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(32.r),
@@ -164,9 +165,7 @@ class _MainHeaderState extends State<NotesHeader> {
       leading: textfieldFocusnode.hasFocus
           ? null
           : Container(
-              margin: EdgeInsets.all(5.r),
-              width: 40.w,
-              height: 40.h,
+              margin: EdgeInsets.only(left: 10.w),
               child: Ink(
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -182,7 +181,7 @@ class _MainHeaderState extends State<NotesHeader> {
                   child: SizedBox(
                     child: Icon(
                       Icons.keyboard_arrow_left,
-                      size: 24.r,
+                      size: 22.r,
                       color: Colors.black,
                     ),
                   ),
@@ -193,7 +192,7 @@ class _MainHeaderState extends State<NotesHeader> {
       // title
       title: AnimatedContainer(
         duration: const Duration(milliseconds: 500),
-        width: textfieldFocusnode.hasFocus ? 360.w : 300.w,
+        width: textfieldFocusnode.hasFocus ? 380.w : 300.w,
         height: 40.h,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -250,7 +249,7 @@ class _MainHeaderState extends State<NotesHeader> {
                         )
                       : null,
               prefixIcon: Container(
-                margin: EdgeInsets.all(2.r),
+                margin: EdgeInsets.all(2.r).copyWith(bottom: 4.h, left: 1.w),
                 decoration: const BoxDecoration(
                   color: AppColors.backgroundColor,
                   shape: BoxShape.circle,
@@ -274,7 +273,7 @@ class _MainHeaderState extends State<NotesHeader> {
         textfieldFocusnode.hasFocus
             ? const SizedBox()
             : Container(
-                height: 40.h,
+                //height: 40.h,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(100.r),

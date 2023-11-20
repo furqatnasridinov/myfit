@@ -143,6 +143,7 @@ class _MainHeaderState extends State<MainHeader> {
     }
 
     return AppBar(
+      titleSpacing: 0.0,
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
       elevation: 0,
       centerTitle: false,
@@ -167,8 +168,9 @@ class _MainHeaderState extends State<MainHeader> {
 
       // title
       title: AnimatedContainer(
+        margin: EdgeInsets.only(left: 16.w),
         duration: const Duration(milliseconds: 400),
-        width: textfieldFocusnode.hasFocus ? 350.w : 300.w,
+        width: textfieldFocusnode.hasFocus ? 345.w : 300.w,
         height: 40.h,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -200,7 +202,7 @@ class _MainHeaderState extends State<MainHeader> {
             focusNode: textfieldFocusnode,
             decoration: InputDecoration(
               isDense: true,
-              suffixIcon:  
+              suffixIcon:
                   textfieldFocusnode.hasFocus && controller.text.isNotEmpty
                       ? GestureDetector(
                           onTap: () {
@@ -223,7 +225,7 @@ class _MainHeaderState extends State<MainHeader> {
                         )
                       : null,
               prefixIcon: Container(
-                margin: EdgeInsets.all(3.r),
+                margin: EdgeInsets.all(2.r).copyWith(bottom: 4.h, left: 1.w),
                 decoration: const BoxDecoration(
                   color: AppColors.backgroundColor,
                   shape: BoxShape.circle,

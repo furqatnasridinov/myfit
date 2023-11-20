@@ -143,6 +143,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
       elevation: 0,
       centerTitle: false,
+      titleSpacing: textfieldFocusnode.hasFocus ? 16.w : 5.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(32.r),
@@ -166,7 +167,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
       leading: textfieldFocusnode.hasFocus
           ? null
           : Container(
-              margin: EdgeInsets.all(5.r),
+              margin: EdgeInsets.only(left: 10.w),
               width: 40.w,
               height: 40.h,
               child: Ink(
@@ -195,7 +196,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
       // title
       title: AnimatedContainer(
         duration: const Duration(milliseconds: 500),
-        width: textfieldFocusnode.hasFocus ? double.maxFinite : 300.w,
+        width: textfieldFocusnode.hasFocus ? 350.w : 300.w,
         height: 40.h,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -207,7 +208,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
             width: 1.w,
           ),
         ),
-        padding: EdgeInsets.only(right: 7.w, top: 3.h),
+        padding: EdgeInsets.only(right: 7.w, top: 4.h),
         child: CompositedTransformTarget(
           link: layerlink,
           child: TextField(
@@ -250,7 +251,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
                         )
                       : null,
               prefixIcon: Container(
-                margin: EdgeInsets.all(2.r),
+                margin: EdgeInsets.all(2.r).copyWith(bottom: 4.h, left: 1.w),
                 decoration: const BoxDecoration(
                   color: AppColors.backgroundColor,
                   shape: BoxShape.circle,

@@ -146,6 +146,7 @@ class _MainHeaderState extends State<Main2Header> {
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
       elevation: 0,
       centerTitle: false,
+      titleSpacing: 0.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(32.r),
@@ -167,9 +168,10 @@ class _MainHeaderState extends State<Main2Header> {
 
       // title
       title: AnimatedContainer(
-        duration: const Duration(milliseconds: 400),
-        width: textfieldFocusnode.hasFocus ? 360.w : 300.w,
+        duration: const Duration(milliseconds: 500),
+        width: textfieldFocusnode.hasFocus ? 344.w : 300.w,
         height: 40.h,
+        margin: EdgeInsets.only(left: 16.w),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(100.r),
@@ -223,7 +225,7 @@ class _MainHeaderState extends State<Main2Header> {
                         )
                       : null,
               prefixIcon: Container(
-                margin: EdgeInsets.all(3.r),
+                margin: EdgeInsets.all(2.r).copyWith(bottom: 4.h, left: 1.w),
                 decoration: const BoxDecoration(
                   color: AppColors.backgroundColor,
                   shape: BoxShape.circle,
@@ -237,10 +239,6 @@ class _MainHeaderState extends State<Main2Header> {
               ),
               hintText: "Найти занятие",
               border: InputBorder.none,
-              /* contentPadding: EdgeInsets.zero.copyWith(
-                left: 12.w,
-                top: 8.h,
-              ), */
             ),
           ),
         ),
@@ -264,6 +262,7 @@ class _MainHeaderState extends State<Main2Header> {
                   top: 4.5.h,
                   right: 16.w,
                   bottom: 4.5.h,
+                  left: 5.w
                 ),
                 child: Row(
                   children: [

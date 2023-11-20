@@ -141,6 +141,7 @@ class _MainHeaderState extends State<MapHeader> {
 
     return AppBar(
       automaticallyImplyLeading: false,
+      titleSpacing: 0,
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
       elevation: 0,
       centerTitle: false,
@@ -165,8 +166,9 @@ class _MainHeaderState extends State<MapHeader> {
 
       // title
       title: AnimatedContainer(
+        margin: EdgeInsets.only(left: 14.w),
         duration: const Duration(milliseconds: 400),
-        width: textfieldFocusnode.hasFocus ? 340.w : 300.w,
+        width: textfieldFocusnode.hasFocus ? 345.w : 300.w,
         height: 40.h,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -220,7 +222,7 @@ class _MainHeaderState extends State<MapHeader> {
                         )
                       : null,
               prefixIcon: Container(
-                margin: EdgeInsets.all(3.r),
+                margin: EdgeInsets.all(2.r).copyWith(bottom: 4.h, left: 1.w),
                 decoration: const BoxDecoration(
                   color: AppColors.backgroundColor,
                   shape: BoxShape.circle,
@@ -257,6 +259,7 @@ class _MainHeaderState extends State<MapHeader> {
                   top: 4.5.h,
                   right: 16.w,
                   bottom: 4.5.h,
+                  left: 5.w,
                 ),
                 child: Row(
                   children: [
