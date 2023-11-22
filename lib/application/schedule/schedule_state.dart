@@ -1,4 +1,5 @@
 
+import 'package:activity/infrastructure/models/data/gym_with_tags.dart';
 import 'package:activity/infrastructure/models/response/get_nearest_lesson_response.dart';
 import 'package:activity/infrastructure/models/response/get_user_stats_month_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -19,6 +20,8 @@ class ScheduleState with _$ScheduleState{
     @Default(null) GetNearestLesson? nearestLesson,
     @Default("") String whenActivityStarts,
     @Default([])List<UserStats> statsForMonth,
+    @Default({}) Map<String,dynamic> notesMapData,
+    @Default([]) List<GymWithTags> listOfGymWithTags,
     @Default("30 мин") String notificationTime,
   }) = _ScheduleState;
   const ScheduleState._();

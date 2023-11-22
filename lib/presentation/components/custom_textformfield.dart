@@ -5,30 +5,35 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextFormField extends StatelessWidget {
   String? hintText;
   TextEditingController? controller;
   int? maxLines;
   TextInputType? keyboardType;
   EdgeInsetsGeometry? contentPadding;
-
-  CustomTextField({
+  String? initialValue;
+  bool readOnly;
+  CustomTextFormField({
     Key? key,
     this.hintText,
-    this.controller,
+    this.readOnly = false,
     this.contentPadding,
     this.maxLines,
     this.keyboardType,
+    this.initialValue,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      readOnly: readOnly,
+      initialValue: initialValue,
       maxLines: maxLines,
       keyboardType: keyboardType,
-      controller: controller,
+      //controller: controller,
       cursorColor: AppColors.greyText,
       decoration: InputDecoration(
+        
         contentPadding: contentPadding,
         hintText: hintText,
         hintStyle: GoogleFonts.inter(

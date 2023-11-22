@@ -58,7 +58,7 @@ abstract class $AppRouter extends _i7.RootStackRouter {
         routeData: routeData,
         child: _i5.NotesScreen(
           key: args.key,
-          day: args.day,
+          gymName: args.gymName,
         ),
       );
     },
@@ -156,13 +156,13 @@ class MapRoute extends _i7.PageRouteInfo<void> {
 class NotesRoute extends _i7.PageRouteInfo<NotesRouteArgs> {
   NotesRoute({
     _i8.Key? key,
-    required String day,
+    required String gymName,
     List<_i7.PageRouteInfo>? children,
   }) : super(
           NotesRoute.name,
           args: NotesRouteArgs(
             key: key,
-            day: day,
+            gymName: gymName,
           ),
           initialChildren: children,
         );
@@ -176,16 +176,16 @@ class NotesRoute extends _i7.PageRouteInfo<NotesRouteArgs> {
 class NotesRouteArgs {
   const NotesRouteArgs({
     this.key,
-    required this.day,
+    required this.gymName,
   });
 
   final _i8.Key? key;
 
-  final String day;
+  final String gymName;
 
   @override
   String toString() {
-    return 'NotesRouteArgs{key: $key, day: $day}';
+    return 'NotesRouteArgs{key: $key, gymName: $gymName}';
   }
 }
 

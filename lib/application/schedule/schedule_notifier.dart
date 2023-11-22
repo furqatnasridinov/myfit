@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/domain/interface/schedule.dart';
+import 'package:activity/infrastructure/models/data/gym_with_tags.dart';
 import 'package:activity/infrastructure/models/request/add_note_request.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
@@ -242,6 +243,48 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     }
   }
 
+  Future<void> getNotes(BuildContext context, String gymName) async {
+    print("getNotes called");
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      state = state.copyWith(isloading: true);
+      final response = await _scheduleRepositoryInterface.getNotes();
+      response.when(
+        success: (data) {
+          print("getNotes notifier success");
+          List<GymWithTags> _list = [];
+          final mapData = data["object"];
+          mapData.forEach((key, value) {
+            value.forEach((element) {
+              if (gymName == element["gym"]["name"]) {
+                final data = GymWithTags(
+                  date: element["date"],
+                  id: element["id"],
+                  description: element["description"],
+                  duration: element["duration"],
+                  gym: Gym.fromJson(element["gym"] ?? {}),
+                  tag: (element["tag"] as List<dynamic>?)
+                      ?.map((tag) => Tag.fromJson(tag))
+                      .toList(),
+                );
+                _list.add(data);
+              }
+            });
+          });
+          state = state.copyWith(listOfGymWithTags: _list);
+          state = state.copyWith(isloading: false);
+          //state = state.copyWith(notesMapData: mapData);
+        },
+        failure: (error, statusCode) {
+          print("getNotes notifier failure");
+          state = state.copyWith(isloading: false);
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
   Future<void> addNote(
       String tag, String description, int id, BuildContext context) async {
     final connect = await AppConnectivity().connectivity();
@@ -310,7 +353,8 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       return Colors.grey.shade400;
     }
   }
-  void changeNotificationTime(String newTime){
+
+  void changeNotificationTime(String newTime) {
     state = state.copyWith(notificationTime: newTime);
   }
 }

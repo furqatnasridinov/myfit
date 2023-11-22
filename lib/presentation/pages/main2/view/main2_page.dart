@@ -56,7 +56,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                   children: [
                     10.verticalSpace,
                     Padding(
-                      padding: const EdgeInsets.only(left: 36.0),
+                      padding:  EdgeInsets.only(left: 36.w),
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: CustomText(

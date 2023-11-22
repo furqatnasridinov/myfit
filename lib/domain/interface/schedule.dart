@@ -9,4 +9,5 @@ abstract class ScheduleRepositoryInterface {
   Future<ApiResult<GetNearestLesson>> getNearestLesson();
   Future<ApiResult<GetUserStatsMonthResponse>> getUserStatsMonth();
   Future<ApiResult<AddNoteResponse>> addNotes(AddNoteRequest addNoteRequest);
+  Future<ApiResult<Map<String, dynamic>>>getNotes();
 }

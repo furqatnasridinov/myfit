@@ -14,7 +14,9 @@ class ScheduleRepository implements ScheduleRepositoryInterface {
   Future<ApiResult<Map<String, dynamic>>> getUsersSchedules() async {
     try {
       final client = inject<HttpService>().clientDio();
-      final resposne = await client.get(AppConstants.getUsersSchedules);
+      final resposne = await client.get(
+        AppConstants.getSchedulesSearch,
+      );
       return ApiResult.success(
         data: resposne.data,
       );
@@ -74,6 +76,26 @@ class ScheduleRepository implements ScheduleRepositoryInterface {
       );
       return ApiResult.success(
         data: AddNoteResponse.fromJson(response.data),
+      );
+    } catch (e) {
+      throw e;
+      /* return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      ); */
+    }
+  }
+
+  @override
+  Future<ApiResult<Map<String, dynamic>>> getNotes() async {
+    try {
+      final client = inject<HttpService>().clientDio();
+      final response = await client.get(
+        AppConstants.getSchedulesSearch,
+        queryParameters: {"notes": true},
+      );
+      return ApiResult.success(
+        data: response.data,
       );
     } catch (e) {
       throw e;

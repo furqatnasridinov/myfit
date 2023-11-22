@@ -223,7 +223,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     };
 
     String? convertToFormattedDate(String dateString) {
-      // Разбить входную строку на части
+      
       final parts = dateString.split(' ');
 
       if (parts.length != 3) {
