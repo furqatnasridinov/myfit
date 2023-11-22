@@ -1,12 +1,11 @@
 import 'dart:ui';
-
+import 'package:activity/application/map/map_notifier.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/components/ui_button_filled.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -14,13 +13,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class MapHeader extends StatefulWidget implements PreferredSizeWidget {
-  const MapHeader({super.key});
+  final MapNotifier event;
+  const MapHeader({super.key, required this.event});
 
   @override
   State<MapHeader> createState() => _MainHeaderState();
 
   @override
-  // TODO: implement preferredSize
   Size get preferredSize => Size.fromHeight(55.h);
 }
 
@@ -65,7 +64,7 @@ class _MainHeaderState extends State<MapHeader> {
                 height: 294.h,
                 margin: EdgeInsets.only(left: 16.w, right: 16.w),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.r),
+                  borderRadius: BorderRadius.circular(16.0),
                   color: Colors.white,
                   border: Border.all(
                     width: 1.0,
@@ -141,10 +140,10 @@ class _MainHeaderState extends State<MapHeader> {
 
     return AppBar(
       automaticallyImplyLeading: false,
-      titleSpacing: 0,
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
       elevation: 0,
       centerTitle: false,
+      titleSpacing: textfieldFocusnode.hasFocus ? 14.w : 5.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(32.r),
@@ -164,11 +163,41 @@ class _MainHeaderState extends State<MapHeader> {
         ),
       ),
 
+      // leading
+      leading: textfieldFocusnode.hasFocus
+          ? null
+          : Container(
+              margin: EdgeInsets.only(left: 10.w),
+              child: Ink(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: const Color.fromRGBO(233, 233, 233, 1),
+                    width: 1.w,
+                  ),
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: InkWell(
+                  onTap: () {
+                    widget.event.removePopUp();
+                    context.popRoute();
+                  },
+                  borderRadius: BorderRadius.circular(500.r),
+                  child: SizedBox(
+                    child: Icon(
+                      Icons.keyboard_arrow_left,
+                      size: 22.r,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
       // title
       title: AnimatedContainer(
-        margin: EdgeInsets.only(left: 14.w),
-        duration: const Duration(milliseconds: 400),
-        width: textfieldFocusnode.hasFocus ? 345.w : 300.w,
+        duration: const Duration(milliseconds: 500),
+        width: textfieldFocusnode.hasFocus ? 380.w : 300.w,
         height: 40.h,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -180,7 +209,10 @@ class _MainHeaderState extends State<MapHeader> {
             width: 1.w,
           ),
         ),
-        padding: EdgeInsets.only(right: 7.w, top: 3.h),
+        padding: EdgeInsets.only(
+          right: 7.w,
+          top: 3.h,
+        ),
         child: CompositedTransformTarget(
           link: layerlink,
           child: TextField(
@@ -246,7 +278,7 @@ class _MainHeaderState extends State<MapHeader> {
         textfieldFocusnode.hasFocus
             ? const SizedBox()
             : Container(
-                height: 40.h,
+                //height: 40.h,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(100.r),
@@ -259,7 +291,6 @@ class _MainHeaderState extends State<MapHeader> {
                   top: 4.5.h,
                   right: 16.w,
                   bottom: 4.5.h,
-                  left: 5.w,
                 ),
                 child: Row(
                   children: [
@@ -269,12 +300,7 @@ class _MainHeaderState extends State<MapHeader> {
                         top: 8.h,
                         bottom: 8.h,
                       ),
-                      child: InkWell(
-                        onTap: () {
-                          context.router.push(
-                            const ScheduleRoute(),
-                          );
-                        },
+                      child: GestureDetector(
                         child: SvgPicture.asset(
                           'assets/svg/calendar.svg',
                           width: 24.w,
@@ -283,7 +309,7 @@ class _MainHeaderState extends State<MapHeader> {
                         //onTap: () => {context.go('/schedule')},
                       ),
                     ),
-                    12.horizontalSpace,
+                    SizedBox(width: 12.w),
                     SizedOverflowBox(
                       size: Size(40.w, 40.h),
                       child: CircleAvatar(

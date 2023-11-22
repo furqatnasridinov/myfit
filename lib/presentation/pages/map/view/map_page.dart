@@ -56,7 +56,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: const MapHeader(),
+      appBar:  MapHeader(event: event),
       body: state.isloading
           ? const Center(
               child: CircularProgressIndicator(),

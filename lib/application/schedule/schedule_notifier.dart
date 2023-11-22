@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/domain/interface/schedule.dart';
 import 'package:activity/infrastructure/models/data/gym_with_tags.dart';
@@ -356,5 +354,22 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
 
   void changeNotificationTime(String newTime) {
     state = state.copyWith(notificationTime: newTime);
+  }
+
+  Future<void> cancelActivity(int id, BuildContext context) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response = await _scheduleRepositoryInterface.cancelActivity(id);
+      response.when(
+        success: (data) {
+          print("cancelActivity notifier success");
+        },
+        failure: (error, statusCode) {
+          print("cancelActivity notifier failure");
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
   }
 }

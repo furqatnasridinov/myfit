@@ -43,7 +43,7 @@ class _BlogScreen extends ConsumerState<MainScreen> {
     print(
         "state.subscribtions?.bodyData.lenth>>  ${state.subscribtions?.bodyData?.length}");
     print(
-        "state.comments?.bodyData.lenth>>  ${state.comments?.bodyData?.length}");
+        "state.comments?.bodyData.lenth>>  ${state.comments?.commentsBody?.length}");
     print(
         "activities near client lenth >> ${state.activitiesNearClient.length}");
     print("amount of markers >> ${state.listOfMarkers.length}");

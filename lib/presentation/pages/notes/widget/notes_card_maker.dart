@@ -184,38 +184,41 @@ class NotesCardMaker extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               final currentTag = gymWithTags.tag?[index];
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    //color: Colors.red,
-                    width: 113.w,
-                    child: CustomTextFormField(
-                      readOnly: true,
-                      initialValue: currentTag?.tag,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: 10.w,
-                        horizontal: 5.h,
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 5),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      //color: Colors.red,
+                      width: 113.w,
+                      child: CustomTextFormField(
+                        readOnly: true,
+                        initialValue: currentTag?.tag,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        contentPadding: EdgeInsets.symmetric(
+                          vertical: 10.w,
+                          horizontal: 5.h,
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 225.w,
-                    child: CustomTextFormField(
-                      readOnly: true,
-                      initialValue: currentTag?.description,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: 10.w,
-                        horizontal: 5.h,
+                    SizedBox(
+                      width: 225.w,
+                      child: CustomTextFormField(
+                        readOnly: true,
+                        initialValue: currentTag?.description,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        contentPadding: EdgeInsets.symmetric(
+                          vertical: 10.w,
+                          horizontal: 5.h,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           ),

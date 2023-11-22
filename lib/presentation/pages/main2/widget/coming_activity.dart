@@ -51,8 +51,6 @@ class ComingActivity extends StatelessWidget {
                   ),
                   7.horizontalSpace,
                   SizedBox(
-                    width: 263.w,
-                    //color: Colors.red,
                     child: CustomText(
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,

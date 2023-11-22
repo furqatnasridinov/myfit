@@ -19,21 +19,26 @@ class FirstTwoCards extends StatelessWidget {
       children: [
         // first container
         CustomCard(
-          width: 169.w,
+          width: 171.w,
           height: 143.h,
           child: state.statsForMonth.isEmpty
               ? const SizedBox()
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CustomText(
-                      text: "Статистика за месяц",
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    15.verticalSpace,
                     SizedBox(
+                      //height: 40.h,
                       //color: Colors.red,
+                      child: CustomText(
+                        text: "Статистика за месяц",
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    //15.verticalSpace,
+                    SizedBox(
+                      //color: Colors.green,
                       height: 73.h,
                       width: double.maxFinite,
                       child: Row(

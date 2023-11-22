@@ -119,6 +119,8 @@ class ScheduleItemWidget extends StatelessWidget {
                               gymName: name,
                             ),
                           ),
+                          event: event,
+                          id: id,
                         ),
                       ],
                     ),

@@ -36,8 +36,6 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
   Widget build(BuildContext context) {
     final state = ref.watch(scheduleProvider);
     final event = ref.read(scheduleProvider.notifier);
-    //print("nearest lesson >> ${state.nearestLesson?.bodyData?.description} ");
-
     print("whenActivityStarts on duration ${state.whenActivityStarts}");
 
     return Scaffold(
@@ -56,7 +54,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                   children: [
                     10.verticalSpace,
                     Padding(
-                      padding:  EdgeInsets.only(left: 36.w),
+                      padding:  EdgeInsets.only(left: 26.w),
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: CustomText(

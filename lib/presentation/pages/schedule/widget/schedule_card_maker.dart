@@ -60,7 +60,7 @@ class ScheduleCardMaker extends StatelessWidget {
     return UiDropDownMenu(
       width: double.maxFinite,
       maxWidth: 263.w,
-      customOffset:  [-48.0.w, -45.0.h],
+      customOffset:  [-45.0.w, -40.0.h],
       dropDownItemsList: [
         {
           'title': 'Найти что то новое',

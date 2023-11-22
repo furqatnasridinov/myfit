@@ -17,8 +17,7 @@ class TheOneWithComments extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return 
-    Column(
+    return Column(
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 10.0, bottom: 10.0),
@@ -43,7 +42,7 @@ class TheOneWithComments extends StatelessWidget {
             color: Colors.white,
           ),
           padding: EdgeInsets.all(16.r),
-          child: state.isloading || state.comments == null 
+          child: state.isloading || state.comments == null
               ? const SizedBox()
               : Stack(
                   children: [
@@ -51,10 +50,10 @@ class TheOneWithComments extends StatelessWidget {
                       width: 290.w,
                       //color: Colors.black26,
                       child: CarouselSlider.builder(
-                        itemCount: state.comments?.bodyData?.length,
+                        itemCount: state.comments?.commentsBody?.length,
                         itemBuilder: (context, index, realIndex) {
                           final currentComment =
-                              state.comments?.bodyData?[index];
+                              state.comments?.commentsBody?[index];
                           final yearFromBack =
                               currentComment?.user?.birthdayDate;
                           final parts = yearFromBack?.split("-");
@@ -64,7 +63,7 @@ class TheOneWithComments extends StatelessWidget {
                             currentComment?.message ?? "",
                             AppConstants.owlNetworkImage,
                             "${currentComment?.user?.lastName} ${currentComment?.user?.firstName}",
-                            currentComment?.user?.city ?? "null",
+                            currentComment?.user?.city?.name ?? "??",
                             "$formattedYear лет",
                           );
                         },
@@ -87,7 +86,7 @@ class TheOneWithComments extends StatelessWidget {
                       right: 0,
                       child: DotStepper(
                         activeStep: state.commentActiveStepper,
-                        dotCount: state.comments?.bodyData?.length ?? 2,
+                        dotCount: state.comments?.commentsBody?.length ?? 2,
                         direction: Axis.vertical,
                         dotRadius: 6,
                         spacing: 35.w,

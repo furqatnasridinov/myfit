@@ -14,7 +14,6 @@ class CustomText extends StatelessWidget {
   Color? color;
   bool? isUppercase;
   double? opacity;
-  List<FontFeature>? fontFeatures;
   CustomText({
     Key? key,
     this.isUppercase = false,
@@ -26,7 +25,6 @@ class CustomText extends StatelessWidget {
     this.fontWeight,
     this.color = Colors.black,
     this.opacity = 1,
-    this.fontFeatures,
   }) : super(key: key);
 
   @override
@@ -40,7 +38,6 @@ class CustomText extends StatelessWidget {
         fontSize: fontSize,
         fontWeight: fontWeight,
         color: color?.withOpacity(opacity!),
-        fontFeatures: fontFeatures,
       ),
     );
   }

@@ -249,10 +249,6 @@ class ScheduleTitle extends StatelessWidget {
                                                 CustomText(
                                                   text:
                                                       "за $chosenTimeNotificationState",
-                                                  fontFeatures: const [
-                                                    FontFeature
-                                                        .tabularFigures(),
-                                                  ],
                                                 )
                                               ],
                                             ),
