@@ -73,7 +73,7 @@ class FreeDays extends StatelessWidget {
             width: 18.w,
           ),
           'action': () => {
-            context.router.push(const MapRoute())
+            context.router.push( MapRoute(gymId: 0))
           }
         },
         {

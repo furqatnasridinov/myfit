@@ -9,7 +9,8 @@ import '../widget/widget.dart';
 
 @RoutePage()
 class MapScreen extends ConsumerStatefulWidget {
-  const MapScreen({super.key});
+  int? gymId;
+   MapScreen(this.gymId,{super.key});
 
   @override
   ConsumerState<MapScreen> createState() => _MapScreenState();
@@ -27,7 +28,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           .getUserLocation()
           .then(
             (value) => ref.read(mapProvider.notifier).getGymsList(
-                  context,
+                  context,widget.gymId!,
                 ),
           )
           .then((value) => ref.read(mapProvider.notifier)

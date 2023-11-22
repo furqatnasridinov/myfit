@@ -1,3 +1,5 @@
+import 'package:activity/infrastructure/models/data/activity_near_client.dart';
+import 'package:activity/infrastructure/models/data/each_markers_models.dart';
 import 'package:activity/infrastructure/models/response/get_advantages_response.dart';
 import 'package:activity/infrastructure/models/response/get_comments_response.dart';
 import 'package:activity/infrastructure/models/response/get_subscribtions_response.dart';
@@ -16,7 +18,8 @@ class MainState with _$MainState {
     @Default(true) bool advantagesAutoPlayMode,
     @Default(0) int commentActiveStepper,
     @Default(true) bool commentsAutoPlayMode,
-    @Default({})Map<String,dynamic> gymsWithActivities,
+    @Default([]) List<ActivityNearClient> activitiesNearClient,
+    @Default([]) List<EachMarkersModel>listOfMarkers,
     @Default(0) double? commentsContainerHeight,  
   }) = _MainState;
   const MainState._();

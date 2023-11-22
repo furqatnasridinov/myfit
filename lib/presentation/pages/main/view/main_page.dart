@@ -1,4 +1,5 @@
 import 'package:activity/application/main/main_provider.dart';
+import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/pages/main/widget/widget.dart';
@@ -20,10 +21,14 @@ class _BlogScreen extends ConsumerState<MainScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref.read(mainProvider.notifier).getAdvantages(context);
-      ref.read(mainProvider.notifier).getSubscribtions(context);
-      ref.read(mainProvider.notifier).getComments(context);
-      ref.read(mainProvider.notifier).getGymsList(context);
+      ref.read(mapProvider.notifier).getUserLocation();
+      ref.read(mainProvider.notifier)
+        ..getAdvantages(context)
+        ..getSubscribtions(context)
+        ..getComments(context)
+        ..getGymsList(context).then(
+          (value) => ref.read(mainProvider.notifier).getAllMarkers(),
+        );
     });
   }
 
@@ -31,13 +36,18 @@ class _BlogScreen extends ConsumerState<MainScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(mainProvider);
     final event = ref.read(mainProvider.notifier);
+    final mapState = ref.watch(mapProvider);
+    final mapEvent = ref.read(mapProvider.notifier);
     print(
         "state.advantages?.bodyData.lenth >>    ${state.advantages?.bodyData?.length}");
     print(
         "state.subscribtions?.bodyData.lenth>>  ${state.subscribtions?.bodyData?.length}");
     print(
         "state.comments?.bodyData.lenth>>  ${state.comments?.bodyData?.length}");
-    print("state.gymsWithActivities >>  ${state.gymsWithActivities}");
+    print(
+        "activities near client lenth >> ${state.activitiesNearClient.length}");
+    print("amount of markers >> ${state.listOfMarkers.length}");
+    mapEvent.removePopUp();
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
@@ -80,6 +90,7 @@ class _BlogScreen extends ConsumerState<MainScreen> {
                     TheOneWithMap(
                       event: event,
                       state: state,
+                      mapState: mapState,
                     ),
                     32.verticalSpace,
                     const TheOneWithButton(),

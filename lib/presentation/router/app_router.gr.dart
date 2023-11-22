@@ -47,9 +47,13 @@ abstract class $AppRouter extends _i7.RootStackRouter {
       );
     },
     MapRoute.name: (routeData) {
+      final args = routeData.argsAs<MapRouteArgs>();
       return _i7.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i4.MapScreen(),
+        child: _i4.MapScreen(
+          args.gymId,
+          key: args.key,
+        ),
       );
     },
     NotesRoute.name: (routeData) {
@@ -139,16 +143,40 @@ class MainRoute extends _i7.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i4.MapScreen]
-class MapRoute extends _i7.PageRouteInfo<void> {
-  const MapRoute({List<_i7.PageRouteInfo>? children})
-      : super(
+class MapRoute extends _i7.PageRouteInfo<MapRouteArgs> {
+  MapRoute({
+    required int? gymId,
+    _i8.Key? key,
+    List<_i7.PageRouteInfo>? children,
+  }) : super(
           MapRoute.name,
+          args: MapRouteArgs(
+            gymId: gymId,
+            key: key,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'MapRoute';
 
-  static const _i7.PageInfo<void> page = _i7.PageInfo<void>(name);
+  static const _i7.PageInfo<MapRouteArgs> page =
+      _i7.PageInfo<MapRouteArgs>(name);
+}
+
+class MapRouteArgs {
+  const MapRouteArgs({
+    required this.gymId,
+    this.key,
+  });
+
+  final int? gymId;
+
+  final _i8.Key? key;
+
+  @override
+  String toString() {
+    return 'MapRouteArgs{gymId: $gymId, key: $key}';
+  }
 }
 
 /// generated route for

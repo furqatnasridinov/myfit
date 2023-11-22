@@ -2,7 +2,6 @@ import 'package:activity/application/map/map_state.dart';
 import 'package:activity/domain/interface/main.dart';
 import 'package:activity/infrastructure/models/data/each_markers_models.dart';
 import 'package:activity/infrastructure/models/data/gym_data.dart';
-import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:activity/presentation/pages/map/widget/pop_up_map.dart';
@@ -105,8 +104,8 @@ class MapNotifier extends StateNotifier<MapState> {
           (e) => PlacemarkMapObject(
             mapId: MapObjectId("MapObject $e"),
             point: Point(
-              latitude: e.latitude!,
-              longitude: e.longitude!,
+              latitude: e.latitude,
+              longitude: e.longitude,
             ),
             consumeTapEvents: true,
             icon: PlacemarkIcon.single(
@@ -139,7 +138,7 @@ class MapNotifier extends StateNotifier<MapState> {
     );
   }
 
-  Future<void> getGymsList(BuildContext context) async {
+  Future<void> getGymsList(BuildContext context, int gymId) async {
     state = state.copyWith(isloading: true);
     final connect = await AppConnectivity().connectivity();
     if (connect) {

@@ -25,7 +25,9 @@ mixin _$MainState {
   bool get advantagesAutoPlayMode => throw _privateConstructorUsedError;
   int get commentActiveStepper => throw _privateConstructorUsedError;
   bool get commentsAutoPlayMode => throw _privateConstructorUsedError;
-  Map<String, dynamic> get gymsWithActivities =>
+  List<ActivityNearClient> get activitiesNearClient =>
+      throw _privateConstructorUsedError;
+  List<EachMarkersModel> get listOfMarkers =>
       throw _privateConstructorUsedError;
   double? get commentsContainerHeight => throw _privateConstructorUsedError;
 
@@ -48,7 +50,8 @@ abstract class $MainStateCopyWith<$Res> {
       bool advantagesAutoPlayMode,
       int commentActiveStepper,
       bool commentsAutoPlayMode,
-      Map<String, dynamic> gymsWithActivities,
+      List<ActivityNearClient> activitiesNearClient,
+      List<EachMarkersModel> listOfMarkers,
       double? commentsContainerHeight});
 }
 
@@ -73,7 +76,8 @@ class _$MainStateCopyWithImpl<$Res, $Val extends MainState>
     Object? advantagesAutoPlayMode = null,
     Object? commentActiveStepper = null,
     Object? commentsAutoPlayMode = null,
-    Object? gymsWithActivities = null,
+    Object? activitiesNearClient = null,
+    Object? listOfMarkers = null,
     Object? commentsContainerHeight = freezed,
   }) {
     return _then(_value.copyWith(
@@ -109,10 +113,14 @@ class _$MainStateCopyWithImpl<$Res, $Val extends MainState>
           ? _value.commentsAutoPlayMode
           : commentsAutoPlayMode // ignore: cast_nullable_to_non_nullable
               as bool,
-      gymsWithActivities: null == gymsWithActivities
-          ? _value.gymsWithActivities
-          : gymsWithActivities // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
+      activitiesNearClient: null == activitiesNearClient
+          ? _value.activitiesNearClient
+          : activitiesNearClient // ignore: cast_nullable_to_non_nullable
+              as List<ActivityNearClient>,
+      listOfMarkers: null == listOfMarkers
+          ? _value.listOfMarkers
+          : listOfMarkers // ignore: cast_nullable_to_non_nullable
+              as List<EachMarkersModel>,
       commentsContainerHeight: freezed == commentsContainerHeight
           ? _value.commentsContainerHeight
           : commentsContainerHeight // ignore: cast_nullable_to_non_nullable
@@ -138,7 +146,8 @@ abstract class _$$MainStateImplCopyWith<$Res>
       bool advantagesAutoPlayMode,
       int commentActiveStepper,
       bool commentsAutoPlayMode,
-      Map<String, dynamic> gymsWithActivities,
+      List<ActivityNearClient> activitiesNearClient,
+      List<EachMarkersModel> listOfMarkers,
       double? commentsContainerHeight});
 }
 
@@ -161,7 +170,8 @@ class __$$MainStateImplCopyWithImpl<$Res>
     Object? advantagesAutoPlayMode = null,
     Object? commentActiveStepper = null,
     Object? commentsAutoPlayMode = null,
-    Object? gymsWithActivities = null,
+    Object? activitiesNearClient = null,
+    Object? listOfMarkers = null,
     Object? commentsContainerHeight = freezed,
   }) {
     return _then(_$MainStateImpl(
@@ -197,10 +207,14 @@ class __$$MainStateImplCopyWithImpl<$Res>
           ? _value.commentsAutoPlayMode
           : commentsAutoPlayMode // ignore: cast_nullable_to_non_nullable
               as bool,
-      gymsWithActivities: null == gymsWithActivities
-          ? _value._gymsWithActivities
-          : gymsWithActivities // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
+      activitiesNearClient: null == activitiesNearClient
+          ? _value._activitiesNearClient
+          : activitiesNearClient // ignore: cast_nullable_to_non_nullable
+              as List<ActivityNearClient>,
+      listOfMarkers: null == listOfMarkers
+          ? _value._listOfMarkers
+          : listOfMarkers // ignore: cast_nullable_to_non_nullable
+              as List<EachMarkersModel>,
       commentsContainerHeight: freezed == commentsContainerHeight
           ? _value.commentsContainerHeight
           : commentsContainerHeight // ignore: cast_nullable_to_non_nullable
@@ -221,9 +235,11 @@ class _$MainStateImpl extends _MainState {
       this.advantagesAutoPlayMode = true,
       this.commentActiveStepper = 0,
       this.commentsAutoPlayMode = true,
-      final Map<String, dynamic> gymsWithActivities = const {},
+      final List<ActivityNearClient> activitiesNearClient = const [],
+      final List<EachMarkersModel> listOfMarkers = const [],
       this.commentsContainerHeight = 0})
-      : _gymsWithActivities = gymsWithActivities,
+      : _activitiesNearClient = activitiesNearClient,
+        _listOfMarkers = listOfMarkers,
         super._();
 
   @override
@@ -250,14 +266,23 @@ class _$MainStateImpl extends _MainState {
   @override
   @JsonKey()
   final bool commentsAutoPlayMode;
-  final Map<String, dynamic> _gymsWithActivities;
+  final List<ActivityNearClient> _activitiesNearClient;
   @override
   @JsonKey()
-  Map<String, dynamic> get gymsWithActivities {
-    if (_gymsWithActivities is EqualUnmodifiableMapView)
-      return _gymsWithActivities;
+  List<ActivityNearClient> get activitiesNearClient {
+    if (_activitiesNearClient is EqualUnmodifiableListView)
+      return _activitiesNearClient;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_gymsWithActivities);
+    return EqualUnmodifiableListView(_activitiesNearClient);
+  }
+
+  final List<EachMarkersModel> _listOfMarkers;
+  @override
+  @JsonKey()
+  List<EachMarkersModel> get listOfMarkers {
+    if (_listOfMarkers is EqualUnmodifiableListView) return _listOfMarkers;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_listOfMarkers);
   }
 
   @override
@@ -266,7 +291,7 @@ class _$MainStateImpl extends _MainState {
 
   @override
   String toString() {
-    return 'MainState(isloading: $isloading, advantages: $advantages, subscribtions: $subscribtions, comments: $comments, activeStepState: $activeStepState, advantagesAutoPlayMode: $advantagesAutoPlayMode, commentActiveStepper: $commentActiveStepper, commentsAutoPlayMode: $commentsAutoPlayMode, gymsWithActivities: $gymsWithActivities, commentsContainerHeight: $commentsContainerHeight)';
+    return 'MainState(isloading: $isloading, advantages: $advantages, subscribtions: $subscribtions, comments: $comments, activeStepState: $activeStepState, advantagesAutoPlayMode: $advantagesAutoPlayMode, commentActiveStepper: $commentActiveStepper, commentsAutoPlayMode: $commentsAutoPlayMode, activitiesNearClient: $activitiesNearClient, listOfMarkers: $listOfMarkers, commentsContainerHeight: $commentsContainerHeight)';
   }
 
   @override
@@ -291,7 +316,9 @@ class _$MainStateImpl extends _MainState {
             (identical(other.commentsAutoPlayMode, commentsAutoPlayMode) ||
                 other.commentsAutoPlayMode == commentsAutoPlayMode) &&
             const DeepCollectionEquality()
-                .equals(other._gymsWithActivities, _gymsWithActivities) &&
+                .equals(other._activitiesNearClient, _activitiesNearClient) &&
+            const DeepCollectionEquality()
+                .equals(other._listOfMarkers, _listOfMarkers) &&
             (identical(
                     other.commentsContainerHeight, commentsContainerHeight) ||
                 other.commentsContainerHeight == commentsContainerHeight));
@@ -308,7 +335,8 @@ class _$MainStateImpl extends _MainState {
       advantagesAutoPlayMode,
       commentActiveStepper,
       commentsAutoPlayMode,
-      const DeepCollectionEquality().hash(_gymsWithActivities),
+      const DeepCollectionEquality().hash(_activitiesNearClient),
+      const DeepCollectionEquality().hash(_listOfMarkers),
       commentsContainerHeight);
 
   @JsonKey(ignore: true)
@@ -328,7 +356,8 @@ abstract class _MainState extends MainState {
       final bool advantagesAutoPlayMode,
       final int commentActiveStepper,
       final bool commentsAutoPlayMode,
-      final Map<String, dynamic> gymsWithActivities,
+      final List<ActivityNearClient> activitiesNearClient,
+      final List<EachMarkersModel> listOfMarkers,
       final double? commentsContainerHeight}) = _$MainStateImpl;
   const _MainState._() : super._();
 
@@ -349,7 +378,9 @@ abstract class _MainState extends MainState {
   @override
   bool get commentsAutoPlayMode;
   @override
-  Map<String, dynamic> get gymsWithActivities;
+  List<ActivityNearClient> get activitiesNearClient;
+  @override
+  List<EachMarkersModel> get listOfMarkers;
   @override
   double? get commentsContainerHeight;
   @override

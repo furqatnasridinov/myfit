@@ -2,6 +2,7 @@ import 'package:activity/application/main/main_notifier.dart';
 import 'package:activity/application/main/main_state.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_text.dart';
+import 'package:activity/presentation/components/inter_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -177,13 +178,13 @@ i   nt activePageIndex = 0;
             //color: Colors.red,
             //height: 75.h,
             width: 120.w,
-            child: CustomText(
+            child: InterText(
               maxLines: 4,
               overflow: TextOverflow.ellipsis,
               text: firstText,
               fontWeight: FontWeight.w600,
-              fontSize: 16.sp,
-              opacity: opacity,
+              fontSize: 15.sp,
+              //opacity: opacity,
             ),
           ),
           16.horizontalSpace,
