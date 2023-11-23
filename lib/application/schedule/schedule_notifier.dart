@@ -1,5 +1,8 @@
 import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/domain/interface/schedule.dart';
+import 'package:activity/infrastructure/models/data/gym_with_tags.dart';
+import 'package:activity/infrastructure/models/request/add_note_request.dart';
+import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:flutter/material.dart';
@@ -167,6 +170,142 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     return formattedTime;
   }
 
+  void determineWhenActivityStarts(String startTime) {
+    // startTime 2023-11-11@13:15
+    List<String> parts = startTime.split("@");
+    String formatted = "${parts[0]} ${parts[1]}:00";
+    DateTime startingTimeInDTFormat = DateTime.parse(formatted);
+    DateTime now = DateTime.now();
+    Duration resultOnDuration = startingTimeInDTFormat.difference(now);
+    String formattedDifference = formatDuration(resultOnDuration);
+    state = state.copyWith(whenActivityStarts: formattedDifference);
+  }
+
+  String formatDuration(Duration duration) {
+    String days = duration.inDays > 0 ? "${duration.inDays} дня" : "";
+    String hours =
+        duration.inHours % 24 > 0 ? "${duration.inHours % 24} час" : "";
+    String minutes =
+        duration.inMinutes % 60 > 0 ? "${duration.inMinutes % 60} минут" : "";
+
+    List<String> parts = [days, hours, minutes];
+    parts.removeWhere((part) => part.isEmpty);
+
+    return parts.join(' ');
+  }
+
+  Future<void> getNearestLesson(BuildContext context) async {
+    state = state.copyWith(isloading: true);
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response = await _scheduleRepositoryInterface.getNearestLesson();
+      response.when(
+        success: (data) {
+          if (data.bodyData != null) {
+            print("getNearestLesson notifier success, data >> $data");
+            determineWhenActivityStarts(data.bodyData!.date!);
+            state = state.copyWith(nearestLesson: data);
+          }
+        },
+        failure: (error, statusCode) {
+          print("getNearestLesson notifier failure");
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+    state = state.copyWith(isloading: false);
+  }
+
+  Future<void> getUserStatsMonth(BuildContext context) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response = await _scheduleRepositoryInterface.getUserStatsMonth();
+      response.when(
+        success: (data) {
+          print(
+              "notifier getUserStatsMonth success, data >>  ${data.bodyData?.length}");
+          // sorting list by its count
+          final _list = data.bodyData;
+          _list?.sort(
+            (a, b) => a.count!.compareTo(b.count!),
+          );
+          state = state.copyWith(statsForMonth: _list!.reversed.toList());
+        },
+        failure: (error, statusCode) {
+          print("notifier getUserStatsMonth failure");
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> getNotes(BuildContext context, String gymName) async {
+    print("getNotes called");
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      state = state.copyWith(isloading: true);
+      final response = await _scheduleRepositoryInterface.getNotes();
+      response.when(
+        success: (data) {
+          print("getNotes notifier success");
+          List<GymWithTags> _list = [];
+          final mapData = data["object"];
+          mapData.forEach((key, value) {
+            value.forEach((element) {
+              if (gymName == element["gym"]["name"]) {
+                final data = GymWithTags(
+                  date: element["date"],
+                  id: element["id"],
+                  description: element["description"],
+                  duration: element["duration"],
+                  gym: Gym.fromJson(element["gym"] ?? {}),
+                  tag: (element["tag"] as List<dynamic>?)
+                      ?.map((tag) => Tag.fromJson(tag))
+                      .toList(),
+                );
+                _list.add(data);
+              }
+            });
+          });
+          state = state.copyWith(listOfGymWithTags: _list);
+          state = state.copyWith(isloading: false);
+          //state = state.copyWith(notesMapData: mapData);
+        },
+        failure: (error, statusCode) {
+          print("getNotes notifier failure");
+          state = state.copyWith(isloading: false);
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> addNote(
+      String tag, String description, int id, BuildContext context) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final request = AddNoteRequest(
+        tag: tag,
+        description: description,
+        lesson: Lesson(id: id),
+      );
+      final response = await _scheduleRepositoryInterface.addNotes(request);
+      response.when(
+        success: (data) {
+          print("addNote notifier success");
+        },
+        failure: (error, statusCode) {
+          print("addNote notifier failure");
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
   void showTilWhen() {
     state = state.copyWith(showTillWhen: true);
   }
@@ -198,5 +337,39 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
   void disnableFlashButton() {
     state = state.copyWith(isFlashButtonActivated: false);
   }
-  
+
+  Color getColors(int index) {
+    if (index == 0) {
+      return AppColors.goldText;
+    }
+    if (index == 1) {
+      return AppColors.purpleText;
+    }
+    if (index == 2) {
+      return AppColors.blueColor;
+    } else {
+      return Colors.grey.shade400;
+    }
+  }
+
+  void changeNotificationTime(String newTime) {
+    state = state.copyWith(notificationTime: newTime);
+  }
+
+  Future<void> cancelActivity(int id, BuildContext context) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response = await _scheduleRepositoryInterface.cancelActivity(id);
+      response.when(
+        success: (data) {
+          print("cancelActivity notifier success");
+        },
+        failure: (error, statusCode) {
+          print("cancelActivity notifier failure");
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
 }

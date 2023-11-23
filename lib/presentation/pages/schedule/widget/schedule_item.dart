@@ -16,7 +16,7 @@ class ScheduleItemWidget extends StatelessWidget {
   final String time;
   final String description;
   final String duration;
-  final String address;
+  final String name;
   final ScheduleNotifier event;
   final ScheduleState state;
 
@@ -24,7 +24,7 @@ class ScheduleItemWidget extends StatelessWidget {
     required this.time,
     required this.description,
     required this.duration,
-    required this.address,
+    required this.name,
     required this.id,
     required this.event,
     required this.state,
@@ -50,10 +50,10 @@ class ScheduleItemWidget extends StatelessWidget {
     final String formattedTime = time.substring(time.length - 5);
     final String tillWhen = event.durationToTillWhen(formattedTime, duration);
     return SizedBox(
-      // Ваш код для отображения информации о расписании
       child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             // time
             Column(
@@ -89,6 +89,8 @@ class ScheduleItemWidget extends StatelessWidget {
 
             // custom card datas about schedules
             CustomCard(
+              //width: 310.w,
+              //color: Colors.green,
               marginBottom: 5.h,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,6 +100,7 @@ class ScheduleItemWidget extends StatelessWidget {
                     width: 265.w,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // describtion
                         SizedBox(
@@ -109,12 +112,15 @@ class ScheduleItemWidget extends StatelessWidget {
                           ),
                         ),
                         10.horizontalSpace,
+                        // three dots
                         DropDownMenuInsideCard(
                           onTap: () => context.router.push(
                             NotesRoute(
-                              day: time,
+                              gymName: name,
                             ),
                           ),
+                          event: event,
+                          id: id,
                         ),
                       ],
                     ),
@@ -125,6 +131,7 @@ class ScheduleItemWidget extends StatelessWidget {
                   SizedBox(
                     width: 265.w,
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         // duration
@@ -151,7 +158,7 @@ class ScheduleItemWidget extends StatelessWidget {
                                       ? "до $tillWhen"
                                       : duration,
                                   color: AppColors.greyText,
-                                  fontSize: 13.sp,
+                                  fontSize: 12.sp,
                                   fontWeight: FontWeight.w400,
                                 ),
                               ],
@@ -160,9 +167,10 @@ class ScheduleItemWidget extends StatelessWidget {
                         ),
                         // location
                         SizedBox(
-                          width: 180.w,
+                          width: 200.w,
                           //color: Colors.red,
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Icon(
                                 Icons.location_on_outlined,
@@ -174,11 +182,11 @@ class ScheduleItemWidget extends StatelessWidget {
                                 width: 160.w,
                                 //color: Colors.red,
                                 child: InterText(
-                                  maxLines: 1,
+                                  maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
-                                  text: address,
+                                  text: name,
                                   color: AppColors.greyText,
-                                  fontSize: 13.sp,
+                                  fontSize: 11.5.sp,
                                   fontWeight: FontWeight.w400,
                                 ),
                               )

@@ -91,6 +91,9 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
     print("state.selectedFormattedDay ${state.selectedFormattedDay}");
     print("state.selectedOriginalDate ${state.selectedOriginalDate}");
     print("state.listOfFormattedDaysFrom1To30currentMonth ${state.listOfFormattedDaysFrom1To30currentMonth}");*/
+    print("state.selectedOriginalDate ${state.selectedOriginalDate}");
+    print(
+        "state.listOfFormattedDaysFrom1To30currentMonth ${state.listOfFormattedDaysFrom1To30currentMonth}");
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,

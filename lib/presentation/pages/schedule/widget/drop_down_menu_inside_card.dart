@@ -1,22 +1,19 @@
-import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/inter_text.dart';
-import 'package:activity/presentation/components/ui_action_button_outlined.dart';
-import 'package:activity/presentation/components/ui_bottom_modal.dart';
-import 'package:activity/presentation/components/ui_button_filled.dart';
-import 'package:activity/presentation/components/ui_button_outlined.dart';
-import 'package:activity/presentation/components/ui_date_picker.dart';
+import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/presentation/components/ui_dropdown_menu.dart';
-import 'package:activity/presentation/components/ui_time_picker.dart';
-import 'package:activity/presentation/pages/schedule/schedule.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class DropDownMenuInsideCard extends StatelessWidget {
   void Function()? onTap;
-  DropDownMenuInsideCard({super.key,this.onTap});
+  int? id;
+  ScheduleNotifier? event;
+  DropDownMenuInsideCard({
+    super.key,
+    this.onTap,
+    this.id,
+    this.event,
+  });
   TimeOfDay? selectedTime =
       TimeOfDay(hour: TimeOfDay.now().hour, minute: TimeOfDay.now().minute);
   DateTime? selectedDate = DateTime.now();
@@ -24,7 +21,9 @@ class DropDownMenuInsideCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return UiDropDownMenu(
-      customOffset: const [-25.0, -15.0],
+      width: double.maxFinite,
+      maxWidth: 263.w,
+      customOffset: [-18.0.w, -39.h],
       dropDownItemsList: [
         {
           'title': 'Открыть заметки',
@@ -39,7 +38,7 @@ class DropDownMenuInsideCard extends StatelessWidget {
           ),
           'action': onTap,
         },
-        {
+        /* {
           'title': 'Продублировать на другую дату',
           'icon': SvgPicture.asset(
             'assets/svg/notes.svg',
@@ -206,7 +205,7 @@ class DropDownMenuInsideCard extends StatelessWidget {
                   );
                 })
               }
-        },
+        }, */
         {
           'title': 'Отменить запись',
           'icon': SvgPicture.asset(
@@ -216,7 +215,11 @@ class DropDownMenuInsideCard extends StatelessWidget {
             height: 18.h,
             width: 18.w,
           ),
-          'action': () => {}
+          'action': () => {
+                event?.cancelActivity(id!, context).then(
+                      (value) => event?.getUsersSchedules(context),
+                    ),
+              }
         },
       ],
       dropDownChild: const Icon(

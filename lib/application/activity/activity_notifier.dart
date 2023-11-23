@@ -1,6 +1,7 @@
 import 'package:activity/application/activity/activity_state.dart';
 import 'package:activity/domain/interface/activity.dart';
 import 'package:activity/infrastructure/models/request/get_gym_photos_request.dart';
+import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -182,14 +183,14 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   }
 
   getSchedulesList(String data) {
-    if (state.listOfFormattedDaysFrom1To30currentMonth.contains(data)) {
+    if (DummyData().days30.contains(data)) {
       final Map<String, dynamic> mapData = state.scheddules;
       if (mapData.containsKey(data)) {
         //print("Найден ключ: $data");
         state = state.copyWith(listOfSchedules: mapData[data]);
       }
-    }else{
-      print("data is not in listOfFormattedDaysFrom1To30currentMonth list");
+    } else {
+      print("data is not in dummy list");
     }
   }
 
@@ -222,7 +223,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     };
 
     String? convertToFormattedDate(String dateString) {
-      // Разбить входную строку на части
+      
       final parts = dateString.split(' ');
 
       if (parts.length != 3) {

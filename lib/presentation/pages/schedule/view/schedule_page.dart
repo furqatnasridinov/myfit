@@ -43,9 +43,6 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(scheduleProvider);
     final event = ref.read(scheduleProvider.notifier);
-    /* final experiment = event.durationToTillWhen("14:00", "02:30");
-    print("experiment  $experiment"); */
-    //print("state.schedulesInMapForm >> ${state.schedulesInMapForm}");
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
@@ -62,10 +59,12 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
                   SliverPadding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
                     sliver: SliverToBoxAdapter(
-                      child: ScheduleTitle(),
+                      child: ScheduleTitle(
+                        event: event,
+                        state: state,
+                      ),
                     ),
                   ),
-
                   // body builder
                   SliverPadding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w)
@@ -73,9 +72,11 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
                     sliver: SliverList.builder(
                       itemCount: allDayOfMonth.length,
                       itemBuilder: (context, index) {
-                        final date = allDayOfMonth[index];
-                        final formattedDay = event.formatDay(date);
-                        final formattedDayOfWeek = event.determineWeekday(date);
+                        final date = allDayOfMonth[
+                            index]; // "2023-11-01" till "2023-11-15",
+                        final formattedDay = event.formatDay(date); // Ноябрь 1
+                        final formattedDayOfWeek =
+                            event.determineWeekday(date); // Понедельник
                         if (state.schedulesInMapForm.containsKey(date)) {
                           final scheduleItemsData =
                               state.schedulesInMapForm[date];
@@ -88,7 +89,7 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
                               time: itemData['date'],
                               description: itemData['description'],
                               duration: itemData["duration"],
-                              address: itemData['gym']['address'],
+                              name: itemData['gym']['name'],
                             );
                           }).toList();
                           return ScheduleCardMaker(

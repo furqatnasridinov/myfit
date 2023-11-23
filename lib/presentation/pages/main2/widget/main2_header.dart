@@ -4,6 +4,7 @@ import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/dummy_data.dart';
+import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/components/ui_button_filled.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
@@ -82,23 +83,14 @@ class _MainHeaderState extends State<Main2Header> {
                         itemCount: listofaddresses.length,
                         itemBuilder: (context, index) {
                           final currentGym = listofaddresses[index];
-                          return ListTile(
-                            onTap: () {
+                          return _listiles(
+                            currentGym.name,
+                            currentGym.destination,
+                            () {
                               controller.text = currentGym.name;
                               textfieldFocusnode.unfocus();
                               setState(() {});
                             },
-                            title: CustomText(
-                              text: currentGym.name,
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            subtitle: CustomText(
-                              text: currentGym.destination,
-                              color: AppColors.greyText,
-                              fontSize: 10.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
                           );
                         },
                       ),
@@ -154,6 +146,7 @@ class _MainHeaderState extends State<Main2Header> {
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
       elevation: 0,
       centerTitle: false,
+      titleSpacing: 0.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(32.r),
@@ -175,9 +168,10 @@ class _MainHeaderState extends State<Main2Header> {
 
       // title
       title: AnimatedContainer(
-        duration: const Duration(milliseconds: 400),
-        width: textfieldFocusnode.hasFocus ? 340.w : 300.w,
+        duration: const Duration(milliseconds: 500),
+        width: textfieldFocusnode.hasFocus ? 344.w : 300.w,
         height: 40.h,
+        margin: EdgeInsets.only(left: 16.w),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(100.r),
@@ -188,10 +182,14 @@ class _MainHeaderState extends State<Main2Header> {
             width: 1.w,
           ),
         ),
-        padding: EdgeInsets.only(right: 7.w, top: 3.h),
+        padding: EdgeInsets.only(right: 7.w, /* top: 3.h */),
         child: CompositedTransformTarget(
           link: layerlink,
           child: TextField(
+            onChanged: (value) {
+              controller.text = value;
+              setState(() {});
+            },
             controller: controller,
             onTap: () {
               textfieldFocusnode.requestFocus();
@@ -204,28 +202,30 @@ class _MainHeaderState extends State<Main2Header> {
             focusNode: textfieldFocusnode,
             decoration: InputDecoration(
               isDense: true,
-              suffixIcon: textfieldFocusnode.hasFocus
-                  ? GestureDetector(
-                      onTap: () {
-                        if (controller.text.isEmpty) {
-                          textfieldFocusnode.unfocus();
-                          setState(() {});
-                        } else {
-                          controller.clear();
-                        }
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.only(right: 0.w),
-                        child: Icon(
-                          Icons.clear,
-                          color: Colors.black,
-                          size: 18.r,
-                        ),
-                      ),
-                    )
-                  : null,
+              suffixIcon:
+                  textfieldFocusnode.hasFocus && controller.text.isNotEmpty
+                      ? GestureDetector(
+                          onTap: () {
+                            if (controller.text.isEmpty) {
+                              textfieldFocusnode.unfocus();
+                              setState(() {});
+                            } else {
+                              controller.clear();
+                              setState(() {});
+                            }
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 0.w),
+                            child: Icon(
+                              Icons.clear,
+                              color: Colors.black,
+                              size: 15.5.r,
+                            ),
+                          ),
+                        )
+                      : null,
               prefixIcon: Container(
-                margin: EdgeInsets.all(3.r),
+                margin: EdgeInsets.all(2.r).copyWith(bottom: 4.h, left: 1.w),
                 decoration: const BoxDecoration(
                   color: AppColors.backgroundColor,
                   shape: BoxShape.circle,
@@ -239,10 +239,6 @@ class _MainHeaderState extends State<Main2Header> {
               ),
               hintText: "Найти занятие",
               border: InputBorder.none,
-              /* contentPadding: EdgeInsets.zero.copyWith(
-                left: 12.w,
-                top: 8.h,
-              ), */
             ),
           ),
         ),
@@ -266,6 +262,7 @@ class _MainHeaderState extends State<Main2Header> {
                   top: 4.5.h,
                   right: 16.w,
                   bottom: 4.5.h,
+                  left: 5.w
                 ),
                 child: Row(
                   children: [
@@ -315,4 +312,33 @@ class _MainHeaderState extends State<Main2Header> {
       ],
     );
   }
+}
+
+Widget _listiles(
+  String name,
+  String km,
+  void Function()? onTap,
+) {
+  return InkWell(
+    onTap: onTap,
+    child: Container(
+      margin: EdgeInsets.only(left: 10.w, bottom: 15.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomText(
+            text: name,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+          ),
+          InterText(
+            text: km,
+            color: AppColors.greyText,
+            fontSize: 10.sp,
+            fontWeight: FontWeight.w500,
+          ),
+        ],
+      ),
+    ),
+  );
 }

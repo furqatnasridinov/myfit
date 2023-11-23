@@ -17,7 +17,7 @@ class AppRouter extends $AppRouter {
         AutoRoute(
           page: MainRoute.page,
           //path: "/main",
-          path: "/"
+          //path: "/",
         ),
         AutoRoute(
           page: NotesRoute.page,
@@ -26,6 +26,33 @@ class AppRouter extends $AppRouter {
         AutoRoute(
           page: Main2Route.page,
           //path: "/"
-        )
+        ),
+        AutoRoute(
+          page: MapRoute.page,
+          //path: "/map"
+          //path: "/",
+        ),
+        AutoRoute(
+          page: RegistrationRoute.page,
+          path: "/",
+        ),
+        AutoRoute(
+          page: Registration1Route.page,
+          path: "/registration1",
+        ),
+        AutoRoute(
+          page: Registration2Route.page,
+          path: "/registration2",
+        ),
+        AutoRoute(
+          page: Registration3Route.page,
+          path: "/registration3",
+         // path: "/",
+        ),
+        AutoRoute(
+          page: Registration4Route.page,
+          path: "/registration4",
+          //path: "/",
+        ),
       ];
 }

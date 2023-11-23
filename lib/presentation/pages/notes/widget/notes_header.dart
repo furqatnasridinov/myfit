@@ -3,6 +3,7 @@ import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/dummy_data.dart';
+import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/components/ui_button_filled.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -79,23 +80,14 @@ class _MainHeaderState extends State<NotesHeader> {
                         itemCount: listofaddresses.length,
                         itemBuilder: (context, index) {
                           final currentGym = listofaddresses[index];
-                          return ListTile(
-                            onTap: () {
+                          return _listiles(
+                            currentGym.name,
+                            currentGym.destination,
+                            () {
                               controller.text = currentGym.name;
                               textfieldFocusnode.unfocus();
                               setState(() {});
                             },
-                            title: CustomText(
-                              text: currentGym.name,
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            subtitle: CustomText(
-                              text: currentGym.destination,
-                              color: AppColors.greyText,
-                              fontSize: 10.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
                           );
                         },
                       ),
@@ -146,11 +138,10 @@ class _MainHeaderState extends State<NotesHeader> {
 
     return AppBar(
       automaticallyImplyLeading: false,
-      //backgroundColor: const Color.fromRGBO(245, 249, 255, 0.976),
-      //backgroundColor: Colors.white.withOpacity(0.96),
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
       elevation: 0,
       centerTitle: false,
+      titleSpacing: textfieldFocusnode.hasFocus ? 14.w : 5.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(32.r),
@@ -174,9 +165,7 @@ class _MainHeaderState extends State<NotesHeader> {
       leading: textfieldFocusnode.hasFocus
           ? null
           : Container(
-              margin: EdgeInsets.all(5.r),
-              width: 40.w,
-              height: 40.h,
+              margin: EdgeInsets.only(left: 10.w),
               child: Ink(
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -192,7 +181,7 @@ class _MainHeaderState extends State<NotesHeader> {
                   child: SizedBox(
                     child: Icon(
                       Icons.keyboard_arrow_left,
-                      size: 24.r,
+                      size: 22.r,
                       color: Colors.black,
                     ),
                   ),
@@ -202,8 +191,8 @@ class _MainHeaderState extends State<NotesHeader> {
 
       // title
       title: AnimatedContainer(
-        duration: const Duration(milliseconds: 2500),
-        width: textfieldFocusnode.hasFocus ? double.maxFinite : 300.w,
+        duration: const Duration(milliseconds: 500),
+        width: textfieldFocusnode.hasFocus ? 380.w : 300.w,
         height: 40.h,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -215,11 +204,18 @@ class _MainHeaderState extends State<NotesHeader> {
             width: 1.w,
           ),
         ),
-        padding: EdgeInsets.only(right: 7.w, top: 3.h),
+        padding: EdgeInsets.only(
+          right: 7.w,
+          //top: 3.h,
+        ),
         child: CompositedTransformTarget(
           link: layerlink,
           child: TextField(
             controller: controller,
+            onChanged: (value) {
+              controller.text = value;
+              setState(() {});
+            },
             onTap: () {
               textfieldFocusnode.requestFocus();
               setState(() {});
@@ -231,28 +227,29 @@ class _MainHeaderState extends State<NotesHeader> {
             focusNode: textfieldFocusnode,
             decoration: InputDecoration(
               isDense: true,
-              suffixIcon: textfieldFocusnode.hasFocus
-                  ? GestureDetector(
-                      onTap: () {
-                        if (controller.text.isEmpty) {
-                          textfieldFocusnode.unfocus();
-                          setState(() {});
-                        } else {
-                          controller.clear();
-                        }
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.only(right: 0.w),
-                        child: Icon(
-                          Icons.clear,
-                          color: Colors.black,
-                          size: 18.r,
-                        ),
-                      ),
-                    )
-                  : null,
+              suffixIcon:
+                  textfieldFocusnode.hasFocus && controller.text.isNotEmpty
+                      ? GestureDetector(
+                          onTap: () {
+                            if (controller.text.isEmpty) {
+                              textfieldFocusnode.unfocus();
+                              setState(() {});
+                            } else {
+                              controller.clear();
+                            }
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 0.w),
+                            child: Icon(
+                              Icons.clear,
+                              color: Colors.black,
+                              size: 15.5.r,
+                            ),
+                          ),
+                        )
+                      : null,
               prefixIcon: Container(
-                margin: EdgeInsets.all(2.r),
+                margin: EdgeInsets.all(2.r).copyWith(bottom: 4.h, left: 1.w),
                 decoration: const BoxDecoration(
                   color: AppColors.backgroundColor,
                   shape: BoxShape.circle,
@@ -266,10 +263,6 @@ class _MainHeaderState extends State<NotesHeader> {
               ),
               hintText: "Заметка",
               border: InputBorder.none,
-              /* contentPadding: EdgeInsets.zero.copyWith(
-                left: 12.w,
-                top: 8.h,
-              ), */
             ),
           ),
         ),
@@ -280,7 +273,7 @@ class _MainHeaderState extends State<NotesHeader> {
         textfieldFocusnode.hasFocus
             ? const SizedBox()
             : Container(
-                height: 40.h,
+                //height: 40.h,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(100.r),
@@ -337,4 +330,33 @@ class _MainHeaderState extends State<NotesHeader> {
       ],
     );
   }
+}
+
+Widget _listiles(
+  String name,
+  String km,
+  void Function()? onTap,
+) {
+  return InkWell(
+    onTap: onTap,
+    child: Container(
+      margin: EdgeInsets.only(left: 10.w, bottom: 15.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomText(
+            text: name,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+          ),
+          InterText(
+            text: km,
+            color: AppColors.greyText,
+            fontSize: 10.sp,
+            fontWeight: FontWeight.w500,
+          ),
+        ],
+      ),
+    ),
+  );
 }

@@ -11,7 +11,7 @@ class DecoratedTextOne extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          height: 250,
+          height: 250.h,
           width: double.infinity,
           decoration: const BoxDecoration(
             image: DecorationImage(
@@ -28,7 +28,7 @@ class DecoratedTextOne extends StatelessWidget {
                   Text(
                     '15 324',
                     style: GoogleFonts.exo2(
-                      fontSize: 45.0,
+                      fontSize: 45.sp,
                       fontWeight: FontWeight.w700,
                       shadows: const [
                         Shadow(
@@ -40,19 +40,23 @@ class DecoratedTextOne extends StatelessWidget {
                       foreground: Paint()
                         ..style = PaintingStyle.stroke
                         ..strokeWidth = 1.5
-                        ..color = const Color.fromRGBO(255, 136, 136, 1),
+                        ..color = const Color.fromRGBO(
+                          255,
+                          136,
+                          136,
+                          1,
+                        ),
                     ),
                   ),
                   Text(
                     '15 324',
                     style: GoogleFonts.exo2(
-                      fontSize: 45.0,
-                      //fontFamily: 'Exo2',
+                      fontSize: 45.sp,
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
-                      shadows: [
+                      shadows: const [
                         Shadow(
-                          offset: Offset(0, 3),
+                          offset: Offset(0, 5),
                           color: Color.fromRGBO(255, 136, 136, 1),
                         ),
                       ],

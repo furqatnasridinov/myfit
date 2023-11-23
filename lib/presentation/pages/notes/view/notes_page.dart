@@ -9,8 +9,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 @RoutePage()
 class NotesScreen extends ConsumerStatefulWidget {
-  final String day;
-  const NotesScreen({super.key, required this.day});
+  final String gymName; //Фитнес-клуб Mytimefitness
+
+  const NotesScreen({super.key, required this.gymName});
 
   @override
   ConsumerState<NotesScreen> createState() => _ScheduleItemScreen();
@@ -18,53 +19,56 @@ class NotesScreen extends ConsumerStatefulWidget {
 
 class _ScheduleItemScreen extends ConsumerState<NotesScreen> {
   @override
+  void initState() {
+    super.initState();
+    /* ref.read(scheduleProvider.notifier).addNote(
+          "Проверка",
+          "Номер 1 ",
+          6,
+          context,
+        ); */
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(scheduleProvider.notifier).getNotes(context, widget.gymName);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final state = ref.watch(scheduleProvider);
     final event = ref.read(scheduleProvider.notifier);
-    List<String> parts = widget.day.split("@");
-    String dayToFormat = parts[0];
-    final formattedDay = event.formatDay(dayToFormat);
-    print(formattedDay);
-    final List<dynamic> scheduleItemsData =
-        state.schedulesInMapForm[dayToFormat];
+    print("build called");
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: AppColors.backgroundColor,
       appBar: const NotesHeader(),
-      body: SafeArea(
-        bottom: false,
-        child: CustomScrollView(
-          slivers: [
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w)
-                  .copyWith(top: 7.h, bottom: 32.h),
-              sliver: SliverToBoxAdapter(
-                child: NotesTopSection(
-                  event: event,
-                  state: state,
-                  formattedDay: formattedDay,
-                ),
+      body: state.isloading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : SafeArea(
+              bottom: false,
+              child: CustomScrollView(
+                slivers: [
+                  SliverPadding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    sliver: SliverList.builder(
+                      itemCount: state.listOfGymWithTags.length,
+                      itemBuilder: (context, index) {
+                        final current = state.listOfGymWithTags[index];
+                        return NotesCardMaker(
+                          event: event,
+                          name: current.gym?.name ?? "??",
+                          startTime: current.date ?? "?",
+                          description: current.description ?? "?",
+                          day: current.date ?? "?",
+                          gymWithTags: current,
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
-
-            // body
-
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              sliver: SliverList.builder(
-                itemCount: scheduleItemsData.length,
-                itemBuilder: (context, index) {
-                  return NotesCardMaker(
-                    address: scheduleItemsData[index]["gym"]["address"],
-                    startTime: scheduleItemsData[index]["date"],
-                    description: scheduleItemsData[index]["description"],
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

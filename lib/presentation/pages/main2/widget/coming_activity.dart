@@ -1,21 +1,20 @@
 import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/application/schedule/schedule_state.dart';
-import 'package:activity/domain/di/dependency_manager.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/ui_card.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ComingActivity extends StatelessWidget {
-  ComingActivity({super.key});
+  final ScheduleState state;
+  final ScheduleNotifier event;
+  const ComingActivity({super.key, required this.state, required this.event});
 
-  ScheduleNotifier scheduleNotifier = ScheduleNotifier(scheduleRepo);
-  ScheduleState scheduleState = const ScheduleState();
   @override
   Widget build(BuildContext context) {
+    List<String> parts = state.nearestLesson!.bodyData!.date!.split("@");
+    final String formattedDay = event.formatDay(parts[0]);
     return UiCard(
       cardValue: Column(
         children: [
@@ -28,7 +27,8 @@ class ComingActivity extends StatelessWidget {
               ),
               const Spacer(),
               CustomText(
-                text: 'через 1ч 16м',
+                //text: 'через 1ч 16м',
+                text: state.whenActivityStarts,
                 fontSize: 10.sp,
                 fontWeight: FontWeight.w500,
                 color: AppColors.greyText,
@@ -50,10 +50,15 @@ class ComingActivity extends StatelessWidget {
                     color: Color.fromRGBO(119, 170, 249, 1),
                   ),
                   7.horizontalSpace,
-                  CustomText(
-                    text: 'Массаж расслабляющий',
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w600,
+                  SizedBox(
+                    child: CustomText(
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      text:
+                          state.nearestLesson?.bodyData?.description ?? "Empty",
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ],
               ),
@@ -74,7 +79,7 @@ class ComingActivity extends StatelessWidget {
                   ),
                   7.horizontalSpace,
                   CustomText(
-                    text: '13:30 Сегодня',
+                    text: "$formattedDay  ${parts[1]} часа",
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
                   ),
@@ -98,8 +103,10 @@ class ComingActivity extends StatelessWidget {
                   7.horizontalSpace,
                   Flexible(
                     child: CustomText(
-                      text:
-                          'Салон красоты “Viva-Vite”.ул. Лёни Ленина, д. 12, БЦ “Big Мук”',
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
+                      text: state.nearestLesson?.bodyData?.gym?.address ??
+                          "Empty",
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
                     ),

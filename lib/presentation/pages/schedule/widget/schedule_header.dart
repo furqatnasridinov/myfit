@@ -4,6 +4,7 @@ import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/dummy_data.dart';
+import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/components/ui_button_filled.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -80,23 +81,14 @@ class _MainHeaderState extends State<ScheduleHeader> {
                         itemCount: listofaddresses.length,
                         itemBuilder: (context, index) {
                           final currentGym = listofaddresses[index];
-                          return ListTile(
-                            onTap: () {
+                          return _listiles(
+                            currentGym.name,
+                            currentGym.destination,
+                            () {
                               controller.text = currentGym.name;
                               textfieldFocusnode.unfocus();
                               setState(() {});
                             },
-                            title: CustomText(
-                              text: currentGym.name,
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            subtitle: CustomText(
-                              text: currentGym.destination,
-                              color: AppColors.greyText,
-                              fontSize: 10.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
                           );
                         },
                       ),
@@ -151,6 +143,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
       elevation: 0,
       centerTitle: false,
+      titleSpacing: textfieldFocusnode.hasFocus ? 16.w : 5.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(32.r),
@@ -174,7 +167,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
       leading: textfieldFocusnode.hasFocus
           ? null
           : Container(
-              margin: EdgeInsets.all(5.r),
+              margin: EdgeInsets.only(left: 10.w),
               width: 40.w,
               height: 40.h,
               child: Ink(
@@ -192,8 +185,8 @@ class _MainHeaderState extends State<ScheduleHeader> {
                   child: SizedBox(
                     child: Icon(
                       Icons.keyboard_arrow_left,
-                      size: 24.r,
-                      color: Colors.black,
+                      size: 25.r,
+                      color: Colors.black54,
                     ),
                   ),
                 ),
@@ -203,7 +196,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
       // title
       title: AnimatedContainer(
         duration: const Duration(milliseconds: 500),
-        width: textfieldFocusnode.hasFocus ? double.maxFinite : 350.w,
+        width: textfieldFocusnode.hasFocus ? 350.w : 300.w,
         height: 40.h,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -215,11 +208,15 @@ class _MainHeaderState extends State<ScheduleHeader> {
             width: 1.w,
           ),
         ),
-        padding: EdgeInsets.only(right: 7.w, top: 3.h),
+        padding: EdgeInsets.only(right: 7.w,  top: 1.h ),
         child: CompositedTransformTarget(
           link: layerlink,
           child: TextField(
             controller: controller,
+            onChanged: (value) {
+              controller.text = value;
+              setState(() {});
+            },
             onTap: () {
               textfieldFocusnode.requestFocus();
               setState(() {});
@@ -231,28 +228,30 @@ class _MainHeaderState extends State<ScheduleHeader> {
             focusNode: textfieldFocusnode,
             decoration: InputDecoration(
               isDense: true,
-              suffixIcon: textfieldFocusnode.hasFocus
-                  ? GestureDetector(
-                      onTap: () {
-                        if (controller.text.isEmpty) {
-                          textfieldFocusnode.unfocus();
-                          setState(() {});
-                        } else {
-                          controller.clear();
-                        }
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.only(right: 0.w),
-                        child: Icon(
-                          Icons.clear,
-                          color: Colors.black,
-                          size: 18.r,
-                        ),
-                      ),
-                    )
-                  : null,
+              suffixIcon:
+                  textfieldFocusnode.hasFocus && controller.text.isNotEmpty
+                      ? GestureDetector(
+                          onTap: () {
+                            if (controller.text.isEmpty) {
+                              textfieldFocusnode.unfocus();
+                              setState(() {});
+                            } else {
+                              controller.clear();
+                              setState(() {});
+                            }
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 0.w),
+                            child: Icon(
+                              Icons.clear,
+                              color: Colors.black,
+                              size: 15.5.r,
+                            ),
+                          ),
+                        )
+                      : null,
               prefixIcon: Container(
-                margin: EdgeInsets.all(2.r),
+                margin: EdgeInsets.all(2.r).copyWith(bottom: 4.h, left: 1.w),
                 decoration: const BoxDecoration(
                   color: AppColors.backgroundColor,
                   shape: BoxShape.circle,
@@ -260,16 +259,11 @@ class _MainHeaderState extends State<ScheduleHeader> {
                 padding: EdgeInsets.all(10.r),
                 child: SvgPicture.asset(
                   "assets/svg/search.svg",
-                  // ignore: deprecated_member_use
                   color: AppColors.blueColor,
                 ),
               ),
               hintText: "Занятие, зал",
               border: InputBorder.none,
-              /* contentPadding: EdgeInsets.zero.copyWith(
-                left: 12.w,
-                top: 8.h,
-              ), */
             ),
           ),
         ),
@@ -304,7 +298,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
                       ),
                       child: GestureDetector(
                         child: SvgPicture.asset(
-                          'assets/svg/calendar.svg',
+                          'assets/svg/edit_icon.svg',
                           width: 24.w,
                           height: 24.h,
                         ),
@@ -337,4 +331,33 @@ class _MainHeaderState extends State<ScheduleHeader> {
       ],
     );
   }
+}
+
+Widget _listiles(
+  String name,
+  String km,
+  void Function()? onTap,
+) {
+  return InkWell(
+    onTap: onTap,
+    child: Container(
+      margin: EdgeInsets.only(left: 10.w, bottom: 15.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomText(
+            text: name,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+          ),
+          InterText(
+            text: km,
+            color: AppColors.greyText,
+            fontSize: 10.sp,
+            fontWeight: FontWeight.w500,
+          ),
+        ],
+      ),
+    ),
+  );
 }

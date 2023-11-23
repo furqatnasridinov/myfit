@@ -1,8 +1,8 @@
 import 'package:activity/application/main/main_notifier.dart';
 import 'package:activity/application/main/main_state.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_text.dart';
+import 'package:activity/presentation/components/inter_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,9 +16,50 @@ class TheOneWithAdvantages extends StatelessWidget {
   TheOneWithAdvantages({super.key, required this.state, required this.event});
 
   CarouselController carouselController = CarouselController();
-  int activePageIndex = 0;
+
   double opacityValue = 1;
 
+  /* late AnimationController _animationController;
+i   nt activePageIndex = 0;
+  late Animation<double> _nextPage;
+
+  int _currentPage = 0;
+
+  PageController _pageController = PageController(initialPage: 0);
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 2),
+    );
+    _nextPage = Tween(begin: 0.0, end: 1.0).animate(_animationController);
+    //Add listener to AnimationController for know when end the count and change to the next page
+    _animationController.addListener(() {
+      if (_animationController.status == AnimationStatus.completed) {
+        _animationController.repeat();
+        final int page = widget.state.comments!.bodyData!.length;
+        if (_currentPage < page) {
+          _currentPage++;
+          _pageController.animateToPage(
+            _currentPage,
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.easeInSine,
+          );
+        } else {
+          _currentPage = 0;
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  } */
   @override
   Widget build(BuildContext context) {
     return CustomCard(
@@ -31,7 +72,25 @@ class TheOneWithAdvantages extends StatelessWidget {
                 SizedBox(
                   width: double.maxFinite,
                   //color: Colors.black26,
-                  child: CarouselSlider.builder(
+                  child:
+                      /* PageView.builder(
+                    controller: _pageController,
+                    itemCount: widget.state.advantages?.bodyData?.length,
+                    onPageChanged: (value) {
+                      widget.event.setStep(value + 1);
+                    },
+                    itemBuilder: (context, index) {
+                      final currentAdvantage =
+                          widget.state.advantages?.bodyData?[index];
+                      return scrollableTexts(
+                        currentAdvantage?.heading ?? "",
+                        currentAdvantage?.description ?? "",
+                        opacityValue,
+                      );
+                    },
+                  ), */
+
+                      CarouselSlider.builder(
                     carouselController: carouselController,
                     itemCount: state.advantages?.bodyData?.length,
                     itemBuilder: (context, index, realIndex) {
@@ -110,37 +169,40 @@ class TheOneWithAdvantages extends StatelessWidget {
     String secondText,
     double opacity,
   ) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          //color: Colors.red,
-          //height: 75.h,
-          width: 120.w,
-          child: CustomText(
-            maxLines: 4,
-            overflow: TextOverflow.ellipsis,
-            text: firstText,
-            fontWeight: FontWeight.w600,
-            fontSize: 16.sp,
-            opacity: opacity,
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            //color: Colors.red,
+            //height: 75.h,
+            width: 120.w,
+            child: InterText(
+              maxLines: 4,
+              overflow: TextOverflow.ellipsis,
+              text: firstText,
+              fontWeight: FontWeight.w600,
+              fontSize: 15.sp,
+              //opacity: opacity,
+            ),
           ),
-        ),
-        16.horizontalSpace,
-        SizedBox(
-          //color: Colors.amber,
-          //height: 180.h,
-          width: 170.w,
-          child: CustomText(
-            maxLines: 6,
-            overflow: TextOverflow.ellipsis,
-            text: secondText,
-            fontWeight: FontWeight.w400,
-            fontSize: 12.sp,
-            opacity: opacity,
+          16.horizontalSpace,
+          SizedBox(
+            //color: Colors.amber,
+            //height: 180.h,
+            width: 170.w,
+            child: CustomText(
+              maxLines: 6,
+              overflow: TextOverflow.ellipsis,
+              text: secondText,
+              fontWeight: FontWeight.w400,
+              fontSize: 12.sp,
+              opacity: opacity,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

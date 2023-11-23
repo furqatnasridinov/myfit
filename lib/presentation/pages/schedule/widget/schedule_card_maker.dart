@@ -58,7 +58,9 @@ class ScheduleCardMaker extends StatelessWidget {
 
   Widget _plusButton(BuildContext context) {
     return UiDropDownMenu(
-      customOffset: const [-50.0, -40.0],
+      width: double.maxFinite,
+      maxWidth: 263.w,
+      customOffset:  [-45.0.w, -40.0.h],
       dropDownItemsList: [
         {
           'title': 'Найти что то новое',
@@ -71,7 +73,9 @@ class ScheduleCardMaker extends StatelessWidget {
             height: 18.h,
             width: 18.w,
           ),
-          'action': () => {}
+          'action': () => {
+                context.router.push( MapRoute(gymId: 0)),
+              }
         },
         {
           'title': 'Выбрать из уже знакомых занятий',
@@ -85,8 +89,8 @@ class ScheduleCardMaker extends StatelessWidget {
             width: 18.w,
           ),
           'action': () => {
-            context.router.push(ActivityRoute(gymId: 1)),
-          }
+                context.router.push(ActivityRoute(gymId: 1)),
+              }
         },
       ],
       onOpenedAction: () => {event.triggerPlusState()},

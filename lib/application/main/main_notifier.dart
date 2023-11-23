@@ -1,9 +1,13 @@
 import 'package:activity/application/main/main_state.dart';
 import 'package:activity/domain/interface/main.dart';
+import 'package:activity/infrastructure/models/data/activity_near_client.dart';
+import 'package:activity/infrastructure/models/data/each_markers_models.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class MainNotifier extends StateNotifier<MainState> {
   MainNotifier(this._mainRepositoryInterface) : super(const MainState());
@@ -43,6 +47,7 @@ class MainNotifier extends StateNotifier<MainState> {
         },
         failure: (error, statusCode) {
           print("getSubscribtions notifier failure");
+          state = state.copyWith(isloading: false);
         },
       );
     } else {
@@ -96,7 +101,18 @@ class MainNotifier extends StateNotifier<MainState> {
         success: (data) {
           print("getGymsList notifier success");
           print(" getGymsList data ${data}");
-          state = state.copyWith(gymsWithActivities: data["object"]);
+          List<ActivityNearClient> _list = [];
+          Map<String, dynamic> mapData = data["object"];
+          mapData.forEach((key, value) {
+            final data = ActivityNearClient(
+              activityName: key,
+              gymdata: (value as List<dynamic>)
+                  .map((gym) => GymDataMain.fromJson(gym))
+                  .toList(),
+            );
+            _list.add(data);
+          });
+          state = state.copyWith(activitiesNearClient: _list);
         },
         failure: (error, statusCode) {
           print("getGymsList notifier failure");
@@ -107,7 +123,54 @@ class MainNotifier extends StateNotifier<MainState> {
     }
   }
 
-  void determineContainerHeight(GlobalKey key){
+  Future<void> getAllMarkers() async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    List<EachMarkersModel> markers = [];
+    state.activitiesNearClient.forEach((element) {
+      element.gymdata?.forEach((e) {
+        // Use forEach instead of map
+        final marker = EachMarkersModel(
+          name: element.activityName ?? "?",
+          latitude: double.parse(e.latitude!),
+          longitude: double.parse(e.longitude!),
+          address: e.address ?? "?",
+          id: e.id!,
+        );
+        if (!markers.any((element) => element.id == marker.id)) {
+          markers.add(marker);
+        }
+      });
+    });
+    state = state.copyWith(listOfMarkers: markers);
+  }
+
+  List<PlacemarkMapObject> getPlacemarkObjects() {
+    return state.listOfMarkers
+        .map(
+          (e) => PlacemarkMapObject(
+            mapId: MapObjectId("MapObject $e"),
+            point: Point(
+              latitude: e.latitude,
+              longitude: e.longitude,
+            ),
+            consumeTapEvents: true,
+            icon: PlacemarkIcon.single(
+              PlacemarkIconStyle(
+                image: BitmapDescriptor.fromAssetImage(
+                  e.name == "user"
+                      ? "assets/images/user_marker.png"
+                      : "assets/images/map_icon.png",
+                ),
+                scale: e.name == "user" ? 2.5.r : 4.r,
+              ),
+            ),
+            opacity: 1,
+          ),
+        )
+        .toList();
+  }
+
+  void determineContainerHeight(GlobalKey key) {
     RenderBox renderBox = key.currentContext?.findRenderObject() as RenderBox;
     final containerHeight = renderBox.size.height;
     state = state.copyWith(commentsContainerHeight: containerHeight);

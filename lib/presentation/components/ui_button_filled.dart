@@ -1,4 +1,6 @@
+import 'package:activity/presentation/components/components.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class UiButtonFilled extends StatelessWidget {
   // Текст кнопки
@@ -43,10 +45,11 @@ class UiButtonFilled extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(btnLeadingIcon),
-            Text(
-              btnText,
-              style:
-                  const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w500),
+            CustomText(
+              text: btnText,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
             ),
             Icon(btnTrailingIcon),
           ],
