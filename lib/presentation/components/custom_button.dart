@@ -11,6 +11,8 @@ class CustomButton extends StatelessWidget {
   Color textColor;
   double? width;
   double? height;
+  double? fontSize;
+  FontWeight? fontWeight;
   CustomButton({
     super.key,
     required this.onPressed,
@@ -18,6 +20,8 @@ class CustomButton extends StatelessWidget {
     this.width = double.maxFinite,
     this.textColor = Colors.black,
     this.height = 34,
+    this.fontSize = 14,
+    this.fontWeight = FontWeight.w500,
     this.borderColor = AppColors.blueColor,
     this.buttonColor = AppColors.backgroundColor,
   });
@@ -41,7 +45,7 @@ class CustomButton extends StatelessWidget {
           overlayColor: MaterialStateProperty.resolveWith(
             (states) {
               return states.contains(MaterialState.pressed)
-                  ? AppColors.blueColor
+                  ? Colors.white.withOpacity(0.15)
                   : null;
             },
           ),
@@ -49,8 +53,8 @@ class CustomButton extends StatelessWidget {
         child: CustomText(
           color: textColor,
           text: text,
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w500,
+          fontSize: fontSize!,
+          fontWeight: fontWeight,
         ),
       ),
     );

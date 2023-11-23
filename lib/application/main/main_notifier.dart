@@ -47,6 +47,7 @@ class MainNotifier extends StateNotifier<MainState> {
         },
         failure: (error, statusCode) {
           print("getSubscribtions notifier failure");
+          state = state.copyWith(isloading: false);
         },
       );
     } else {

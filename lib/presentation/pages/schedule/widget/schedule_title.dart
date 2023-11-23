@@ -257,7 +257,7 @@ class ScheduleTitle extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                            32.verticalSpace,
+                            30.verticalSpace,
                             // buttons
                             if (chosenTimeNotificationState != "никогда")
                               Row(

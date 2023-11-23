@@ -208,7 +208,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
             width: 1.w,
           ),
         ),
-        padding: EdgeInsets.only(right: 7.w, top: 4.h),
+        padding: EdgeInsets.only(right: 7.w,  top: 1.h ),
         child: CompositedTransformTarget(
           link: layerlink,
           child: TextField(

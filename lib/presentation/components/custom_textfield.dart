@@ -10,29 +10,40 @@ class CustomTextField extends StatelessWidget {
   TextEditingController? controller;
   int? maxLines;
   TextInputType? keyboardType;
+  Widget? suffixIcon;
   EdgeInsetsGeometry? contentPadding;
+  FocusNode? focusNode;
+  bool readOnly;
 
   CustomTextField({
     Key? key,
     this.hintText,
     this.controller,
+    this.suffixIcon,
     this.contentPadding,
+    this.readOnly = false,
     this.maxLines,
+    this.focusNode,
     this.keyboardType,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      focusNode: focusNode,
+      readOnly: readOnly,
       maxLines: maxLines,
       keyboardType: keyboardType,
       controller: controller,
       cursorColor: AppColors.greyText,
+      style: GoogleFonts.inter(
+          fontSize: 14.sp, fontWeight: FontWeight.w400, color: Colors.black),
       decoration: InputDecoration(
+        suffixIcon: suffixIcon,
         contentPadding: contentPadding,
         hintText: hintText,
         hintStyle: GoogleFonts.inter(
-          fontSize: 13.sp,
+          fontSize: 14.sp,
           fontWeight: FontWeight.w400,
         ),
         fillColor: Colors.white,

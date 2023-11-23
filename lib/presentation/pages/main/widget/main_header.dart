@@ -182,7 +182,7 @@ class _MainHeaderState extends State<MainHeader> {
             width: 1.w,
           ),
         ),
-        padding: EdgeInsets.only(right: 7.w, top: 3.h),
+        padding: EdgeInsets.only(right: 7.w,  /* top: 3.h */ ),
         child: CompositedTransformTarget(
           link: layerlink,
           child: TextField(

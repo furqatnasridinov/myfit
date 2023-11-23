@@ -36,11 +36,11 @@ class MainRepository implements MainRepositoryInterface {
         data: GetSubscribtionsResponse.fromJson(response.data),
       );
     } catch (e) {
-      //throw e;
-      return ApiResult.failure(
+      throw e;
+      /* return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      );
+      ); */
     }
   }
 

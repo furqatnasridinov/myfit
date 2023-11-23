@@ -186,7 +186,7 @@ class ScheduleItemWidget extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                   text: name,
                                   color: AppColors.greyText,
-                                  fontSize: 12.sp,
+                                  fontSize: 11.5.sp,
                                   fontWeight: FontWeight.w400,
                                 ),
                               )
