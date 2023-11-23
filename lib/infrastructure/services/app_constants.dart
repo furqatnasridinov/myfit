@@ -9,6 +9,9 @@ class AppConstants {
   static const String getNearestLesson = "api/user/lessons/nearest";
   static const String getUserStatsMonth = "api/user/stat/month";
   static const String addNote = "api/schedule/addNote";
+  static const String sendPhoneNumber = "api/user/loginCode";
+  static const String sendCodeConfirmation= "api/user/loginCodeConfirmation";
+
 
   // photo
   static const String placeholderPhoto = 'assets/images/first.png';
@@ -22,6 +25,13 @@ class AppConstants {
   static const double maktabi21Lon = 69.6473696903535;
   static const double panjshanbeLat = 40.278860846791375;
   static const double panjshanbeLon = 69.63038731695158;
+
+
+  // shared prefs keys
+  static const String keyPhoneNumber = "key_phone_number";
+  static const String keyUserId = "key_user_id";
+  static const String keyToken = "key_token";
+
 
   // long texts
   static const String confirmationText =

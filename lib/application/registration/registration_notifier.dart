@@ -1,7 +1,11 @@
-import 'dart:async';
-
 import 'package:activity/application/registration/registration_state.dart';
+import 'package:activity/domain/interface/register.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/infrastructure/services/apphelpers.dart';
+import 'package:activity/infrastructure/services/connectivity.dart';
+import 'package:activity/infrastructure/services/local_storage.dart';
+import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,7 +13,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
 
 class RegistrationNotifier extends StateNotifier<RegistrationState> {
-  RegistrationNotifier() : super(const RegistrationState());
+  RegistrationNotifier(this._registerRepositoryInterface)
+      : super(const RegistrationState());
+  final RegisterRepositoryInterface _registerRepositoryInterface;
 
   PinTheme getDefaultPinTheme() {
     return PinTheme(
@@ -71,13 +77,57 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
     );
   }
 
-  Future<void> checkValidation(String code, String userCode) async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    if (code == userCode) {
-      state = state.copyWith(isPinCodeValidate: true);
+  Future<void> sendPhoneNumber(String phoneNumber, BuildContext context) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response =
+          await _registerRepositoryInterface.sendPhoneNumber(phoneNumber);
+      response.when(
+        success: (data) {
+          print("sendPhoneNumber notifier success");
+          if (data["operationResult"] == "OK") {
+            // save phone number to local storage
+            LocalStorage.setPhoneNumber(phoneNumber);
+          }
+        },
+        failure: (error, statusCode) {
+          print("sendPhoneNumber notifier failure");
+        },
+      );
     } else {
-      state = state.copyWith(isCodeError: true);
+      AppHelpers.showCheckTopSnackBar(context);
     }
   }
 
+  Future<void> sendCodeConfirmation(
+      String phoneNumber, String code, BuildContext context) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response = await _registerRepositoryInterface.codeConfirmation(
+          phoneNumber, code);
+      response.when(
+        success: (data) {
+          if (data.operationResult == "OK") {
+            LocalStorage.setUserId(
+              data.authResponseBody?.user?.id.toString() ?? "0",
+            )
+                .then((value) => LocalStorage.setToken(
+                    data.authResponseBody?.jwtToken ?? ""))
+                .then((value) => moveClientToThirdPage(context));
+          }
+        },
+        failure: (error, statusCode) {},
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> moveClientToThirdPage(BuildContext context) async {
+    await Future.delayed(Duration(milliseconds: 1500)).then(
+      (value) => context.replaceRoute(
+        Registration3Route(),
+      ),
+    );
+  }
 }

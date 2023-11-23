@@ -1,4 +1,5 @@
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/custom_textfield.dart';
@@ -125,6 +126,8 @@ class _Registration3ScreenState extends State<Registration3Screen> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    print("token >> ${LocalStorage.getToken()}");
+    print("userID >> ${LocalStorage.getUserId()}");
     return Scaffold(
       body: SafeArea(
         child: Stack(

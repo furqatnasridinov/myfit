@@ -5,16 +5,13 @@ import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/inter_text.dart';
-import 'package:activity/presentation/pages/auth/registration2/registration2.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 @RoutePage()
 class Registration1Screen extends ConsumerStatefulWidget {
@@ -134,7 +131,16 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                             InkWell(
                               onTap: () {
                                 if (controller.text.length >= 12) {
-                                  context.router.push(Registration2Route());
+                                  event
+                                      .sendPhoneNumber(
+                                        controller.text,
+                                        context,
+                                      )
+                                      .whenComplete(
+                                        () => context.router.push(
+                                          Registration2Route(),
+                                        ),
+                                      );
                                 }
                               },
                               child: Container(

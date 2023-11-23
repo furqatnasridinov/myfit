@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:activity/application/registration/registration_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/inter_text.dart';
@@ -27,7 +28,7 @@ class Registration2Screen extends ConsumerStatefulWidget {
 class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
   TextEditingController controller = TextEditingController();
 
-  final String predefinedCode = '1811';
+  final String predefinedCode = '1234';
   bool isCodeError = false;
   bool isPinCodeValidate = false;
   bool isChecking = false;
@@ -44,6 +45,11 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
     isChecking = false;
     if (code == userCode) {
       isPinCodeValidate = true;
+      ref.read(registrationProvider.notifier).sendCodeConfirmation(
+            LocalStorage.getPhoneNumber(),
+            code,
+            context,
+          );
       setState(() {});
     } else {
       isCodeError = true;
@@ -89,6 +95,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
     final state = ref.watch(registrationProvider);
     final event = ref.read(registrationProvider.notifier);
     final width = MediaQuery.of(context).size.width;
+    print("phone number >> ${LocalStorage.getPhoneNumber()}");
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
@@ -159,14 +166,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                           checkValidation(
                             predefinedCode,
                             controller.text,
-                          ).then((value) async {
-                            if (isPinCodeValidate) {
-                              Future.delayed(
-                                const Duration(milliseconds: 1500),
-                              ).then((value) => context
-                                  .replaceRoute( Registration3Route()));
-                            }
-                          });
+                          );
                         },
                         defaultPinTheme: event.getDefaultPinTheme(),
                         focusedPinTheme: event.getDefaultPinTheme(),
