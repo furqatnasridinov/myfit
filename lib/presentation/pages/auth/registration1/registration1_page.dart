@@ -127,20 +127,13 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                               ),
                             ),
                             // button
-
                             InkWell(
                               onTap: () {
                                 if (controller.text.length >= 12) {
-                                  event
-                                      .sendPhoneNumber(
-                                        controller.text,
-                                        context,
-                                      )
-                                      .whenComplete(
-                                        () => context.router.push(
-                                          Registration2Route(),
-                                        ),
-                                      );
+                                  event.sendPhoneNumber(
+                                    controller.text,
+                                    context,
+                                  );
                                 }
                               },
                               child: Container(
@@ -211,7 +204,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                                       fontWeight: FontWeight.w500,
                                       height: 40.h,
                                       onPressed: () {
-                                        //context.router.push(const MainRoute());
+                                        context.replaceRoute(const MainRoute());
                                       },
                                       text: "Понимаю. Всё равно пропустить",
                                     )

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/ya_map.dart';
 import 'package:activity/presentation/pages/main2/widget/main2_header.dart';
@@ -37,6 +38,8 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     final state = ref.watch(scheduleProvider);
     final event = ref.read(scheduleProvider.notifier);
     print("whenActivityStarts on duration ${state.whenActivityStarts}");
+   //LocalStorage.removeToken();
+    print("token ${LocalStorage.getToken()}");
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
@@ -47,18 +50,20 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
               child: CircularProgressIndicator(),
             )
           : SafeArea(
-            bottom: false,
-            child: SingleChildScrollView(
+              bottom: false,
+              child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     10.verticalSpace,
                     Padding(
-                      padding:  EdgeInsets.only(left: 26.w),
+                      padding: EdgeInsets.only(left: 26.w),
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: CustomText(
-                          text: 'Привет, George!',
+                          text: LocalStorage.getUserName().isNotEmpty
+                              ? "Привет, ${LocalStorage.getUserName()}!"
+                              : 'Привет, George!',
                           fontWeight: FontWeight.w600,
                           fontSize: 20.sp,
                         ),
@@ -101,7 +106,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                   ],
                 ),
               ),
-          ),
+            ),
     );
   }
 }

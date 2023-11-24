@@ -10,7 +10,7 @@ import '../widget/widget.dart';
 @RoutePage()
 class MapScreen extends ConsumerStatefulWidget {
   int? gymId;
-   MapScreen(this.gymId,{super.key});
+  MapScreen(this.gymId, {super.key});
 
   @override
   ConsumerState<MapScreen> createState() => _MapScreenState();
@@ -28,7 +28,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           .getUserLocation()
           .then(
             (value) => ref.read(mapProvider.notifier).getGymsList(
-                  context,widget.gymId!,
+                  context,
+                  widget.gymId!,
                 ),
           )
           .then((value) => ref.read(mapProvider.notifier)
@@ -45,9 +46,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(mapProvider);
     final event = ref.read(mapProvider.notifier);
-    //event.getGetListOfActivitiesFromDiapozone();
-    // print("markers count ${state.listOfMarkers.length}");
-    //print("active marker's name >> ${state.activeMarker?.name}");
+
     print("list of distances ${state.distances}");
     print("selected diapozone ${state.selectedDiapozone}");
     print("list of bool ${state.listOfBool}");
@@ -56,7 +55,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar:  MapHeader(event: event),
+      appBar: MapHeader(event: event),
       body: state.isloading
           ? const Center(
               child: CircularProgressIndicator(),

@@ -28,7 +28,8 @@ class ActivityRepository implements ActivityRepositoryInterface {
   }
 
   @override
-  Future<ApiResult<GetGymActivitiesResponse>> getActivities({required int gymId}) async {
+  Future<ApiResult<GetGymActivitiesResponse>> getActivities(
+      {required int gymId}) async {
     try {
       final client = inject<HttpService>().clientDio();
       final response = await client.get("api/gym/$gymId/types");
@@ -81,6 +82,27 @@ class ActivityRepository implements ActivityRepositoryInterface {
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
       );
+    }
+  }
+
+  @override
+  Future<ApiResult<Map<String, dynamic>>> enrollToGym({
+    required int id,
+  }) async {
+    try {
+      final client = inject<HttpService>().clientDio();
+      final response = await client.post(
+        "api/schedule/$id/add",
+      );
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      throw e;
+      /* return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      ); */
     }
   }
 }

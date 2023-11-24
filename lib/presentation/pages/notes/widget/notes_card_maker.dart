@@ -145,13 +145,15 @@ class NotesCardMaker extends StatelessWidget {
                       ),
                     ),
                     3.horizontalSpace,
-                    SizedBox(
-                      width: 290.w,
-                      child: InterText(
-                        text: description,
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white,
+                    Flexible(
+                      child: SizedBox(
+                        width: 290.w,
+                        child: InterText(
+                          text: description,
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.white,
+                        ),
                       ),
                     )
                   ],

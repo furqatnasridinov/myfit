@@ -50,12 +50,12 @@ class ComingActivity extends StatelessWidget {
                     color: Color.fromRGBO(119, 170, 249, 1),
                   ),
                   7.horizontalSpace,
-                  SizedBox(
+                  Flexible(
                     child: CustomText(
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      text:
-                          state.nearestLesson?.bodyData?.description ?? "Empty",
+                      //maxLines: 2,
+                      //overflow: TextOverflow.ellipsis,
+                      //text: "",
+                      text: state.nearestLesson?.bodyData?.description ?? "Empty",
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
                     ),

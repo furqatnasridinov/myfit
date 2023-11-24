@@ -95,7 +95,8 @@ class RegistrationScreen extends StatelessWidget {
                                               textColor: Colors.white,
                                               height: 40.h,
                                               onPressed: () {
-                                                context.replaceRoute(Registration1Route());
+                                                context.replaceRoute(
+                                                    Registration1Route());
                                               },
                                               text: "Я согласен, продолжить",
                                             ),

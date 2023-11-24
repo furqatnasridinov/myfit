@@ -1,3 +1,4 @@
+import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -29,18 +30,20 @@ class UiDropDownMenu extends StatelessWidget {
     this.leftCornerShape,
     this.onOpenedAction,
     this.onClosedAction,
-    this.maxWidth = 200,
+    this.maxWidth = 250,
   });
 
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
+      elevation: 0,
+      color: Colors.white,
       offset: customOffset != null
           ? Offset(customOffset?[0], customOffset?[1])
           : const Offset(0, -10),
       onOpened: onOpenedAction,
       onCanceled: onClosedAction,
-      constraints: BoxConstraints(maxWidth: maxWidth!),
+      constraints: BoxConstraints(maxWidth: 255.w),
       shape: OutlineInputBorder(
         borderSide: const BorderSide(color: Color.fromRGBO(119, 170, 249, 1)),
         borderRadius: BorderRadius.only(
@@ -54,7 +57,7 @@ class UiDropDownMenu extends StatelessWidget {
               : const Radius.circular(4.0),
         ),
       ),
-      color: Colors.white,
+      //color: Colors.white,
       position: PopupMenuPosition.under,
       itemBuilder: (BuildContext context) => [
         ...dropDownItemsList
@@ -79,7 +82,7 @@ class UiDropDownMenu extends StatelessWidget {
                 ? ClipRRect(
                     borderRadius: BorderRadius.circular(6.0),
                     child: Container(
-                      color: const Color.fromRGBO(245, 249, 255, 1),
+                      color: AppColors.backgroundColor,
                       padding: const EdgeInsets.all(3.0),
                       child: icon,
                     ),

@@ -170,7 +170,7 @@ class _MainHeaderState extends State<MainHeader> {
       title: AnimatedContainer(
         margin: EdgeInsets.only(left: 16.w),
         duration: const Duration(milliseconds: 400),
-        width: textfieldFocusnode.hasFocus ? 345.w : 300.w,
+        width:  345.w,
         height: 40.h,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -249,7 +249,7 @@ class _MainHeaderState extends State<MainHeader> {
       ),
 
       // action
-      actions: [
+     /*  actions: [
         textfieldFocusnode.hasFocus
             ? const SizedBox()
             : Container(
@@ -271,7 +271,7 @@ class _MainHeaderState extends State<MainHeader> {
                   ),
                 ),
               )
-      ],
+      ], */
     );
   }
 }

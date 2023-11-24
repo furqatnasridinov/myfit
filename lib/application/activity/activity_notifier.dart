@@ -1,7 +1,11 @@
 import 'package:activity/application/activity/activity_state.dart';
 import 'package:activity/domain/interface/activity.dart';
 import 'package:activity/infrastructure/models/request/get_gym_photos_request.dart';
+import 'package:activity/infrastructure/services/apphelpers.dart';
+import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:activity/presentation/components/dummy_data.dart';
+import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -20,10 +24,94 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
-  Future<void> determineDefaultData() async {
-    if (state.originalDates.isNotEmpty) {
-      state = state.copyWith(defaultDate: state.originalDates[0]);
+  Future<void> determineDefaultOriginalDate() async {
+    final all15Days = state.listOf15DaysFromNow;
+    final availableFormattedDay = state.availableFormattedDates;
+    final _list = <String>[];
+    for (String availableDay in availableFormattedDay) {
+      if (all15Days.contains(availableDay)) {
+        final toOriginal = convertToOriginalDate(availableDay);
+        //state = state.copyWith(selectedOriginalDate: toOriginal!);
+        _list.add(toOriginal!);
+      }
+      state = state.copyWith(selectedOriginalDate: _list.first);
+      
     }
+  }
+
+  Future<void> determineDefaultFormattedDate() async {
+    final original = state.selectedOriginalDate;
+    final formatted = formatOriginalToCalendar(original);
+    state = state.copyWith(selectedFormattedDay: formatted);
+  }
+
+  String formatOriginalToCalendar(String inputDate) {
+    DateTime date = DateTime.parse(inputDate);
+    String day = DateFormat('d').format(date);
+    String month = DateFormat('MMM').format(date);
+    switch (month) {
+      case 'Jan':
+        month = 'Янв';
+        break;
+      case 'Feb':
+        month = 'Фев';
+        break;
+      case 'Mar':
+        month = 'Мар';
+        break;
+      case 'Apr':
+        month = 'Апр';
+        break;
+      case 'May':
+        month = 'Май';
+        break;
+      case 'Jun':
+        month = 'Июн';
+        break;
+      case 'Jul':
+        month = 'Июль';
+        break;
+      case 'Aug':
+        month = 'Авг';
+        break;
+      case 'Sep':
+        month = 'Сен';
+        break;
+      case 'Oct':
+        month = 'Окт';
+        break;
+      case 'Nov':
+        month = 'Ноя';
+        break;
+      case 'Dec':
+        month = 'Дек';
+        break;
+    }
+    String dayOfWeek = DateFormat.E().format(date);
+    switch (dayOfWeek) {
+      case "Mon":
+        dayOfWeek = "Пн";
+        break;
+      case "Tue":
+        dayOfWeek = "Вт";
+        break;
+      case "Wed":
+        dayOfWeek = "Ср";
+        break;
+      case "Thu":
+        dayOfWeek = "Чт";
+        break;
+      case "Fri":
+        dayOfWeek = "Пт";
+        break;
+      case "Sat":
+        dayOfWeek = "Сб";
+        break;
+      case "Sun":
+        dayOfWeek = "Вс";
+        break;
+    } // Get the day of the week
+    return '$dayOfWeek $day $month';
   }
 
   Future<void> getGymInfo({required int gymId}) async {
@@ -92,98 +180,102 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     );
   }
 
-  Future<void> getSchedulesDates({required int id}) async {
-    //print("(notifier) >>> getSchedules strted ");
-    final response = await _activityRepositoryInterface.getSchedules(id: id);
-    response.when(
-      success: (data) {
-        //print("(notifier success)");
-        //print("(notifier) data ${data}");
-        state = state.copyWith(scheddules: data);
-        List<String> originalDates = data.keys.toList();
-        state = state.copyWith(originalDates: originalDates);
-        //print("originalDates $originalDates");
-        List<String> formattedDates() {
-          return originalDates.map((date) {
-            DateTime dateTime = DateTime.parse(date);
-            String day = DateFormat('d').format(dateTime);
-            String month = DateFormat('MMM').format(dateTime);
-            switch (month) {
-              case 'Jan':
-                month = 'Янв';
-                break;
-              case 'Feb':
-                month = 'Фев';
-                break;
-              case 'Mar':
-                month = 'Мар';
-                break;
-              case 'Apr':
-                month = 'Апр';
-                break;
-              case 'May':
-                month = 'Май';
-                break;
-              case 'Jun':
-                month = 'Июн';
-                break;
-              case 'Jul':
-                month = 'Июль';
-                break;
-              case 'Aug':
-                month = 'Авг';
-                break;
-              case 'Sep':
-                month = 'Сен';
-                break;
-              case 'Oct':
-                month = 'Окт';
-                break;
-              case 'Nov':
-                month = 'Ноя';
-                break;
-              case 'Dec':
-                month = 'Дек';
-                break;
-            }
-            String dayOfWeek = DateFormat.E().format(dateTime);
-            switch (dayOfWeek) {
-              case "Mon":
-                dayOfWeek = "Пн";
-                break;
-              case "Tue":
-                dayOfWeek = "Вт";
-                break;
-              case "Wed":
-                dayOfWeek = "Ср";
-                break;
-              case "Thu":
-                dayOfWeek = "Чт";
-                break;
-              case "Fri":
-                dayOfWeek = "Пт";
-                break;
-              case "Sat":
-                dayOfWeek = "Сб";
-                break;
-              case "Sun":
-                dayOfWeek = "Вс";
-                break;
-            } // Get the day of the week
-            return '$dayOfWeek $day $month';
-          }).toList();
-        }
-
-        state = state.copyWith(availableFormattedDates: formattedDates());
-      },
-      failure: (error, statusCode) {
-        //print("(notifier failure)");
-      },
-    );
+  Future<void> getSchedulesDates(
+    BuildContext context, {
+    required int id,
+  }) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response = await _activityRepositoryInterface.getSchedules(id: id);
+      response.when(
+        success: (data) {
+          state = state.copyWith(scheddules: data);
+          List<String> originalDates = data.keys.toList();
+          state = state.copyWith(originalDates: originalDates);
+          //print("originalDates $originalDates");
+          List<String> formattedDates() {
+            return originalDates.map((date) {
+              DateTime dateTime = DateTime.parse(date);
+              String day = DateFormat('d').format(dateTime);
+              String month = DateFormat('MMM').format(dateTime);
+              switch (month) {
+                case 'Jan':
+                  month = 'Янв';
+                  break;
+                case 'Feb':
+                  month = 'Фев';
+                  break;
+                case 'Mar':
+                  month = 'Мар';
+                  break;
+                case 'Apr':
+                  month = 'Апр';
+                  break;
+                case 'May':
+                  month = 'Май';
+                  break;
+                case 'Jun':
+                  month = 'Июн';
+                  break;
+                case 'Jul':
+                  month = 'Июль';
+                  break;
+                case 'Aug':
+                  month = 'Авг';
+                  break;
+                case 'Sep':
+                  month = 'Сен';
+                  break;
+                case 'Oct':
+                  month = 'Окт';
+                  break;
+                case 'Nov':
+                  month = 'Ноя';
+                  break;
+                case 'Dec':
+                  month = 'Дек';
+                  break;
+              }
+              String dayOfWeek = DateFormat.E().format(dateTime);
+              switch (dayOfWeek) {
+                case "Mon":
+                  dayOfWeek = "Пн";
+                  break;
+                case "Tue":
+                  dayOfWeek = "Вт";
+                  break;
+                case "Wed":
+                  dayOfWeek = "Ср";
+                  break;
+                case "Thu":
+                  dayOfWeek = "Чт";
+                  break;
+                case "Fri":
+                  dayOfWeek = "Пт";
+                  break;
+                case "Sat":
+                  dayOfWeek = "Сб";
+                  break;
+                case "Sun":
+                  dayOfWeek = "Вс";
+                  break;
+              } // Get the day of the week
+              return '$dayOfWeek $day $month';
+            }).toList();
+          }
+          state = state.copyWith(availableFormattedDates: formattedDates());
+        },
+        failure: (error, statusCode) {
+          //print("(notifier failure)");
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
   }
 
   getSchedulesList(String data) {
-    if (DummyData().days30.contains(data)) {
+    if (DummyData().days15.contains(data)) {
       final Map<String, dynamic> mapData = state.scheddules;
       if (mapData.containsKey(data)) {
         //print("Найден ключ: $data");
@@ -192,6 +284,49 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     } else {
       print("data is not in dummy list");
     }
+  }
+
+  String? convertToOriginalDate(String dateString) {
+    final parts = dateString.split(' ');
+
+    if (parts.length != 3) {
+      return null;
+    }
+    final monthMapping = {
+      'Янв': '01',
+      'Фев': '02',
+      'Мар': '03',
+      'Апр': '04',
+      'Май': '05',
+      'Июн': '06',
+      'Июль': '07',
+      'Авг': '08',
+      'Сен': '09',
+      'Окт': '10',
+      'Ноя': '11',
+      'Дек': '12',
+    };
+
+    final dayOfWeekMapping = {
+      'Пн': 'Monday',
+      'Вт': 'Tuesday',
+      'Ср': 'Wednesday',
+      'Чт': 'Thursday',
+      'Пт': 'Friday',
+      'Сб': 'Saturday',
+      'Вс': 'Sunday',
+    };
+
+    final fullMonth = monthMapping[parts[2]];
+    final fullDayOfWeek = dayOfWeekMapping[parts[0]];
+
+    if (fullMonth == null || fullDayOfWeek == null) {
+      return null;
+    }
+    final formattedDate =
+        "${DateTime.now().year}-$fullMonth-${parts[1].padLeft(2, '0')}";
+
+    return formattedDate;
   }
 
   Future<void> setSelectedOriginalDate(String calendarDate) async {
@@ -222,8 +357,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       'Вс': 'Sunday',
     };
 
-    String? convertToFormattedDate(String dateString) {
-      
+    String? convertToOriginalDate(String dateString) {
       final parts = dateString.split(' ');
 
       if (parts.length != 3) {
@@ -244,57 +378,17 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
 
     state = state.copyWith(
         isloading: false,
-        selectedOriginalDate: convertToFormattedDate(calendarDate)!);
+        selectedOriginalDate: convertToOriginalDate(calendarDate)!);
   }
 
   void removeOriginalSelectedDate() {
     state = state.copyWith(selectedOriginalDate: "");
   }
 
-  List<String> getListOfDatesFrom1To30currentMonth() {
-    String month = DateFormat("MMM").format(DateTime.now());
-    switch (month) {
-      case 'Jan':
-        month = 'Янв';
-        break;
-      case 'Feb':
-        month = 'Фев';
-        break;
-      case 'Mar':
-        month = 'Мар';
-        break;
-      case 'Apr':
-        month = 'Апр';
-        break;
-      case 'May':
-        month = 'Май';
-        break;
-      case 'Jun':
-        month = 'Июн';
-        break;
-      case 'Jul':
-        month = 'Июль';
-        break;
-      case 'Aug':
-        month = 'Авг';
-        break;
-      case 'Sep':
-        month = 'Сен';
-        break;
-      case 'Oct':
-        month = 'Окт';
-        break;
-      case 'Nov':
-        month = 'Ноя';
-        break;
-      case 'Dec':
-        month = 'Дек';
-        break;
-    }
+  void getListOfDatesFromToday() {
     List<String> _dates = [];
-    DateTime currentDate =
-        DateTime(DateTime.now().year, DateTime.now().month, 1);
-    while (currentDate.month.toString() == DateTime.now().month.toString()) {
+    DateTime currentDate = DateTime.now();
+    for (int i = 0; i < 15; i++) {
       String dayOfWeek = DateFormat('EEE').format(currentDate);
       switch (dayOfWeek) {
         case "Mon":
@@ -319,12 +413,50 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
           dayOfWeek = "Вс";
           break;
       }
+      String month = DateFormat("MMM").format(currentDate);
+      switch (month) {
+        case 'Jan':
+          month = 'Янв';
+          break;
+        case 'Feb':
+          month = 'Фев';
+          break;
+        case 'Mar':
+          month = 'Мар';
+          break;
+        case 'Apr':
+          month = 'Апр';
+          break;
+        case 'May':
+          month = 'Май';
+          break;
+        case 'Jun':
+          month = 'Июн';
+          break;
+        case 'Jul':
+          month = 'Июль';
+          break;
+        case 'Aug':
+          month = 'Авг';
+          break;
+        case 'Sep':
+          month = 'Сен';
+          break;
+        case 'Oct':
+          month = 'Окт';
+          break;
+        case 'Nov':
+          month = 'Ноя';
+          break;
+        case 'Dec':
+          month = 'Дек';
+          break;
+      }
       String formattedDate = '$dayOfWeek ${currentDate.day} $month';
       _dates.add(formattedDate);
       currentDate = currentDate.add(const Duration(days: 1));
     }
-    state = state.copyWith(listOfFormattedDaysFrom1To30currentMonth: _dates);
-    return _dates;
+    state = state.copyWith(listOf15DaysFromNow: _dates);
   }
 
   void selectADay(String day) {
@@ -352,5 +484,22 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     final String hour = newTime.hour.toString();
     final String minute = newTime.minute.toString();
     return "$hour:$minute";
+  }
+
+  Future<void> enrollToGym(BuildContext context, int id) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response = await _activityRepositoryInterface.enrollToGym(id: id);
+      response.when(
+        success: (data) {
+          if (data["operationResult"] == "OK") {
+            context.replaceRoute(const Main2Route());
+          }
+        },
+        failure: (error, statusCode) {},
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
   }
 }

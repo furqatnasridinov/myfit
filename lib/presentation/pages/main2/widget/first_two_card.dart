@@ -21,23 +21,27 @@ class FirstTwoCards extends StatelessWidget {
         CustomCard(
           width: 171.w,
           height: 143.h,
-          child: state.statsForMonth.isEmpty
-              ? const SizedBox()
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      //height: 40.h,
-                      //color: Colors.red,
-                      child: CustomText(
-                        text: "Статистика за месяц",
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    //15.verticalSpace,
-                    SizedBox(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                //height: 40.h,
+                //color: Colors.red,
+                child: CustomText(
+                  text: "Статистика за месяц",
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              //15.verticalSpace,
+              state.statsForMonth.isEmpty
+                  ? CustomText(
+                      text: "В этом месяце у вас нету выполненных активностей",
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w400,
+                    )
+                  : SizedBox(
                       //color: Colors.green,
                       height: 73.h,
                       width: double.maxFinite,
@@ -96,14 +100,14 @@ class FirstTwoCards extends StatelessWidget {
                         ],
                       ),
                     ),
-                    /*  CustomText(
+              /*  CustomText(
                 text: "Детальная статистика",
                 fontSize: 10.sp,
                 fontWeight: FontWeight.w500,
                 color: Colors.blue,
               ), */
-                  ],
-                ),
+            ],
+          ),
         ),
 
         // second container

@@ -21,6 +21,7 @@ class Registration3Screen extends StatefulWidget {
 
 class _Registration3ScreenState extends State<Registration3Screen> {
   TextEditingController controller = TextEditingController(text: "Москва");
+  TextEditingController nameController = TextEditingController();
   FocusNode focusNode = FocusNode();
   final layerlink = LayerLink();
   final listofaddresses = DummyData().cityNames;
@@ -44,7 +45,7 @@ class _Registration3ScreenState extends State<Registration3Screen> {
           child: Material(
             color: Colors.transparent,
             child: TapRegion(
-              onTapOutside: (event) {
+              /* onTapOutside: (event) {
                 final position = event.position;
                 final textFieldRenderBox =
                     context.findRenderObject() as RenderBox;
@@ -55,7 +56,7 @@ class _Registration3ScreenState extends State<Registration3Screen> {
                   focusNode.unfocus();
                   setState(() {});
                 }
-              },
+              }, */
               /*  onTapOutside: (event) {
                 textfieldFocusnode.unfocus();
                 setState(() {});
@@ -116,8 +117,10 @@ class _Registration3ScreenState extends State<Registration3Screen> {
     super.initState();
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
+        print("has focus");
         showOverlay();
       } else {
+        print("has no focus");
         hideOverlay();
       }
     });
@@ -126,8 +129,6 @@ class _Registration3ScreenState extends State<Registration3Screen> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    print("token >> ${LocalStorage.getToken()}");
-    print("userID >> ${LocalStorage.getUserId()}");
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -150,6 +151,7 @@ class _Registration3ScreenState extends State<Registration3Screen> {
                       height: 40.h,
                       width: double.maxFinite,
                       child: CustomTextField(
+                        controller: nameController,
                         maxLines: 1,
                         contentPadding: EdgeInsets.zero.copyWith(left: 10.w),
                         hintText: "Ваше имя",
@@ -244,6 +246,7 @@ class _Registration3ScreenState extends State<Registration3Screen> {
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
                         onPressed: () {
+                          LocalStorage.setUserName(nameController.text);
                           context.replaceRoute(const Registration4Route());
                         },
                         text: "Продолжить",

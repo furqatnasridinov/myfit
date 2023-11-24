@@ -6,11 +6,13 @@ class AppConstants {
   static const String getComments = "api/main/comments";
   static const String getGymsList = "api/gym/gymActiveList";
   static const String getSchedulesSearch = "api/schedule/search";
+  static const String getUserSchedules = "api/schedule/user";
   static const String getNearestLesson = "api/user/lessons/nearest";
   static const String getUserStatsMonth = "api/user/stat/month";
   static const String addNote = "api/schedule/addNote";
   static const String sendPhoneNumber = "api/user/loginCode";
   static const String sendCodeConfirmation= "api/user/loginCodeConfirmation";
+  //static const String enrollToGym = "api/schedule/1/add";
 
 
   // photo
@@ -31,6 +33,7 @@ class AppConstants {
   static const String keyPhoneNumber = "key_phone_number";
   static const String keyUserId = "key_user_id";
   static const String keyToken = "key_token";
+  static const String keyUserName = "key_username";
 
 
   // long texts

@@ -208,7 +208,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
             width: 1.w,
           ),
         ),
-        padding: EdgeInsets.only(right: 7.w,  top: 1.h ),
+        padding: EdgeInsets.only(right: 7.w, top: 1.h),
         child: CompositedTransformTarget(
           link: layerlink,
           child: TextField(
@@ -274,58 +274,25 @@ class _MainHeaderState extends State<ScheduleHeader> {
         textfieldFocusnode.hasFocus
             ? const SizedBox()
             : Container(
-                height: 40.h,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(100.r),
-                  border: Border.all(
-                    color: AppColors.greyBorder,
-                    width: 1.w,
+                margin: EdgeInsets.all(4.r),
+                child: SizedOverflowBox(
+                  size: Size(40.w, 40.h),
+                  child: CircleAvatar(
+                    radius: 100.r,
+                    backgroundColor: const Color.fromRGBO(119, 170, 249, 1),
+                    child: Padding(
+                      padding: EdgeInsets.all(2.r),
+                      child: ClipOval(
+                        child: CachedNetworkImage(
+                          imageUrl: AppConstants.owlNetworkImage,
+                          fit: BoxFit.cover,
+                          errorWidget: (context, url, error) {
+                            return const SizedBox();
+                          },
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                margin: EdgeInsets.only(
-                  top: 4.5.h,
-                  right: 16.w,
-                  bottom: 4.5.h,
-                ),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 20.w,
-                        top: 8.h,
-                        bottom: 8.h,
-                      ),
-                      child: GestureDetector(
-                        child: SvgPicture.asset(
-                          'assets/svg/edit_icon.svg',
-                          width: 24.w,
-                          height: 24.h,
-                        ),
-                        //onTap: () => {context.go('/schedule')},
-                      ),
-                    ),
-                    SizedBox(width: 12.w),
-                    SizedOverflowBox(
-                      size: Size(40.w, 40.h),
-                      child: CircleAvatar(
-                        radius: 100.r,
-                        backgroundColor: const Color.fromRGBO(119, 170, 249, 1),
-                        child: Padding(
-                          padding: EdgeInsets.all(2.r),
-                          child: ClipOval(
-                            child: CachedNetworkImage(
-                              imageUrl: AppConstants.owlNetworkImage,
-                              fit: BoxFit.cover,
-                              errorWidget: (context, url, error) {
-                                return const SizedBox();
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
                 ),
               ),
       ],

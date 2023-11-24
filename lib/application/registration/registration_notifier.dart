@@ -87,7 +87,11 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
           print("sendPhoneNumber notifier success");
           if (data["operationResult"] == "OK") {
             // save phone number to local storage
-            LocalStorage.setPhoneNumber(phoneNumber);
+            LocalStorage.setPhoneNumber(phoneNumber).then(
+              (value) => context.replaceRoute(
+                Registration2Route(),
+              ),
+            );
           }
         },
         failure: (error, statusCode) {

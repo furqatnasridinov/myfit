@@ -16,17 +16,17 @@ class ScheduleRepository implements ScheduleRepositoryInterface {
     try {
       final client = inject<HttpService>().clientDio();
       final resposne = await client.get(
-        AppConstants.getSchedulesSearch,
+        AppConstants.getUserSchedules,
       );
       return ApiResult.success(
         data: resposne.data,
       );
     } catch (e) {
-      //throw e;
-      return ApiResult.failure(
+      throw e;
+      /* return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      );
+      ); */
     }
   }
 

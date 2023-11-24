@@ -250,11 +250,32 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       response.when(
         success: (data) {
           print("getNotes notifier success");
-          List<GymWithTags> _list = [];
-          final mapData = data["object"];
-          mapData.forEach((key, value) {
-            value.forEach((element) {
-              if (gymName == element["gym"]["name"]) {
+          if (gymName.isNotEmpty) {
+            List<GymWithTags> _list = [];
+            final mapData = data["object"];
+            mapData.forEach((key, value) {
+              value.forEach((element) {
+                if (gymName == element["gym"]["name"]) {
+                  final data = GymWithTags(
+                    date: element["date"],
+                    id: element["id"],
+                    description: element["description"],
+                    duration: element["duration"],
+                    gym: Gym.fromJson(element["gym"] ?? {}),
+                    tag: (element["tag"] as List<dynamic>?)
+                        ?.map((tag) => Tag.fromJson(tag))
+                        .toList(),
+                  );
+                  _list.add(data);
+                }
+              });
+            });
+            state = state.copyWith(listOfGymWithTags: _list);
+          } else {
+            List<GymWithTags> _list = [];
+            final mapData = data["object"];
+            mapData.forEach((key, value) {
+              value.forEach((element) {
                 final data = GymWithTags(
                   date: element["date"],
                   id: element["id"],
@@ -266,10 +287,11 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
                       .toList(),
                 );
                 _list.add(data);
-              }
+              });
             });
-          });
-          state = state.copyWith(listOfGymWithTags: _list);
+            state = state.copyWith(listOfGymWithTags: _list);
+          }
+
           state = state.copyWith(isloading: false);
           //state = state.copyWith(notesMapData: mapData);
         },

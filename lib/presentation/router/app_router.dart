@@ -6,6 +6,10 @@ class AppRouter extends $AppRouter {
   @override
   List<AutoRoute> get routes => [
         AutoRoute(
+          page: SplashRoute.page,
+          path: "/",
+        ),
+        AutoRoute(
           page: ActivityRoute.page,
           //path: '/',
         ),
@@ -34,7 +38,7 @@ class AppRouter extends $AppRouter {
         ),
         AutoRoute(
           page: RegistrationRoute.page,
-          path: "/",
+          //path: "/",
         ),
         AutoRoute(
           page: Registration1Route.page,
@@ -47,7 +51,7 @@ class AppRouter extends $AppRouter {
         AutoRoute(
           page: Registration3Route.page,
           path: "/registration3",
-         // path: "/",
+          // path: "/",
         ),
         AutoRoute(
           page: Registration4Route.page,

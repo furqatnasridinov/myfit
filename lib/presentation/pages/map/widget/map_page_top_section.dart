@@ -125,11 +125,13 @@ class MapPageTopSection extends StatelessWidget {
                           ],
                         ),
                         30.verticalSpace,
-                        CustomButton(
-                          onPressed: () {
-                            context.popRoute();
-                          },
-                          text: "Отменить",
+                        Flexible(
+                          child: CustomButton(
+                            onPressed: () {
+                              context.popRoute();
+                            },
+                            text: "Отменить",
+                          ),
                         )
                         /* Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

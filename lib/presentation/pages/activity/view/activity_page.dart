@@ -39,32 +39,26 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
 
     ref
         .read(activityProvider.notifier)
-        .getSchedulesDates(id: 1)
-        .then(
-          (value) => ref.read(activityProvider.notifier).selectADay(
-                ref.watch(activityProvider).availableFormattedDates[0],
-              ),
-        )
+        .getSchedulesDates(context, id: widget.gymId)
+        .then((value) =>
+            ref.read(activityProvider.notifier).getListOfDatesFromToday())
+        .then((value) =>
+            ref.read(activityProvider.notifier).determineDefaultOriginalDate())
         .then(
           (value) => ref
               .read(activityProvider.notifier)
-              .setSelectedOriginalDate(
-                ref.watch(activityProvider).availableFormattedDates[0],
-              )
-              .then(
-                (value) => ref.read(activityProvider.notifier).getSchedulesList(
-                    ref.watch(activityProvider).selectedOriginalDate),
-              ),
+              .determineDefaultFormattedDate(),
+        )
+        .then(
+          (value) => ref.read(activityProvider.notifier).getSchedulesList(
+              ref.watch(activityProvider).selectedOriginalDate),
         );
+
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
-        ref
-            .read(activityProvider.notifier)
-            .getListOfDatesFrom1To30currentMonth();
         ref.read(activityProvider.notifier).getGymInfo(
               gymId: widget.gymId,
             );
-        //ref.read(gymProvider.notifier).getActivitiesList();
       },
     );
   }
@@ -73,27 +67,12 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
   Widget build(BuildContext context) {
     final event = ref.read(activityProvider.notifier);
     final state = ref.watch(activityProvider);
-/*     print("state.activities >> ${state.activities} ");
-    print("selected activity ${state.selectedActivity}");
-    print("photos >>> ${state.photos}");
-     print("state.listOfSchedules${state.listOfSchedules}");
-    print("state.scheddules ${state.scheddules}");
-    
-    print("state.originalDates >> ${state.originalDates}");
-    */
-/*     print("state.defaultDate ${state.defaultDate}");
-    print("availableDates >>> ${state.availableDates}");
-    print("state.selectedDay ${state.selectedDay}");
-    print("state.selectedOriginalDate ${state.selectedOriginalDate}"); 
-    print("state.originalDates >> ${state.originalDates}");
-    print("state.defaultDate ${state.defaultDate}");
-    print("availableFormattedDates >>> ${state.availableFormattedDates}");
-    print("state.selectedFormattedDay ${state.selectedFormattedDay}");
-    print("state.selectedOriginalDate ${state.selectedOriginalDate}");
-    print("state.listOfFormattedDaysFrom1To30currentMonth ${state.listOfFormattedDaysFrom1To30currentMonth}");*/
-    print("state.selectedOriginalDate ${state.selectedOriginalDate}");
-    print(
-        "state.listOfFormattedDaysFrom1To30currentMonth ${state.listOfFormattedDaysFrom1To30currentMonth}");
+
+    print("selectedOriginalDate ${state.selectedOriginalDate}");
+    print("listOf15DaysFromNow ${state.listOf15DaysFromNow}");
+    print("selectedFormatted ${state.selectedFormattedDay}");
+    print("available formatted dates ${state.availableFormattedDates}");
+    print("15 days from now ${state.listOf15DaysFromNow}");
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
@@ -123,6 +102,7 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
                     ),
                     32.verticalSpace,
                     TheOneWithCalendar(
+                      gymId: widget.gymId,
                       state: state,
                       event: event,
                     ),
