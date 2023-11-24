@@ -128,8 +128,9 @@ class ScheduleTitle extends StatelessWidget {
                                             ),
                                             3.horizontalSpace,
                                             UiDropDownMenu(
+                                              customOffset: [80.w, 20.w],
                                               width: 100.w,
-                                              height: 20.h,
+                                              //height: 20.h,
                                               dropDownItemsList: [
                                                 {
                                                   'title': 'за 30 мин',
@@ -285,7 +286,7 @@ class ScheduleTitle extends StatelessWidget {
                                           ],
                                         ),
                                       ),
-                                30.verticalSpace,
+                                const Spacer(),
                                 // buttons
                                 if (chosenTimeNotificationState != "никогда")
                                   Row(
@@ -293,6 +294,7 @@ class ScheduleTitle extends StatelessWidget {
                                     children: [
                                       Expanded(
                                         child: CustomButton(
+                                          height: 40.h,
                                           buttonColor: Colors.white,
                                           onPressed: () {
                                             context.popRoute();
@@ -303,9 +305,12 @@ class ScheduleTitle extends StatelessWidget {
                                       5.horizontalSpace,
                                       Expanded(
                                         child: CustomButton(
+                                          height: 40.h,
                                           textColor: Colors.white,
                                           buttonColor: AppColors.blueColor,
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            context.popRoute();
+                                          },
                                           text: "Сохранить",
                                         ),
                                       )

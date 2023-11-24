@@ -21,12 +21,6 @@ class _ScheduleItemScreen extends ConsumerState<NotesScreen> {
   @override
   void initState() {
     super.initState();
-    /* ref.read(scheduleProvider.notifier).addNote(
-          "Проверка",
-          "Номер 1 ",
-          6,
-          context,
-        ); */
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(scheduleProvider.notifier).getNotes(context, widget.gymName);
     });
@@ -49,6 +43,7 @@ class _ScheduleItemScreen extends ConsumerState<NotesScreen> {
               bottom: false,
               child: CustomScrollView(
                 slivers: [
+                  SliverToBoxAdapter(child: SizedBox(height: 5.h)),
                   SliverPadding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
                     sliver: SliverList.builder(

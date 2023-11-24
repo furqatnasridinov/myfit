@@ -24,9 +24,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         //context.replaceRoute( Registration3Route());
       },
       goLogin: () {
-        context.replaceRoute(
-          const RegistrationRoute(),
-        );
+        context.replaceRoute(const RegistrationRoute());
+        //context.replaceRoute(const ScheduleRoute());
       },
     );
   }

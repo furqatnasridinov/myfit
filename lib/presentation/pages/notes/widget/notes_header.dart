@@ -138,6 +138,7 @@ class _MainHeaderState extends State<NotesHeader> {
 
     return AppBar(
       automaticallyImplyLeading: false,
+      leadingWidth: 48.w,
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
       elevation: 0,
       centerTitle: false,
@@ -165,7 +166,7 @@ class _MainHeaderState extends State<NotesHeader> {
       leading: textfieldFocusnode.hasFocus
           ? null
           : Container(
-              margin: EdgeInsets.only(left: 10.w),
+              margin: EdgeInsets.only(left: 10.5.w),
               child: Ink(
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -288,6 +289,7 @@ class _MainHeaderState extends State<NotesHeader> {
                   bottom: 4.5.h,
                 ),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
                       padding: EdgeInsets.only(
@@ -308,8 +310,8 @@ class _MainHeaderState extends State<NotesHeader> {
                     SizedOverflowBox(
                       size: Size(40.w, 40.h),
                       child: CircleAvatar(
-                        radius: 100.r,
-                        backgroundColor: const Color.fromRGBO(119, 170, 249, 1),
+                        radius: 20.r,
+                        backgroundColor: AppColors.blueColor,
                         child: Padding(
                           padding: EdgeInsets.all(2.r),
                           child: ClipOval(

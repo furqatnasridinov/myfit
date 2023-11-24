@@ -140,6 +140,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
     return AppBar(
       automaticallyImplyLeading: false,
       //backgroundColor: Colors.amber,
+      leadingWidth: 48.w,
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
       elevation: 0,
       centerTitle: false,
@@ -167,9 +168,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
       leading: textfieldFocusnode.hasFocus
           ? null
           : Container(
-              margin: EdgeInsets.only(left: 10.w),
-              width: 40.w,
-              height: 40.h,
+              margin: EdgeInsets.only(left: 10.5.w),
               child: Ink(
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -274,11 +273,11 @@ class _MainHeaderState extends State<ScheduleHeader> {
         textfieldFocusnode.hasFocus
             ? const SizedBox()
             : Container(
-                margin: EdgeInsets.all(4.r),
+                margin: EdgeInsets.only(right: 15.w),
                 child: SizedOverflowBox(
                   size: Size(40.w, 40.h),
                   child: CircleAvatar(
-                    radius: 100.r,
+                    radius: 20.r,
                     backgroundColor: const Color.fromRGBO(119, 170, 249, 1),
                     child: Padding(
                       padding: EdgeInsets.all(2.r),

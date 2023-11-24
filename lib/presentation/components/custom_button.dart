@@ -45,7 +45,7 @@ class CustomButton extends StatelessWidget {
           overlayColor: MaterialStateProperty.resolveWith(
             (states) {
               return states.contains(MaterialState.pressed)
-                  ? Colors.white.withOpacity(0.15)
+                  ? Colors.black.withOpacity(0.07)
                   : null;
             },
           ),
