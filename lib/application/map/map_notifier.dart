@@ -304,4 +304,48 @@ class MapNotifier extends StateNotifier<MapState> {
       ),
     );
   }
+
+  Future<void> searchGym(BuildContext context, {required String text}) async {
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      final response = await _mainRepositoryInterface.searchGym(text: text);
+      response.when(
+        success: (data) {
+          if (data["operationResult"] == "OK") {
+            final Map<String, dynamic> mapData = data["object"];
+            final list = <GymData>[];
+            mapData.forEach((key, value) {
+              value.forEach((element) {
+                final data = GymData(
+                  id: element["id"],
+                  name: element["name"],
+                  latitude: element["latitude"],
+                  longitude: element["longitude"],
+                  address: element["address"],
+                  distanceFromClient: calCulateDistanceSrazy(
+                    state.userPosition!.latitude,
+                    state.userPosition!.longitude,
+                    double.parse(element['latitude']),
+                    double.parse(element['longitude']),
+                  ),
+                );
+                list.add(data);
+              });
+            });
+            state = state.copyWith(gymFoundBySearching: list);
+          }
+        },
+        failure: (error, statuscode) {},
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+  void openSearchBar() {
+    state = state.copyWith(isSearchbarOpened: true);
+  }
+
+  void closeSearchBar() {
+    state = state.copyWith(isSearchbarOpened: false);
+  }
 }

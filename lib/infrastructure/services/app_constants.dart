@@ -5,6 +5,7 @@ class AppConstants {
   static const String getSubscribtions = "api/main/subscription";
   static const String getComments = "api/main/comments";
   static const String getGymsList = "api/gym/gymActiveList";
+  static const String searchGym = "api/gym/search";
   static const String getSchedulesSearch = "api/schedule/search";
   static const String getUserSchedules = "api/schedule/user";
   static const String getNearestLesson = "api/user/lessons/nearest";

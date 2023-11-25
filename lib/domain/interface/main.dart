@@ -8,4 +8,5 @@ abstract class MainRepositoryInterface {
   Future<ApiResult<GetSubscribtionsResponse>> getSubscribtions();
   Future<ApiResult<GetCommentsResponse>> getComments();
   Future<ApiResult<Map<String,dynamic>>> getGymsList();
+  Future<ApiResult<Map<String,dynamic>>>searchGym({required String text});
 }

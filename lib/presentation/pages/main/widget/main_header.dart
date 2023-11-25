@@ -10,6 +10,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MainHeader extends StatefulWidget implements PreferredSizeWidget {
   const MainHeader({super.key});
@@ -170,7 +171,7 @@ class _MainHeaderState extends State<MainHeader> {
       title: AnimatedContainer(
         margin: EdgeInsets.only(left: 16.w),
         duration: const Duration(milliseconds: 400),
-        width:  345.w,
+        width: 345.w,
         height: 40.h,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -182,10 +183,14 @@ class _MainHeaderState extends State<MainHeader> {
             width: 1.w,
           ),
         ),
-        padding: EdgeInsets.only(right: 7.w,  /* top: 3.h */ ),
+        padding: EdgeInsets.only(right: 7.w),
         child: CompositedTransformTarget(
           link: layerlink,
           child: TextField(
+            style: GoogleFonts.raleway(
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w400,
+            ),
             controller: controller,
             onChanged: (value) {
               controller.text = value;
@@ -225,7 +230,7 @@ class _MainHeaderState extends State<MainHeader> {
                         )
                       : null,
               prefixIcon: Container(
-                margin: EdgeInsets.all(2.r).copyWith(bottom: 4.h, left: 1.w),
+                margin: EdgeInsets.all(4.r),
                 decoration: const BoxDecoration(
                   color: AppColors.backgroundColor,
                   shape: BoxShape.circle,
@@ -236,6 +241,10 @@ class _MainHeaderState extends State<MainHeader> {
                   // ignore: deprecated_member_use
                   color: AppColors.blueColor,
                 ),
+              ),
+              hintStyle: GoogleFonts.raleway(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
               ),
               hintText: "Найти занятие",
               border: InputBorder.none,
@@ -249,7 +258,7 @@ class _MainHeaderState extends State<MainHeader> {
       ),
 
       // action
-     /*  actions: [
+      /*  actions: [
         textfieldFocusnode.hasFocus
             ? const SizedBox()
             : Container(

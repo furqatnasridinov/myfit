@@ -102,12 +102,11 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
         child: Stack(
           children: [
             // pop button
-
             Align(
               alignment: Alignment.topLeft,
               child: GestureDetector(
                 onTap: () {
-                  context.popRoute();
+                  context.router.pop();
                 },
                 child: Container(
                   width: 40.w,
@@ -121,7 +120,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                     ),
                   ),
                   padding: EdgeInsets.only(left: 5.w),
-                  margin: EdgeInsets.only(left: 16.w),
+                  margin: EdgeInsets.only(left: 16.w, top: 7.h),
                   child: Icon(
                     Icons.arrow_back_ios,
                     size: 15.r,
@@ -258,7 +257,10 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                     InkWell(
                       onTap: () {
                         if (counterDown == 0) {
-                          // resend sms will be here
+                          setState(() {
+                            counterDown = 59;
+                          });
+                          startTimer();
                         }
                       },
                       child: InterText(

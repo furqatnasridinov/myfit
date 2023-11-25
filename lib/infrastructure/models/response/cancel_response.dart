@@ -1,6 +1,6 @@
 class CancelellationResponse {
   String? operationResult;
-  Null? cancellationBody;
+  Null cancellationBody;
   String? operationInfo;
 
   CancelellationResponse(

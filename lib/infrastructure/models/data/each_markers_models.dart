@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 
-/// Модель точки на карте
 class EachMarkersModel extends Equatable {
   EachMarkersModel({
   this.isOpened = false,

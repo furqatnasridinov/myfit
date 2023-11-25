@@ -38,6 +38,7 @@ class CustomText extends StatelessWidget {
         fontSize: fontSize,
         fontWeight: fontWeight,
         color: color?.withOpacity(opacity!),
+        fontFeatures: const [FontFeature.liningFigures()],
       ),
     );
   }

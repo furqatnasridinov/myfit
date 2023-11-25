@@ -20,15 +20,15 @@ class MainNotifier extends StateNotifier<MainState> {
       final response = await _mainRepositoryInterface.getAdvantages();
       response.when(
         success: (data) {
-          print("getAdvantages notifier success");
-          print("getAdvantages data $data");
+         
           state = state.copyWith(advantages: data);
         },
         failure: (error, statusCode) {
-          print("getAdvantages notifier failure");
+         
         },
       );
     } else {
+      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
     state = state.copyWith(isloading: false);
@@ -41,16 +41,15 @@ class MainNotifier extends StateNotifier<MainState> {
       final response = await _mainRepositoryInterface.getSubscribtions();
       response.when(
         success: (data) {
-          print("getSubscribtions notifier success");
-          print(" getSubscribtions data $data");
+        
           state = state.copyWith(subscribtions: data);
         },
         failure: (error, statusCode) {
-          print("getSubscribtions notifier failure");
           state = state.copyWith(isloading: false);
         },
       );
     } else {
+      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
     state = state.copyWith(isloading: false);
@@ -63,15 +62,14 @@ class MainNotifier extends StateNotifier<MainState> {
       final response = await _mainRepositoryInterface.getComments();
       response.when(
         success: (data) {
-          print("getComments notifier success");
-          print(" getComments data $data");
+        
           state = state.copyWith(comments: data);
         },
         failure: (error, statusCode) {
-          print("getComments notifier failure");
         },
       );
     } else {
+      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
     state = state.copyWith(isloading: false);
@@ -99,9 +97,8 @@ class MainNotifier extends StateNotifier<MainState> {
       final response = await _mainRepositoryInterface.getGymsList();
       response.when(
         success: (data) {
-          print("getGymsList notifier success");
-          print(" getGymsList data ${data}");
-          List<ActivityNearClient> _list = [];
+        
+          List<ActivityNearClient> listcha = [];
           Map<String, dynamic> mapData = data["object"];
           mapData.forEach((key, value) {
             final data = ActivityNearClient(
@@ -110,15 +107,15 @@ class MainNotifier extends StateNotifier<MainState> {
                   .map((gym) => GymDataMain.fromJson(gym))
                   .toList(),
             );
-            _list.add(data);
+            listcha.add(data);
           });
-          state = state.copyWith(activitiesNearClient: _list);
+          state = state.copyWith(activitiesNearClient: listcha);
         },
         failure: (error, statusCode) {
-          print("getGymsList notifier failure");
         },
       );
     } else {
+      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
@@ -126,7 +123,7 @@ class MainNotifier extends StateNotifier<MainState> {
   Future<void> getAllMarkers() async {
     await Future.delayed(const Duration(milliseconds: 200));
     List<EachMarkersModel> markers = [];
-    state.activitiesNearClient.forEach((element) {
+    for (var element in state.activitiesNearClient) {
       element.gymdata?.forEach((e) {
         // Use forEach instead of map
         final marker = EachMarkersModel(
@@ -140,7 +137,7 @@ class MainNotifier extends StateNotifier<MainState> {
           markers.add(marker);
         }
       });
-    });
+    }
     state = state.copyWith(listOfMarkers: markers);
   }
 
@@ -175,4 +172,6 @@ class MainNotifier extends StateNotifier<MainState> {
     final containerHeight = renderBox.size.height;
     state = state.copyWith(commentsContainerHeight: containerHeight);
   }
+
+  
 }

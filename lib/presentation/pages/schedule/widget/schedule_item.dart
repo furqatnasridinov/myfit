@@ -20,7 +20,7 @@ class ScheduleItemWidget extends StatelessWidget {
   final ScheduleNotifier event;
   final ScheduleState state;
 
-  ScheduleItemWidget({
+  const ScheduleItemWidget({
     required this.time,
     required this.description,
     required this.duration,

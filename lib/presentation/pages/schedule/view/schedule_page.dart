@@ -10,14 +10,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-extension TimeOfDayConverter on TimeOfDay {
-  String to24hours() {
-    final hour = this.hour.toString().padLeft(2, "0");
-    final min = this.minute.toString().padLeft(2, "0");
-    return "$hour:$min";
-  }
-}
-
 @RoutePage()
 class ScheduleScreen extends ConsumerStatefulWidget {
   const ScheduleScreen({
@@ -30,6 +22,8 @@ class ScheduleScreen extends ConsumerStatefulWidget {
 
 class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
   final List<String> allDayOfMonth = DummyData().days30;
+  TextEditingController controller = TextEditingController();
+  ScrollController scrollController = ScrollController();
   @override
   void initState() {
     // TODO: implement initState

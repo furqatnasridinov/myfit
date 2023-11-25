@@ -1,6 +1,7 @@
 import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/domain/interface/schedule.dart';
 import 'package:activity/infrastructure/models/data/gym_with_tags.dart';
+import 'package:activity/infrastructure/models/data/schedule_and_gym.dart';
 import 'package:activity/infrastructure/models/request/add_note_request.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
@@ -326,6 +327,55 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
+  }
+
+  Future<void> searchingSchedules(BuildContext context,
+      {required String schedule}) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      print("searchingSchedules called");
+      final response = await _scheduleRepositoryInterface.searchingForSchedules(
+        schedule: schedule,
+      );
+      response.when(
+        success: (data) {
+          if (data["operationResult"] == "OK") {
+            final Map<String, dynamic> mapData = data["object"];
+            final list = <ScheduleAndGym>[];
+            mapData.forEach((key, value) {
+              value.forEach((element) {
+                final data = ScheduleAndGym(
+                  id: element["id"],
+                  date: element["date"],
+                  description: element["description"],
+                  duration: element["duration"],
+                  gym: Gymdata.fromJson(element["gym"]),
+                );
+                list.add(data);
+              });
+            });
+            state = state.copyWith(schedulesFoundBySearching: list);
+          }
+        },
+        failure: (error, statusCode) {},
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  void openSearchBar() {
+    state = state.copyWith(isSearchbarOpened: true);
+  }
+
+  void closeSearchBar() {
+    state = state.copyWith(isSearchbarOpened: false);
+  }
+
+  Future<void> cleanSearchList() async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    final listcha = <ScheduleAndGym>[];
+    state = state.copyWith(schedulesFoundBySearching: listcha);
   }
 
   void showTilWhen() {

@@ -118,7 +118,30 @@ class ScheduleRepository implements ScheduleRepositoryInterface {
         ),
       );
     } catch (e) {
-       throw e;
+      throw e;
+      /* return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      ); */
+    }
+  }
+
+  @override
+  Future<ApiResult<Map<String, dynamic>>> searchingForSchedules(
+      {required String schedule}) async {
+    try {
+      final client = inject<HttpService>().clientDio();
+      final sendingData = {"searchString": schedule};
+      final response = await client.get(
+        AppConstants.getSchedulesSearch,
+        //data: sendingData,
+        queryParameters: sendingData
+      );
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      throw e;
       /* return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),

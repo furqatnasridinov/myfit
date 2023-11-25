@@ -54,7 +54,7 @@ class MainRepository implements MainRepositoryInterface {
       );
     } catch (e) {
       throw e;
-     /*  return ApiResult.failure(
+      /*  return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
       ); */
@@ -62,13 +62,30 @@ class MainRepository implements MainRepositoryInterface {
   }
 
   @override
-  Future<ApiResult<Map<String,dynamic>>>
-      getGymsList() async {
+  Future<ApiResult<Map<String, dynamic>>> getGymsList() async {
     try {
       final client = inject<HttpService>().clientDio();
       final response = await client.get(AppConstants.getGymsList);
+      return ApiResult.success(data: response.data);
+    } catch (e) {
+      throw e;
+      /* return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      ); */
+    }
+  }
+
+  @override
+  Future<ApiResult<Map<String, dynamic>>> searchGym(
+      {required String text}) async {
+    try {
+      final client = inject<HttpService>().clientDio();
+      final sendingData = {"searchString": text};
+      final response = await client.get(AppConstants.searchGym,
+          queryParameters: sendingData);
       return ApiResult.success(
-        data: response.data
+        data: response.data,
       );
     } catch (e) {
       throw e;

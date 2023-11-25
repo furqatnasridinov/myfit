@@ -31,6 +31,8 @@ mixin _$ScheduleState {
   List<UserStats> get statsForMonth => throw _privateConstructorUsedError;
   Map<String, dynamic> get notesMapData => throw _privateConstructorUsedError;
   List<GymWithTags> get listOfGymWithTags => throw _privateConstructorUsedError;
+  List<ScheduleAndGym> get schedulesFoundBySearching =>
+      throw _privateConstructorUsedError;
   String get notificationTime => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -58,6 +60,7 @@ abstract class $ScheduleStateCopyWith<$Res> {
       List<UserStats> statsForMonth,
       Map<String, dynamic> notesMapData,
       List<GymWithTags> listOfGymWithTags,
+      List<ScheduleAndGym> schedulesFoundBySearching,
       String notificationTime});
 }
 
@@ -87,6 +90,7 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
     Object? statsForMonth = null,
     Object? notesMapData = null,
     Object? listOfGymWithTags = null,
+    Object? schedulesFoundBySearching = null,
     Object? notificationTime = null,
   }) {
     return _then(_value.copyWith(
@@ -142,6 +146,10 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
           ? _value.listOfGymWithTags
           : listOfGymWithTags // ignore: cast_nullable_to_non_nullable
               as List<GymWithTags>,
+      schedulesFoundBySearching: null == schedulesFoundBySearching
+          ? _value.schedulesFoundBySearching
+          : schedulesFoundBySearching // ignore: cast_nullable_to_non_nullable
+              as List<ScheduleAndGym>,
       notificationTime: null == notificationTime
           ? _value.notificationTime
           : notificationTime // ignore: cast_nullable_to_non_nullable
@@ -172,6 +180,7 @@ abstract class _$$ScheduleStateImplCopyWith<$Res>
       List<UserStats> statsForMonth,
       Map<String, dynamic> notesMapData,
       List<GymWithTags> listOfGymWithTags,
+      List<ScheduleAndGym> schedulesFoundBySearching,
       String notificationTime});
 }
 
@@ -199,6 +208,7 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
     Object? statsForMonth = null,
     Object? notesMapData = null,
     Object? listOfGymWithTags = null,
+    Object? schedulesFoundBySearching = null,
     Object? notificationTime = null,
   }) {
     return _then(_$ScheduleStateImpl(
@@ -254,6 +264,10 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
           ? _value._listOfGymWithTags
           : listOfGymWithTags // ignore: cast_nullable_to_non_nullable
               as List<GymWithTags>,
+      schedulesFoundBySearching: null == schedulesFoundBySearching
+          ? _value._schedulesFoundBySearching
+          : schedulesFoundBySearching // ignore: cast_nullable_to_non_nullable
+              as List<ScheduleAndGym>,
       notificationTime: null == notificationTime
           ? _value.notificationTime
           : notificationTime // ignore: cast_nullable_to_non_nullable
@@ -279,12 +293,14 @@ class _$ScheduleStateImpl extends _ScheduleState {
       final List<UserStats> statsForMonth = const [],
       final Map<String, dynamic> notesMapData = const {},
       final List<GymWithTags> listOfGymWithTags = const [],
+      final List<ScheduleAndGym> schedulesFoundBySearching = const [],
       this.notificationTime = "30 мин"})
       : _schedulesInMapForm = schedulesInMapForm,
         _listOfUserSchedulesvalues = listOfUserSchedulesvalues,
         _statsForMonth = statsForMonth,
         _notesMapData = notesMapData,
         _listOfGymWithTags = listOfGymWithTags,
+        _schedulesFoundBySearching = schedulesFoundBySearching,
         super._();
 
   @override
@@ -359,13 +375,23 @@ class _$ScheduleStateImpl extends _ScheduleState {
     return EqualUnmodifiableListView(_listOfGymWithTags);
   }
 
+  final List<ScheduleAndGym> _schedulesFoundBySearching;
+  @override
+  @JsonKey()
+  List<ScheduleAndGym> get schedulesFoundBySearching {
+    if (_schedulesFoundBySearching is EqualUnmodifiableListView)
+      return _schedulesFoundBySearching;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_schedulesFoundBySearching);
+  }
+
   @override
   @JsonKey()
   final String notificationTime;
 
   @override
   String toString() {
-    return 'ScheduleState(isloading: $isloading, isSearchbarOpened: $isSearchbarOpened, schedulesInMapForm: $schedulesInMapForm, listOfUserSchedulesvalues: $listOfUserSchedulesvalues, showTillWhen: $showTillWhen, plusState: $plusState, isLocationButtonActivated: $isLocationButtonActivated, isFlashButtonActivated: $isFlashButtonActivated, nearestLesson: $nearestLesson, whenActivityStarts: $whenActivityStarts, statsForMonth: $statsForMonth, notesMapData: $notesMapData, listOfGymWithTags: $listOfGymWithTags, notificationTime: $notificationTime)';
+    return 'ScheduleState(isloading: $isloading, isSearchbarOpened: $isSearchbarOpened, schedulesInMapForm: $schedulesInMapForm, listOfUserSchedulesvalues: $listOfUserSchedulesvalues, showTillWhen: $showTillWhen, plusState: $plusState, isLocationButtonActivated: $isLocationButtonActivated, isFlashButtonActivated: $isFlashButtonActivated, nearestLesson: $nearestLesson, whenActivityStarts: $whenActivityStarts, statsForMonth: $statsForMonth, notesMapData: $notesMapData, listOfGymWithTags: $listOfGymWithTags, schedulesFoundBySearching: $schedulesFoundBySearching, notificationTime: $notificationTime)';
   }
 
   @override
@@ -400,6 +426,8 @@ class _$ScheduleStateImpl extends _ScheduleState {
                 .equals(other._notesMapData, _notesMapData) &&
             const DeepCollectionEquality()
                 .equals(other._listOfGymWithTags, _listOfGymWithTags) &&
+            const DeepCollectionEquality().equals(
+                other._schedulesFoundBySearching, _schedulesFoundBySearching) &&
             (identical(other.notificationTime, notificationTime) ||
                 other.notificationTime == notificationTime));
   }
@@ -420,6 +448,7 @@ class _$ScheduleStateImpl extends _ScheduleState {
       const DeepCollectionEquality().hash(_statsForMonth),
       const DeepCollectionEquality().hash(_notesMapData),
       const DeepCollectionEquality().hash(_listOfGymWithTags),
+      const DeepCollectionEquality().hash(_schedulesFoundBySearching),
       notificationTime);
 
   @JsonKey(ignore: true)
@@ -444,6 +473,7 @@ abstract class _ScheduleState extends ScheduleState {
       final List<UserStats> statsForMonth,
       final Map<String, dynamic> notesMapData,
       final List<GymWithTags> listOfGymWithTags,
+      final List<ScheduleAndGym> schedulesFoundBySearching,
       final String notificationTime}) = _$ScheduleStateImpl;
   const _ScheduleState._() : super._();
 
@@ -473,6 +503,8 @@ abstract class _ScheduleState extends ScheduleState {
   Map<String, dynamic> get notesMapData;
   @override
   List<GymWithTags> get listOfGymWithTags;
+  @override
+  List<ScheduleAndGym> get schedulesFoundBySearching;
   @override
   String get notificationTime;
   @override

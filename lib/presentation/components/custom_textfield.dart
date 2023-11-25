@@ -13,6 +13,8 @@ class CustomTextField extends StatelessWidget {
   Widget? suffixIcon;
   EdgeInsetsGeometry? contentPadding;
   FocusNode? focusNode;
+  void Function(PointerDownEvent)? onTapOutside;
+  void Function()? onTap;
   bool readOnly;
 
   CustomTextField({
@@ -25,6 +27,8 @@ class CustomTextField extends StatelessWidget {
     this.maxLines,
     this.focusNode,
     this.keyboardType,
+    this.onTap,
+    this.onTapOutside,
   }) : super(key: key);
 
   @override
@@ -38,9 +42,14 @@ class CustomTextField extends StatelessWidget {
       maxLines: maxLines,
       keyboardType: keyboardType,
       controller: controller,
+      onTapOutside: onTapOutside,
+      onTap: onTap,
       cursorColor: AppColors.greyText,
       style: GoogleFonts.inter(
-          fontSize: 14.sp, fontWeight: FontWeight.w400, color: Colors.black),
+        fontSize: 14.sp,
+        fontWeight: FontWeight.w400,
+        color: Colors.black,
+      ),
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
         contentPadding: contentPadding,

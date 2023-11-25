@@ -3,7 +3,6 @@ import 'package:activity/infrastructure/models/request/get_gym_photos_request.da
 import 'package:activity/infrastructure/models/response/get_gym_activities_response.dart';
 import 'package:activity/infrastructure/models/response/get_gym_photos_response.dart';
 import 'package:activity/infrastructure/models/response/gym_response.dart';
-import 'package:flutter/material.dart';
 
 abstract class ActivityRepositoryInterface {
   Future<ApiResult<GymResponse>> getInfoAboutGym({required int id});

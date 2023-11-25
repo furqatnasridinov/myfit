@@ -11,6 +11,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ScheduleHeader extends StatefulWidget implements PreferredSizeWidget {
   const ScheduleHeader({super.key});
@@ -131,12 +132,6 @@ class _MainHeaderState extends State<ScheduleHeader> {
 
   @override
   Widget build(BuildContext context) {
-    if (textfieldFocusnode.hasFocus) {
-      print("focusnode has focus");
-    } else {
-      print("focusnode has no focus");
-    }
-
     return AppBar(
       automaticallyImplyLeading: false,
       //backgroundColor: Colors.amber,
@@ -144,7 +139,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
       elevation: 0,
       centerTitle: false,
-      titleSpacing: textfieldFocusnode.hasFocus ? 16.w : 5.0,
+      titleSpacing: textfieldFocusnode.hasFocus ? 14.w : 5.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(32.r),
@@ -195,7 +190,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
       // title
       title: AnimatedContainer(
         duration: const Duration(milliseconds: 500),
-        width: textfieldFocusnode.hasFocus ? 350.w : 300.w,
+        width: textfieldFocusnode.hasFocus ? 360.w : 300.w,
         height: 40.h,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -212,6 +207,10 @@ class _MainHeaderState extends State<ScheduleHeader> {
           link: layerlink,
           child: TextField(
             controller: controller,
+            style: GoogleFonts.raleway(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+            ),
             onChanged: (value) {
               controller.text = value;
               setState(() {});
@@ -250,7 +249,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
                         )
                       : null,
               prefixIcon: Container(
-                margin: EdgeInsets.all(2.r).copyWith(bottom: 4.h, left: 1.w),
+                margin: EdgeInsets.all(3.r),
                 decoration: const BoxDecoration(
                   color: AppColors.backgroundColor,
                   shape: BoxShape.circle,
@@ -260,6 +259,10 @@ class _MainHeaderState extends State<ScheduleHeader> {
                   "assets/svg/search.svg",
                   color: AppColors.blueColor,
                 ),
+              ),
+              hintStyle: GoogleFonts.raleway(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
               ),
               hintText: "Занятие, зал",
               border: InputBorder.none,

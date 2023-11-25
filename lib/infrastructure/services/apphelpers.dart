@@ -14,4 +14,13 @@ class AppHelpers {
       ),
     );
   }
+  
+   static showSnack(BuildContext context, String text) {
+    return showTopSnackBar(
+      Overlay.of(context),
+      CustomSnackBar.error(
+        message: text,
+      ),
+    );
+  }
 }

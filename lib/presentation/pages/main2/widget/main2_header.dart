@@ -1,148 +1,55 @@
 import 'dart:ui';
-
+import 'package:activity/application/schedule/schedule_notifier.dart';
+import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
+import 'package:activity/infrastructure/services/typing_delay.dart';
 import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:activity/presentation/components/inter_text.dart';
-import 'package:activity/presentation/components/ui_button_filled.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Main2Header extends StatefulWidget implements PreferredSizeWidget {
-  const Main2Header({super.key});
+  final ScheduleState state;
+  final ScheduleNotifier event;
+  final TextEditingController controller;
+  const Main2Header({
+    super.key,
+    required this.state,
+    required this.event,
+    required this.controller,
+  });
 
   @override
   State<Main2Header> createState() => _MainHeaderState();
 
   @override
-  // TODO: implement preferredSize
   Size get preferredSize => Size.fromHeight(55.h);
 }
 
 class _MainHeaderState extends State<Main2Header> {
-  TextEditingController controller = TextEditingController();
-  FocusNode textfieldFocusnode = FocusNode();
-  final layerlink = LayerLink();
-  final listofaddresses = DummyData().dummyAddresses;
-
-  OverlayEntry? entry;
-
-  void showOverlay() {
-    final overlay = Overlay.of(context);
-    final renderBox = context.findRenderObject() as RenderBox;
-    final size = renderBox.size;
-    // final offset = renderBox.localToGlobal(Offset.zero);
-
-    entry = OverlayEntry(
-      builder: (context) => Positioned(
-        // left: offset.dx,
-        // top: offset.dy + size.height + 2.5,
-        width: size.width,
-        child: CompositedTransformFollower(
-          offset: Offset(-16, 50.h),
-          link: layerlink,
-          child: Material(
-            color: Colors.transparent,
-            child: TapRegion(
-              onTapOutside: (event) {
-                final position = event.position;
-                final textFieldRenderBox =
-                    context.findRenderObject() as RenderBox;
-                final textFieldRect =
-                    textFieldRenderBox.localToGlobal(Offset.zero) &
-                        textFieldRenderBox.size;
-                if (!textFieldRect.contains(position)) {
-                  textfieldFocusnode.unfocus();
-                  setState(() {});
-                }
-              },
-              child: Container(
-                height: 294.h,
-                margin: EdgeInsets.only(left: 16.w, right: 16.w),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.r),
-                  color: Colors.white,
-                  border: Border.all(
-                    width: 1.0,
-                    color: const Color.fromRGBO(119, 170, 249, 1),
-                  ),
-                ),
-                padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-                child: Column(children: [
-                  Expanded(
-                    child: MediaQuery.removePadding(
-                      context: context,
-                      removeTop: true,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: listofaddresses.length,
-                        itemBuilder: (context, index) {
-                          final currentGym = listofaddresses[index];
-                          return _listiles(
-                            currentGym.name,
-                            currentGym.destination,
-                            () {
-                              controller.text = currentGym.name;
-                              textfieldFocusnode.unfocus();
-                              setState(() {});
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10.0),
-                  UiButtonFilled(
-                    btnText: 'Показать на карте',
-                    onPressedAction: () => print('123'),
-                    isFullWidth: true,
-                  )
-                ]),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-
-    overlay.insert(entry!);
-  }
-
-  void hideOverlay() {
-    entry?.remove();
-    entry = null;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    textfieldFocusnode.addListener(() {
-      if (textfieldFocusnode.hasFocus) {
-        showOverlay();
-      } else {
-        hideOverlay();
-      }
-    });
-  }
+  String previousText = "";
+  final delay = Delayed(milliseconds: 200);
 
   @override
   Widget build(BuildContext context) {
-    if (textfieldFocusnode.hasFocus) {
-      print("focusnode has focus");
-    } else {
-      print("focusnode has no focus");
+    if (widget.controller.text.length > 1 &&
+        widget.controller.text != previousText) {
+      widget.event.searchingSchedules(
+        context,
+        schedule: widget.controller.text,
+      );
+      previousText = widget.controller.text;
     }
-
+    print("controller text >>  ${widget.controller.text}");
+    print("previous text >> $previousText");
     return AppBar(
       automaticallyImplyLeading: false,
-      //backgroundColor: const Color.fromRGBO(245, 249, 255, 0.976),
-      //backgroundColor: Colors.white.withOpacity(0.96),
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
       elevation: 0,
       centerTitle: false,
@@ -169,84 +76,92 @@ class _MainHeaderState extends State<Main2Header> {
       // title
       title: AnimatedContainer(
         duration: const Duration(milliseconds: 500),
-        width: textfieldFocusnode.hasFocus ? 344.w : 300.w,
+        width: widget.state.isSearchbarOpened ? 344.w : 300.w,
         height: 40.h,
         margin: EdgeInsets.only(left: 16.w),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(100.r),
           border: Border.all(
-            color: textfieldFocusnode.hasFocus
+            color: widget.state.isSearchbarOpened
                 ? AppColors.blueColor
                 : AppColors.greyBorder,
             width: 1.w,
           ),
         ),
-        padding: EdgeInsets.only(right: 7.w, /* top: 3.h */),
-        child: CompositedTransformTarget(
-          link: layerlink,
-          child: TextField(
-            onChanged: (value) {
-              controller.text = value;
-              setState(() {});
-            },
-            controller: controller,
-            onTap: () {
-              textfieldFocusnode.requestFocus();
-              setState(() {});
-            },
-            onEditingComplete: () {
-              textfieldFocusnode.unfocus();
-              setState(() {});
-            },
-            focusNode: textfieldFocusnode,
-            decoration: InputDecoration(
-              isDense: true,
-              suffixIcon:
-                  textfieldFocusnode.hasFocus && controller.text.isNotEmpty
-                      ? GestureDetector(
-                          onTap: () {
-                            if (controller.text.isEmpty) {
-                              textfieldFocusnode.unfocus();
-                              setState(() {});
-                            } else {
-                              controller.clear();
-                              setState(() {});
-                            }
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.only(right: 0.w),
-                            child: Icon(
-                              Icons.clear,
-                              color: Colors.black,
-                              size: 15.5.r,
-                            ),
-                          ),
-                        )
-                      : null,
-              prefixIcon: Container(
-                margin: EdgeInsets.all(2.r).copyWith(bottom: 4.h, left: 1.w),
-                decoration: const BoxDecoration(
-                  color: AppColors.backgroundColor,
-                  shape: BoxShape.circle,
-                ),
-                padding: EdgeInsets.all(10.r),
-                child: SvgPicture.asset(
-                  "assets/svg/search.svg",
-                  // ignore: deprecated_member_use
-                  color: AppColors.blueColor,
-                ),
+        padding: EdgeInsets.only(
+          right: 7.w, /* top: 3.h */
+        ),
+        child: TextField(
+          style: GoogleFonts.raleway(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+          ),
+
+          onChanged: (value) {
+            widget.controller.text = value;
+            setState(() {});
+          },
+          controller: widget.controller,
+          onTap: () {
+            if (!widget.state.isSearchbarOpened) {
+              widget.event.openSearchBar();
+            }
+          },
+          onEditingComplete: () {
+            widget.event.closeSearchBar();
+            FocusScope.of(context).unfocus();
+          },
+          //focusNode: widget.textfieldFocusnode,
+          decoration: InputDecoration(
+            isDense: true,
+            suffixIcon: widget.state.isSearchbarOpened &&
+                    widget.controller.text.isNotEmpty
+                ? GestureDetector(
+                    onTap: () {
+                      if (widget.controller.text.isEmpty) {
+                        widget.event.closeSearchBar();
+                      } else {
+                        widget.controller.clear();
+                        setState(() {});
+                      }
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 0.w),
+                      child: Icon(
+                        Icons.clear,
+                        color: Colors.black,
+                        size: 15.5.r,
+                      ),
+                    ),
+                  )
+                : null,
+            prefixIcon: Container(
+              margin: EdgeInsets.all(3.r),
+              decoration: const BoxDecoration(
+                color: AppColors.backgroundColor,
+                shape: BoxShape.circle,
               ),
-              hintText: "Найти занятие",
-              border: InputBorder.none,
+              padding: EdgeInsets.all(10.r),
+              child: SvgPicture.asset(
+                "assets/svg/search.svg",
+                // ignore: deprecated_member_use
+                color: AppColors.blueColor,
+              ),
             ),
+            hintStyle: GoogleFonts.raleway(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w400,
+            ),
+            hintText: "Найти занятие",
+            border: InputBorder.none,
           ),
         ),
       ),
 
       // action
       actions: [
-        textfieldFocusnode.hasFocus
+        widget.state.isSearchbarOpened
             ? const SizedBox()
             : Container(
                 height: 40.h,
@@ -259,11 +174,7 @@ class _MainHeaderState extends State<Main2Header> {
                   ),
                 ),
                 margin: EdgeInsets.only(
-                  top: 4.5.h,
-                  right: 16.w,
-                  bottom: 4.5.h,
-                  left: 5.w
-                ),
+                    top: 4.5.h, right: 16.w, bottom: 4.5.h, left: 5.w),
                 child: Row(
                   children: [
                     Padding(
@@ -290,7 +201,7 @@ class _MainHeaderState extends State<Main2Header> {
                     SizedOverflowBox(
                       size: Size(40.w, 40.h),
                       child: CircleAvatar(
-                        radius: 100.r,
+                        radius: 19.r,
                         backgroundColor: const Color.fromRGBO(119, 170, 249, 1),
                         child: Padding(
                           padding: EdgeInsets.all(2.r),

@@ -10,6 +10,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class NotesHeader extends StatefulWidget implements PreferredSizeWidget {
   const NotesHeader({super.key});
@@ -212,6 +213,10 @@ class _MainHeaderState extends State<NotesHeader> {
         child: CompositedTransformTarget(
           link: layerlink,
           child: TextField(
+            style: GoogleFonts.raleway(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+            ),
             controller: controller,
             onChanged: (value) {
               controller.text = value;
@@ -250,7 +255,7 @@ class _MainHeaderState extends State<NotesHeader> {
                         )
                       : null,
               prefixIcon: Container(
-                margin: EdgeInsets.all(2.r).copyWith(bottom: 4.h, left: 1.w),
+                margin: EdgeInsets.all(3.r),
                 decoration: const BoxDecoration(
                   color: AppColors.backgroundColor,
                   shape: BoxShape.circle,
@@ -261,6 +266,10 @@ class _MainHeaderState extends State<NotesHeader> {
                   // ignore: deprecated_member_use
                   color: AppColors.blueColor,
                 ),
+              ),
+              hintStyle: GoogleFonts.raleway(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
               ),
               hintText: "Заметка",
               border: InputBorder.none,

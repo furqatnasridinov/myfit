@@ -1,6 +1,7 @@
 import 'package:activity/domain/di/injection.dart';
 import 'package:activity/domain/handlers/api_result.dart';
 import 'package:activity/domain/handlers/http_service.dart';
+import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/register.dart';
 import 'package:activity/infrastructure/models/response/auth_response.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
@@ -20,11 +21,10 @@ class RegisterRepository implements RegisterRepositoryInterface {
         data: response.data,
       );
     } catch (e) {
-      throw e;
-      /*  return ApiResult.failure(
+      return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      ); */
+      );
     }
   }
 

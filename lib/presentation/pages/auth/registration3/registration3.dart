@@ -23,6 +23,7 @@ class _Registration3ScreenState extends State<Registration3Screen> {
   TextEditingController controller = TextEditingController(text: "Москва");
   TextEditingController nameController = TextEditingController();
   FocusNode focusNode = FocusNode();
+  FocusNode nameFocus = FocusNode();
   final layerlink = LayerLink();
   final listofaddresses = DummyData().cityNames;
 
@@ -152,6 +153,17 @@ class _Registration3ScreenState extends State<Registration3Screen> {
                       width: double.maxFinite,
                       child: CustomTextField(
                         controller: nameController,
+                        focusNode: nameFocus,
+                        onTapOutside: (onTapOutside) {
+                          if (nameFocus.hasFocus) {
+                            nameFocus.unfocus();
+                          }
+                        },
+                        onTap: () {
+                          if (!nameFocus.hasFocus) {
+                            nameFocus.requestFocus();
+                          }
+                        },
                         maxLines: 1,
                         contentPadding: EdgeInsets.zero.copyWith(left: 10.w),
                         hintText: "Ваше имя",
@@ -170,6 +182,11 @@ class _Registration3ScreenState extends State<Registration3Screen> {
                       child: CompositedTransformTarget(
                         link: layerlink,
                         child: TextField(
+                          style: GoogleFonts.inter(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
                           onTap: () {
                             if (!focusNode.hasFocus) {
                               focusNode.requestFocus();
@@ -260,12 +277,14 @@ class _Registration3ScreenState extends State<Registration3Screen> {
 
             Align(
               alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                child: SvgPicture.asset(
-                  "assets/svg/Vector 13.svg",
-                  width: width,
-                ),
-              ),
+              child: nameFocus.hasFocus
+                  ? const SizedBox()
+                  : SizedBox(
+                      child: SvgPicture.asset(
+                        "assets/svg/Vector 13.svg",
+                        width: width,
+                      ),
+                    ),
             ),
           ],
         ),
