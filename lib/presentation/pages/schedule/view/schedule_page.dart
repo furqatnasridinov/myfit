@@ -1,3 +1,4 @@
+import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/dummy_data.dart';
@@ -30,18 +31,30 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(scheduleProvider.notifier).getUsersSchedules(context);
+      ref.read(mapProvider.notifier).getUserLocation();
     });
+    /* scrollController.addListener(() {
+      if (FocusScope.of(context).hasFocus) {
+        FocusScope.of(context).unfocus();
+      }
+    }); */
   }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(scheduleProvider);
     final event = ref.read(scheduleProvider.notifier);
+    final mapState = ref.watch(mapProvider);
+    final mapEvent = ref.read(mapProvider.notifier);
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: const ScheduleHeader(),
+      appBar: ScheduleHeader(
+        mapEvent: mapEvent,
+        mapState: mapState,
+        
+      ),
       body: state.isloading
           ? const Center(
               child: CircularProgressIndicator(),
@@ -49,6 +62,7 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
           : SafeArea(
               bottom: false,
               child: CustomScrollView(
+                controller: scrollController,
                 slivers: [
                   SliverPadding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),

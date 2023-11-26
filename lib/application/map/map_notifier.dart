@@ -214,7 +214,7 @@ class MapNotifier extends StateNotifier<MapState> {
           .toStringAsFixed(2)
           .replaceAll(RegExp(r"([.]*0)(?!.*\d)"), ""),
     );
-    return formattedDistance;
+    return formattedDistance; // in kilometer
   }
 
   Future<void> setMarkerAsOpened(double lat, double lon) async {
@@ -312,25 +312,23 @@ class MapNotifier extends StateNotifier<MapState> {
       response.when(
         success: (data) {
           if (data["operationResult"] == "OK") {
-            final Map<String, dynamic> mapData = data["object"];
+            final List listData = data["object"];
             final list = <GymData>[];
-            mapData.forEach((key, value) {
-              value.forEach((element) {
-                final data = GymData(
-                  id: element["id"],
-                  name: element["name"],
-                  latitude: element["latitude"],
-                  longitude: element["longitude"],
-                  address: element["address"],
-                  distanceFromClient: calCulateDistanceSrazy(
-                    state.userPosition!.latitude,
-                    state.userPosition!.longitude,
-                    double.parse(element['latitude']),
-                    double.parse(element['longitude']),
-                  ),
-                );
-                list.add(data);
-              });
+            listData.forEach((element) {
+              final data = GymData(
+                id: element["id"],
+                name: element["name"],
+                latitude: double.parse(element["latitude"]),
+                longitude: double.parse(element["longitude"]),
+                address: element["address"],
+                distanceFromClient: calCulateDistanceSrazy(
+                  state.userPosition!.latitude,
+                  state.userPosition!.longitude,
+                  double.parse(element['latitude']),
+                  double.parse(element['longitude']),
+                ),
+              );
+              list.add(data);
             });
             state = state.copyWith(gymFoundBySearching: list);
           }
@@ -341,6 +339,7 @@ class MapNotifier extends StateNotifier<MapState> {
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
+
   void openSearchBar() {
     state = state.copyWith(isSearchbarOpened: true);
   }

@@ -14,6 +14,7 @@ class CustomTextField extends StatelessWidget {
   EdgeInsetsGeometry? contentPadding;
   FocusNode? focusNode;
   void Function(PointerDownEvent)? onTapOutside;
+  void Function()? onEditingComplete;
   void Function()? onTap;
   bool readOnly;
 
@@ -27,6 +28,7 @@ class CustomTextField extends StatelessWidget {
     this.maxLines,
     this.focusNode,
     this.keyboardType,
+    this.onEditingComplete,
     this.onTap,
     this.onTapOutside,
   }) : super(key: key);
@@ -45,6 +47,7 @@ class CustomTextField extends StatelessWidget {
       onTapOutside: onTapOutside,
       onTap: onTap,
       cursorColor: AppColors.greyText,
+      onEditingComplete: onEditingComplete,
       style: GoogleFonts.inter(
         fontSize: 14.sp,
         fontWeight: FontWeight.w400,

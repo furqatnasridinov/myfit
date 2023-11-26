@@ -164,6 +164,11 @@ class _Registration3ScreenState extends State<Registration3Screen> {
                             nameFocus.requestFocus();
                           }
                         },
+                        onEditingComplete: () {
+                          if (!nameFocus.hasFocus) {
+                            nameFocus.requestFocus();
+                          }
+                        },
                         maxLines: 1,
                         contentPadding: EdgeInsets.zero.copyWith(left: 10.w),
                         hintText: "Ваше имя",

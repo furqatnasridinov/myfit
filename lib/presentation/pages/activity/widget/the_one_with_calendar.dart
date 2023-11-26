@@ -2,6 +2,7 @@ import 'package:activity/application/activity/activity_notifier.dart';
 import 'package:activity/application/activity/activity_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/components.dart';
+import 'package:activity/presentation/components/inter_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -36,10 +37,10 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
           ),
           10.verticalSpace,
           SizedBox(
-            height: 80.h,
+            //color: Colors.red,
+            height: 67.h,
             width: double.maxFinite,
             child: ListView.builder(
-              itemExtent: 67,
               itemCount: widget.state.listOf15DaysFromNow.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
@@ -69,101 +70,93 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                           )
                         : null;
                   },
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.only(
-                          left: 8.w,
-                          right: 8.w,
-                          bottom: 8.h,
-                        ),
-                        decoration: BoxDecoration(
+                  child: Container(
+                    width: 41.w,
+                    height: 67.h,
+                    padding: EdgeInsets.only(
+                      left: 4.w,
+                      right: 4.w,
+                      bottom: 4.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: widget.state.selectedFormattedDay == currentDate
+                          ? AppColors.blueColor
+                          : Colors.white,
+                      borderRadius: BorderRadius.circular(8.r),
+                      border: Border.all(
+                        color: isAvailable
+                            ? AppColors.greyBorder
+                            : Colors.transparent,
+                        width: 1.w,
+                      ),
+                      boxShadow:
+                          widget.state.selectedFormattedDay == currentDate
+                              ? [
+                                  const BoxShadow(
+                                    //color: Colors.red,
+                                    spreadRadius: -2,
+                                    color: Color.fromRGBO(0, 0, 0, 0.15),
+                                    offset: Offset(0, 6),
+                                    blurRadius: 5.5,
+                                  ), 
+                                ]
+                              : [],
+                    ),
+                    margin: EdgeInsets.only(right: 9.w),
+                    child: Column(
+                      children: [
+                        6.verticalSpace,
+                        InterText(
+                          text: parts[0],
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600,
                           color:
                               widget.state.selectedFormattedDay == currentDate
-                                  ? AppColors.blueColor
-                                  : Colors.white,
-                          borderRadius: BorderRadius.circular(8.r),
-                          border: Border.all(
-                            color: isAvailable
-                                ? AppColors.greyBorder
-                                : Colors.transparent,
-                            width: 1.w,
-                          ),
-                          boxShadow:
+                                  ? Colors.white
+                                  : isAvailable
+                                      ? Colors.black
+                                      : const Color.fromRGBO(
+                                          176,
+                                          176,
+                                          176,
+                                          1,
+                                        ),
+                        ),
+                        CustomText(
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.w500,
+                          text: parts[1],
+                          color:
                               widget.state.selectedFormattedDay == currentDate
-                                  ? [
-                                      const BoxShadow(
-                                        //color: Colors.red,
-                                        color: Color.fromRGBO(0, 0, 0, 0.15),
-                                        offset: Offset(0, 6),
-                                        blurRadius: 3.5,
-                                      ),
-                                    ]
-                                  : [],
+                                  ? Colors.white
+                                  : isAvailable
+                                      ? Colors.black
+                                      : const Color.fromRGBO(
+                                          176,
+                                          176,
+                                          176,
+                                          1,
+                                        ),
                         ),
-                        margin: EdgeInsets.only(right: 9.w),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              children: [
-                                6.verticalSpace,
-                                CustomText(
-                                  text: parts[0],
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: widget.state.selectedFormattedDay ==
-                                          currentDate
-                                      ? Colors.white
-                                      : isAvailable
-                                          ? Colors.black
-                                          : const Color.fromRGBO(
-                                              176,
-                                              176,
-                                              176,
-                                              1,
-                                            ),
-                                ),
-                                CustomText(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w500,
-                                  text: parts[1],
-                                  color: widget.state.selectedFormattedDay ==
-                                          currentDate
-                                      ? Colors.white
-                                      : isAvailable
-                                          ? Colors.black
-                                          : const Color.fromRGBO(
-                                              176,
-                                              176,
-                                              176,
-                                              1,
-                                            ),
-                                ),
-                                1.verticalSpace,
-                                CustomText(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w500,
-                                  text: parts[2],
-                                  color: widget.state.selectedFormattedDay ==
-                                          currentDate
-                                      ? Colors.white
-                                      : isAvailable
-                                          ? Colors.black
-                                          : const Color.fromRGBO(
-                                              176,
-                                              176,
-                                              176,
-                                              1,
-                                            ),
-                                ),
-                              ],
-                            ),
-                          ],
+                        1.verticalSpace,
+                        CustomText(
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.w500,
+                          text: parts[2],
+                          color:
+                              widget.state.selectedFormattedDay == currentDate
+                                  ? Colors.white
+                                  : isAvailable
+                                      ? Colors.black
+                                      : const Color.fromRGBO(
+                                          176,
+                                          176,
+                                          176,
+                                          1,
+                                        ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },
@@ -211,7 +204,8 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                               InkWell(
                                 onTap: () {
                                   // запись на трен
-                                  widget.event.enrollToGym(context, widget.gymId);
+                                  widget.event
+                                      .enrollToGym(context, widget.gymId);
                                 },
                                 child: Container(
                                   padding: EdgeInsets.symmetric(

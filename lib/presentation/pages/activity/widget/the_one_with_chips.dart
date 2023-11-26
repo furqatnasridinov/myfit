@@ -61,6 +61,8 @@ class _TheOneWithChipsState extends State<TheOneWithChips> {
                           //widget.event.getGymPhotos(activity);
                         },
                         child: ChoiceChip(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16.w, vertical: 5.h),
                           showCheckmark: false,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(6.r),
@@ -81,7 +83,7 @@ class _TheOneWithChipsState extends State<TheOneWithChips> {
                                   widget.state.activities!.indexOf(activity) +
                                       1;
                               widget.event
-                                  .getSchedulesDates(context,id: index)
+                                  .getSchedulesDates(context, id: index)
                                   .then((value) async {
                                     await Future.delayed(
                                       const Duration(milliseconds: 100),

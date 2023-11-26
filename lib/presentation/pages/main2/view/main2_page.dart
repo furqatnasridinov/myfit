@@ -57,24 +57,25 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
       event.cleanSearchList();
     }
 
-    return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
-      extendBodyBehindAppBar: true,
-      appBar: Main2Header(
-        state: state,
-        event: event,
-        controller: controller,
-      ),
-      body: state.isloading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : SafeArea(
-              bottom: false,
-              child: Stack(
-                children: [
-                  GestureDetector(
-                    child: SingleChildScrollView(
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        backgroundColor: AppColors.backgroundColor,
+        extendBodyBehindAppBar: true,
+        appBar: Main2Header(
+          state: state,
+          event: event,
+          controller: controller,
+        ),
+        body: state.isloading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : SafeArea(
+                bottom: false,
+                child: Stack(
+                  children: [
+                    SingleChildScrollView(
                       keyboardDismissBehavior:
                           ScrollViewKeyboardDismissBehavior.onDrag,
                       controller: scrollController,
@@ -132,22 +133,22 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                         ],
                       ),
                     ),
-                  ),
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: state.isSearchbarOpened
-                        ? OverlayLikeMain2(
-                            state: state,
-                            event: event,
-                            controller: controller,
-                          )
-                        : SizedBox.shrink(),
-                  ),
-                ],
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: state.isSearchbarOpened
+                          ? OverlayLikeMain2(
+                              state: state,
+                              event: event,
+                              controller: controller,
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                  ],
+                ),
               ),
-            ),
+      ),
     );
   }
 }

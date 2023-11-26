@@ -34,7 +34,6 @@ class Main2Header extends StatefulWidget implements PreferredSizeWidget {
 
 class _MainHeaderState extends State<Main2Header> {
   String previousText = "";
-  final delay = Delayed(milliseconds: 200);
 
   @override
   Widget build(BuildContext context) {
