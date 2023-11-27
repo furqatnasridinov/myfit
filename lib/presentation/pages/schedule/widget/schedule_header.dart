@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'package:activity/application/map/map_notifier.dart';
 import 'package:activity/application/map/map_state.dart';
+import 'package:activity/application/schedule/schedule_notifier.dart';
+import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/custom_text.dart';
@@ -18,8 +20,12 @@ import 'package:google_fonts/google_fonts.dart';
 class ScheduleHeader extends StatefulWidget implements PreferredSizeWidget {
   final MapNotifier mapEvent;
   final MapState mapState;
+  final ScheduleNotifier event;
   const ScheduleHeader(
-      {super.key, required this.mapEvent, required this.mapState});
+      {super.key,
+      required this.mapEvent,
+      required this.mapState,
+      required this.event});
 
   @override
   State<ScheduleHeader> createState() => _MainHeaderState();
@@ -86,7 +92,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
                           ? Center(
                               child: CustomText(
                                 text:
-                                    "Напишите в поиск названия заведения которого хотите найти!",
+                                    "Введите название занятия или заведения, которое хотите найти",
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -230,7 +236,11 @@ class _MainHeaderState extends State<ScheduleHeader> {
                   shape: BoxShape.circle,
                 ),
                 child: InkWell(
-                  onTap: () => context.popRoute(),
+                  onTap: () {
+                    widget.event.getNearestLesson(context).then(
+                          (value) => context.popRoute(),
+                        );
+                  },
                   borderRadius: BorderRadius.circular(500.r),
                   child: SizedBox(
                     child: Icon(

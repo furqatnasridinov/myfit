@@ -15,28 +15,99 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       : super(const ActivityState());
   final ActivityRepositoryInterface _activityRepositoryInterface;
 
+  Future<void> getInitData(BuildContext context, int gymId) async {
+    getGymInfo(gymId: gymId).then((value) {
+      getActivitiesList(gymId: gymId).then((value) {
+        determineDefaultActivity().then((value) {
+          getGymPhotos(state.selectedActivity, gymId).then((value) => {
+                getSchedulesDates(context, id: gymId).then((value) {
+                  getListOf15CalendarDatesFromToday().then((value) {
+                    determineDefaultOriginalDate().then((value) => {
+                          determineDefaultFormattedDate().then((value) {
+                            getSchedulesList(state.selectedOriginalDate);
+                          })
+                        });
+                  });
+                })
+              });
+        });
+      });
+    });
+  }
+
+  Future<void> getGymInfo({required int gymId}) async {
+    state = state.copyWith(isloading: true);
+    final response =
+        await _activityRepositoryInterface.getInfoAboutGym(id: gymId);
+    response.when(
+      success: (data) {
+        state = state.copyWith(gym: data);
+      },
+      failure: (error, statusCode) {
+        //print("getGymInfo notifier failure >> $error");
+      },
+    );
+    state = state.copyWith(isloading: false);
+  }
+
+  Future<void> getActivitiesList({required int gymId}) async {
+    await Future.delayed(const Duration(milliseconds: 10));
+    state = state.copyWith(isloading: true);
+    final response =
+        await _activityRepositoryInterface.getActivities(gymId: gymId);
+    response.when(
+      success: (data) {
+        //print("notifier get activitis success");
+        //print("getActivitiesList notifier data[object] ${data["object"]}");
+        state = state.copyWith(activities: data.object);
+        state = state.copyWith(isloading: false);
+      },
+      failure: (error, statusCode) {
+        //print("notifier get activitis failure");
+
+        //print("getActivitiesList notifier failure>> $error");
+        state = state.copyWith(isloading: false);
+      },
+    );
+  }
+
   Future<void> determineDefaultActivity() async {
-    await Future.delayed(const Duration(seconds: 1));
-    //print("determineDefaultActivity started");
+    //await Future.delayed(const Duration(seconds: 1));
     if (state.activities!.isNotEmpty) {
-      //print("print activities isNotEmpty");
       state = state.copyWith(selectedActivity: state.activities?[0]);
     }
   }
 
+  Future<void> getGymPhotos(String? lessonType, int gymId) async {
+    final request = GetGymPhotosRequest(lessonType: lessonType);
+    final response = await _activityRepositoryInterface.getGymPhotos(
+      request: request,
+      gymId: gymId,
+    );
+    response.when(
+      success: (data) {
+        final _list = data.object;
+        for (var i = 0; i < _list!.length; i++) {
+          List<String> photoUrls = [];
+          photoUrls.add(_list[i].pictureUrl!);
+          state = state.copyWith(photos: photoUrls);
+        }
+      },
+      failure: (error, statusCode) {},
+    );
+  }
+
   Future<void> determineDefaultOriginalDate() async {
-    final all15Days = state.listOf15DaysFromNow;
-    final availableFormattedDay = state.availableFormattedDates;
+    final all15OriginalDays = state.listOf15OriginalDaysFromNow;
+    final availableOriginalDays = state.originalDates;
     final _list = <String>[];
-    for (String availableDay in availableFormattedDay) {
-      if (all15Days.contains(availableDay)) {
-        final toOriginal = convertToOriginalDate(availableDay);
-        //state = state.copyWith(selectedOriginalDate: toOriginal!);
-        _list.add(toOriginal!);
+    availableOriginalDays.forEach((element) {
+      if (all15OriginalDays.contains(element)) {
+        _list.add(element);
       }
-      state = state.copyWith(selectedOriginalDate: _list.first);
-      
-    }
+    });
+
+    state = state.copyWith(selectedOriginalDate: _list.first);
   }
 
   Future<void> determineDefaultFormattedDate() async {
@@ -114,38 +185,49 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     return '$dayOfWeek $day $month';
   }
 
-  Future<void> getGymInfo({required int gymId}) async {
-    state = state.copyWith(isloading: true);
-    final response =
-        await _activityRepositoryInterface.getInfoAboutGym(id: gymId);
-    response.when(
-      success: (data) {
-        state = state.copyWith(gym: data);
-      },
-      failure: (error, statusCode) {
-        //print("getGymInfo notifier failure >> $error");
-      },
-    );
-    state = state.copyWith(isloading: false);
-  }
-
-  Future<void> getActivitiesList({required int gymId}) async {
-    await Future.delayed(const Duration(milliseconds: 10));
-    state = state.copyWith(isloading: true);
-    final response =
-        await _activityRepositoryInterface.getActivities(gymId: gymId);
-    response.when(
-      success: (data) {
-        //print("notifier get activitis success");
-        //print("getActivitiesList notifier data[object] ${data["object"]}");
-        state = state.copyWith(activities: data.object);
-      },
-      failure: (error, statusCode) {
-        //print("notifier get activitis failure");
-
-        //print("getActivitiesList notifier failure>> $error");
-      },
-    );
+  String formatOriginalToCalendarFullNames(String inputDate) {
+    DateTime date = DateTime.parse(inputDate);
+    String day = DateFormat('d').format(date);
+    String month = DateFormat('MMM').format(date);
+    switch (month) {
+      case 'Jan':
+        month = 'Январь';
+        break;
+      case 'Feb':
+        month = 'Февраль';
+        break;
+      case 'Mar':
+        month = 'Март';
+        break;
+      case 'Apr':
+        month = 'Апрель';
+        break;
+      case 'May':
+        month = 'Май';
+        break;
+      case 'Jun':
+        month = 'Июнь';
+        break;
+      case 'Jul':
+        month = 'Июль';
+        break;
+      case 'Aug':
+        month = 'Август';
+        break;
+      case 'Sep':
+        month = 'Сентябрь';
+        break;
+      case 'Oct':
+        month = 'Октябрь';
+        break;
+      case 'Nov':
+        month = 'Ноябрь';
+        break;
+      case 'Dec':
+        month = 'Декабрь';
+        break;
+    }
+    return '$month $day';
   }
 
   void setSingleSelectedActivity(String? value) {
@@ -154,30 +236,6 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     } else {
       state = state.copyWith(selectedActivity: value);
     }
-  }
-
-  Future<void> getGymPhotos(String? lessonType, int gymId) async {
-    //print("notifier getGymPhotos started ");
-    final request = GetGymPhotosRequest(lessonType: lessonType);
-    //print("request to get photos LessonType >> ${request.toJson()}");
-    final response = await _activityRepositoryInterface.getGymPhotos(
-      request: request,
-      gymId: gymId,
-    );
-    response.when(
-      success: (data) {
-        //print("getGymPhotos notifier success");
-        final _list = data.object;
-        for (var i = 0; i < _list!.length; i++) {
-          List<String> photoUrls = [];
-          photoUrls.add(_list[i].pictureUrl!);
-          state = state.copyWith(photos: photoUrls);
-        }
-      },
-      failure: (error, statusCode) {
-        //print("getGymPhotos notifier failure");
-      },
-    );
   }
 
   Future<void> getSchedulesDates(
@@ -263,6 +321,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
               return '$dayOfWeek $day $month';
             }).toList();
           }
+
           state = state.copyWith(availableFormattedDates: formattedDates());
         },
         failure: (error, statusCode) {
@@ -330,7 +389,6 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   }
 
   Future<void> setSelectedOriginalDate(String calendarDate) async {
-    state = state.copyWith(isloading: true);
     // Маппинг для месяцев и дней недели
     final monthMapping = {
       'Янв': '01',
@@ -377,7 +435,6 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
 
     state = state.copyWith(
-        isloading: false,
         selectedOriginalDate: convertToOriginalDate(calendarDate)!);
   }
 
@@ -385,7 +442,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     state = state.copyWith(selectedOriginalDate: "");
   }
 
-  void getListOfDatesFromToday() {
+  Future<void> getListOf15CalendarDatesFromToday() async {
     List<String> _dates = [];
     DateTime currentDate = DateTime.now();
     for (int i = 0; i < 15; i++) {
@@ -456,7 +513,57 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       _dates.add(formattedDate);
       currentDate = currentDate.add(const Duration(days: 1));
     }
-    state = state.copyWith(listOf15DaysFromNow: _dates);
+    state = state.copyWith(listOf15CalendarDaysFromNow: _dates);
+  }
+
+  Future<void> getListOf15OriginalDatesFromToday() async {
+    List<String> dates = [];
+    DateTime currentDate = DateTime.now();
+    for (int i = 0; i < 15; i++) {
+      String month = DateFormat("MMM").format(currentDate);
+      switch (month) {
+        case 'Jan':
+          month = '01';
+          break;
+        case 'Feb':
+          month = '02';
+          break;
+        case 'Mar':
+          month = '03';
+          break;
+        case 'Apr':
+          month = '04';
+          break;
+        case 'May':
+          month = '05';
+          break;
+        case 'Jun':
+          month = '06';
+          break;
+        case 'Jul':
+          month = '07';
+          break;
+        case 'Aug':
+          month = '08';
+          break;
+        case 'Sep':
+          month = '09';
+          break;
+        case 'Oct':
+          month = '10';
+          break;
+        case 'Nov':
+          month = '11';
+          break;
+        case 'Dec':
+          month = '12';
+          break;
+      }
+      String formattedDate = "${currentDate.year}-$month-${currentDate.day}";
+      dates.add(formattedDate);
+      currentDate = currentDate.add(const Duration(days: 1));
+    }
+    state = state.copyWith(listOf15OriginalDaysFromNow: dates);
   }
 
   void selectADay(String day) {

@@ -28,7 +28,10 @@ mixin _$ActivityState {
   List<dynamic> get listOfSchedules => throw _privateConstructorUsedError;
   String get defaultDate => throw _privateConstructorUsedError;
   String get selectedOriginalDate => throw _privateConstructorUsedError;
-  List<String> get listOf15DaysFromNow => throw _privateConstructorUsedError;
+  List<String> get listOf15CalendarDaysFromNow =>
+      throw _privateConstructorUsedError;
+  List<String> get listOf15OriginalDaysFromNow =>
+      throw _privateConstructorUsedError;
   String get selectedFormattedDay => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -54,7 +57,8 @@ abstract class $ActivityStateCopyWith<$Res> {
       List<dynamic> listOfSchedules,
       String defaultDate,
       String selectedOriginalDate,
-      List<String> listOf15DaysFromNow,
+      List<String> listOf15CalendarDaysFromNow,
+      List<String> listOf15OriginalDaysFromNow,
       String selectedFormattedDay});
 }
 
@@ -82,7 +86,8 @@ class _$ActivityStateCopyWithImpl<$Res, $Val extends ActivityState>
     Object? listOfSchedules = null,
     Object? defaultDate = null,
     Object? selectedOriginalDate = null,
-    Object? listOf15DaysFromNow = null,
+    Object? listOf15CalendarDaysFromNow = null,
+    Object? listOf15OriginalDaysFromNow = null,
     Object? selectedFormattedDay = null,
   }) {
     return _then(_value.copyWith(
@@ -130,9 +135,13 @@ class _$ActivityStateCopyWithImpl<$Res, $Val extends ActivityState>
           ? _value.selectedOriginalDate
           : selectedOriginalDate // ignore: cast_nullable_to_non_nullable
               as String,
-      listOf15DaysFromNow: null == listOf15DaysFromNow
-          ? _value.listOf15DaysFromNow
-          : listOf15DaysFromNow // ignore: cast_nullable_to_non_nullable
+      listOf15CalendarDaysFromNow: null == listOf15CalendarDaysFromNow
+          ? _value.listOf15CalendarDaysFromNow
+          : listOf15CalendarDaysFromNow // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      listOf15OriginalDaysFromNow: null == listOf15OriginalDaysFromNow
+          ? _value.listOf15OriginalDaysFromNow
+          : listOf15OriginalDaysFromNow // ignore: cast_nullable_to_non_nullable
               as List<String>,
       selectedFormattedDay: null == selectedFormattedDay
           ? _value.selectedFormattedDay
@@ -162,7 +171,8 @@ abstract class _$$ActivityStateImplCopyWith<$Res>
       List<dynamic> listOfSchedules,
       String defaultDate,
       String selectedOriginalDate,
-      List<String> listOf15DaysFromNow,
+      List<String> listOf15CalendarDaysFromNow,
+      List<String> listOf15OriginalDaysFromNow,
       String selectedFormattedDay});
 }
 
@@ -188,7 +198,8 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
     Object? listOfSchedules = null,
     Object? defaultDate = null,
     Object? selectedOriginalDate = null,
-    Object? listOf15DaysFromNow = null,
+    Object? listOf15CalendarDaysFromNow = null,
+    Object? listOf15OriginalDaysFromNow = null,
     Object? selectedFormattedDay = null,
   }) {
     return _then(_$ActivityStateImpl(
@@ -236,9 +247,13 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
           ? _value.selectedOriginalDate
           : selectedOriginalDate // ignore: cast_nullable_to_non_nullable
               as String,
-      listOf15DaysFromNow: null == listOf15DaysFromNow
-          ? _value._listOf15DaysFromNow
-          : listOf15DaysFromNow // ignore: cast_nullable_to_non_nullable
+      listOf15CalendarDaysFromNow: null == listOf15CalendarDaysFromNow
+          ? _value._listOf15CalendarDaysFromNow
+          : listOf15CalendarDaysFromNow // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      listOf15OriginalDaysFromNow: null == listOf15OriginalDaysFromNow
+          ? _value._listOf15OriginalDaysFromNow
+          : listOf15OriginalDaysFromNow // ignore: cast_nullable_to_non_nullable
               as List<String>,
       selectedFormattedDay: null == selectedFormattedDay
           ? _value.selectedFormattedDay
@@ -263,7 +278,8 @@ class _$ActivityStateImpl extends _ActivityState {
       final List<dynamic> listOfSchedules = const [],
       this.defaultDate = "",
       this.selectedOriginalDate = "",
-      final List<String> listOf15DaysFromNow = const [],
+      final List<String> listOf15CalendarDaysFromNow = const [],
+      final List<String> listOf15OriginalDaysFromNow = const [],
       this.selectedFormattedDay = ""})
       : _activities = activities,
         _photos = photos,
@@ -271,7 +287,8 @@ class _$ActivityStateImpl extends _ActivityState {
         _scheddules = scheddules,
         _availableFormattedDates = availableFormattedDates,
         _listOfSchedules = listOfSchedules,
-        _listOf15DaysFromNow = listOf15DaysFromNow,
+        _listOf15CalendarDaysFromNow = listOf15CalendarDaysFromNow,
+        _listOf15OriginalDaysFromNow = listOf15OriginalDaysFromNow,
         super._();
 
   @override
@@ -348,14 +365,24 @@ class _$ActivityStateImpl extends _ActivityState {
   @override
   @JsonKey()
   final String selectedOriginalDate;
-  final List<String> _listOf15DaysFromNow;
+  final List<String> _listOf15CalendarDaysFromNow;
   @override
   @JsonKey()
-  List<String> get listOf15DaysFromNow {
-    if (_listOf15DaysFromNow is EqualUnmodifiableListView)
-      return _listOf15DaysFromNow;
+  List<String> get listOf15CalendarDaysFromNow {
+    if (_listOf15CalendarDaysFromNow is EqualUnmodifiableListView)
+      return _listOf15CalendarDaysFromNow;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_listOf15DaysFromNow);
+    return EqualUnmodifiableListView(_listOf15CalendarDaysFromNow);
+  }
+
+  final List<String> _listOf15OriginalDaysFromNow;
+  @override
+  @JsonKey()
+  List<String> get listOf15OriginalDaysFromNow {
+    if (_listOf15OriginalDaysFromNow is EqualUnmodifiableListView)
+      return _listOf15OriginalDaysFromNow;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_listOf15OriginalDaysFromNow);
   }
 
   @override
@@ -364,7 +391,7 @@ class _$ActivityStateImpl extends _ActivityState {
 
   @override
   String toString() {
-    return 'ActivityState(isloading: $isloading, gym: $gym, activities: $activities, selectedActivity: $selectedActivity, photos: $photos, originalDates: $originalDates, scheddules: $scheddules, availableFormattedDates: $availableFormattedDates, listOfSchedules: $listOfSchedules, defaultDate: $defaultDate, selectedOriginalDate: $selectedOriginalDate, listOf15DaysFromNow: $listOf15DaysFromNow, selectedFormattedDay: $selectedFormattedDay)';
+    return 'ActivityState(isloading: $isloading, gym: $gym, activities: $activities, selectedActivity: $selectedActivity, photos: $photos, originalDates: $originalDates, scheddules: $scheddules, availableFormattedDates: $availableFormattedDates, listOfSchedules: $listOfSchedules, defaultDate: $defaultDate, selectedOriginalDate: $selectedOriginalDate, listOf15CalendarDaysFromNow: $listOf15CalendarDaysFromNow, listOf15OriginalDaysFromNow: $listOf15OriginalDaysFromNow, selectedFormattedDay: $selectedFormattedDay)';
   }
 
   @override
@@ -392,8 +419,12 @@ class _$ActivityStateImpl extends _ActivityState {
                 other.defaultDate == defaultDate) &&
             (identical(other.selectedOriginalDate, selectedOriginalDate) ||
                 other.selectedOriginalDate == selectedOriginalDate) &&
-            const DeepCollectionEquality()
-                .equals(other._listOf15DaysFromNow, _listOf15DaysFromNow) &&
+            const DeepCollectionEquality().equals(
+                other._listOf15CalendarDaysFromNow,
+                _listOf15CalendarDaysFromNow) &&
+            const DeepCollectionEquality().equals(
+                other._listOf15OriginalDaysFromNow,
+                _listOf15OriginalDaysFromNow) &&
             (identical(other.selectedFormattedDay, selectedFormattedDay) ||
                 other.selectedFormattedDay == selectedFormattedDay));
   }
@@ -412,7 +443,8 @@ class _$ActivityStateImpl extends _ActivityState {
       const DeepCollectionEquality().hash(_listOfSchedules),
       defaultDate,
       selectedOriginalDate,
-      const DeepCollectionEquality().hash(_listOf15DaysFromNow),
+      const DeepCollectionEquality().hash(_listOf15CalendarDaysFromNow),
+      const DeepCollectionEquality().hash(_listOf15OriginalDaysFromNow),
       selectedFormattedDay);
 
   @JsonKey(ignore: true)
@@ -435,7 +467,8 @@ abstract class _ActivityState extends ActivityState {
       final List<dynamic> listOfSchedules,
       final String defaultDate,
       final String selectedOriginalDate,
-      final List<String> listOf15DaysFromNow,
+      final List<String> listOf15CalendarDaysFromNow,
+      final List<String> listOf15OriginalDaysFromNow,
       final String selectedFormattedDay}) = _$ActivityStateImpl;
   const _ActivityState._() : super._();
 
@@ -462,7 +495,9 @@ abstract class _ActivityState extends ActivityState {
   @override
   String get selectedOriginalDate;
   @override
-  List<String> get listOf15DaysFromNow;
+  List<String> get listOf15CalendarDaysFromNow;
+  @override
+  List<String> get listOf15OriginalDaysFromNow;
   @override
   String get selectedFormattedDay;
   @override

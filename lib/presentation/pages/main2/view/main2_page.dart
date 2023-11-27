@@ -1,9 +1,9 @@
 import 'dart:async';
+import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/ya_map.dart';
 import 'package:activity/presentation/pages/main2/widget/main2_header.dart';
 import 'package:activity/presentation/pages/main2/widget/widget.dart';
 import 'package:auto_route/auto_route.dart';
@@ -32,27 +32,24 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(mapProvider.notifier).getUserLocation();
       ref.read(scheduleProvider.notifier)
         ..getNearestLesson(context)
         ..getUserStatsMonth(context);
-      scrollController.addListener(() {
-        if (ref.watch(scheduleProvider).isSearchbarOpened) {
-          ref.read(scheduleProvider.notifier).closeSearchBar();
-          FocusScope.of(context).unfocus();
-        }
-      });
     });
+    
   }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(scheduleProvider);
     final event = ref.read(scheduleProvider.notifier);
+    final mapState = ref.watch(mapProvider);
     print("whenActivityStarts on duration ${state.whenActivityStarts}");
     //LocalStorage.removeToken();
     print("token ${LocalStorage.getToken()}");
     print("userId ${LocalStorage.getUserId()}");
-    print("lenth ${state.schedulesFoundBySearching.length}");
+    print("near ${state.nearestLesson?.bodyData?.description}");
     if (controller.text.isEmpty && state.schedulesFoundBySearching.isNotEmpty) {
       event.cleanSearchList();
     }
@@ -125,9 +122,8 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                           ),
                           10.verticalSpace,
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16.w),
-                            child: const UiYaMap(),
-                          ),
+                              padding: EdgeInsets.symmetric(horizontal: 16.w),
+                              child: Main2Map(mapState: mapState),),
                           70.verticalSpace,
                           const DecoratedTextOne(),
                         ],

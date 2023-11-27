@@ -207,6 +207,9 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
             determineWhenActivityStarts(data.bodyData!.date!);
             state = state.copyWith(nearestLesson: data);
           }
+        if (data.bodyData == null) {
+          state = state.copyWith(nearestLesson: null);
+        }
         },
         failure: (error, statusCode) {
           print("getNearestLesson notifier failure");

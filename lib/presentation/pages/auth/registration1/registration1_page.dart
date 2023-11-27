@@ -200,6 +200,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                                     ),
                                     5.verticalSpace,
                                     CustomButton(
+                                      buttonColor: Colors.white,
                                       fontSize: 14.sp,
                                       fontWeight: FontWeight.w500,
                                       height: 40.h,

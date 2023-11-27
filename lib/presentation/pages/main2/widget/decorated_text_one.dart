@@ -93,58 +93,91 @@ class DecoratedTextOne extends StatelessWidget {
         Positioned(
           bottom: 36.h,
           left: 72.w,
-          child: const Image(image: AssetImage('assets/images/1.png')),
+          child: Image(
+            image: const AssetImage('assets/images/1.png'),
+            height: 26.h,
+          ),
         ),
         Positioned(
           bottom: 57.h,
           right: 33.w,
-          child: const Image(image: AssetImage('assets/images/2.png')),
+          child: Image(
+            image: const AssetImage('assets/images/2.png'),
+            height: 28.h,
+          ),
         ),
         Positioned(
           bottom: 187.h,
-          right: 25.w,
-          child: const Image(image: AssetImage('assets/images/3.png')),
+          right: 20.w,
+          child: Image(
+            image: const AssetImage('assets/images/3.png'),
+            height: 28.h,
+          ),
         ),
-        Positioned(
+       /*  Positioned(
           bottom: 190.h,
           left: 30.w,
-          child: const Image(image: AssetImage('assets/images/4.png')),
-        ),
+          child: Image(
+            image: const AssetImage('assets/images/4.png'),
+            height: 15.h,
+          ),
+        ), */
         Positioned(
           bottom: 170.h,
           right: 59.w,
-          child: const Image(image: AssetImage('assets/images/5.png')),
+          child: Image(
+            image: const AssetImage('assets/images/5.png'),
+            height: 19.h,
+          ),
         ),
         Positioned(
-          bottom: 92.h,
-          left: 33.w,
-          child: const Image(image: AssetImage('assets/images/6.png')),
+          bottom: 152.h,
+          left: 25.w,
+          child: Image(
+            image: const AssetImage('assets/images/6.png'),
+            height: 30.h,
+          ),
         ),
         Positioned(
           bottom: 40.h,
           right: 123.w,
-          child: const Image(image: AssetImage('assets/images/7.png')),
+          child: Image(
+            image: const AssetImage('assets/images/7.png'),
+            height: 30.h,
+          ),
         ),
         Positioned(
-          bottom: 225.h,
+          bottom: 218.h,
           left: 158.w,
-          child: const Image(image: AssetImage('assets/images/8.png')),
+          child: Image(
+            image: const AssetImage('assets/images/8.png'),
+            height: 20.h,
+          ),
         ),
         Positioned(
           bottom: 63.h,
           left: 165.w,
-          child: const Image(image: AssetImage('assets/images/9.png')),
+          child: Image(
+            image: const AssetImage('assets/images/9.png'),
+            height: 28.h,
+          ),
         ),
-        Positioned(
+        /* Positioned(
           bottom: 171.h,
           left: 67.w,
-          child: const Image(image: AssetImage('assets/images/10.png')),
+          child: Image(
+            image: const AssetImage('assets/images/1.png'),
+            height: 28.h,
+          ),
         ),
         Positioned(
           top: 0.h,
           right: 136.w,
-          child: const Image(image: AssetImage('assets/images/11.png')),
-        ),
+          child: Image(
+            image: const AssetImage('assets/images/1.png'),
+            height: 28.h,
+          ),
+        ), */
       ],
     );
   }

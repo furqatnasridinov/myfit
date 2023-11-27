@@ -1,7 +1,6 @@
 import 'package:activity/application/main/main_provider.dart';
 import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/pages/main/widget/widget.dart';
 import 'package:auto_route/auto_route.dart';

@@ -51,9 +51,9 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
       appBar: ScheduleHeader(
+        event: event,
         mapEvent: mapEvent,
         mapState: mapState,
-        
       ),
       body: state.isloading
           ? const Center(

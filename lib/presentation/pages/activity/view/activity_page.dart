@@ -22,43 +22,55 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
     super.initState();
     print("initstate called");
 
-    ref
-        .read(activityProvider.notifier)
-        .getActivitiesList(gymId: widget.gymId)
-        .then(
-          (value) => ref
-              .read(activityProvider.notifier)
-              .determineDefaultActivity()
-              .then(
-                (value) => ref.read(activityProvider.notifier).getGymPhotos(
-                      ref.watch(activityProvider).selectedActivity,
-                      widget.gymId,
-                    ),
-              ),
-        );
-
-    ref
-        .read(activityProvider.notifier)
-        .getSchedulesDates(context, id: widget.gymId)
-        .then((value) =>
-            ref.read(activityProvider.notifier).getListOfDatesFromToday())
-        .then((value) =>
-            ref.read(activityProvider.notifier).determineDefaultOriginalDate())
-        .then(
-          (value) => ref
-              .read(activityProvider.notifier)
-              .determineDefaultFormattedDate(),
-        )
-        .then(
-          (value) => ref.read(activityProvider.notifier).getSchedulesList(
-              ref.watch(activityProvider).selectedOriginalDate),
-        );
-
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
-        ref.read(activityProvider.notifier).getGymInfo(
+        // get info `bout gym
+        ref
+            .read(activityProvider.notifier)
+            .getGymInfo(
               gymId: widget.gymId,
-            );
+            )
+            .then((value) {
+          ref
+              .read(activityProvider.notifier)
+              .getActivitiesList(gymId: widget.gymId)
+              .then(
+                (value) => ref
+                    .read(activityProvider.notifier)
+                    .determineDefaultActivity()
+                    .then(
+                      (value) =>
+                          ref.read(activityProvider.notifier).getGymPhotos(
+                                ref.watch(activityProvider).selectedActivity,
+                                widget.gymId,
+                              ),
+                    ),
+              );
+
+          ref
+              .read(activityProvider.notifier)
+              .getSchedulesDates(context, id: widget.gymId)
+              .then((value) => ref
+                  .read(activityProvider.notifier)
+                  .getListOf15CalendarDatesFromToday())
+              .then(
+                (value) => ref
+                    .read(activityProvider.notifier)
+                    .getListOf15OriginalDatesFromToday(),
+              )
+              .then((value) => ref
+                  .read(activityProvider.notifier)
+                  .determineDefaultOriginalDate())
+              .then(
+                (value) => ref
+                    .read(activityProvider.notifier)
+                    .determineDefaultFormattedDate(),
+              )
+              .then(
+                (value) => ref.read(activityProvider.notifier).getSchedulesList(
+                    ref.watch(activityProvider).selectedOriginalDate),
+              );
+        });
       },
     );
   }
@@ -67,16 +79,19 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
   Widget build(BuildContext context) {
     final event = ref.read(activityProvider.notifier);
     final state = ref.watch(activityProvider);
-
-    print("selectedOriginalDate ${state.selectedOriginalDate}");
-    print("listOf15DaysFromNow ${state.listOf15DaysFromNow}");
-    print("selectedFormatted ${state.selectedFormattedDay}");
+    print("gym >> ${state.gym?.name}");
+    print("chips >> ${state.activities?.length}");
+    print("selectedactivity >> ${state.selectedActivity}");
+    print("list of original dates >> ${state.originalDates}");
     print("available formatted dates ${state.availableFormattedDates}");
-    print("15 days from now ${state.listOf15DaysFromNow}");
+    print("15 calendar days from now ${state.listOf15CalendarDaysFromNow}");
+    print("selectedOriginalDate ${state.selectedOriginalDate}");
+    print("selectedFormatted ${state.selectedFormattedDay}");
+    print("list of schedules in in one day >> ${state.listOfSchedules.length}");
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      body: state.gym?.name == null && state.activities!.isEmpty
+      body: state.isloading
           ? const Center(
               child: CircularProgressIndicator(),
             )

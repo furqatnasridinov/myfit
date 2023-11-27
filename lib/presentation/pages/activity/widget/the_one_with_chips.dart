@@ -58,7 +58,7 @@ class _TheOneWithChipsState extends State<TheOneWithChips> {
                           activity == widget.state.selectedActivity;
                       return InkWell(
                         onTap: () {
-                          //widget.event.getGymPhotos(activity);
+                          //widget.event.getGymPhotos(activity,widget.gymId);
                         },
                         child: ChoiceChip(
                           padding: EdgeInsets.symmetric(
@@ -83,30 +83,30 @@ class _TheOneWithChipsState extends State<TheOneWithChips> {
                                   widget.state.activities!.indexOf(activity) +
                                       1;
                               widget.event
-                                  .getSchedulesDates(context, id: index)
+                                  .getSchedulesDates(context, id: widget.gymId)
                                   .then((value) async {
-                                    await Future.delayed(
-                                      const Duration(milliseconds: 100),
-                                    );
-                                  })
-                                  .then(
+                                await Future.delayed(
+                                  const Duration(milliseconds: 100),
+                                );
+                              })
+                                  /* .then(
                                     (value) => widget.event.selectADay(widget
                                         .state.availableFormattedDates[0]),
-                                  )
+                                  ) */
                                   .then(
-                                    (value) => widget.event
-                                        .setSelectedOriginalDate(
-                                      widget.state.availableFormattedDates[0],
-                                    )
-                                        .then((value) async {
-                                      await Future.delayed(
-                                          const Duration(milliseconds: 100));
-                                    }).then(
-                                      (value) => widget.event.getSchedulesList(
-                                        widget.state.selectedOriginalDate,
-                                      ),
-                                    ),
-                                  );
+                                (value) => widget.event
+                                    .determineDefaultOriginalDate()
+                                    .then((value) => widget.event
+                                        .determineDefaultFormattedDate())
+                                    .then((value) async {
+                                  await Future.delayed(
+                                      const Duration(milliseconds: 100));
+                                }).then(
+                                  (value) => widget.event.getSchedulesList(
+                                    widget.state.selectedOriginalDate,
+                                  ),
+                                ),
+                              );
                             }
                           },
                           label: CustomText(

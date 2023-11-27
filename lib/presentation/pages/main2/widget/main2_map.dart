@@ -1,17 +1,13 @@
-import 'package:activity/application/main/main_notifier.dart';
 import 'package:activity/application/map/map_state.dart';
+import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
-class MapInsideNearActivities extends StatelessWidget {
-  final MainNotifier event;
+class Main2Map extends StatelessWidget {
   final MapState mapState;
-  MapInsideNearActivities({
-    super.key,
-    required this.event,
-    required this.mapState,
-  });
+  Main2Map({super.key, required this.mapState});
   YandexMapController? yandexMapController;
 
   @override
@@ -39,7 +35,7 @@ class MapInsideNearActivities extends StatelessWidget {
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(16.r),
         child: SizedBox(
           height: 147.w,
           child: YandexMap(
@@ -47,13 +43,15 @@ class MapInsideNearActivities extends StatelessWidget {
             scrollGesturesEnabled: false,
             tiltGesturesEnabled: false,
             zoomGesturesEnabled: false,
-            mapObjects: event.getPlacemarkObjects(),
+            onMapTap: (point) {
+              context.router.push(MapRoute(gymId: 0));
+            },
             onMapCreated: (controller) {
               yandexMapController = controller;
               yandexMapController?.moveCamera(
                 CameraUpdate.newCameraPosition(
                   CameraPosition(
-                    zoom: 11,
+                    zoom: 13,
                     target: Point(
                       latitude: mapState.userPosition!.latitude,
                       longitude: mapState.userPosition!.longitude,
@@ -61,7 +59,7 @@ class MapInsideNearActivities extends StatelessWidget {
                   ),
                 ),
                 animation: const MapAnimation(
-                  duration: 2,
+                  duration: 1,
                   type: MapAnimationType.linear,
                 ),
               );

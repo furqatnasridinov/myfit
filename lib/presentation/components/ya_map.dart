@@ -1,5 +1,7 @@
 import 'package:activity/presentation/components/maphelpers/app_lat_long.dart';
 import 'package:activity/presentation/components/maphelpers/location_service.dart';
+import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -30,33 +32,44 @@ class _UiYaMap extends State<UiYaMap> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          border: Border.all(width: 3.0, color: Colors.white),
+    return InkWell(
+      onTap: () {
+        context.router.push(
+          MapRoute(gymId: 0),
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border.all(width: 3.0, color: Colors.white),
+            borderRadius: BorderRadius.circular(16.0),
+            boxShadow: const [
+              BoxShadow(
+                color: Color.fromRGBO(0, 0, 0, 0.15),
+                spreadRadius: 0,
+                blurRadius: 5.0,
+                offset: Offset(0, 2),
+              ),
+              BoxShadow(
+                color: Color.fromRGBO(119, 170, 249, 1),
+                spreadRadius: -15,
+                blurRadius: 18.0,
+                offset: Offset(0, 15),
+              ),
+            ]),
+        child: ClipRRect(
           borderRadius: BorderRadius.circular(16.0),
-          boxShadow: const [
-            BoxShadow(
-              color: Color.fromRGBO(0, 0, 0, 0.15),
-              spreadRadius: 0,
-              blurRadius: 5.0,
-              offset: Offset(0, 2),
+          child: SizedBox(
+            height: 147.0,
+            child: YandexMap(
+              rotateGesturesEnabled: false,
+              scrollGesturesEnabled: false,
+              tiltGesturesEnabled: false,
+              zoomGesturesEnabled: false,
+              mapObjects: placemarksList,
+              onMapCreated: (controller) {
+                mapControllerCompleter.complete(controller);
+              },
             ),
-            BoxShadow(
-              color: Color.fromRGBO(119, 170, 249, 1),
-              spreadRadius: -15,
-              blurRadius: 18.0,
-              offset: Offset(0, 15),
-            ),
-          ]),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16.0),
-        child: SizedBox(
-          height: 147.0,
-          child: YandexMap(
-            mapObjects: placemarksList,
-            onMapCreated: (controller) {
-              mapControllerCompleter.complete(controller);
-            },
           ),
         ),
       ),
@@ -95,7 +108,7 @@ class _UiYaMap extends State<UiYaMap> {
             latitude: appLatLong.lat,
             longitude: appLatLong.long,
           ),
-          zoom: 12,
+          zoom: 17,
         ),
       ),
     );

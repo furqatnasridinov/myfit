@@ -1,8 +1,13 @@
 import 'package:activity/application/activity/activity_notifier.dart';
 import 'package:activity/application/activity/activity_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/components.dart';
+import 'package:activity/presentation/components/custom_button.dart';
+import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/inter_text.dart';
+import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -24,6 +29,7 @@ class TheOneWithCalendar extends StatefulWidget {
 class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
   @override
   Widget build(BuildContext context) {
+    print("alo >> ${widget.state.listOfSchedules.first}");
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -41,11 +47,11 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
             height: 67.h,
             width: double.maxFinite,
             child: ListView.builder(
-              itemCount: widget.state.listOf15DaysFromNow.length,
+              itemCount: widget.state.listOf15CalendarDaysFromNow.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
                 final String currentDate =
-                    widget.state.listOf15DaysFromNow[index];
+                    widget.state.listOf15CalendarDaysFromNow[index];
                 bool isAvailable =
                     widget.state.availableFormattedDates.contains(currentDate);
                 final parts = currentDate.split(" ");
@@ -98,7 +104,7 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                                     color: Color.fromRGBO(0, 0, 0, 0.15),
                                     offset: Offset(0, 6),
                                     blurRadius: 5.5,
-                                  ), 
+                                  ),
                                 ]
                               : [],
                     ),
@@ -175,7 +181,8 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                 width: 1.w,
               ),
             ),
-            child: widget.state.listOfSchedules.isEmpty
+            child: widget.state.listOfSchedules.isEmpty &&
+                    widget.state.selectedFormattedDay.isEmpty
                 ? CustomText(
                     text: "Список занятий пуст!",
                     textAlign: TextAlign.center,
@@ -185,15 +192,16 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: widget.state.listOfSchedules.length,
                     itemBuilder: (context, index) {
-                      final currentSchedule = widget
-                          .state.listOfSchedules[index] as Map<String, dynamic>;
+                      final currentSchedule =
+                          widget.state.listOfSchedules[index];
                       String times = currentSchedule["date"];
                       List<String> parts = times.split("@");
                       final currentTime = parts[1];
+                      String calendarDay = widget.event
+                          .formatOriginalToCalendarFullNames(parts[0]);
                       final String endingTime = widget.event.getEndingTime(
                           currentTime, currentSchedule["duration"]);
-                      /* final String endingTime = widget.event.getEndingTime(
-                          "13:15", "01:30"); */
+
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: IntrinsicHeight(
@@ -203,9 +211,82 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                               // starting time
                               InkWell(
                                 onTap: () {
-                                  // запись на трен
-                                  widget.event
-                                      .enrollToGym(context, widget.gymId);
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return Dialog(
+                                        elevation: 0,
+                                        insetPadding: REdgeInsets.symmetric(
+                                            horizontal: 16.w),
+                                        child: CustomCard(
+                                          height: 200.h,
+                                          borderColor: Colors.transparent,
+                                          width: double.maxFinite,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              CustomText(
+                                                text: "Подтверждение!",
+                                                fontSize: 16.sp,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                              16.verticalSpace,
+                                              CustomText(
+                                                text:
+                                                    'Вы действительно хотите записаться на занятия "${currentSchedule["description"]}" в $calendarDay - го числа?',
+                                                fontSize: 13.sp,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                              16.verticalSpace,
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Expanded(
+                                                    child: CustomButton(
+                                                      buttonColor: Colors.white,
+                                                      fontSize: 14.sp,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      //height: 40.h,
+                                                      onPressed: () {
+                                                        context.popRoute();
+                                                      },
+                                                      text: "Назад",
+                                                    ),
+                                                  ),
+                                                  5.horizontalSpace,
+                                                  Expanded(
+                                                    child: CustomButton(
+                                                      fontSize: 14.sp,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      buttonColor:
+                                                          AppColors.blueColor,
+                                                      textColor: Colors.white,
+                                                      //height: 40.h,
+                                                      onPressed: () {
+                                                        // запись на трен
+                                                        widget.event
+                                                            .enrollToGym(
+                                                                context,
+                                                                currentSchedule[
+                                                                    "id"]);
+                                                      },
+
+                                                      text: "Подтвердить",
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
                                 },
                                 child: Container(
                                   padding: EdgeInsets.symmetric(

@@ -17,7 +17,8 @@ class ActivityState with _$ActivityState {
     @Default([]) List listOfSchedules,
     @Default("") String defaultDate,
     @Default("") String selectedOriginalDate,
-    @Default([]) List<String> listOf15DaysFromNow,
+    @Default([]) List<String> listOf15CalendarDaysFromNow,
+    @Default([]) List<String> listOf15OriginalDaysFromNow,
     @Default("") String selectedFormattedDay,
   }) = _ActivityState;
 
