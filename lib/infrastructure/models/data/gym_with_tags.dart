@@ -42,6 +42,24 @@ class GymWithTags {
     }
     return data;
   }
+
+  GymWithTags copyWith({
+    String? date,
+    int? id,
+    String? description,
+    String? duration,
+    Gym? gym,
+    List<Tag>? tag,
+  }) {
+    return GymWithTags(
+      date: date ?? this.date,
+      id: id ?? this.id,
+      description: description ?? this.description,
+      duration: duration ?? this.duration,
+      gym: gym ?? this.gym,
+      tag: tag ?? this.tag,
+    );
+  }
 }
 
 class Gym {

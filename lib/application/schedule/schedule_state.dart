@@ -22,6 +22,7 @@ class ScheduleState with _$ScheduleState {
     @Default([]) List<UserStats> statsForMonth,
     @Default({}) Map<String, dynamic> notesMapData,
     @Default([]) List<GymWithTags> listOfGymWithTags,
+    @Default([]) List<GymWithTags> listOfGymWithTagsWithNewAddedTags,
     @Default([]) List<ScheduleAndGym> schedulesFoundBySearching,
     @Default("30 мин") String notificationTime,
   }) = _ScheduleState;

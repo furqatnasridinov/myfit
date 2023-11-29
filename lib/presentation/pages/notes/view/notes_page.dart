@@ -10,7 +10,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 @RoutePage()
 class NotesScreen extends ConsumerStatefulWidget {
   final String gymName; //Фитнес-клуб Mytimefitness
-
   const NotesScreen({super.key, required this.gymName});
 
   @override
@@ -30,7 +29,8 @@ class _ScheduleItemScreen extends ConsumerState<NotesScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(scheduleProvider);
     final event = ref.read(scheduleProvider.notifier);
-    print("build called");
+    print(
+        "addednotes lenth >> ${state.listOfGymWithTagsWithNewAddedTags.length}");
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: AppColors.backgroundColor,
@@ -51,6 +51,7 @@ class _ScheduleItemScreen extends ConsumerState<NotesScreen> {
                       itemBuilder: (context, index) {
                         final current = state.listOfGymWithTags[index];
                         return NotesCardMaker(
+                          state: state,
                           event: event,
                           name: current.gym?.name ?? "??",
                           startTime: current.date ?? "?",

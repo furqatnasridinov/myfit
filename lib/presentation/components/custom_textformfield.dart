@@ -32,8 +32,12 @@ class CustomTextFormField extends StatelessWidget {
       keyboardType: keyboardType,
       //controller: controller,
       cursorColor: AppColors.greyText,
+      style: GoogleFonts.inter(
+        fontSize: 14.sp,
+        fontWeight: FontWeight.w400,
+        color: Colors.black,
+      ),
       decoration: InputDecoration(
-        
         contentPadding: contentPadding,
         hintText: hintText,
         hintStyle: GoogleFonts.inter(

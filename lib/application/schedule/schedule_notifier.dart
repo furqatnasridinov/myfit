@@ -207,9 +207,9 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
             determineWhenActivityStarts(data.bodyData!.date!);
             state = state.copyWith(nearestLesson: data);
           }
-        if (data.bodyData == null) {
-          state = state.copyWith(nearestLesson: null);
-        }
+          if (data.bodyData == null) {
+            state = state.copyWith(nearestLesson: null);
+          }
         },
         failure: (error, statusCode) {
           print("getNearestLesson notifier failure");
@@ -295,7 +295,6 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
             });
             state = state.copyWith(listOfGymWithTags: _list);
           }
-
           state = state.copyWith(isloading: false);
           //state = state.copyWith(notesMapData: mapData);
         },
@@ -330,6 +329,13 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
+  }
+
+  void addNewNote(Tag tag) {
+    List<GymWithTags> newAddedTages = [];
+    newAddedTages.addAll(state.listOfGymWithTagsWithNewAddedTags);
+    newAddedTages.add(GymWithTags(tag: [tag]));
+    state = state.copyWith(listOfGymWithTagsWithNewAddedTags: newAddedTages);
   }
 
   Future<void> searchingSchedules(BuildContext context,

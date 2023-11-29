@@ -46,7 +46,7 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       onTapOutside: onTapOutside,
       onTap: onTap,
-      cursorColor: AppColors.greyText,
+      cursorColor: Colors.black,
       onEditingComplete: onEditingComplete,
       style: GoogleFonts.inter(
         fontSize: 14.sp,
@@ -66,7 +66,9 @@ class CustomTextField extends StatelessWidget {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
-            color: AppColors.greyBorder,
+            color: focusNode!.hasFocus
+                ? AppColors.blueColor
+                : AppColors.greyBorder,
             width: 1.w,
           ),
         ),
