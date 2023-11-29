@@ -45,11 +45,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     final state = ref.watch(scheduleProvider);
     final event = ref.read(scheduleProvider.notifier);
     final mapState = ref.watch(mapProvider);
-    print("whenActivityStarts on duration ${state.whenActivityStarts}");
-    //LocalStorage.removeToken();
-    print("token ${LocalStorage.getToken()}");
-    print("userId ${LocalStorage.getUserId()}");
-    print("near ${state.nearestLesson?.bodyData?.description}");
+        //LocalStorage.removeToken();
     if (controller.text.isEmpty && state.schedulesFoundBySearching.isNotEmpty) {
       event.cleanSearchList();
     }

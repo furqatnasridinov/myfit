@@ -10,7 +10,7 @@ class Registration4Screen extends StatelessWidget {
   const Registration4Screen({super.key});
 
   Future<void> wait3SecondsThenMove(BuildContext context) async {
-    await Future.delayed(Duration(seconds: 3)).then(
+    await Future.delayed(const Duration(seconds: 3)).then(
       (value) => context.replaceRoute(
         const Main2Route(),
       ),

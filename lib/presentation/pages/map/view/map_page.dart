@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:auto_route/auto_route.dart';
@@ -20,7 +22,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   YandexMapController? yandexMapController;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref
@@ -46,13 +47,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(mapProvider);
     final event = ref.read(mapProvider.notifier);
-
-    print("list of distances ${state.distances}");
-    print("selected diapozone ${state.selectedDiapozone}");
-    print("list of bool ${state.listOfBool}");
-    print(
-        "listOfActivitiesFromSelectedDiapozone ${state.listOfActivitiesFromSelectedDiapozone.length}");
-
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar: MapHeader(
@@ -115,7 +109,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     onCameraPositionChanged:
                         (cameraPosition, reason, finished) {
                       if (reason == CameraUpdateReason.gestures) {
-                        print("onCameraPositionChanged gestures triggered");
                         event.removePopUp();
                       }
                     },

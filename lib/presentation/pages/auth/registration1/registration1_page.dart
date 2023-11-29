@@ -15,7 +15,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 @RoutePage()
 class Registration1Screen extends ConsumerStatefulWidget {
-  Registration1Screen({super.key});
+ const  Registration1Screen({super.key});
 
   @override
   ConsumerState<Registration1Screen> createState() =>
@@ -28,7 +28,6 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final state = ref.watch(registrationProvider);
     final event = ref.read(registrationProvider.notifier);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
@@ -62,12 +61,12 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                               height: 40.h,
                               //color: Colors.red,
                               child: TextField(
-                                inputFormatters: [
-                                  /* MaskTextInputFormatter(
+                                /* inputFormatters: [
+                                  MaskTextInputFormatter(
                                     mask: '+# (###) ###-##-##',
                                     filter: {"#": RegExp(r'[0-9]')},
-                                  ), */
-                                ],
+                                  ), 
+                                ], */
                                 maxLength: 12,
                                 maxLines: 1,
                                 controller: controller,

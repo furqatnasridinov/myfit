@@ -6,7 +6,6 @@ import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/inter_text.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,7 +15,7 @@ import 'package:pinput/pinput.dart';
 
 @RoutePage()
 class Registration2Screen extends ConsumerStatefulWidget {
-  Registration2Screen({
+  const Registration2Screen({
     super.key,
   });
 
@@ -92,10 +91,8 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(registrationProvider);
     final event = ref.read(registrationProvider.notifier);
     final width = MediaQuery.of(context).size.width;
-    print("phone number >> ${LocalStorage.getPhoneNumber()}");
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SafeArea(

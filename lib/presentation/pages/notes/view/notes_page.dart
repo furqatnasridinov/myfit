@@ -29,8 +29,6 @@ class _ScheduleItemScreen extends ConsumerState<NotesScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(scheduleProvider);
     final event = ref.read(scheduleProvider.notifier);
-    print(
-        "addednotes lenth >> ${state.listOfGymWithTagsWithNewAddedTags.length}");
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: AppColors.backgroundColor,

@@ -27,7 +27,6 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
   ScrollController scrollController = ScrollController();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(scheduleProvider.notifier).getUsersSchedules(context);

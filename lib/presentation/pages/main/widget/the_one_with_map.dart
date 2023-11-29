@@ -75,7 +75,6 @@ class TheOneWithMap extends StatelessWidget {
               ),
               10.verticalSpace,
               MapInsideNearActivities(
-                
                 event: event,
                 mapState: mapState,
               ),

@@ -34,21 +34,10 @@ class _BlogScreen extends ConsumerState<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-   
     final state = ref.watch(mainProvider);
     final event = ref.read(mainProvider.notifier);
     final mapState = ref.watch(mapProvider);
-    final mapEvent = ref.read(mapProvider.notifier);
-    print(
-        "state.advantages?.bodyData.lenth >>    ${state.advantages?.bodyData?.length}");
-    print(
-        "state.subscribtions?.bodyData.lenth>>  ${state.subscribtions?.bodyData?.length}");
-    print(
-        "state.comments?.bodyData.lenth>>  ${state.comments?.commentsBody?.length}");
-    print(
-        "activities near client lenth >> ${state.activitiesNearClient.length}");
-    print("amount of markers >> ${state.listOfMarkers.length}");
-    mapEvent.removePopUp();
+    // mapEvent.removePopUp();
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,

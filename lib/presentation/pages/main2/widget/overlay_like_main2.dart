@@ -47,8 +47,6 @@ class _OverlayLikeMain2State extends State<OverlayLikeMain2> {
 
   @override
   Widget build(BuildContext context) {
-    print("container size >> $containerSize");
-    print("container offset >> $containerOffset");
     return TapRegion(
       onTapOutside: (pointerDownEvent) {
         // Get the position of the tap

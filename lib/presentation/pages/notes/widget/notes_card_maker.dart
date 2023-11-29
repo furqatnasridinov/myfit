@@ -49,10 +49,7 @@ class _NotesCardMakerState extends State<NotesCardMaker> {
     String dayToFormat = parts[0]; //2023-11-11
     final formattedDay = widget.event.formatDay(dayToFormat); // Ноябрь 11
     if (addedNotes.isNotEmpty) {
-      print("addednotes first > ${addedNotes.first.tag?.first.tag ?? "??"}");
     }
-
-    print("addednotes lenth > ${addedNotes.length}");
     return Container(
       margin: EdgeInsets.only(bottom: 32.w),
       child: Column(
@@ -253,38 +250,43 @@ class _NotesCardMakerState extends State<NotesCardMaker> {
               final current = addedNotes[index].tag;
               return Padding(
                 padding: const EdgeInsets.only(bottom: 5),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      //color: Colors.red,
-                      width: 113.w,
-                      child: CustomTextFormField(
-                        readOnly: true,
-                        initialValue: current?[index].tag ?? "??",
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        contentPadding: EdgeInsets.symmetric(
-                          vertical: 10.w,
-                          horizontal: 5.h,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 225.w,
-                      child: CustomTextFormField(
-                        readOnly: true,
-                        initialValue: current?[index].description ?? "??",
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        contentPadding: EdgeInsets.symmetric(
-                          vertical: 10.w,
-                          horizontal: 5.h,
-                        ),
-                      ),
-                    ),
-                  ],
+                child: Column(
+                  children: current?.map((tag) {
+                        return Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                              //color: Colors.red,
+                              width: 113.w,
+                              child: CustomTextFormField(
+                                readOnly: true,
+                                initialValue: tag.tag,
+                                keyboardType: TextInputType.multiline,
+                                maxLines: null,
+                                contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10.w,
+                                  horizontal: 5.h,
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 225.w,
+                              child: CustomTextFormField(
+                                readOnly: true,
+                                initialValue: tag.description,
+                                keyboardType: TextInputType.multiline,
+                                maxLines: null,
+                                contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10.w,
+                                  horizontal: 5.h,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList() ??
+                      [],
                 ),
               );
             },

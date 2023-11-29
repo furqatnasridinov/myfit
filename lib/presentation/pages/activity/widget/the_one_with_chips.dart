@@ -79,9 +79,9 @@ class _TheOneWithChipsState extends State<TheOneWithChips> {
                             if (selected) {
                               widget.event.setSingleSelectedActivity(activity);
                               widget.event.getGymPhotos(activity, widget.gymId);
-                              int index =
+                             /*  int index =
                                   widget.state.activities!.indexOf(activity) +
-                                      1;
+                                      1; */
                               widget.event
                                   .getSchedulesDates(context, id: widget.gymId)
                                   .then((value) async {

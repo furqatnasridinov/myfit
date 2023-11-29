@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/domain/interface/schedule.dart';
 import 'package:activity/infrastructure/models/data/gym_with_tags.dart';
@@ -22,12 +24,10 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       final response = await _scheduleRepositoryInterface.getUsersSchedules();
       response.when(
         success: (data) {
-          print("getUsersSchedules notifier success");
-          print("getUsersSchedules notifier data $data");
+     
           state = state.copyWith(schedulesInMapForm: data["object"]);
         },
         failure: (error, statusCode) {
-          print("getUsersSchedules notifier success");
         },
       );
     } else {
@@ -77,38 +77,38 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
         month = "Декабр";
         break;
     }
-    String _day = parts[2];
-    switch (_day) {
+    String daysplitted = parts[2];
+    switch (daysplitted) {
       case "01":
-        _day = "1";
+        daysplitted = "1";
         break;
       case "02":
-        _day = "2";
+        daysplitted = "2";
         break;
       case "03":
-        _day = "3";
+        daysplitted = "3";
         break;
       case "04":
-        _day = "4";
+        daysplitted = "4";
         break;
       case "05":
-        _day = "5";
+        daysplitted = "5";
         break;
       case "06":
-        _day = "6";
+        daysplitted = "6";
         break;
       case "07":
-        _day = "7";
+        daysplitted = "7";
         break;
       case "08":
-        _day = "8";
+        daysplitted = "8";
         break;
       case "09":
-        _day = "9";
+        daysplitted = "9";
         break;
       default:
     }
-    return "$month $_day";
+    return "$month $daysplitted";
   }
 
   String determineWeekday(String day) {
@@ -149,7 +149,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     int hours = int.parse(parts[0]);
     int minutes = int.parse(parts[1]);
     double durationInHours = hours + minutes / 60;
-    String formattedDuration = durationInHours.toStringAsFixed(1) + ' часа';
+    String formattedDuration = '${durationInHours.toStringAsFixed(1)} часа';
     return formattedDuration;
   }
 
@@ -203,7 +203,6 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       response.when(
         success: (data) {
           if (data.bodyData != null) {
-            print("getNearestLesson notifier success, data >> $data");
             determineWhenActivityStarts(data.bodyData!.date!);
             state = state.copyWith(nearestLesson: data);
           }
@@ -212,7 +211,6 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
           }
         },
         failure: (error, statusCode) {
-          print("getNearestLesson notifier failure");
         },
       );
     } else {
@@ -227,17 +225,14 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       final response = await _scheduleRepositoryInterface.getUserStatsMonth();
       response.when(
         success: (data) {
-          print(
-              "notifier getUserStatsMonth success, data >>  ${data.bodyData?.length}");
           // sorting list by its count
-          final _list = data.bodyData;
-          _list?.sort(
+          final list = data.bodyData;
+          list?.sort(
             (a, b) => a.count!.compareTo(b.count!),
           );
-          state = state.copyWith(statsForMonth: _list!.reversed.toList());
+          state = state.copyWith(statsForMonth: list!.reversed.toList());
         },
         failure: (error, statusCode) {
-          print("notifier getUserStatsMonth failure");
         },
       );
     } else {
@@ -246,16 +241,14 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
   }
 
   Future<void> getNotes(BuildContext context, String gymName) async {
-    print("getNotes called");
     final connect = await AppConnectivity().connectivity();
     if (connect) {
       state = state.copyWith(isloading: true);
       final response = await _scheduleRepositoryInterface.getNotes();
       response.when(
         success: (data) {
-          print("getNotes notifier success");
           if (gymName.isNotEmpty) {
-            List<GymWithTags> _list = [];
+            List<GymWithTags> list = [];
             final mapData = data["object"];
             mapData.forEach((key, value) {
               value.forEach((element) {
@@ -270,11 +263,11 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
                         ?.map((tag) => Tag.fromJson(tag))
                         .toList(),
                   );
-                  _list.add(data);
+                  list.add(data);
                 }
               });
             });
-            state = state.copyWith(listOfGymWithTags: _list);
+            state = state.copyWith(listOfGymWithTags: list);
           } else {
             List<GymWithTags> _list = [];
             final mapData = data["object"];
@@ -299,7 +292,6 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
           //state = state.copyWith(notesMapData: mapData);
         },
         failure: (error, statusCode) {
-          print("getNotes notifier failure");
           state = state.copyWith(isloading: false);
         },
       );
@@ -320,10 +312,8 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       final response = await _scheduleRepositoryInterface.addNotes(request);
       response.when(
         success: (data) {
-          print("addNote notifier success");
         },
         failure: (error, statusCode) {
-          print("addNote notifier failure");
         },
       );
     } else {
@@ -342,7 +332,6 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       {required String schedule}) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
-      print("searchingSchedules called");
       final response = await _scheduleRepositoryInterface.searchingForSchedules(
         schedule: schedule,
       );
@@ -443,10 +432,8 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       final response = await _scheduleRepositoryInterface.cancelActivity(id);
       response.when(
         success: (data) {
-          print("cancelActivity notifier success");
         },
         failure: (error, statusCode) {
-          print("cancelActivity notifier failure");
         },
       );
     } else {

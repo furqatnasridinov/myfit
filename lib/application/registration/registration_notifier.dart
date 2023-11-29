@@ -84,7 +84,6 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
           await _registerRepositoryInterface.sendPhoneNumber(phoneNumber);
       response.when(
         success: (data) {
-          print("sendPhoneNumber notifier success");
           if (data["operationResult"] == "OK") {
             // save phone number to local storage
             LocalStorage.setPhoneNumber(phoneNumber)
@@ -101,6 +100,7 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
         },
       );
     } else {
+      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
@@ -125,12 +125,13 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
         failure: (error, statusCode) {},
       );
     } else {
+      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
 
   Future<void> moveClientToThirdPage(BuildContext context) async {
-    await Future.delayed(Duration(milliseconds: 1500)).then(
+    await Future.delayed(const Duration(milliseconds: 1500)).then(
       (value) => context.replaceRoute(
         Registration3Route(),
       ),

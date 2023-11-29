@@ -13,7 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 @RoutePage()
 class Registration3Screen extends StatefulWidget {
-  Registration3Screen({super.key});
+ const  Registration3Screen({super.key});
 
   @override
   State<Registration3Screen> createState() => _Registration3ScreenState();
@@ -114,14 +114,11 @@ class _Registration3ScreenState extends State<Registration3Screen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
-        print("has focus");
         showOverlay();
       } else {
-        print("has no focus");
         hideOverlay();
       }
     });

@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:activity/application/map/map_notifier.dart';
 import 'package:activity/application/map/map_state.dart';
 import 'package:activity/application/schedule/schedule_notifier.dart';
-import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/custom_text.dart';
@@ -180,7 +179,6 @@ class _MainHeaderState extends State<ScheduleHeader> {
 
   @override
   Widget build(BuildContext context) {
-    print("lenth ${widget.mapState.gymFoundBySearching.length}");
     if (controller.text.length > 1 && controller.text != previousText) {
       widget.mapEvent.searchGym(
         context,

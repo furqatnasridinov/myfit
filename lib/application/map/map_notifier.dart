@@ -29,8 +29,6 @@ class MapNotifier extends StateNotifier<MapState> {
         desiredAccuracy: LocationAccuracy.high);
     state = state.copyWith(userPosition: postion);
     state = state.copyWith(isloading: false);
-    print("position longitude ${postion.longitude}");
-    print("position latitude ${postion.latitude}");
   }
 
   void setInitialCameraPosition({required YandexMapController controller}) {
@@ -68,7 +66,7 @@ class MapNotifier extends StateNotifier<MapState> {
   Future<void> getAllMarkers() async {
     await Future.delayed(const Duration(milliseconds: 200));
     List<EachMarkersModel> markers = [];
-    state.listOfActivitiesFromSelectedDiapozone.forEach((element) {
+    for (var element in state.listOfActivitiesFromSelectedDiapozone) {
       final marker = EachMarkersModel(
         name: element.name ?? "",
         latitude: element.latitude ?? 0,
@@ -77,7 +75,7 @@ class MapNotifier extends StateNotifier<MapState> {
         id: element.id ?? 0,
       );
       markers.add(marker);
-    });
+    }
     state = state.copyWith(listOfMarkers: markers);
   }
 
@@ -98,7 +96,6 @@ class MapNotifier extends StateNotifier<MapState> {
 
   List<PlacemarkMapObject> getPlacemarkObjects(
       {required Function(PlacemarkMapObject, Point)? onTap}) {
-    print("notif ${state.listOfActivitiesFromSelectedDiapozone.length}");
     return state.listOfMarkers
         .map(
           (e) => PlacemarkMapObject(
@@ -134,7 +131,7 @@ class MapNotifier extends StateNotifier<MapState> {
       CameraUpdate.newCameraPosition(
         CameraPosition(target: Point(latitude: lat, longitude: lon), zoom: 15),
       ),
-      animation: MapAnimation(duration: 1),
+      animation: const MapAnimation(duration: 1),
     );
   }
 
@@ -185,10 +182,10 @@ class MapNotifier extends StateNotifier<MapState> {
           state = state.copyWith(listOfActivities: activities);
         },
         failure: (error, statusCode) {
-          print("getGymsList notifier failure");
         },
       );
     } else {
+      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
     state = state.copyWith(isloading: false);
@@ -222,19 +219,20 @@ class MapNotifier extends StateNotifier<MapState> {
         state.activeMarker?.longitude == lon) {
       return;
     }
-    state.listOfMarkers.forEach((element) {
+    for (var element in state.listOfMarkers) {
       if (element.latitude == lat && element.longitude == lon) {
         state = state.copyWith(activeMarker: element);
       }
-    });
+    }
   }
 
   Future<void> changeSelectedDiapozone(double diapozone) async {
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(const Duration(milliseconds: 100));
     state = state.copyWith(selectedDiapozone: diapozone);
   }
 
   void showPopUpOnMap(BuildContext context) {
+    // remove prvious pop up first 
     removePopUp();
     final overlay = Overlay.of(context);
     entry = OverlayEntry(
@@ -266,29 +264,29 @@ class MapNotifier extends StateNotifier<MapState> {
   }
 
   void changListOFBoolToTrue(int index) {
-    List<bool> _bools = List<bool>.from(state.listOfBool);
-    _bools.fillRange(0, _bools.length, false);
-    _bools[index] = true;
-    state = state.copyWith(listOfBool: _bools);
+    List<bool> bools = List<bool>.from(state.listOfBool);
+    bools.fillRange(0, bools.length, false);
+    bools[index] = true;
+    state = state.copyWith(listOfBool: bools);
   }
 
   Future<void> getGetListOfActivitiesFromDiapozone() async {
     await Future.delayed(const Duration(milliseconds: 100));
-    List<GymData> _list = <GymData>[];
+    List<GymData> list = <GymData>[];
 
     double selectedDiapozone = state.selectedDiapozone;
     if (selectedDiapozone == 5) {
-      _list.addAll(state.listOfActivities);
+      list.addAll(state.listOfActivities);
     }
     if (selectedDiapozone != 5) {
-      state.listOfActivities.forEach((element) {
+      for (var element in state.listOfActivities) {
         if (element.distanceFromClient! < selectedDiapozone) {
-          _list.add(element);
+          list.add(element);
         }
-      });
+      }
     }
 
-    state = state.copyWith(listOfActivitiesFromSelectedDiapozone: _list);
+    state = state.copyWith(listOfActivitiesFromSelectedDiapozone: list);
   }
 
   void changeDiapozoneAndPop(
@@ -314,7 +312,7 @@ class MapNotifier extends StateNotifier<MapState> {
           if (data["operationResult"] == "OK") {
             final List listData = data["object"];
             final list = <GymData>[];
-            listData.forEach((element) {
+            for (var element in listData) {
               final data = GymData(
                 id: element["id"],
                 name: element["name"],
@@ -329,13 +327,14 @@ class MapNotifier extends StateNotifier<MapState> {
                 ),
               );
               list.add(data);
-            });
+            }
             state = state.copyWith(gymFoundBySearching: list);
           }
         },
         failure: (error, statuscode) {},
       );
     } else {
+      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }

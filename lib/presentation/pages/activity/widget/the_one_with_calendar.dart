@@ -1,12 +1,10 @@
 import 'package:activity/application/activity/activity_notifier.dart';
 import 'package:activity/application/activity/activity_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/inter_text.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -29,7 +27,6 @@ class TheOneWithCalendar extends StatefulWidget {
 class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
   @override
   Widget build(BuildContext context) {
-    print("alo >> ${widget.state.listOfSchedules.first}");
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(

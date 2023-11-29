@@ -17,7 +17,6 @@ class MapPageTopSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("build called");
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Row(
@@ -215,15 +214,15 @@ class MapPageTopSection extends StatelessWidget {
     List<Step> steps = [
       Step(
         title: CustomText(text: "1"),
-        content: SizedBox(),
+        content: const SizedBox(),
       ),
       Step(
         title: CustomText(text: "2"),
-        content: SizedBox(),
+        content: const SizedBox(),
       ),
       Step(
         title: CustomText(text: "3"),
-        content: SizedBox(),
+        content: const SizedBox(),
       ),
     ];
     return steps;

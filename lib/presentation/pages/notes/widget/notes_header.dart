@@ -97,7 +97,7 @@ class _MainHeaderState extends State<NotesHeader> {
                   const SizedBox(height: 10.0),
                   UiButtonFilled(
                     btnText: 'Показать на карте',
-                    onPressedAction: () => print('123'),
+                    onPressedAction: () {},
                     isFullWidth: true,
                   )
                 ]),
@@ -131,12 +131,6 @@ class _MainHeaderState extends State<NotesHeader> {
 
   @override
   Widget build(BuildContext context) {
-    if (textfieldFocusnode.hasFocus) {
-      print("focusnode has focus");
-    } else {
-      print("focusnode has no focus");
-    }
-
     return AppBar(
       automaticallyImplyLeading: false,
       leadingWidth: 48.w,

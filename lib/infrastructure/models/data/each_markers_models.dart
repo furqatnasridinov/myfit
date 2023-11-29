@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 
+// ignore: must_be_immutable
 class EachMarkersModel extends Equatable {
   EachMarkersModel({
   this.isOpened = false,

@@ -53,7 +53,7 @@ class NotesTopSection extends StatelessWidget {
     );
   }
 
-  _scheduleItemAction() {
+  scheduleItemAction() {
     return SizedBox(
       width: 90.w,
       height: 40.h,

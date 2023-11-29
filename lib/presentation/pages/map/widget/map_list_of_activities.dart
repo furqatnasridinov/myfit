@@ -22,7 +22,6 @@ class MapListOfActivities extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("alyo ${state.listOfActivities}");
     return state.listOfActivitiesFromSelectedDiapozone.isEmpty
         ? Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(bottom: 10.h),

@@ -170,7 +170,6 @@ class _MainHeaderState extends State<MapHeader> {
 
   @override
   Widget build(BuildContext context) {
-    print("lenth ${widget.state.gymFoundBySearching.length}");
     if (controller.text.length > 1 && controller.text != previousText) {
       widget.event.searchGym(
         context,

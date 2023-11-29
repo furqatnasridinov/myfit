@@ -1,7 +1,4 @@
-import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/inter_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ScheduleItemCard extends StatelessWidget {
   const ScheduleItemCard({super.key});

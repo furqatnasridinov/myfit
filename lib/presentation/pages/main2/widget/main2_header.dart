@@ -3,7 +3,6 @@ import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
-import 'package:activity/infrastructure/services/typing_delay.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
@@ -45,8 +44,6 @@ class _MainHeaderState extends State<Main2Header> {
       );
       previousText = widget.controller.text;
     }
-    print("controller text >>  ${widget.controller.text}");
-    print("previous text >> $previousText");
     return AppBar(
       automaticallyImplyLeading: false,
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
@@ -224,7 +221,7 @@ class _MainHeaderState extends State<Main2Header> {
   }
 }
 
-Widget _listiles(
+Widget listiles(
   String name,
   String km,
   void Function()? onTap,

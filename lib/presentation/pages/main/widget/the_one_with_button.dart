@@ -1,6 +1,7 @@
+import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/inter_text.dart';
-import 'package:activity/presentation/components/ui_button_filled.dart';
 import 'package:activity/presentation/components/ui_card.dart';
 
 import 'package:flutter/material.dart';
@@ -37,17 +38,17 @@ class _TheOneWithButtonState extends State<TheOneWithButton> {
             fontWeight: FontWeight.w400,
             fontSize: 12.sp,
           ),
-          const SizedBox(height: 10.0),
-          UiButtonFilled(
-            isFullWidth: true,
-            btnText: 'То, что нужно! Вперёд!',
-            onPressedAction: () {
-              //context.router.push(const Main2Route());
-              /*   setState(() {
-                activeStepState++;
-              }); */
-            },
-          )
+          10.verticalSpace,
+          CustomButton(
+            onPressed: () {},
+            text: "То, что нужно! Вперёд!",
+            buttonColor: AppColors.blueColor,
+            borderColor: AppColors.blueBorder,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+            textColor: Colors.white,
+            height: 40.h,
+          ),
         ],
       ))
     ]);

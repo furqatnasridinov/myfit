@@ -1,12 +1,9 @@
 import 'dart:ui';
-
 import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/components/ui_button_filled.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -101,7 +98,7 @@ class _MainHeaderState extends State<MainHeader> {
                   const SizedBox(height: 10.0),
                   UiButtonFilled(
                     btnText: 'Показать на карте',
-                    onPressedAction: () => print('123'),
+                    onPressedAction: (){},
                     isFullWidth: true,
                   )
                 ]),
@@ -127,21 +124,15 @@ class _MainHeaderState extends State<MainHeader> {
     textfieldFocusnode.addListener(() {
       if (textfieldFocusnode.hasFocus) {
         showOverlay();
-        print("focusnode addlistener showOverlay ");
       } else {
         hideOverlay();
-        print("focusnode addlistener hideOverlay ");
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (textfieldFocusnode.hasFocus) {
-      print("focusnode has focus");
-    } else {
-      print("focusnode has no focus");
-    }
+   
 
     return AppBar(
       titleSpacing: 0.0,

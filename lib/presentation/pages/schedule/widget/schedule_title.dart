@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
+// ignore: must_be_immutable
 class ScheduleTitle extends StatelessWidget {
   final ScheduleState state;
   final ScheduleNotifier event;
@@ -295,6 +296,8 @@ class ScheduleTitle extends StatelessWidget {
                                       Expanded(
                                         child: CustomButton(
                                           height: 40.h,
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w500,
                                           buttonColor: Colors.white,
                                           onPressed: () {
                                             context.popRoute();
@@ -308,6 +311,9 @@ class ScheduleTitle extends StatelessWidget {
                                           height: 40.h,
                                           textColor: Colors.white,
                                           buttonColor: AppColors.blueColor,
+                                          borderColor: AppColors.blueBorder,
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w500,
                                           onPressed: () {
                                             context.popRoute();
                                           },
@@ -331,146 +337,6 @@ class ScheduleTitle extends StatelessWidget {
             ),
           ],
         ),
-        /*   UiIconButton(
-          iconButton: SvgPicture.asset(
-            "assets/svg/tune.svg",
-          ),
-          iconSize: 24.r,
-          onPressedAction: () => {
-            UiBottomModal.openModal(
-                context,
-                'Настройки расписания',
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.backgroundColor,
-                        borderRadius: BorderRadius.circular(16.r),
-                      ),
-                      padding: EdgeInsets.all(16.r),
-                      child: Row(children: [
-                        SizedBox(
-                          width: 175.w,
-                          child: CustomText(
-                            text:
-                                'За какое время до занятия присылать пуш-напоминание',
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14.sp,
-                          ),
-                        ),
-                        const Spacer(),
-                        // Для реактивности работы с модалками
-                        StatefulBuilder(builder: (context, setState) {
-                          return UiDropDownMenu(
-                            dropDownItemsList: [
-                              {
-                                'title': 'За 30 мин',
-                                'action': () {
-                                  setState(() {
-                                    chosenTimeNotificationState = 'за 30 мин';
-                                  });
-                                }
-                              },
-                              {
-                                'title': 'За 1 час',
-                                'action': () {
-                                  setState(() {
-                                    chosenTimeNotificationState = 'за 1 час';
-                                  });
-                                }
-                              },
-                              {
-                                'title': 'За 2 часа',
-                                'action': () {
-                                  setState(() {
-                                    chosenTimeNotificationState = 'за 2 часа';
-                                  });
-                                }
-                              },
-                              {
-                                'title': 'Никогда',
-                                'action': () {
-                                  setState(() {
-                                    chosenTimeNotificationState = 'никогда';
-                                  });
-                                }
-                              },
-                            ],
-                            dropDownChild: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(
-                                  width: 1.w,
-                                  color: const Color.fromRGBO(
-                                    233,
-                                    233,
-                                    233,
-                                    1,
-                                  ),
-                                ),
-                                borderRadius: BorderRadius.circular(8.r),
-                              ),
-                              padding: EdgeInsets.only(
-                                top: 6.h,
-                                bottom: 6.h,
-                                left: 8.w,
-                                right: 16.w,
-                              ),
-                              child: Row(children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(6.r),
-                                  child: Container(
-                                    color:
-                                        const Color.fromRGBO(245, 249, 255, 1),
-                                    padding: EdgeInsets.all(5.r),
-                                    child: Icon(
-                                      Icons.schedule_outlined,
-                                      color:
-                                          const Color.fromRGBO(62, 134, 245, 1),
-                                      size: 18.r,
-                                    ),
-                                  ),
-                                ),
-                                10.horizontalSpace,
-                                CustomText(
-                                  text: chosenTimeNotificationState,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w400,
-                                )
-                                // Text(chosenTimeNotificationState),
-                              ]),
-                            ),
-                          );
-                        })
-                      ]),
-                    ),
-                    32.verticalSpace,
-                    Row(
-                      children: [
-                        Expanded(
-                          child: UiButtonOutlined(
-                            btnText: 'Отменить',
-                            onPressedAction: () => {
-                              Navigator.pop(context),
-                            },
-                          ),
-                        ),
-                        5.horizontalSpace,
-                        Expanded(
-                          child: UiButtonFilled(
-                            btnText: 'Сохранить',
-                            onPressedAction: () {
-                              print('123');
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                )),
-          },
-        ), */
       ],
     );
   }

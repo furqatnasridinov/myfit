@@ -1,7 +1,5 @@
 import 'package:activity/application/map/map_notifier.dart';
 import 'package:activity/application/map/map_state.dart';
-import 'package:activity/application/schedule/schedule_notifier.dart';
-import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/inter_text.dart';

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:activity/application/activity/activity_state.dart';
 import 'package:activity/domain/interface/activity.dart';
 import 'package:activity/infrastructure/models/request/get_gym_photos_request.dart';
@@ -86,10 +88,10 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     );
     response.when(
       success: (data) {
-        final _list = data.object;
-        for (var i = 0; i < _list!.length; i++) {
+        final list = data.object;
+        for (var i = 0; i < list!.length; i++) {
           List<String> photoUrls = [];
-          photoUrls.add(_list[i].pictureUrl!);
+          photoUrls.add(list[i].pictureUrl!);
           state = state.copyWith(photos: photoUrls);
         }
       },
@@ -100,14 +102,14 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   Future<void> determineDefaultOriginalDate() async {
     final all15OriginalDays = state.listOf15OriginalDaysFromNow;
     final availableOriginalDays = state.originalDates;
-    final _list = <String>[];
-    availableOriginalDays.forEach((element) {
+    final list = <String>[];
+    for (var element in availableOriginalDays) {
       if (all15OriginalDays.contains(element)) {
-        _list.add(element);
+        list.add(element);
       }
-    });
+    }
 
-    state = state.copyWith(selectedOriginalDate: _list.first);
+    state = state.copyWith(selectedOriginalDate: list.first);
   }
 
   Future<void> determineDefaultFormattedDate() async {
@@ -328,6 +330,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
           //print("(notifier failure)");
         },
       );
+    // ignore: duplicate_ignore
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
@@ -341,7 +344,6 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         state = state.copyWith(listOfSchedules: mapData[data]);
       }
     } else {
-      print("data is not in dummy list");
     }
   }
 
@@ -443,7 +445,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   }
 
   Future<void> getListOf15CalendarDatesFromToday() async {
-    List<String> _dates = [];
+    List<String> dates = [];
     DateTime currentDate = DateTime.now();
     for (int i = 0; i < 15; i++) {
       String dayOfWeek = DateFormat('EEE').format(currentDate);
@@ -510,10 +512,10 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
           break;
       }
       String formattedDate = '$dayOfWeek ${currentDate.day} $month';
-      _dates.add(formattedDate);
+      dates.add(formattedDate);
       currentDate = currentDate.add(const Duration(days: 1));
     }
-    state = state.copyWith(listOf15CalendarDaysFromNow: _dates);
+    state = state.copyWith(listOf15CalendarDaysFromNow: dates);
   }
 
   Future<void> getListOf15OriginalDatesFromToday() async {
