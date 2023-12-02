@@ -1,6 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/domain/interface/schedule.dart';
 import 'package:activity/infrastructure/models/data/gym_with_tags.dart';
+import 'package:activity/infrastructure/models/data/schedule_and_gym.dart';
 import 'package:activity/infrastructure/models/request/add_note_request.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
@@ -21,12 +24,10 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       final response = await _scheduleRepositoryInterface.getUsersSchedules();
       response.when(
         success: (data) {
-          print("getUsersSchedules notifier success");
-          print("getUsersSchedules notifier data $data");
+     
           state = state.copyWith(schedulesInMapForm: data["object"]);
         },
         failure: (error, statusCode) {
-          print("getUsersSchedules notifier success");
         },
       );
     } else {
@@ -76,38 +77,38 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
         month = "Декабр";
         break;
     }
-    String _day = parts[2];
-    switch (_day) {
+    String daysplitted = parts[2];
+    switch (daysplitted) {
       case "01":
-        _day = "1";
+        daysplitted = "1";
         break;
       case "02":
-        _day = "2";
+        daysplitted = "2";
         break;
       case "03":
-        _day = "3";
+        daysplitted = "3";
         break;
       case "04":
-        _day = "4";
+        daysplitted = "4";
         break;
       case "05":
-        _day = "5";
+        daysplitted = "5";
         break;
       case "06":
-        _day = "6";
+        daysplitted = "6";
         break;
       case "07":
-        _day = "7";
+        daysplitted = "7";
         break;
       case "08":
-        _day = "8";
+        daysplitted = "8";
         break;
       case "09":
-        _day = "9";
+        daysplitted = "9";
         break;
       default:
     }
-    return "$month $_day";
+    return "$month $daysplitted";
   }
 
   String determineWeekday(String day) {
@@ -148,7 +149,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     int hours = int.parse(parts[0]);
     int minutes = int.parse(parts[1]);
     double durationInHours = hours + minutes / 60;
-    String formattedDuration = durationInHours.toStringAsFixed(1) + ' часа';
+    String formattedDuration = '${durationInHours.toStringAsFixed(1)} часа';
     return formattedDuration;
   }
 
@@ -202,13 +203,14 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       response.when(
         success: (data) {
           if (data.bodyData != null) {
-            print("getNearestLesson notifier success, data >> $data");
             determineWhenActivityStarts(data.bodyData!.date!);
             state = state.copyWith(nearestLesson: data);
           }
+          if (data.bodyData == null) {
+            state = state.copyWith(nearestLesson: null);
+          }
         },
         failure: (error, statusCode) {
-          print("getNearestLesson notifier failure");
         },
       );
     } else {
@@ -223,17 +225,14 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       final response = await _scheduleRepositoryInterface.getUserStatsMonth();
       response.when(
         success: (data) {
-          print(
-              "notifier getUserStatsMonth success, data >>  ${data.bodyData?.length}");
           // sorting list by its count
-          final _list = data.bodyData;
-          _list?.sort(
+          final list = data.bodyData;
+          list?.sort(
             (a, b) => a.count!.compareTo(b.count!),
           );
-          state = state.copyWith(statsForMonth: _list!.reversed.toList());
+          state = state.copyWith(statsForMonth: list!.reversed.toList());
         },
         failure: (error, statusCode) {
-          print("notifier getUserStatsMonth failure");
         },
       );
     } else {
@@ -242,19 +241,38 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
   }
 
   Future<void> getNotes(BuildContext context, String gymName) async {
-    print("getNotes called");
     final connect = await AppConnectivity().connectivity();
     if (connect) {
       state = state.copyWith(isloading: true);
       final response = await _scheduleRepositoryInterface.getNotes();
       response.when(
         success: (data) {
-          print("getNotes notifier success");
-          List<GymWithTags> _list = [];
-          final mapData = data["object"];
-          mapData.forEach((key, value) {
-            value.forEach((element) {
-              if (gymName == element["gym"]["name"]) {
+          if (gymName.isNotEmpty) {
+            List<GymWithTags> list = [];
+            final mapData = data["object"];
+            mapData.forEach((key, value) {
+              value.forEach((element) {
+                if (gymName == element["gym"]["name"]) {
+                  final data = GymWithTags(
+                    date: element["date"],
+                    id: element["id"],
+                    description: element["description"],
+                    duration: element["duration"],
+                    gym: Gym.fromJson(element["gym"] ?? {}),
+                    tag: (element["tag"] as List<dynamic>?)
+                        ?.map((tag) => Tag.fromJson(tag))
+                        .toList(),
+                  );
+                  list.add(data);
+                }
+              });
+            });
+            state = state.copyWith(listOfGymWithTags: list);
+          } else {
+            List<GymWithTags> _list = [];
+            final mapData = data["object"];
+            mapData.forEach((key, value) {
+              value.forEach((element) {
                 final data = GymWithTags(
                   date: element["date"],
                   id: element["id"],
@@ -266,15 +284,14 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
                       .toList(),
                 );
                 _list.add(data);
-              }
+              });
             });
-          });
-          state = state.copyWith(listOfGymWithTags: _list);
+            state = state.copyWith(listOfGymWithTags: _list);
+          }
           state = state.copyWith(isloading: false);
           //state = state.copyWith(notesMapData: mapData);
         },
         failure: (error, statusCode) {
-          print("getNotes notifier failure");
           state = state.copyWith(isloading: false);
         },
       );
@@ -295,15 +312,68 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       final response = await _scheduleRepositoryInterface.addNotes(request);
       response.when(
         success: (data) {
-          print("addNote notifier success");
         },
         failure: (error, statusCode) {
-          print("addNote notifier failure");
         },
       );
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
+  }
+
+  void addNewNote(Tag tag) {
+    List<GymWithTags> newAddedTages = [];
+    newAddedTages.addAll(state.listOfGymWithTagsWithNewAddedTags);
+    newAddedTages.add(GymWithTags(tag: [tag]));
+    state = state.copyWith(listOfGymWithTagsWithNewAddedTags: newAddedTages);
+  }
+
+  Future<void> searchingSchedules(BuildContext context,
+      {required String schedule}) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response = await _scheduleRepositoryInterface.searchingForSchedules(
+        schedule: schedule,
+      );
+      response.when(
+        success: (data) {
+          if (data["operationResult"] == "OK") {
+            final Map<String, dynamic> mapData = data["object"];
+            final list = <ScheduleAndGym>[];
+            mapData.forEach((key, value) {
+              value.forEach((element) {
+                final data = ScheduleAndGym(
+                  id: element["id"],
+                  date: element["date"],
+                  description: element["description"],
+                  duration: element["duration"],
+                  gym: Gymdata.fromJson(element["gym"]),
+                );
+                list.add(data);
+              });
+            });
+            state = state.copyWith(schedulesFoundBySearching: list);
+          }
+        },
+        failure: (error, statusCode) {},
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  void openSearchBar() {
+    state = state.copyWith(isSearchbarOpened: true);
+  }
+
+  void closeSearchBar() {
+    state = state.copyWith(isSearchbarOpened: false);
+  }
+
+  Future<void> cleanSearchList() async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    final listcha = <ScheduleAndGym>[];
+    state = state.copyWith(schedulesFoundBySearching: listcha);
   }
 
   void showTilWhen() {
@@ -362,10 +432,8 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       final response = await _scheduleRepositoryInterface.cancelActivity(id);
       response.when(
         success: (data) {
-          print("cancelActivity notifier success");
         },
         failure: (error, statusCode) {
-          print("cancelActivity notifier failure");
         },
       );
     } else {

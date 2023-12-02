@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -13,6 +13,9 @@ class CustomTextField extends StatelessWidget {
   Widget? suffixIcon;
   EdgeInsetsGeometry? contentPadding;
   FocusNode? focusNode;
+  void Function(PointerDownEvent)? onTapOutside;
+  void Function()? onEditingComplete;
+  void Function()? onTap;
   bool readOnly;
 
   CustomTextField({
@@ -25,19 +28,31 @@ class CustomTextField extends StatelessWidget {
     this.maxLines,
     this.focusNode,
     this.keyboardType,
+    this.onEditingComplete,
+    this.onTap,
+    this.onTapOutside,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      /* onTapOutside: (onTapOutside) {
+        FocusScope.of(context).unfocus();
+      }, */
       focusNode: focusNode,
       readOnly: readOnly,
       maxLines: maxLines,
       keyboardType: keyboardType,
       controller: controller,
-      cursorColor: AppColors.greyText,
+      onTapOutside: onTapOutside,
+      onTap: onTap,
+      cursorColor: Colors.black,
+      onEditingComplete: onEditingComplete,
       style: GoogleFonts.inter(
-          fontSize: 14.sp, fontWeight: FontWeight.w400, color: Colors.black),
+        fontSize: 14.sp,
+        fontWeight: FontWeight.w400,
+        color: Colors.black,
+      ),
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
         contentPadding: contentPadding,
@@ -51,7 +66,9 @@ class CustomTextField extends StatelessWidget {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
-            color: AppColors.greyBorder,
+            color: focusNode!.hasFocus
+                ? AppColors.blueColor
+                : AppColors.greyBorder,
             width: 1.w,
           ),
         ),

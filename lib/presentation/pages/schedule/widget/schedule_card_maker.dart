@@ -18,7 +18,7 @@ class ScheduleCardMaker extends StatelessWidget {
   final ScheduleNotifier event;
   final ScheduleState state;
 
-  ScheduleCardMaker({
+ const  ScheduleCardMaker({
     super.key,
     required this.date,
     required this.scheduleItems,

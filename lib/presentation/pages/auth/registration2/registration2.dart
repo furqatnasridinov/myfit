@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:activity/application/registration/registration_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/inter_text.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +15,7 @@ import 'package:pinput/pinput.dart';
 
 @RoutePage()
 class Registration2Screen extends ConsumerStatefulWidget {
-  Registration2Screen({
+  const Registration2Screen({
     super.key,
   });
 
@@ -27,7 +27,7 @@ class Registration2Screen extends ConsumerStatefulWidget {
 class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
   TextEditingController controller = TextEditingController();
 
-  final String predefinedCode = '1811';
+  final String predefinedCode = '1234';
   bool isCodeError = false;
   bool isPinCodeValidate = false;
   bool isChecking = false;
@@ -44,6 +44,11 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
     isChecking = false;
     if (code == userCode) {
       isPinCodeValidate = true;
+      ref.read(registrationProvider.notifier).sendCodeConfirmation(
+            LocalStorage.getPhoneNumber(),
+            code,
+            context,
+          );
       setState(() {});
     } else {
       isCodeError = true;
@@ -86,7 +91,6 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(registrationProvider);
     final event = ref.read(registrationProvider.notifier);
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -95,12 +99,11 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
         child: Stack(
           children: [
             // pop button
-
             Align(
               alignment: Alignment.topLeft,
               child: GestureDetector(
                 onTap: () {
-                  context.popRoute();
+                  context.router.pop();
                 },
                 child: Container(
                   width: 40.w,
@@ -114,7 +117,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                     ),
                   ),
                   padding: EdgeInsets.only(left: 5.w),
-                  margin: EdgeInsets.only(left: 16.w),
+                  margin: EdgeInsets.only(left: 16.w, top: 7.h),
                   child: Icon(
                     Icons.arrow_back_ios,
                     size: 15.r,
@@ -159,14 +162,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                           checkValidation(
                             predefinedCode,
                             controller.text,
-                          ).then((value) async {
-                            if (isPinCodeValidate) {
-                              Future.delayed(
-                                const Duration(milliseconds: 1500),
-                              ).then((value) => context
-                                  .replaceRoute( Registration3Route()));
-                            }
-                          });
+                          );
                         },
                         defaultPinTheme: event.getDefaultPinTheme(),
                         focusedPinTheme: event.getDefaultPinTheme(),
@@ -258,7 +254,10 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                     InkWell(
                       onTap: () {
                         if (counterDown == 0) {
-                          // resend sms will be here
+                          setState(() {
+                            counterDown = 59;
+                          });
+                          startTimer();
                         }
                       },
                       child: InterText(

@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/presentation/components/ui_dropdown_menu.dart';
 import 'package:flutter/material.dart';
@@ -21,9 +23,9 @@ class DropDownMenuInsideCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return UiDropDownMenu(
-      width: double.maxFinite,
-      maxWidth: 263.w,
-      customOffset: [-18.0.w, -39.h],
+      width: 230.w,
+      height: 45.h,
+      customOffset: [-25.0.w, -39.h],
       dropDownItemsList: [
         {
           'title': 'Открыть заметки',

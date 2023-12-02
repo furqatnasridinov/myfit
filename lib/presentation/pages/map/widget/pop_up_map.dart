@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/inter_text.dart';
@@ -59,7 +61,7 @@ class PopUpMap extends StatelessWidget {
               child: IntrinsicHeight(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
-                    maxHeight: 60.h,
+                    maxHeight: 65.h,
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -74,12 +76,13 @@ class PopUpMap extends StatelessWidget {
                             InterText(
                               //text: "Спорткомплекс “Газпром”",
                               text: name,
-                              fontSize: 12.sp,
+                              fontSize: 11.sp,
                               fontWeight: FontWeight.w400,
                             ),
                             InterText(
                               //text: "ул. Казимира, Строение 12, корпус 42б”",
                               text: address,
+                              maxLines: 2,
                               fontSize: 10.sp,
                               fontWeight: FontWeight.w500,
                               color: AppColors.greyText,

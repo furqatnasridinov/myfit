@@ -1,4 +1,5 @@
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/custom_textfield.dart';
@@ -12,7 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 @RoutePage()
 class Registration3Screen extends StatefulWidget {
-  Registration3Screen({super.key});
+ const  Registration3Screen({super.key});
 
   @override
   State<Registration3Screen> createState() => _Registration3ScreenState();
@@ -20,7 +21,9 @@ class Registration3Screen extends StatefulWidget {
 
 class _Registration3ScreenState extends State<Registration3Screen> {
   TextEditingController controller = TextEditingController(text: "Москва");
+  TextEditingController nameController = TextEditingController();
   FocusNode focusNode = FocusNode();
+  FocusNode nameFocus = FocusNode();
   final layerlink = LayerLink();
   final listofaddresses = DummyData().cityNames;
 
@@ -43,7 +46,7 @@ class _Registration3ScreenState extends State<Registration3Screen> {
           child: Material(
             color: Colors.transparent,
             child: TapRegion(
-              onTapOutside: (event) {
+              /* onTapOutside: (event) {
                 final position = event.position;
                 final textFieldRenderBox =
                     context.findRenderObject() as RenderBox;
@@ -54,7 +57,7 @@ class _Registration3ScreenState extends State<Registration3Screen> {
                   focusNode.unfocus();
                   setState(() {});
                 }
-              },
+              }, */
               /*  onTapOutside: (event) {
                 textfieldFocusnode.unfocus();
                 setState(() {});
@@ -111,7 +114,6 @@ class _Registration3ScreenState extends State<Registration3Screen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
@@ -147,6 +149,23 @@ class _Registration3ScreenState extends State<Registration3Screen> {
                       height: 40.h,
                       width: double.maxFinite,
                       child: CustomTextField(
+                        controller: nameController,
+                        focusNode: nameFocus,
+                        onTapOutside: (onTapOutside) {
+                          if (nameFocus.hasFocus) {
+                            nameFocus.unfocus();
+                          }
+                        },
+                        onTap: () {
+                          if (!nameFocus.hasFocus) {
+                            nameFocus.requestFocus();
+                          }
+                        },
+                        onEditingComplete: () {
+                          if (!nameFocus.hasFocus) {
+                            nameFocus.requestFocus();
+                          }
+                        },
                         maxLines: 1,
                         contentPadding: EdgeInsets.zero.copyWith(left: 10.w),
                         hintText: "Ваше имя",
@@ -165,6 +184,11 @@ class _Registration3ScreenState extends State<Registration3Screen> {
                       child: CompositedTransformTarget(
                         link: layerlink,
                         child: TextField(
+                          style: GoogleFonts.inter(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
                           onTap: () {
                             if (!focusNode.hasFocus) {
                               focusNode.requestFocus();
@@ -241,6 +265,7 @@ class _Registration3ScreenState extends State<Registration3Screen> {
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
                         onPressed: () {
+                          LocalStorage.setUserName(nameController.text);
                           context.replaceRoute(const Registration4Route());
                         },
                         text: "Продолжить",
@@ -254,12 +279,14 @@ class _Registration3ScreenState extends State<Registration3Screen> {
 
             Align(
               alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                child: SvgPicture.asset(
-                  "assets/svg/Vector 13.svg",
-                  width: width,
-                ),
-              ),
+              child: nameFocus.hasFocus
+                  ? const SizedBox()
+                  : SizedBox(
+                      child: SvgPicture.asset(
+                        "assets/svg/Vector 13.svg",
+                        width: width,
+                      ),
+                    ),
             ),
           ],
         ),

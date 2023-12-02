@@ -1,20 +1,23 @@
 import 'dart:ui';
 import 'package:activity/application/map/map_notifier.dart';
+import 'package:activity/application/map/map_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/components/ui_button_filled.dart';
+import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MapHeader extends StatefulWidget implements PreferredSizeWidget {
   final MapNotifier event;
-  const MapHeader({super.key, required this.event});
+  final MapState state;
+  const MapHeader({super.key, required this.event, required this.state});
 
   @override
   State<MapHeader> createState() => _MainHeaderState();
@@ -27,8 +30,7 @@ class _MainHeaderState extends State<MapHeader> {
   TextEditingController controller = TextEditingController();
   FocusNode textfieldFocusnode = FocusNode();
   final layerlink = LayerLink();
-  final listofaddresses = DummyData().dummyAddresses;
-
+  String previousText = "";
   OverlayEntry? entry;
 
   void showOverlay() {
@@ -61,7 +63,10 @@ class _MainHeaderState extends State<MapHeader> {
                 }
               },
               child: Container(
-                height: 294.h,
+                height: controller.text.isEmpty ||
+                        widget.state.gymFoundBySearching.isEmpty
+                    ? 160.h
+                    : 290.h,
                 margin: EdgeInsets.only(left: 16.w, right: 16.w),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16.0),
@@ -72,36 +77,62 @@ class _MainHeaderState extends State<MapHeader> {
                   ),
                 ),
                 padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-                child: Column(children: [
-                  Expanded(
-                    child: MediaQuery.removePadding(
-                      context: context,
-                      removeTop: true,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: listofaddresses.length,
-                        itemBuilder: (context, index) {
-                          final currentGym = listofaddresses[index];
-                          return _listiles(
-                            currentGym.name,
-                            currentGym.destination,
-                            () {
-                              controller.text = currentGym.name;
-                              textfieldFocusnode.unfocus();
-                              setState(() {});
-                            },
-                          );
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      controller.text.isEmpty
+                          ? Center(
+                              child: CustomText(
+                                text:
+                                    "Напишите в поиск названия заведения которого хотите найти!",
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            )
+                          : controller.text.length > 1 &&
+                                  widget.state.gymFoundBySearching.isEmpty
+                              ? CustomText(
+                                  text: "По вашему запросу ничего не найдено! ",
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500,
+                                )
+                              : Expanded(
+                                  child: MediaQuery.removePadding(
+                                    context: context,
+                                    removeTop: true,
+                                    child: ListView.builder(
+                                      //shrinkWrap: true,
+                                      itemCount: widget
+                                          .state.gymFoundBySearching.length,
+                                      itemBuilder: (context, index) {
+                                        final currentGym = widget
+                                            .state.gymFoundBySearching[index];
+                                        return _listiles(
+                                          currentGym.name ?? "??",
+                                          "${currentGym.distanceFromClient.toString()} км от вас",
+                                          () {
+                                            textfieldFocusnode.unfocus();
+                                            setState(() {});
+                                            context.router.push(
+                                              ActivityRoute(
+                                                  gymId: currentGym.id!),
+                                            );
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                      const SizedBox(height: 10.0),
+                      UiButtonFilled(
+                        btnText: 'Закрыть',
+                        onPressedAction: () {
+                          textfieldFocusnode.unfocus();
+                          setState(() {});
                         },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10.0),
-                  UiButtonFilled(
-                    btnText: 'Показать на карте',
-                    onPressedAction: () => print('123'),
-                    isFullWidth: true,
-                  )
-                ]),
+                        isFullWidth: true,
+                      )
+                    ]),
               ),
             ),
           ),
@@ -115,6 +146,13 @@ class _MainHeaderState extends State<MapHeader> {
   void hideOverlay() {
     entry?.remove();
     entry = null;
+  }
+
+  Future<void> _updateOverlay() async {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      entry?.markNeedsBuild();
+      //setState(() {});
+    });
   }
 
   @override
@@ -132,14 +170,22 @@ class _MainHeaderState extends State<MapHeader> {
 
   @override
   Widget build(BuildContext context) {
-    if (textfieldFocusnode.hasFocus) {
-      print("focusnode has focus");
-    } else {
-      print("focusnode has no focus");
+    if (controller.text.length > 1 && controller.text != previousText) {
+      widget.event.searchGym(
+        context,
+        text: controller.text,
+      );
+      previousText = controller.text;
+      _updateOverlay();
+    }
+    if (widget.state.gymFoundBySearching.isEmpty &&
+        controller.text.isNotEmpty) {
+      _updateOverlay();
     }
 
     return AppBar(
       automaticallyImplyLeading: false,
+      leadingWidth: 48.w,
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
       elevation: 0,
       centerTitle: false,
@@ -167,7 +213,7 @@ class _MainHeaderState extends State<MapHeader> {
       leading: textfieldFocusnode.hasFocus
           ? null
           : Container(
-              margin: EdgeInsets.only(left: 10.w),
+              margin: EdgeInsets.only(left: 10.5.w),
               child: Ink(
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -216,6 +262,10 @@ class _MainHeaderState extends State<MapHeader> {
         child: CompositedTransformTarget(
           link: layerlink,
           child: TextField(
+            style: GoogleFonts.raleway(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+            ),
             controller: controller,
             onChanged: (value) {
               controller.text = value;
@@ -254,7 +304,7 @@ class _MainHeaderState extends State<MapHeader> {
                         )
                       : null,
               prefixIcon: Container(
-                margin: EdgeInsets.all(2.r).copyWith(bottom: 4.h, left: 1.w),
+                margin: EdgeInsets.all(3.r),
                 decoration: const BoxDecoration(
                   color: AppColors.backgroundColor,
                   shape: BoxShape.circle,
@@ -265,6 +315,10 @@ class _MainHeaderState extends State<MapHeader> {
                   // ignore: deprecated_member_use
                   color: AppColors.blueColor,
                 ),
+              ),
+              hintStyle: GoogleFonts.raleway(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
               ),
               hintText: "Найти занятие",
               border: InputBorder.none,
@@ -313,7 +367,7 @@ class _MainHeaderState extends State<MapHeader> {
                     SizedOverflowBox(
                       size: Size(40.w, 40.h),
                       child: CircleAvatar(
-                        radius: 100.r,
+                        radius: 20.r,
                         backgroundColor: const Color.fromRGBO(119, 170, 249, 1),
                         child: Padding(
                           padding: EdgeInsets.all(2.r),

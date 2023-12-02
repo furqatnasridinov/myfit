@@ -1,15 +1,13 @@
 import 'dart:ui';
-
 import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/components/ui_button_filled.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MainHeader extends StatefulWidget implements PreferredSizeWidget {
   const MainHeader({super.key});
@@ -100,7 +98,7 @@ class _MainHeaderState extends State<MainHeader> {
                   const SizedBox(height: 10.0),
                   UiButtonFilled(
                     btnText: 'Показать на карте',
-                    onPressedAction: () => print('123'),
+                    onPressedAction: (){},
                     isFullWidth: true,
                   )
                 ]),
@@ -126,21 +124,15 @@ class _MainHeaderState extends State<MainHeader> {
     textfieldFocusnode.addListener(() {
       if (textfieldFocusnode.hasFocus) {
         showOverlay();
-        print("focusnode addlistener showOverlay ");
       } else {
         hideOverlay();
-        print("focusnode addlistener hideOverlay ");
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (textfieldFocusnode.hasFocus) {
-      print("focusnode has focus");
-    } else {
-      print("focusnode has no focus");
-    }
+   
 
     return AppBar(
       titleSpacing: 0.0,
@@ -170,7 +162,7 @@ class _MainHeaderState extends State<MainHeader> {
       title: AnimatedContainer(
         margin: EdgeInsets.only(left: 16.w),
         duration: const Duration(milliseconds: 400),
-        width: textfieldFocusnode.hasFocus ? 345.w : 300.w,
+        width: 345.w,
         height: 40.h,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -182,10 +174,14 @@ class _MainHeaderState extends State<MainHeader> {
             width: 1.w,
           ),
         ),
-        padding: EdgeInsets.only(right: 7.w,  /* top: 3.h */ ),
+        padding: EdgeInsets.only(right: 7.w),
         child: CompositedTransformTarget(
           link: layerlink,
           child: TextField(
+            style: GoogleFonts.raleway(
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w400,
+            ),
             controller: controller,
             onChanged: (value) {
               controller.text = value;
@@ -225,7 +221,7 @@ class _MainHeaderState extends State<MainHeader> {
                         )
                       : null,
               prefixIcon: Container(
-                margin: EdgeInsets.all(2.r).copyWith(bottom: 4.h, left: 1.w),
+                margin: EdgeInsets.all(4.r),
                 decoration: const BoxDecoration(
                   color: AppColors.backgroundColor,
                   shape: BoxShape.circle,
@@ -236,6 +232,10 @@ class _MainHeaderState extends State<MainHeader> {
                   // ignore: deprecated_member_use
                   color: AppColors.blueColor,
                 ),
+              ),
+              hintStyle: GoogleFonts.raleway(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
               ),
               hintText: "Найти занятие",
               border: InputBorder.none,
@@ -249,7 +249,7 @@ class _MainHeaderState extends State<MainHeader> {
       ),
 
       // action
-      actions: [
+      /*  actions: [
         textfieldFocusnode.hasFocus
             ? const SizedBox()
             : Container(
@@ -271,7 +271,7 @@ class _MainHeaderState extends State<MainHeader> {
                   ),
                 ),
               )
-      ],
+      ], */
     );
   }
 }

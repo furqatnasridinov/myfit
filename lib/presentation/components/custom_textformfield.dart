@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -32,8 +32,12 @@ class CustomTextFormField extends StatelessWidget {
       keyboardType: keyboardType,
       //controller: controller,
       cursorColor: AppColors.greyText,
+      style: GoogleFonts.inter(
+        fontSize: 14.sp,
+        fontWeight: FontWeight.w400,
+        color: Colors.black,
+      ),
       decoration: InputDecoration(
-        
         contentPadding: contentPadding,
         hintText: hintText,
         hintStyle: GoogleFonts.inter(

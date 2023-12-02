@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:auto_route/auto_route.dart';
@@ -10,7 +12,7 @@ import '../widget/widget.dart';
 @RoutePage()
 class MapScreen extends ConsumerStatefulWidget {
   int? gymId;
-   MapScreen(this.gymId,{super.key});
+  MapScreen(this.gymId, {super.key});
 
   @override
   ConsumerState<MapScreen> createState() => _MapScreenState();
@@ -20,7 +22,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   YandexMapController? yandexMapController;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref
@@ -28,7 +29,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           .getUserLocation()
           .then(
             (value) => ref.read(mapProvider.notifier).getGymsList(
-                  context,widget.gymId!,
+                  context,
+                  widget.gymId!,
                 ),
           )
           .then((value) => ref.read(mapProvider.notifier)
@@ -45,18 +47,12 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(mapProvider);
     final event = ref.read(mapProvider.notifier);
-    //event.getGetListOfActivitiesFromDiapozone();
-    // print("markers count ${state.listOfMarkers.length}");
-    //print("active marker's name >> ${state.activeMarker?.name}");
-    print("list of distances ${state.distances}");
-    print("selected diapozone ${state.selectedDiapozone}");
-    print("list of bool ${state.listOfBool}");
-    print(
-        "listOfActivitiesFromSelectedDiapozone ${state.listOfActivitiesFromSelectedDiapozone.length}");
-
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar:  MapHeader(event: event),
+      appBar: MapHeader(
+        event: event,
+        state: state,
+      ),
       body: state.isloading
           ? const Center(
               child: CircularProgressIndicator(),
@@ -113,7 +109,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     onCameraPositionChanged:
                         (cameraPosition, reason, finished) {
                       if (reason == CameraUpdateReason.gestures) {
-                        print("onCameraPositionChanged gestures triggered");
                         event.removePopUp();
                       }
                     },

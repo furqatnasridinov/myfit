@@ -3,6 +3,7 @@ import 'package:activity/presentation/components/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+// ignore: must_be_immutable
 class CustomButton extends StatelessWidget {
   final void Function()? onPressed;
   Color buttonColor;
@@ -45,7 +46,7 @@ class CustomButton extends StatelessWidget {
           overlayColor: MaterialStateProperty.resolveWith(
             (states) {
               return states.contains(MaterialState.pressed)
-                  ? Colors.white.withOpacity(0.15)
+                  ? Colors.black.withOpacity(0.07)
                   : null;
             },
           ),

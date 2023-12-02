@@ -1,9 +1,6 @@
 import 'package:activity/application/activity/activity_notifier.dart';
 import 'package:activity/application/activity/activity_state.dart';
-import 'package:activity/application/schedule/schedule_notifier.dart';
-import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';

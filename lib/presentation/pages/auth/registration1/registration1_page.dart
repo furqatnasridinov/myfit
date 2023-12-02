@@ -5,20 +5,17 @@ import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/inter_text.dart';
-import 'package:activity/presentation/pages/auth/registration2/registration2.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 @RoutePage()
 class Registration1Screen extends ConsumerStatefulWidget {
-  Registration1Screen({super.key});
+ const  Registration1Screen({super.key});
 
   @override
   ConsumerState<Registration1Screen> createState() =>
@@ -31,7 +28,6 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final state = ref.watch(registrationProvider);
     final event = ref.read(registrationProvider.notifier);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
@@ -65,12 +61,12 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                               height: 40.h,
                               //color: Colors.red,
                               child: TextField(
-                                inputFormatters: [
-                                  /* MaskTextInputFormatter(
+                                /* inputFormatters: [
+                                  MaskTextInputFormatter(
                                     mask: '+# (###) ###-##-##',
                                     filter: {"#": RegExp(r'[0-9]')},
-                                  ), */
-                                ],
+                                  ), 
+                                ], */
                                 maxLength: 12,
                                 maxLines: 1,
                                 controller: controller,
@@ -130,11 +126,13 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                               ),
                             ),
                             // button
-
                             InkWell(
                               onTap: () {
                                 if (controller.text.length >= 12) {
-                                  context.router.push(Registration2Route());
+                                  event.sendPhoneNumber(
+                                    controller.text,
+                                    context,
+                                  );
                                 }
                               },
                               child: Container(
@@ -201,11 +199,12 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                                     ),
                                     5.verticalSpace,
                                     CustomButton(
+                                      buttonColor: Colors.white,
                                       fontSize: 14.sp,
                                       fontWeight: FontWeight.w500,
                                       height: 40.h,
                                       onPressed: () {
-                                        //context.router.push(const MainRoute());
+                                        context.replaceRoute(const MainRoute());
                                       },
                                       text: "Понимаю. Всё равно пропустить",
                                     )

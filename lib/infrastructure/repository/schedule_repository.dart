@@ -1,7 +1,6 @@
 import 'package:activity/domain/di/injection.dart';
 import 'package:activity/domain/handlers/api_result.dart';
 import 'package:activity/domain/handlers/http_service.dart';
-import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/schedule.dart';
 import 'package:activity/infrastructure/models/request/add_note_request.dart';
 import 'package:activity/infrastructure/models/response/add_note_response.dart';
@@ -16,17 +15,17 @@ class ScheduleRepository implements ScheduleRepositoryInterface {
     try {
       final client = inject<HttpService>().clientDio();
       final resposne = await client.get(
-        AppConstants.getSchedulesSearch,
+        AppConstants.getUserSchedules,
       );
       return ApiResult.success(
         data: resposne.data,
       );
     } catch (e) {
-      //throw e;
-      return ApiResult.failure(
+      throw e;
+      /* return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      );
+      ); */
     }
   }
 
@@ -118,7 +117,30 @@ class ScheduleRepository implements ScheduleRepositoryInterface {
         ),
       );
     } catch (e) {
-       throw e;
+      throw e;
+      /* return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      ); */
+    }
+  }
+
+  @override
+  Future<ApiResult<Map<String, dynamic>>> searchingForSchedules(
+      {required String schedule}) async {
+    try {
+      final client = inject<HttpService>().clientDio();
+      final sendingData = {"searchString": schedule};
+      final response = await client.get(
+        AppConstants.getSchedulesSearch,
+        //data: sendingData,
+        queryParameters: sendingData
+      );
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      throw e;
       /* return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),

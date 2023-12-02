@@ -10,6 +10,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class NotesHeader extends StatefulWidget implements PreferredSizeWidget {
   const NotesHeader({super.key});
@@ -96,7 +97,7 @@ class _MainHeaderState extends State<NotesHeader> {
                   const SizedBox(height: 10.0),
                   UiButtonFilled(
                     btnText: 'Показать на карте',
-                    onPressedAction: () => print('123'),
+                    onPressedAction: () {},
                     isFullWidth: true,
                   )
                 ]),
@@ -130,14 +131,9 @@ class _MainHeaderState extends State<NotesHeader> {
 
   @override
   Widget build(BuildContext context) {
-    if (textfieldFocusnode.hasFocus) {
-      print("focusnode has focus");
-    } else {
-      print("focusnode has no focus");
-    }
-
     return AppBar(
       automaticallyImplyLeading: false,
+      leadingWidth: 48.w,
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
       elevation: 0,
       centerTitle: false,
@@ -165,7 +161,7 @@ class _MainHeaderState extends State<NotesHeader> {
       leading: textfieldFocusnode.hasFocus
           ? null
           : Container(
-              margin: EdgeInsets.only(left: 10.w),
+              margin: EdgeInsets.only(left: 10.5.w),
               child: Ink(
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -211,6 +207,10 @@ class _MainHeaderState extends State<NotesHeader> {
         child: CompositedTransformTarget(
           link: layerlink,
           child: TextField(
+            style: GoogleFonts.raleway(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+            ),
             controller: controller,
             onChanged: (value) {
               controller.text = value;
@@ -249,7 +249,7 @@ class _MainHeaderState extends State<NotesHeader> {
                         )
                       : null,
               prefixIcon: Container(
-                margin: EdgeInsets.all(2.r).copyWith(bottom: 4.h, left: 1.w),
+                margin: EdgeInsets.all(3.r),
                 decoration: const BoxDecoration(
                   color: AppColors.backgroundColor,
                   shape: BoxShape.circle,
@@ -260,6 +260,10 @@ class _MainHeaderState extends State<NotesHeader> {
                   // ignore: deprecated_member_use
                   color: AppColors.blueColor,
                 ),
+              ),
+              hintStyle: GoogleFonts.raleway(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
               ),
               hintText: "Заметка",
               border: InputBorder.none,
@@ -288,6 +292,7 @@ class _MainHeaderState extends State<NotesHeader> {
                   bottom: 4.5.h,
                 ),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
                       padding: EdgeInsets.only(
@@ -308,8 +313,8 @@ class _MainHeaderState extends State<NotesHeader> {
                     SizedOverflowBox(
                       size: Size(40.w, 40.h),
                       child: CircleAvatar(
-                        radius: 100.r,
-                        backgroundColor: const Color.fromRGBO(119, 170, 249, 1),
+                        radius: 20.r,
+                        backgroundColor: AppColors.blueColor,
                         child: Padding(
                           padding: EdgeInsets.all(2.r),
                           child: ClipOval(

@@ -29,7 +29,6 @@ i   nt activePageIndex = 0;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _animationController = AnimationController(
       vsync: this,
@@ -94,7 +93,6 @@ i   nt activePageIndex = 0;
                     carouselController: carouselController,
                     itemCount: state.advantages?.bodyData?.length,
                     itemBuilder: (context, index, realIndex) {
-                      print("realIndex $realIndex");
                       final currentAdvantage =
                           state.advantages?.bodyData?[index];
                       return scrollableTexts(

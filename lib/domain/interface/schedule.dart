@@ -12,4 +12,5 @@ abstract class ScheduleRepositoryInterface {
   Future<ApiResult<AddNoteResponse>> addNotes(AddNoteRequest addNoteRequest);
   Future<ApiResult<Map<String, dynamic>>>getNotes();
   Future<ApiResult<CancelellationResponse>> cancelActivity(int id);
+  Future<ApiResult<Map<String, dynamic>>> searchingForSchedules({required String schedule});
 }

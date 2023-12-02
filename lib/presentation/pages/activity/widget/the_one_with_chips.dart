@@ -58,9 +58,12 @@ class _TheOneWithChipsState extends State<TheOneWithChips> {
                           activity == widget.state.selectedActivity;
                       return InkWell(
                         onTap: () {
-                          //widget.event.getGymPhotos(activity);
+                          //widget.event.getGymPhotos(activity,widget.gymId);
                         },
                         child: ChoiceChip(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16.w, vertical: 5.h),
+                          showCheckmark: false,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(6.r),
                             side: const BorderSide(color: AppColors.blueColor),
@@ -76,34 +79,34 @@ class _TheOneWithChipsState extends State<TheOneWithChips> {
                             if (selected) {
                               widget.event.setSingleSelectedActivity(activity);
                               widget.event.getGymPhotos(activity, widget.gymId);
-                              int index =
+                             /*  int index =
                                   widget.state.activities!.indexOf(activity) +
-                                      1;
+                                      1; */
                               widget.event
-                                  .getSchedulesDates(id: index)
+                                  .getSchedulesDates(context, id: widget.gymId)
                                   .then((value) async {
-                                    await Future.delayed(
-                                      const Duration(milliseconds: 100),
-                                    );
-                                  })
+                                await Future.delayed(
+                                  const Duration(milliseconds: 100),
+                                );
+                              })
+                                  /* .then(
+                                    (value) => widget.event.selectADay(widget
+                                        .state.availableFormattedDates[0]),
+                                  ) */
                                   .then(
-                                    (value) => widget.event.selectADay(
-                                        widget.state.availableFormattedDates[0]),
-                                  )
-                                  .then(
-                                    (value) => widget.event
-                                        .setSelectedOriginalDate(
-                                      widget.state.availableFormattedDates[0],
-                                    )
-                                        .then((value) async {
-                                      await Future.delayed(
-                                          const Duration(milliseconds: 100));
-                                    }).then(
-                                      (value) => widget.event.getSchedulesList(
-                                        widget.state.selectedOriginalDate,
-                                      ),
-                                    ),
-                                  );
+                                (value) => widget.event
+                                    .determineDefaultOriginalDate()
+                                    .then((value) => widget.event
+                                        .determineDefaultFormattedDate())
+                                    .then((value) async {
+                                  await Future.delayed(
+                                      const Duration(milliseconds: 100));
+                                }).then(
+                                  (value) => widget.event.getSchedulesList(
+                                    widget.state.selectedOriginalDate,
+                                  ),
+                                ),
+                              );
                             }
                           },
                           label: CustomText(

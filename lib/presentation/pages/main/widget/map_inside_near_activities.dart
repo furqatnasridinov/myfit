@@ -1,18 +1,16 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:activity/application/main/main_notifier.dart';
-import 'package:activity/application/main/main_state.dart';
 import 'package:activity/application/map/map_state.dart';
-import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class MapInsideNearActivities extends StatelessWidget {
-  final MainState state;
   final MainNotifier event;
   final MapState mapState;
   MapInsideNearActivities({
     super.key,
-    required this.state,
     required this.event,
     required this.mapState,
   });

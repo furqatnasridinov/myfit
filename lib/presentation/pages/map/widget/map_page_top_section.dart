@@ -17,7 +17,6 @@ class MapPageTopSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("build called");
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Row(
@@ -42,7 +41,7 @@ class MapPageTopSection extends StatelessWidget {
                       right: 16.w,
                       bottom: 40.h,
                     ),
-                    height: 280.h,
+                    height: 290.h,
                     width: double.maxFinite,
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -118,19 +117,23 @@ class MapPageTopSection extends StatelessWidget {
                             RadioButton700(
                               title: '5+ km',
                               ontap: () {
-                              event.changeDiapozoneAndPop(3, 5, context);
+                                event.changeDiapozoneAndPop(3, 5, context);
                               },
                               isSelected: state.listOfBool[3],
                             ),
                           ],
                         ),
-                        30.verticalSpace,
+                        const Spacer(),
                         CustomButton(
+                          height: 40.h,
+                          buttonColor: Colors.white,
+                          fontSize: 14.sp,
                           onPressed: () {
                             context.popRoute();
                           },
                           text: "Отменить",
-                        )
+                        ),
+
                         /* Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -211,15 +214,15 @@ class MapPageTopSection extends StatelessWidget {
     List<Step> steps = [
       Step(
         title: CustomText(text: "1"),
-        content: SizedBox(),
+        content: const SizedBox(),
       ),
       Step(
         title: CustomText(text: "2"),
-        content: SizedBox(),
+        content: const SizedBox(),
       ),
       Step(
         title: CustomText(text: "3"),
-        content: SizedBox(),
+        content: const SizedBox(),
       ),
     ];
     return steps;

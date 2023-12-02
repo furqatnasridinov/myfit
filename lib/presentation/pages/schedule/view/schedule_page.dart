@@ -1,3 +1,4 @@
+import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/dummy_data.dart';
@@ -9,14 +10,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-extension TimeOfDayConverter on TimeOfDay {
-  String to24hours() {
-    final hour = this.hour.toString().padLeft(2, "0");
-    final min = this.minute.toString().padLeft(2, "0");
-    return "$hour:$min";
-  }
-}
 
 @RoutePage()
 class ScheduleScreen extends ConsumerStatefulWidget {
@@ -30,24 +23,37 @@ class ScheduleScreen extends ConsumerStatefulWidget {
 
 class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
   final List<String> allDayOfMonth = DummyData().days30;
+  TextEditingController controller = TextEditingController();
+  ScrollController scrollController = ScrollController();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(scheduleProvider.notifier).getUsersSchedules(context);
+      ref.read(mapProvider.notifier).getUserLocation();
     });
+    /* scrollController.addListener(() {
+      if (FocusScope.of(context).hasFocus) {
+        FocusScope.of(context).unfocus();
+      }
+    }); */
   }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(scheduleProvider);
     final event = ref.read(scheduleProvider.notifier);
+    final mapState = ref.watch(mapProvider);
+    final mapEvent = ref.read(mapProvider.notifier);
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: const ScheduleHeader(),
+      appBar: ScheduleHeader(
+        event: event,
+        mapEvent: mapEvent,
+        mapState: mapState,
+      ),
       body: state.isloading
           ? const Center(
               child: CircularProgressIndicator(),
@@ -55,6 +61,7 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
           : SafeArea(
               bottom: false,
               child: CustomScrollView(
+                controller: scrollController,
                 slivers: [
                   SliverPadding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),

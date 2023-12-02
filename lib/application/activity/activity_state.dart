@@ -13,11 +13,12 @@ class ActivityState with _$ActivityState {
     @Default([]) List? photos,
     @Default([]) List<String> originalDates,
     @Default({}) Map<String, dynamic> scheddules,
-    @Default([]) List availableFormattedDates,
+    @Default([]) List<String> availableFormattedDates,
     @Default([]) List listOfSchedules,
     @Default("") String defaultDate,
     @Default("") String selectedOriginalDate,
-    @Default([]) List<String> listOfFormattedDaysFrom1To30currentMonth,
+    @Default([]) List<String> listOf15CalendarDaysFromNow,
+    @Default([]) List<String> listOf15OriginalDaysFromNow,
     @Default("") String selectedFormattedDay,
   }) = _ActivityState;
 

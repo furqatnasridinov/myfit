@@ -11,4 +11,6 @@ abstract class ActivityRepositoryInterface {
   Future<ApiResult<GetGymPhotosResponse>> getGymPhotos(
       {required GetGymPhotosRequest request, required int gymId});
   Future<ApiResult<Map<String, dynamic>>> getSchedules({required int id});
+  Future<ApiResult<Map<String, dynamic>>> enrollToGym(
+      {required int id});
 }
