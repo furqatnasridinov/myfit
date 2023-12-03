@@ -37,7 +37,6 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
         ..getNearestLesson(context)
         ..getUserStatsMonth(context);
     });
-    
   }
 
   @override
@@ -45,7 +44,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     final state = ref.watch(scheduleProvider);
     final event = ref.read(scheduleProvider.notifier);
     final mapState = ref.watch(mapProvider);
-        //LocalStorage.removeToken();
+    //LocalStorage.removeToken();
     if (controller.text.isEmpty && state.schedulesFoundBySearching.isNotEmpty) {
       event.cleanSearchList();
     }
@@ -97,7 +96,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                               event: event,
                             ),
                           ),
-                          10.verticalSpace,
+                          32.verticalSpace,
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16.w),
                             child: state.nearestLesson == null
@@ -118,8 +117,9 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                           ),
                           10.verticalSpace,
                           Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16.w),
-                              child: Main2Map(mapState: mapState),),
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            child: Main2Map(mapState: mapState),
+                          ),
                           70.verticalSpace,
                           const DecoratedTextOne(),
                         ],

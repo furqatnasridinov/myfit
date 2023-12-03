@@ -1,6 +1,7 @@
 import 'package:activity/application/registration/registration_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
+import 'package:activity/infrastructure/services/app_validator.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_card.dart';
@@ -12,10 +13,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 @RoutePage()
 class Registration1Screen extends ConsumerStatefulWidget {
- const  Registration1Screen({super.key});
+  const Registration1Screen({super.key});
 
   @override
   ConsumerState<Registration1Screen> createState() =>
@@ -24,11 +26,16 @@ class Registration1Screen extends ConsumerStatefulWidget {
 
 class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
   TextEditingController controller = TextEditingController();
+  var phoneMask = AppValidators().phoneMask;
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final event = ref.read(registrationProvider.notifier);
+    final state = ref.watch(registrationProvider);
+    debugPrint("phone number ${state.phoneNumber}");
+    debugPrint("phone lenth ${state.phoneNumber.length}");
+    debugPrint("phone isvalid ${state.isValidPhone}");
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: Stack(
@@ -61,18 +68,12 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                               height: 40.h,
                               //color: Colors.red,
                               child: TextField(
-                                /* inputFormatters: [
-                                  MaskTextInputFormatter(
-                                    mask: '+# (###) ###-##-##',
-                                    filter: {"#": RegExp(r'[0-9]')},
-                                  ), 
-                                ], */
-                                maxLength: 12,
+                                inputFormatters: [phoneMask],
+                                //maxLength: 17,
                                 maxLines: 1,
                                 controller: controller,
                                 onChanged: (value) {
-                                  controller.text = value;
-                                  setState(() {});
+                                  event.setPhone(phoneMask.getUnmaskedText());
                                 },
                                 onTapOutside: (onTapOutside) {
                                   FocusScope.of(context).unfocus();
@@ -94,7 +95,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8.r),
                                     borderSide: BorderSide(
-                                      color: controller.text.length >= 12
+                                      color: state.isValidPhone
                                           ? AppColors.blueColor
                                           : AppColors.greyBorder,
                                       width: 1.w,
@@ -103,7 +104,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8.r),
                                     borderSide: BorderSide(
-                                      color: controller.text.length >= 12
+                                      color: state.isValidPhone
                                           ? AppColors.blueColor
                                           : AppColors.greyBorder,
                                       width: 1.w,
@@ -128,9 +129,9 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                             // button
                             InkWell(
                               onTap: () {
-                                if (controller.text.length >= 12) {
+                                if (state.isValidPhone) {
                                   event.sendPhoneNumber(
-                                    controller.text,
+                                    "+${state.phoneNumber}",
                                     context,
                                   );
                                 }
@@ -139,7 +140,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                                 width: 40.w,
                                 height: 40.h,
                                 decoration: BoxDecoration(
-                                  color: controller.text.length >= 12
+                                  color: state.isValidPhone
                                       ? AppColors.blueColor
                                       : Colors.grey,
                                   borderRadius: BorderRadius.circular(8.r),

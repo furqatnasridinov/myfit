@@ -9,6 +9,8 @@ class RegistrationState with _$RegistrationState {
     @Default(false) bool isPinCodeValidate,
     @Default(false) bool isCodeError,
     @Default(59) int timeToCountDown,
+    @Default("") String phoneNumber,
+    @Default(false) bool isValidPhone,
   }) = _RegistrationState;
   const RegistrationState._();
 }

@@ -1,6 +1,7 @@
 import 'package:activity/application/registration/registration_state.dart';
 import 'package:activity/domain/interface/register.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/infrastructure/services/app_validator.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
@@ -77,6 +78,11 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
     );
   }
 
+  void setPhone(String text) {
+    state = state.copyWith(phoneNumber: text);
+    state = state.copyWith(isValidPhone: AppValidators.isValidPhone(text));
+  }
+
   Future<void> sendPhoneNumber(String phoneNumber, BuildContext context) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
@@ -88,15 +94,13 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
             // save phone number to local storage
             LocalStorage.setPhoneNumber(phoneNumber)
                 .then((value) => context.router.push(
-                      Registration2Route(),
+                      const Registration2Route(),
                     ));
           }
         },
         failure: (error, statusCode) {
           AppHelpers.showSnack(
-            context,
-            "${error.toString()} ${"statuscode $statusCode"}"
-          );
+              context, "${error.toString()} ${"statuscode $statusCode"}");
         },
       );
     } else {

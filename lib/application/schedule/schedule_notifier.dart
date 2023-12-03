@@ -74,7 +74,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
         month = "Ноябрь";
         break;
       case "12":
-        month = "Декабр";
+        month = "Декабрь";
         break;
     }
     String daysplitted = parts[2];

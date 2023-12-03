@@ -78,27 +78,21 @@ abstract class $AppRouter extends _i13.RootStackRouter {
       );
     },
     Registration1Route.name: (routeData) {
-      final args = routeData.argsAs<Registration1RouteArgs>(
-          orElse: () => const Registration1RouteArgs());
       return _i13.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i6.Registration1Screen(key: args.key),
+        child: const _i6.Registration1Screen(),
       );
     },
     Registration2Route.name: (routeData) {
-      final args = routeData.argsAs<Registration2RouteArgs>(
-          orElse: () => const Registration2RouteArgs());
       return _i13.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i7.Registration2Screen(key: args.key),
+        child: const _i7.Registration2Screen(),
       );
     },
     Registration3Route.name: (routeData) {
-      final args = routeData.argsAs<Registration3RouteArgs>(
-          orElse: () => const Registration3RouteArgs());
       return _i13.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i8.Registration3Screen(key: args.key),
+        child: const _i8.Registration3Screen(),
       );
     },
     Registration4Route.name: (routeData) {
@@ -272,89 +266,44 @@ class NotesRouteArgs {
 
 /// generated route for
 /// [_i6.Registration1Screen]
-class Registration1Route extends _i13.PageRouteInfo<Registration1RouteArgs> {
-  Registration1Route({
-    _i14.Key? key,
-    List<_i13.PageRouteInfo>? children,
-  }) : super(
+class Registration1Route extends _i13.PageRouteInfo<void> {
+  const Registration1Route({List<_i13.PageRouteInfo>? children})
+      : super(
           Registration1Route.name,
-          args: Registration1RouteArgs(key: key),
           initialChildren: children,
         );
 
   static const String name = 'Registration1Route';
 
-  static const _i13.PageInfo<Registration1RouteArgs> page =
-      _i13.PageInfo<Registration1RouteArgs>(name);
-}
-
-class Registration1RouteArgs {
-  const Registration1RouteArgs({this.key});
-
-  final _i14.Key? key;
-
-  @override
-  String toString() {
-    return 'Registration1RouteArgs{key: $key}';
-  }
+  static const _i13.PageInfo<void> page = _i13.PageInfo<void>(name);
 }
 
 /// generated route for
 /// [_i7.Registration2Screen]
-class Registration2Route extends _i13.PageRouteInfo<Registration2RouteArgs> {
-  Registration2Route({
-    _i14.Key? key,
-    List<_i13.PageRouteInfo>? children,
-  }) : super(
+class Registration2Route extends _i13.PageRouteInfo<void> {
+  const Registration2Route({List<_i13.PageRouteInfo>? children})
+      : super(
           Registration2Route.name,
-          args: Registration2RouteArgs(key: key),
           initialChildren: children,
         );
 
   static const String name = 'Registration2Route';
 
-  static const _i13.PageInfo<Registration2RouteArgs> page =
-      _i13.PageInfo<Registration2RouteArgs>(name);
-}
-
-class Registration2RouteArgs {
-  const Registration2RouteArgs({this.key});
-
-  final _i14.Key? key;
-
-  @override
-  String toString() {
-    return 'Registration2RouteArgs{key: $key}';
-  }
+  static const _i13.PageInfo<void> page = _i13.PageInfo<void>(name);
 }
 
 /// generated route for
 /// [_i8.Registration3Screen]
-class Registration3Route extends _i13.PageRouteInfo<Registration3RouteArgs> {
-  Registration3Route({
-    _i14.Key? key,
-    List<_i13.PageRouteInfo>? children,
-  }) : super(
+class Registration3Route extends _i13.PageRouteInfo<void> {
+  const Registration3Route({List<_i13.PageRouteInfo>? children})
+      : super(
           Registration3Route.name,
-          args: Registration3RouteArgs(key: key),
           initialChildren: children,
         );
 
   static const String name = 'Registration3Route';
 
-  static const _i13.PageInfo<Registration3RouteArgs> page =
-      _i13.PageInfo<Registration3RouteArgs>(name);
-}
-
-class Registration3RouteArgs {
-  const Registration3RouteArgs({this.key});
-
-  final _i14.Key? key;
-
-  @override
-  String toString() {
-    return 'Registration3RouteArgs{key: $key}';
-  }
+  static const _i13.PageInfo<void> page = _i13.PageInfo<void>(name);
 }
 
 /// generated route for

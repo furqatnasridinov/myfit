@@ -133,55 +133,6 @@ class MapPageTopSection extends StatelessWidget {
                           },
                           text: "Отменить",
                         ),
-
-                        /* Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: InkWell(
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: CustomButton(
-                                    onPressed: () {
-                                      context.popRoute();
-                                    },
-                                    text: "Отменить",
-                                    buttonColor: Colors.white,
-                                  )),
-                            ),
-                            10.horizontalSpace,
-                            Expanded(
-                              child: InkWell(
-                                onTap: () async {
-                                  Navigator.pop(context);
-                                },
-                                child: CustomButton(
-                                  onPressed: () {
-                                    if (state.listOfBool ==
-                                        [false, false, false, true]) {
-                                      event.changeSelectedDiapozone(5);
-                                    }
-                                    if (state.listOfBool ==
-                                        [false, false, true, false]) {
-                                      event.changeSelectedDiapozone(3);
-                                    }
-                                    if (state.listOfBool ==
-                                        [false, true, false, false]) {
-                                      event.changeSelectedDiapozone(2);
-                                    }
-                                    if (state.listOfBool ==
-                                        [true, false, false, false]) {
-                                      event.changeSelectedDiapozone(1);
-                                    }
-                                  },
-                                  buttonColor: AppColors.blueColor,
-                                  text: "Сохранить",
-                                ),
-                              ),
-                            ),
-                          ],
-                        ), */
                       ],
                     ),
                   );
