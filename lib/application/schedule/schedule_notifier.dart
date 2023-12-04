@@ -269,7 +269,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
             });
             state = state.copyWith(listOfGymWithTags: list);
           } else {
-            List<GymWithTags> _list = [];
+            List<GymWithTags> gymList = [];
             final mapData = data["object"];
             mapData.forEach((key, value) {
               value.forEach((element) {
@@ -283,10 +283,10 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
                       ?.map((tag) => Tag.fromJson(tag))
                       .toList(),
                 );
-                _list.add(data);
+                gymList.add(data);
               });
             });
-            state = state.copyWith(listOfGymWithTags: _list);
+            state = state.copyWith(listOfGymWithTags: gymList);
           }
           state = state.copyWith(isloading: false);
           //state = state.copyWith(notesMapData: mapData);

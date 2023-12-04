@@ -10,7 +10,7 @@ class GetGymSchedulesResponse {
 	}
 
 	Map<String, dynamic> toJson() {
-		final Map<String, dynamic> data = Map<String, dynamic>();
+		final Map<String, dynamic> data = <String, dynamic>{};
 		data['operationResult'] = operationResult;
 		if (schedule != null) {
       data['object'] = schedule!.toJson();
@@ -42,7 +42,7 @@ class Schedule {
 	}
 
 	Map<String, dynamic> toJson() {
-		final Map<String, dynamic> data =  Map<String, dynamic>();
+		final Map<String, dynamic> data =  <String, dynamic>{};
 		if (l20231003 != null) {
       data['2023-10-03'] = l20231003!.map((v) => v.toJson()).toList();
     }
@@ -70,10 +70,10 @@ class Day {
 	}
 
 	Map<String, dynamic> toJson() {
-		final Map<String, dynamic> data = new Map<String, dynamic>();
-		data['id'] = this.id;
-		data['date'] = this.date;
-		data['description'] = this.description;
+		final Map<String, dynamic> data = <String, dynamic>{};
+		data['id'] = id;
+		data['date'] = date;
+		data['description'] = description;
 		return data;
 	}
 }

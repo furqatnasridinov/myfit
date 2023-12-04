@@ -12,10 +12,10 @@ class AddNoteResponse {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['description'] = this.description;
-    data['id'] = this.id;
-    data['tag'] = this.tag;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['description'] = description;
+    data['id'] = id;
+    data['tag'] = tag;
     return data;
   }
 }

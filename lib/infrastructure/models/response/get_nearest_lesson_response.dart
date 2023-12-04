@@ -7,15 +7,15 @@ class GetNearestLesson {
   GetNearestLesson.fromJson(Map<String, dynamic> json) {
     operationResult = json['operationResult'];
     bodyData = json['object'] != null
-        ? new BodyData.fromJson(json['object'])
+        ? BodyData.fromJson(json['object'])
         : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['operationResult'] = this.operationResult;
-    if (this.bodyData != null) {
-      data['object'] = this.bodyData!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['operationResult'] = operationResult;
+    if (bodyData != null) {
+      data['object'] = bodyData!.toJson();
     }
     return data;
   }
@@ -35,17 +35,17 @@ class BodyData {
     date = json['date'];
     description = json['description'];
     duration = json['duration'];
-    gym = json['gym'] != null ? new Gym.fromJson(json['gym']) : null;
+    gym = json['gym'] != null ? Gym.fromJson(json['gym']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['date'] = this.date;
-    data['description'] = this.description;
-    data['duration'] = this.duration;
-    if (this.gym != null) {
-      data['gym'] = this.gym!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['date'] = date;
+    data['description'] = description;
+    data['duration'] = duration;
+    if (gym != null) {
+      data['gym'] = gym!.toJson();
     }
     return data;
   }
@@ -80,14 +80,14 @@ class Gym {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['address'] = this.address;
-    data['latitude'] = this.latitude;
-    data['longitude'] = this.longitude;
-    data['description'] = this.description;
-    data['mainPictureUrl'] = this.mainPictureUrl;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['address'] = address;
+    data['latitude'] = latitude;
+    data['longitude'] = longitude;
+    data['description'] = description;
+    data['mainPictureUrl'] = mainPictureUrl;
     return data;
   }
 }

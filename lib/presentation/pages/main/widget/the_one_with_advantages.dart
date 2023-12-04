@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
+// ignore: must_be_immutable
 class TheOneWithAdvantages extends StatelessWidget {
   final MainState state;
   final MainNotifier event;

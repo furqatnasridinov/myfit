@@ -137,7 +137,7 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
   Future<void> moveClientToThirdPage(BuildContext context) async {
     await Future.delayed(const Duration(milliseconds: 1500)).then(
       (value) => context.replaceRoute(
-        Registration3Route(),
+        const Registration3Route(),
       ),
     );
   }

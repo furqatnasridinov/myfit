@@ -1,6 +1,7 @@
 import 'package:activity/domain/di/injection.dart';
 import 'package:activity/domain/handlers/api_result.dart';
 import 'package:activity/domain/handlers/http_service.dart';
+import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/schedule.dart';
 import 'package:activity/infrastructure/models/request/add_note_request.dart';
 import 'package:activity/infrastructure/models/response/add_note_response.dart';
@@ -21,11 +22,11 @@ class ScheduleRepository implements ScheduleRepositoryInterface {
         data: resposne.data,
       );
     } catch (e) {
-      throw e;
-      /* return ApiResult.failure(
+      //throw e;
+       return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      ); */
+      ); 
     }
   }
 
@@ -38,11 +39,11 @@ class ScheduleRepository implements ScheduleRepositoryInterface {
         data: GetNearestLesson.fromJson(response.data),
       );
     } catch (e) {
-      throw e;
-      /* return ApiResult.failure(
+      //throw e;
+      return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      ); */
+      );
     }
   }
 
@@ -55,11 +56,11 @@ class ScheduleRepository implements ScheduleRepositoryInterface {
         data: GetUserStatsMonthResponse.fromJson(response.data),
       );
     } catch (e) {
-      throw e;
-      /* return ApiResult.failure(
+      //throw e;
+      return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      ); */
+      );
     }
   }
 
@@ -68,7 +69,7 @@ class ScheduleRepository implements ScheduleRepositoryInterface {
       AddNoteRequest addNoteRequest) async {
     try {
       final sendingData = addNoteRequest.toJson();
-      print("sendingData $sendingData");
+
       final client = inject<HttpService>().clientDio();
       final response = await client.post(
         AppConstants.addNote,
@@ -78,11 +79,11 @@ class ScheduleRepository implements ScheduleRepositoryInterface {
         data: AddNoteResponse.fromJson(response.data),
       );
     } catch (e) {
-      throw e;
-      /* return ApiResult.failure(
+      //throw e;
+      return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      ); */
+      );
     }
   }
 
@@ -98,11 +99,11 @@ class ScheduleRepository implements ScheduleRepositoryInterface {
         data: response.data,
       );
     } catch (e) {
-      throw e;
-      /* return ApiResult.failure(
+      //throw e;
+      return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      ); */
+      );
     }
   }
 
@@ -117,11 +118,11 @@ class ScheduleRepository implements ScheduleRepositoryInterface {
         ),
       );
     } catch (e) {
-      throw e;
-      /* return ApiResult.failure(
+      //throw e;
+      return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      ); */
+      );
     }
   }
 
@@ -131,20 +132,18 @@ class ScheduleRepository implements ScheduleRepositoryInterface {
     try {
       final client = inject<HttpService>().clientDio();
       final sendingData = {"searchString": schedule};
-      final response = await client.get(
-        AppConstants.getSchedulesSearch,
-        //data: sendingData,
-        queryParameters: sendingData
-      );
+      final response = await client.get(AppConstants.getSchedulesSearch,
+          //data: sendingData,
+          queryParameters: sendingData);
       return ApiResult.success(
         data: response.data,
       );
     } catch (e) {
-      throw e;
-      /* return ApiResult.failure(
+      //throw e;
+      return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      ); */
+      );
     }
   }
 }

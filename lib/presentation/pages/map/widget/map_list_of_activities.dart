@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:activity/application/map/map_notifier.dart';
 import 'package:activity/application/map/map_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
@@ -130,6 +132,7 @@ class MapListOfActivities extends StatelessWidget {
           icon == "" ? "assets/svg/activity.svg" : icon ?? "",
           width: 24.w,
           height: 24.h,
+          // ignore: deprecated_member_use
           color: AppColors.blueColor,
         ),
       ),

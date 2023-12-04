@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
+// ignore: must_be_immutable
 class Main2Map extends StatelessWidget {
   final MapState mapState;
   Main2Map({super.key, required this.mapState});

@@ -7,15 +7,15 @@ class AuthResponse {
   AuthResponse.fromJson(Map<String, dynamic> json) {
     operationResult = json['operationResult'];
     authResponseBody = json['object'] != null
-        ? new AuthResponseBody.fromJson(json['object'])
+        ? AuthResponseBody.fromJson(json['object'])
         : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['operationResult'] = this.operationResult;
-    if (this.authResponseBody != null) {
-      data['object'] = this.authResponseBody!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['operationResult'] = operationResult;
+    if (authResponseBody != null) {
+      data['object'] = authResponseBody!.toJson();
     }
     return data;
   }
@@ -28,16 +28,16 @@ class AuthResponseBody {
   AuthResponseBody({this.user, this.jwtToken});
 
   AuthResponseBody.fromJson(Map<String, dynamic> json) {
-    user = json['user'] != null ? new User.fromJson(json['user']) : null;
+    user = json['user'] != null ? User.fromJson(json['user']) : null;
     jwtToken = json['jwtToken'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.user != null) {
-      data['user'] = this.user!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (user != null) {
+      data['user'] = user!.toJson();
     }
-    data['jwtToken'] = this.jwtToken;
+    data['jwtToken'] = jwtToken;
     return data;
   }
 }
@@ -80,17 +80,17 @@ class User {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['roles'] = this.roles;
-    data['login'] = this.login;
-    data['confirmed'] = this.confirmed;
-    data['errorConfirm'] = this.errorConfirm;
-    data['firstName'] = this.firstName;
-    data['lastName'] = this.lastName;
-    data['patronymic'] = this.patronymic;
-    data['gender'] = this.gender;
-    data['firstEntry'] = this.firstEntry;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['roles'] = roles;
+    data['login'] = login;
+    data['confirmed'] = confirmed;
+    data['errorConfirm'] = errorConfirm;
+    data['firstName'] = firstName;
+    data['lastName'] = lastName;
+    data['patronymic'] = patronymic;
+    data['gender'] = gender;
+    data['firstEntry'] = firstEntry;
     return data;
   }
 }

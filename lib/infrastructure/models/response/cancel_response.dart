@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_void_to_null
+
 class CancelellationResponse {
   String? operationResult;
   Null cancellationBody;
@@ -13,10 +15,10 @@ class CancelellationResponse {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['operationResult'] = this.operationResult;
-    data['object'] = this.cancellationBody;
-    data['operationInfo'] = this.operationInfo;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['operationResult'] = operationResult;
+    data['object'] = cancellationBody;
+    data['operationInfo'] = operationInfo;
     return data;
   }
 }

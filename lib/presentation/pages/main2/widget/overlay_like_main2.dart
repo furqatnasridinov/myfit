@@ -38,7 +38,6 @@ class _OverlayLikeMain2State extends State<OverlayLikeMain2> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getSizeAndOffsets();

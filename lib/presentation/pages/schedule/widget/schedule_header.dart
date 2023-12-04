@@ -320,6 +320,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
                 padding: EdgeInsets.all(10.r),
                 child: SvgPicture.asset(
                   "assets/svg/search.svg",
+                  // ignore: deprecated_member_use
                   color: AppColors.blueColor,
                 ),
               ),

@@ -1,6 +1,7 @@
 import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,10 +19,7 @@ class ActivityScreen extends ConsumerStatefulWidget {
 class _ActivityPageState extends ConsumerState<ActivityScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    print("initstate called");
-
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
         // get info `bout gym
@@ -79,15 +77,18 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
   Widget build(BuildContext context) {
     final event = ref.read(activityProvider.notifier);
     final state = ref.watch(activityProvider);
-    print("gym >> ${state.gym?.name}");
-    print("chips >> ${state.activities?.length}");
-    print("selectedactivity >> ${state.selectedActivity}");
-    print("list of original dates >> ${state.originalDates}");
-    print("available formatted dates ${state.availableFormattedDates}");
-    print("15 calendar days from now ${state.listOf15CalendarDaysFromNow}");
-    print("selectedOriginalDate ${state.selectedOriginalDate}");
-    print("selectedFormatted ${state.selectedFormattedDay}");
-    print("list of schedules in in one day >> ${state.listOfSchedules.length}");
+    if (kDebugMode) {
+      print("gym >> ${state.gym?.name}");
+      print("chips >> ${state.activities?.length}");
+      print("selectedactivity >> ${state.selectedActivity}");
+      print("list of original dates >> ${state.originalDates}");
+      print("available formatted dates ${state.availableFormattedDates}");
+      print("15 calendar days from now ${state.listOf15CalendarDaysFromNow}");
+      print("selectedOriginalDate ${state.selectedOriginalDate}");
+      print("selectedFormatted ${state.selectedFormattedDay}");
+      print(
+          "list of schedules in in one day >> ${state.listOfSchedules.length}");
+    }
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,

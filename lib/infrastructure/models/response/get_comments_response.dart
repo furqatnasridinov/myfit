@@ -9,16 +9,16 @@ class GetCommentsResponse {
     if (json['object'] != null) {
       commentsBody = <CommentsBody>[];
       json['object'].forEach((v) {
-        commentsBody!.add(new CommentsBody.fromJson(v));
+        commentsBody!.add(CommentsBody.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['operationResult'] = this.operationResult;
-    if (this.commentsBody != null) {
-      data['object'] = this.commentsBody!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['operationResult'] = operationResult;
+    if (commentsBody != null) {
+      data['object'] = commentsBody!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -34,19 +34,19 @@ class CommentsBody {
 
   CommentsBody.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    user = json['user'] != null ? new User.fromJson(json['user']) : null;
+    user = json['user'] != null ? User.fromJson(json['user']) : null;
     message = json['message'];
     insertDate = json['insertDate'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    if (this.user != null) {
-      data['user'] = this.user!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    if (user != null) {
+      data['user'] = user!.toJson();
     }
-    data['message'] = this.message;
-    data['insertDate'] = this.insertDate;
+    data['message'] = message;
+    data['insertDate'] = insertDate;
     return data;
   }
 }
@@ -89,30 +89,30 @@ class User {
     birthdayDate = json['birthdayDate'];
     contactPhone = json['contactPhone'];
     gender = json['gender'];
-    city = json['city'] != null ? new City.fromJson(json['city']) : null;
+    city = json['city'] != null ? City.fromJson(json['city']) : null;
     country =
-        json['country'] != null ? new Country.fromJson(json['country']) : null;
+        json['country'] != null ? Country.fromJson(json['country']) : null;
     firstEntry = json['firstEntry'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['login'] = this.login;
-    data['confirmed'] = this.confirmed;
-    data['firstName'] = this.firstName;
-    data['lastName'] = this.lastName;
-    data['patronymic'] = this.patronymic;
-    data['birthdayDate'] = this.birthdayDate;
-    data['contactPhone'] = this.contactPhone;
-    data['gender'] = this.gender;
-    if (this.city != null) {
-      data['city'] = this.city!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['login'] = login;
+    data['confirmed'] = confirmed;
+    data['firstName'] = firstName;
+    data['lastName'] = lastName;
+    data['patronymic'] = patronymic;
+    data['birthdayDate'] = birthdayDate;
+    data['contactPhone'] = contactPhone;
+    data['gender'] = gender;
+    if (city != null) {
+      data['city'] = city!.toJson();
     }
-    if (this.country != null) {
-      data['country'] = this.country!.toJson();
+    if (country != null) {
+      data['country'] = country!.toJson();
     }
-    data['firstEntry'] = this.firstEntry;
+    data['firstEntry'] = firstEntry;
     return data;
   }
 }
@@ -134,21 +134,21 @@ class City {
   City.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     country =
-        json['country'] != null ? new Country.fromJson(json['country']) : null;
+        json['country'] != null ? Country.fromJson(json['country']) : null;
     name = json['name'];
     regionName = json['regionName'];
     externalIdentifier = json['externalIdentifier'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    if (this.country != null) {
-      data['country'] = this.country!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    if (country != null) {
+      data['country'] = country!.toJson();
     }
-    data['name'] = this.name;
-    data['regionName'] = this.regionName;
-    data['externalIdentifier'] = this.externalIdentifier;
+    data['name'] = name;
+    data['regionName'] = regionName;
+    data['externalIdentifier'] = externalIdentifier;
     return data;
   }
 }
@@ -169,11 +169,11 @@ class Country {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['externalIdentifier'] = this.externalIdentifier;
-    data['showInApp'] = this.showInApp;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['externalIdentifier'] = externalIdentifier;
+    data['showInApp'] = showInApp;
     return data;
   }
 }
