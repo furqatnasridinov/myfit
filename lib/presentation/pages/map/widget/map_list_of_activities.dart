@@ -29,7 +29,7 @@ class MapListOfActivities extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return state.listOfActivitiesFromSelectedDiapozone.isEmpty
+    return state.listOfGymsFromSelectedDiapozone.isEmpty
         ? Padding(
             padding:
                 EdgeInsets.symmetric(horizontal: 16.w).copyWith(bottom: 10.h),
@@ -49,7 +49,8 @@ class MapListOfActivities extends StatelessWidget {
                     WidgetSpan(child: SizedBox(width: 3.w)),
                     TextSpan(
                       recognizer: TapGestureRecognizer()
-                        ..onTap = () => choseDiapozoneModal(event,state, context),
+                        ..onTap =
+                            () => choseDiapozoneModal(event, state, context),
                       text: "Изменить радиус",
                       style: GoogleFonts.raleway(
                           fontSize: 14.sp,
@@ -61,41 +62,46 @@ class MapListOfActivities extends StatelessWidget {
               ),
             ),
           )
-        : ListView.builder(
-            padding:
-                EdgeInsets.symmetric(horizontal: 16.w).copyWith(bottom: 10.h),
-            itemCount: state.listOfActivitiesFromSelectedDiapozone.length,
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              final currentActivity =
-                  state.listOfActivitiesFromSelectedDiapozone[index];
-              //print("eachData ${eachData[index]["name"]}");
-              return _listBuilder(
-                currentActivity.name,
-                currentActivity.distanceFromClient!,
-                "",
-                () {
-                  event.changeCameraPosition(
-                    controller!,
-                    currentActivity.latitude!,
-                    currentActivity.longitude!,
-                  );
-                  event
-                      .setMarkerAsOpened(
-                        currentActivity.latitude!,
-                        currentActivity.longitude!,
-                      )
-                      .then(
-                        (value) => event.showPopUpOnMap(context),
-                      );
-                },
-              );
-            },
+        : SizedBox(
+            //height: 300.h,
+            child: ListView.builder(
+              padding:
+                  EdgeInsets.symmetric(horizontal: 16.w).copyWith(bottom: 10.h),
+              itemCount: state.listOfAllActivitiesFromServer.length,
+              // itemCount: state.listOfGymsFromSelectedDiapozone.length,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                final currentGym = state.listOfGymsFromSelectedDiapozone[index];
+                final currentActivity =
+                    state.listOfAllActivitiesFromServer[index];
+                return _listOfActivitiesBuilder(currentActivity);
+
+                /* _listOfGymsBuilder(
+                  currentGym.name,
+                  currentGym.distanceFromClient!,
+                  "",
+                  () {
+                    event.changeCameraPosition(
+                      controller!,
+                      currentGym.latitude!,
+                      currentGym.longitude!,
+                    );
+                    event
+                        .setMarkerAsOpened(
+                          currentGym.latitude!,
+                          currentGym.longitude!,
+                        )
+                        .then(
+                          (value) => event.showPopUpOnMap(context),
+                        );
+                  },
+                ); */
+              },
+            ),
           );
   }
 
-  _listBuilder(
+  _listOfGymsBuilder(
     String? title,
     double distance,
     String? icon,
@@ -111,13 +117,6 @@ class MapListOfActivities extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 5.h),
       child: ListTile(
         onTap: onTap,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.r),
-          side: BorderSide(
-            color: Colors.red,
-            width: 1.w,
-          ),
-        ),
         title: CustomText(
           text: title ?? "",
           fontSize: 14.sp,
@@ -134,6 +133,64 @@ class MapListOfActivities extends StatelessWidget {
           height: 24.h,
           // ignore: deprecated_member_use
           color: AppColors.blueColor,
+        ),
+      ),
+    );
+  }
+
+  _listOfActivitiesBuilder(
+    String title,
+  ) {
+    return Container(
+      width: double.maxFinite,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(color: AppColors.greyBorder, width: 1.w),
+      ),
+      margin: EdgeInsets.only(bottom: 5.h),
+      child: ListTile(
+        leading: SizedBox(
+          width: 24.sp,
+          height: 24.sp,
+          child: Icon(
+            Icons.snowboarding_rounded,
+            color: AppColors.blueColor,
+            size: 23.r,
+          ),
+        ),
+        title: CustomText(
+          text: title,
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w400,
+        ),
+        trailing: SizedBox(
+          //color: Colors.red.shade100,
+          width: 110.w,
+          child: Row(
+            children: [
+              // count of gyms
+              CustomText(
+                text: "4",
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w500,
+                color: AppColors.blueColor,
+              ),
+              5.horizontalSpace,
+              Icon(
+                Icons.keyboard_arrow_down,
+                color: AppColors.blueColor,
+                size: 18.r,
+              ),
+              const Spacer(),
+              CustomText(
+                text: "830m",
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w500,
+                color: AppColors.greyText,
+              ),
+            ],
+          ),
         ),
       ),
     );

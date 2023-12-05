@@ -28,7 +28,8 @@ import 'package:activity/presentation/pages/schedule/view/schedule_page.dart'
     as _i11;
 import 'package:activity/presentation/pages/splash/splash_screen.dart' as _i12;
 import 'package:auto_route/auto_route.dart' as _i13;
-import 'package:flutter/material.dart' as _i14;
+import 'package:flutter/foundation.dart' as _i14;
+import 'package:flutter/material.dart' as _i15;
 
 abstract class $AppRouter extends _i13.RootStackRouter {
   $AppRouter({super.navigatorKey});
@@ -230,7 +231,7 @@ class MapRouteArgs {
 /// [_i5.NotesScreen]
 class NotesRoute extends _i13.PageRouteInfo<NotesRouteArgs> {
   NotesRoute({
-    _i14.Key? key,
+    _i15.Key? key,
     required String gymName,
     List<_i13.PageRouteInfo>? children,
   }) : super(
@@ -254,7 +255,7 @@ class NotesRouteArgs {
     required this.gymName,
   });
 
-  final _i14.Key? key;
+  final _i15.Key? key;
 
   final String gymName;
 

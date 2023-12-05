@@ -3,6 +3,7 @@
 import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,7 +35,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 ),
           )
           .then((value) => ref.read(mapProvider.notifier)
-            ..getGetListOfActivitiesFromDiapozone())
+            ..getGetListOfGymsFromDiapozone())
           .whenComplete(
             () => ref.read(mapProvider.notifier).getAllMarkers(),
           )
@@ -47,6 +48,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(mapProvider);
     final event = ref.read(mapProvider.notifier);
+    if (kDebugMode) {
+      print("activities lenth ${state.listOfAllActivitiesFromServer.length}");
+      print("all gyms lenth ${state.listOfGymsFromSelectedDiapozone.length}");
+    }
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar: MapHeader(
@@ -60,58 +65,57 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           : Column(
               children: [
                 10.verticalSpace,
-                Column(
-                  children: [
-                    // Карта активностей
-                    MapPageTopSection(
-                      event: event,
-                      state: state,
-                    ),
-                    10.verticalSpace,
-                    // listview builder
-                    state.isloading
-                        ? const SizedBox()
-                        : MapListOfActivities(
-                            yandexMapController,
-                            event: event,
-                            state: state,
-                          ),
-                  ],
+                // Карта активностей
+                MapPageTopSection(
+                  event: event,
+                  state: state,
                 ),
+                10.verticalSpace,
+                // listview builder
+                state.isloading
+                    ? const SizedBox()
+                    : MapListOfActivities(
+                        yandexMapController,
+                        event: event,
+                        state: state,
+                      ),
 
                 // map
-                Expanded(
+                Flexible(
                   //flex: 5,
-                  child: YandexMap(
-                    // map objects
-                    mapObjects: event.getPlacemarkObjects(
-                      onTap: (placemarkMapObject, point) {
-                        event
-                            .setMarkerAsOpened(
-                              placemarkMapObject.point.latitude,
-                              placemarkMapObject.point.longitude,
-                            )
-                            .then(
-                              (value) => event.showPopUpOnMap(context),
-                            );
+                  child: SizedBox(
+                    //height: 500.h,
+                    child: YandexMap(
+                      // map objects
+                      mapObjects: event.getPlacemarkObjects(
+                        onTap: (placemarkMapObject, point) {
+                          event
+                              .setMarkerAsOpened(
+                                placemarkMapObject.point.latitude,
+                                placemarkMapObject.point.longitude,
+                              )
+                              .then(
+                                (value) => event.showPopUpOnMap(context),
+                              );
+                        },
+                      ),
+
+                      // on map created
+                      onMapCreated: (controller) {
+                        yandexMapController = controller;
+                        setState(() {});
+                        event.setInitialCameraPosition(
+                          controller: yandexMapController!,
+                        );
+                      },
+                      //
+                      onCameraPositionChanged:
+                          (cameraPosition, reason, finished) {
+                        if (reason == CameraUpdateReason.gestures) {
+                          event.removePopUp();
+                        }
                       },
                     ),
-
-                    // on map created
-                    onMapCreated: (controller) {
-                      yandexMapController = controller;
-                      setState(() {});
-                      event.setInitialCameraPosition(
-                        controller: yandexMapController!,
-                      );
-                    },
-                    //
-                    onCameraPositionChanged:
-                        (cameraPosition, reason, finished) {
-                      if (reason == CameraUpdateReason.gestures) {
-                        event.removePopUp();
-                      }
-                    },
                   ),
                 ),
               ],

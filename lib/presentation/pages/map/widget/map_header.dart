@@ -184,6 +184,7 @@ class _MainHeaderState extends State<MapHeader> {
     }
 
     return AppBar(
+      scrolledUnderElevation: 0,
       automaticallyImplyLeading: false,
       leadingWidth: 48.w,
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),

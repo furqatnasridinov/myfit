@@ -66,7 +66,7 @@ class MapNotifier extends StateNotifier<MapState> {
   Future<void> getAllMarkers() async {
     await Future.delayed(const Duration(milliseconds: 200));
     List<EachMarkersModel> markers = [];
-    for (var element in state.listOfActivitiesFromSelectedDiapozone) {
+    for (var element in state.listOfGymsFromSelectedDiapozone) {
       final marker = EachMarkersModel(
         name: element.name ?? "",
         latitude: element.latitude ?? 0,
@@ -143,22 +143,14 @@ class MapNotifier extends StateNotifier<MapState> {
       response.when(
         success: (data) {
           final gymsMapFromServer = data["object"] as Map<String, dynamic>;
-          // 1) создаем лист чтобы потом добавить объекты к нему
-          final activities = <GymData>[];
-          gymsMapFromServer.forEach((category, gymList) {
-            // 2) мапим данные с сервера на key and value
-            /* 
-            здесь gym  равно Map<String, dynamic> вот так напирмер это один из них;
-            так как это цикл оно берет каждого из них один за другим
-            {
-                "id": 1,
-                "name": "Фитнес-клуб Mytimefitness",
-                "address": "ул. Ильюшина, 14, Санкт-Петербург, 197372",
-                "latitude": "60.00485084852601",
-                "longitude": " 30.263218872586002"
-            }, 
-            */
-            for (var gym in gymList) {
+          final listToCollectGyms = <GymData>[]; // for adding Gyms
+          final listToCollectActivities =
+              <String>[]; // for adding activities (keys)
+          gymsMapFromServer.forEach((key, value) {
+            listToCollectActivities.add(key);
+            for (var gym in value) {
+              final listToCollectGymsActivities = <String>{};
+              listToCollectGymsActivities.add(key);
               final gymData = GymData(
                 id: gym['id'],
                 name: gym['name'],
@@ -171,18 +163,20 @@ class MapNotifier extends StateNotifier<MapState> {
                   double.parse(gym['latitude']),
                   double.parse(gym['longitude']),
                 ),
+                activitiesOfGym: listToCollectGymsActivities.toList(),
               );
-              // сортируем чтобы в лист не добавили одинаковые Gymdata
-              if (!activities.any((element) => element.id == gymData.id)) {
-                activities.add(gymData);
+              // сортируем чтобы в лист не добавилиcь одинаковые Gymdata
+              if (!listToCollectGyms
+                  .any((element) => element.id == gymData.id)) {
+                listToCollectGyms.add(gymData);
               }
             }
           });
-
-          state = state.copyWith(listOfActivities: activities);
+          state = state.copyWith(listOfAllGymsFromServer: listToCollectGyms);
+          state = state.copyWith(
+              listOfAllActivitiesFromServer: listToCollectActivities);
         },
-        failure: (error, statusCode) {
-        },
+        failure: (error, statusCode) {},
       );
     } else {
       // ignore: use_build_context_synchronously
@@ -232,7 +226,7 @@ class MapNotifier extends StateNotifier<MapState> {
   }
 
   void showPopUpOnMap(BuildContext context) {
-    // remove prvious pop up first 
+    // remove prvious pop up first
     removePopUp();
     final overlay = Overlay.of(context);
     entry = OverlayEntry(
@@ -270,30 +264,30 @@ class MapNotifier extends StateNotifier<MapState> {
     state = state.copyWith(listOfBool: bools);
   }
 
-  Future<void> getGetListOfActivitiesFromDiapozone() async {
+  Future<void> getGetListOfGymsFromDiapozone() async {
     await Future.delayed(const Duration(milliseconds: 100));
     List<GymData> list = <GymData>[];
 
     double selectedDiapozone = state.selectedDiapozone;
     if (selectedDiapozone == 5) {
-      list.addAll(state.listOfActivities);
+      list.addAll(state.listOfAllGymsFromServer);
     }
     if (selectedDiapozone != 5) {
-      for (var element in state.listOfActivities) {
+      for (var element in state.listOfAllGymsFromServer) {
         if (element.distanceFromClient! < selectedDiapozone) {
           list.add(element);
         }
       }
     }
 
-    state = state.copyWith(listOfActivitiesFromSelectedDiapozone: list);
+    state = state.copyWith(listOfGymsFromSelectedDiapozone: list);
   }
 
   void changeDiapozoneAndPop(
       int index, double diapozone, BuildContext context) {
     changListOFBoolToTrue(index);
     changeSelectedDiapozone(diapozone).then(
-      (value) => getGetListOfActivitiesFromDiapozone().then(
+      (value) => getGetListOfGymsFromDiapozone().then(
         (value) => getAllMarkers().then(
           (value) => addUserLocationMarker().then(
             (value) => context.popRoute(),
