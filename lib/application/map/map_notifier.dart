@@ -2,6 +2,7 @@ import 'package:activity/application/map/map_state.dart';
 import 'package:activity/domain/interface/main.dart';
 import 'package:activity/infrastructure/models/data/each_markers_models.dart';
 import 'package:activity/infrastructure/models/data/gym_data.dart';
+import 'package:activity/infrastructure/models/data/lessontype_with_gyms_inside.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:activity/presentation/pages/map/widget/pop_up_map.dart';
@@ -136,53 +137,55 @@ class MapNotifier extends StateNotifier<MapState> {
   }
 
   Future<void> getGymsList(BuildContext context, int gymId) async {
-    state = state.copyWith(isloading: true);
     final connect = await AppConnectivity().connectivity();
     if (connect) {
+      state = state.copyWith(isloading: true);
       final response = await _mainRepositoryInterface.getGymsList();
       response.when(
         success: (data) {
           final gymsMapFromServer = data["object"] as Map<String, dynamic>;
-          final listToCollectGyms = <GymData>[]; // for adding Gyms
-          final listToCollectActivities =
-              <String>[]; // for adding activities (keys)
+          final listToCollectActivitiesWithGyms = <LessonTypeWithGymsInside>[];
           gymsMapFromServer.forEach((key, value) {
-            listToCollectActivities.add(key);
-            for (var gym in value) {
-              final listToCollectGymsActivities = <String>{};
-              listToCollectGymsActivities.add(key);
-              final gymData = GymData(
-                id: gym['id'],
-                name: gym['name'],
-                address: gym['address'],
-                latitude: double.parse(gym['latitude']),
-                longitude: double.parse(gym['longitude']),
-                distanceFromClient: calCulateDistanceSrazy(
-                  state.userPosition!.latitude,
-                  state.userPosition!.longitude,
-                  double.parse(gym['latitude']),
-                  double.parse(gym['longitude']),
-                ),
-                activitiesOfGym: listToCollectGymsActivities.toList(),
-              );
-              // сортируем чтобы в лист не добавилиcь одинаковые Gymdata
-              if (!listToCollectGyms
-                  .any((element) => element.id == gymData.id)) {
-                listToCollectGyms.add(gymData);
-              }
-            }
+            final data = LessonTypeWithGymsInside(
+              false,
+              lessontype: key,
+              listOfGyms:
+                  (value as List).map((gym) => Gymdata.fromJson(gym)).toList(),
+            );
+            listToCollectActivitiesWithGyms.add(data);
           });
-          state = state.copyWith(listOfAllGymsFromServer: listToCollectGyms);
+          final withCalculatedDistances = // and sort
+              calculateDistanceOfGyms(listToCollectActivitiesWithGyms);
           state = state.copyWith(
-              listOfAllActivitiesFromServer: listToCollectActivities);
+              activitiesWithGymsInsideAll: withCalculatedDistances);
         },
         failure: (error, statusCode) {},
       );
+      state = state.copyWith(isloading: false);
     } else {
       // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
     state = state.copyWith(isloading: false);
+  }
+
+  List<LessonTypeWithGymsInside> calculateDistanceOfGyms(
+      List<LessonTypeWithGymsInside> list) {
+    final listToCollect = <LessonTypeWithGymsInside>[];
+    for (var element in list) {
+      element.listOfGyms?.forEach((gym) {
+        gym.distanceFromClient = calCulateDistanceSrazy(
+          state.userPosition!.latitude,
+          state.userPosition!.longitude,
+          double.parse(gym.latitude!),
+          double.parse(gym.longitude!),
+        );
+      });
+      element.listOfGyms?.sort((a, b) => a.distanceFromClient!
+          .compareTo(num.parse(b.distanceFromClient.toString())));
+      listToCollect.add(element);
+    }
+    return listToCollect;
   }
 
   double calCulateDistanceSrazy(
@@ -206,6 +209,14 @@ class MapNotifier extends StateNotifier<MapState> {
           .replaceAll(RegExp(r"([.]*0)(?!.*\d)"), ""),
     );
     return formattedDistance; // in kilometer
+  }
+
+  void showMapOnly() {
+    state = state.copyWith(showMapOnly: true);
+  }
+
+  void reduceMap() {
+    state = state.copyWith(showMapOnly: false);
   }
 
   Future<void> setMarkerAsOpened(double lat, double lon) async {
@@ -266,35 +277,53 @@ class MapNotifier extends StateNotifier<MapState> {
 
   Future<void> getGetListOfGymsFromDiapozone() async {
     await Future.delayed(const Duration(milliseconds: 100));
-    List<GymData> list = <GymData>[];
 
+    List<LessonTypeWithGymsInside> listToCollect = [];
     double selectedDiapozone = state.selectedDiapozone;
+    final activityWithGyms =
+        List<LessonTypeWithGymsInside>.from(state.activitiesWithGymsInsideAll);
+
     if (selectedDiapozone == 5) {
-      list.addAll(state.listOfAllGymsFromServer);
-    }
-    if (selectedDiapozone != 5) {
-      for (var element in state.listOfAllGymsFromServer) {
-        if (element.distanceFromClient! < selectedDiapozone) {
-          list.add(element);
+      listToCollect.addAll(state.activitiesWithGymsInsideAll);
+    } else {
+      for (var element in activityWithGyms) {
+        var listOfGymsCopy = <Gymdata>[];
+        element.listOfGyms?.forEach((gymdata) {
+          if (gymdata.distanceFromClient! < selectedDiapozone) {
+            //var gymdataCopy = gymdata.copyWith();
+            listOfGymsCopy.add(gymdata);
+          }
+        });
+
+        if (listOfGymsCopy.isNotEmpty) {
+          var elementCopy = LessonTypeWithGymsInside(
+            false,
+            lessontype: element.lessontype,
+            listOfGyms: listOfGymsCopy,
+          );
+          listToCollect.add(elementCopy);
         }
       }
     }
-
-    state = state.copyWith(listOfGymsFromSelectedDiapozone: list);
+    state = state.copyWith(
+      activitiesWithGymsInsideFromSelectedDiapozone: listToCollect,
+    );
   }
 
-  void changeDiapozoneAndPop(
-      int index, double diapozone, BuildContext context) {
+  Future<void> changeDiapozoneAndPop(
+      int index, double diapozone, BuildContext context) async {
     changListOFBoolToTrue(index);
-    changeSelectedDiapozone(diapozone).then(
-      (value) => getGetListOfGymsFromDiapozone().then(
-        (value) => getAllMarkers().then(
-          (value) => addUserLocationMarker().then(
-            (value) => context.popRoute(),
-          ),
-        ),
-      ),
-    );
+
+    try {
+      await changeSelectedDiapozone(diapozone);
+      await getGetListOfGymsFromDiapozone();
+      await getAllMarkers();
+      await addUserLocationMarker();
+      // ignore: use_build_context_synchronously
+      context.popRoute();
+    } catch (error) {
+      // Обработка ошибок
+    }
   }
 
   Future<void> searchGym(BuildContext context, {required String text}) async {

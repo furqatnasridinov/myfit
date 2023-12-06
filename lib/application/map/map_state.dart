@@ -1,5 +1,6 @@
 import 'package:activity/infrastructure/models/data/each_markers_models.dart';
 import 'package:activity/infrastructure/models/data/gym_data.dart';
+import 'package:activity/infrastructure/models/data/lessontype_with_gyms_inside.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -15,11 +16,14 @@ class MapState with _$MapState {
     @Default(null) EachMarkersModel? activeMarker,
     @Default([]) List<double> distances,
     @Default(5) double selectedDiapozone,
-    @Default([false, false,false,true]) List<bool> listOfBool,
+    @Default([false, false, false, true]) List<bool> listOfBool,
     @Default([]) List<GymData> listOfGymsFromSelectedDiapozone,
-    @Default([])List<GymData> gymFoundBySearching,
+    @Default([]) List<GymData> gymFoundBySearching,
     @Default(false) bool isSearchbarOpened,
     @Default([]) List<String> listOfAllActivitiesFromServer,
+    @Default([]) List<LessonTypeWithGymsInside> activitiesWithGymsInsideAll,
+    @Default([]) List<LessonTypeWithGymsInside> activitiesWithGymsInsideFromSelectedDiapozone,
+    @Default(false) bool showMapOnly,
   }) = _MapState;
   const MapState._();
 }

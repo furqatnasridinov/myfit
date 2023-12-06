@@ -2,6 +2,8 @@
 
 import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/presentation/components/components.dart';
+import 'package:activity/presentation/components/custom_card.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -34,8 +36,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   widget.gymId!,
                 ),
           )
-          .then((value) => ref.read(mapProvider.notifier)
-            ..getGetListOfGymsFromDiapozone())
+          .then((value) =>
+              ref.read(mapProvider.notifier)..getGetListOfGymsFromDiapozone())
           .whenComplete(
             () => ref.read(mapProvider.notifier).getAllMarkers(),
           )
@@ -49,8 +51,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final state = ref.watch(mapProvider);
     final event = ref.read(mapProvider.notifier);
     if (kDebugMode) {
-      print("activities lenth ${state.listOfAllActivitiesFromServer.length}");
-      print("all gyms lenth ${state.listOfGymsFromSelectedDiapozone.length}");
+      print(
+          "activities with gyms inside lenth ${state.activitiesWithGymsInsideFromSelectedDiapozone.length}");
     }
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
@@ -72,50 +74,91 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 ),
                 10.verticalSpace,
                 // listview builder
-                state.isloading
+                state.showMapOnly
                     ? const SizedBox()
-                    : MapListOfActivities(
-                        yandexMapController,
-                        event: event,
-                        state: state,
-                      ),
+                    : state.isloading
+                        ? const SizedBox()
+                        : MapListOfActivities(
+                            yandexMapController,
+                            event: event,
+                            state: state,
+                          ),
 
                 // map
                 Flexible(
                   //flex: 5,
-                  child: SizedBox(
-                    //height: 500.h,
-                    child: YandexMap(
-                      // map objects
-                      mapObjects: event.getPlacemarkObjects(
-                        onTap: (placemarkMapObject, point) {
-                          event
-                              .setMarkerAsOpened(
-                                placemarkMapObject.point.latitude,
-                                placemarkMapObject.point.longitude,
-                              )
-                              .then(
-                                (value) => event.showPopUpOnMap(context),
-                              );
+                  child: Stack(
+                    children: [
+                      YandexMap(
+                        // map objects
+                        mapObjects: event.getPlacemarkObjects(
+                          onTap: (placemarkMapObject, point) {
+                            event
+                                .setMarkerAsOpened(
+                                  placemarkMapObject.point.latitude,
+                                  placemarkMapObject.point.longitude,
+                                )
+                                .then(
+                                  (value) => event.showPopUpOnMap(context),
+                                );
+                          },
+                        ),
+
+                        // on map created
+                        onMapCreated: (controller) {
+                          yandexMapController = controller;
+                          setState(() {});
+                          event.setInitialCameraPosition(
+                            controller: yandexMapController!,
+                          );
+                        },
+                        //
+                        onCameraPositionChanged:
+                            (cameraPosition, reason, finished) {
+                          if (reason == CameraUpdateReason.gestures) {
+                            event.removePopUp();
+                          }
                         },
                       ),
-
-                      // on map created
-                      onMapCreated: (controller) {
-                        yandexMapController = controller;
-                        setState(() {});
-                        event.setInitialCameraPosition(
-                          controller: yandexMapController!,
-                        );
-                      },
-                      //
-                      onCameraPositionChanged:
-                          (cameraPosition, reason, finished) {
-                        if (reason == CameraUpdateReason.gestures) {
-                          event.removePopUp();
-                        }
-                      },
-                    ),
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 10.h),
+                          child: CustomCard(
+                              radius: 8.r,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  15.horizontalSpace,
+                                  InkWell(
+                                    onTap: () {
+                                      if (state.showMapOnly) {
+                                        event.reduceMap();
+                                      } else {
+                                        event.showMapOnly();
+                                      }
+                                    },
+                                    child: CustomText(
+                                      text: state.showMapOnly
+                                          ? "Показать список активностей"
+                                          : "Карта на весь экран",
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  10.horizontalSpace,
+                                  Icon(
+                                    state.showMapOnly
+                                        ? Icons.keyboard_arrow_down
+                                        : Icons.keyboard_arrow_up,
+                                    size: 18.r,
+                                  ),
+                                  15.horizontalSpace,
+                                ],
+                              )),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
