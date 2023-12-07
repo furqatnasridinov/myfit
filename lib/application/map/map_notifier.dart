@@ -67,15 +67,17 @@ class MapNotifier extends StateNotifier<MapState> {
   Future<void> getAllMarkers() async {
     await Future.delayed(const Duration(milliseconds: 200));
     List<EachMarkersModel> markers = [];
-    for (var element in state.listOfGymsFromSelectedDiapozone) {
-      final marker = EachMarkersModel(
-        name: element.name ?? "",
-        latitude: element.latitude ?? 0,
-        longitude: element.longitude ?? 0,
-        address: element.address ?? "",
-        id: element.id ?? 0,
-      );
-      markers.add(marker);
+    for (var element in state.activitiesWithGymsInsideFromSelectedDiapozone) {
+      element.listOfGyms?.forEach((gym) {
+        final marker = EachMarkersModel(
+          name: gym.name ?? "",
+          latitude: double.parse(gym.latitude!),
+          longitude: double.parse(gym.longitude!),
+          address: gym.address ?? "",
+          id: gym.id ?? 0,
+        );
+        markers.add(marker);
+      });
     }
     state = state.copyWith(listOfMarkers: markers);
   }
@@ -111,9 +113,15 @@ class MapNotifier extends StateNotifier<MapState> {
                 image: BitmapDescriptor.fromAssetImage(
                   e.name == "user"
                       ? "assets/images/user_marker.png"
-                      : "assets/images/map_icon.png",
+                      : e.id == state.activeMarker?.id
+                          ? "assets/images/centered_icon.png"
+                          : "assets/images/map_icon.png",
                 ),
-                scale: e.name == "user" ? 2.5.r : 4.r,
+                scale: e.name == "user"
+                    ? 2.5.r
+                    : e.id == state.activeMarker?.id
+                        ? 2.5.r
+                        : 4.r,
               ),
             ),
             opacity: 1,
@@ -130,7 +138,7 @@ class MapNotifier extends StateNotifier<MapState> {
   ) {
     controller.moveCamera(
       CameraUpdate.newCameraPosition(
-        CameraPosition(target: Point(latitude: lat, longitude: lon), zoom: 15),
+        CameraPosition(target: Point(latitude: lat, longitude: lon), zoom: 12),
       ),
       animation: const MapAnimation(duration: 1),
     );
@@ -212,11 +220,84 @@ class MapNotifier extends StateNotifier<MapState> {
   }
 
   void showMapOnly() {
+    state = state.copyWith(topFlex: 0);
     state = state.copyWith(showMapOnly: true);
   }
 
   void reduceMap() {
+    state = state.copyWith(topFlex: 4);
     state = state.copyWith(showMapOnly: false);
+  }
+
+  Future<void> setFlexes() async {
+    await Future.delayed(const Duration(milliseconds: 100));
+    final list = state.activitiesWithGymsInsideFromSelectedDiapozone;
+    if (list.isEmpty) {
+      state = state.copyWith(
+        topFlex: 2,
+        bottomFlex: 8,
+      );
+    }
+    if (list.length == 1) {
+      state = state.copyWith(
+        topFlex: 2,
+        bottomFlex: 8,
+      );
+    }
+    if (list.length == 2) {
+      state = state.copyWith(
+        topFlex: 3,
+        bottomFlex: 8,
+      );
+    }
+    if (list.length == 3) {
+      state = state.copyWith(
+        topFlex: 4,
+        bottomFlex: 8,
+      );
+    }
+  }
+
+  void openGymslist() {
+    final list = state.activitiesWithGymsInsideFromSelectedDiapozone;
+    if (list.length == 1) {
+      state = state.copyWith(topFlex: 3);
+      state = state.copyWith(bottomFlex: 6);
+    }
+    if (list.length == 2) {
+      state = state.copyWith(topFlex: 4);
+      state = state.copyWith(bottomFlex: 5);
+    }
+    if (list.length > 2) {
+      state = state.copyWith(topFlex: 7);
+      state = state.copyWith(bottomFlex: 6);
+    }
+    /* state = state.copyWith(topFlex: 7);
+    state = state.copyWith(bottomFlex: 6); */
+  }
+
+  void closeGymslist() {
+    setFlexes();
+  }
+
+  void openCloseGymsList() {
+    final list = state.activitiesWithGymsInsideFromSelectedDiapozone;
+    bool isOpened = list.any((element) => element.isOpened);
+    if (isOpened) {
+      openGymslist();
+    } else {
+      closeGymslist();
+    }
+  }
+
+  void closeOpenedActivities() {
+    bool isAnyOpened = state.activitiesWithGymsInsideFromSelectedDiapozone
+        .any((element) => element.isOpened);
+    if (isAnyOpened) {
+      for (var element in state.activitiesWithGymsInsideFromSelectedDiapozone) {
+        element.isOpened = false;
+      }
+    }
   }
 
   Future<void> setMarkerAsOpened(double lat, double lon) async {
@@ -316,7 +397,9 @@ class MapNotifier extends StateNotifier<MapState> {
 
     try {
       await changeSelectedDiapozone(diapozone);
+      closeOpenedActivities();
       await getGetListOfGymsFromDiapozone();
+      await setFlexes();
       await getAllMarkers();
       await addUserLocationMarker();
       // ignore: use_build_context_synchronously

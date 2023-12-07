@@ -5,7 +5,6 @@ import 'package:activity/domain/interface/activity.dart';
 import 'package:activity/infrastructure/models/request/get_gym_photos_request.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
-import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -337,14 +336,14 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   }
 
   getSchedulesList(String data) {
-    if (DummyData().days15.contains(data)) {
+   
       final Map<String, dynamic> mapData = state.scheddules;
       if (mapData.containsKey(data)) {
         //print("Найден ключ: $data");
         state = state.copyWith(listOfSchedules: mapData[data]);
       }
-    } else {
-    }
+ 
+
   }
 
   String? convertToOriginalDate(String dateString) {

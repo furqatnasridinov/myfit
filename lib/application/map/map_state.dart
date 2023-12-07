@@ -12,18 +12,19 @@ class MapState with _$MapState {
     @Default(false) bool isloading,
     @Default(null) Position? userPosition,
     @Default([]) List<EachMarkersModel> listOfMarkers,
-    @Default([]) List<GymData> listOfAllGymsFromServer,
     @Default(null) EachMarkersModel? activeMarker,
     @Default([]) List<double> distances,
     @Default(5) double selectedDiapozone,
     @Default([false, false, false, true]) List<bool> listOfBool,
-    @Default([]) List<GymData> listOfGymsFromSelectedDiapozone,
     @Default([]) List<GymData> gymFoundBySearching,
     @Default(false) bool isSearchbarOpened,
-    @Default([]) List<String> listOfAllActivitiesFromServer,
     @Default([]) List<LessonTypeWithGymsInside> activitiesWithGymsInsideAll,
-    @Default([]) List<LessonTypeWithGymsInside> activitiesWithGymsInsideFromSelectedDiapozone,
+    @Default([])
+    List<LessonTypeWithGymsInside>
+        activitiesWithGymsInsideFromSelectedDiapozone,
     @Default(false) bool showMapOnly,
+    @Default(4) int topFlex,
+    @Default(6) int bottomFlex,
   }) = _MapState;
   const MapState._();
 }

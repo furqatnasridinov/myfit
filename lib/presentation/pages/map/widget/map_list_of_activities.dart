@@ -33,7 +33,6 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
     return widget.state.activitiesWithGymsInsideFromSelectedDiapozone.isEmpty
         ? NoGymsInSelectedDiapozone(state: widget.state, event: widget.event)
         : SizedBox(
-            //height: 300.h,
             child: ListView.builder(
               padding:
                   EdgeInsets.symmetric(horizontal: 16.w).copyWith(bottom: 10.h),
@@ -47,9 +46,11 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                     currentActivity.lessontype ?? "??",
                     currentActivity.listOfGyms!.length.toString(),
                     currentActivity.isOpened,
-                    currentActivity.listOfGyms!, () {
-                  for (var element
-                      in widget.state.activitiesWithGymsInsideAll) {
+                    currentActivity.listOfGyms!,
+                    // ontap of gyms below
+                    () {
+                  for (var element in widget
+                      .state.activitiesWithGymsInsideFromSelectedDiapozone) {
                     if (element.isOpened == true &&
                         element != currentActivity) {
                       element.isOpened = false;
@@ -58,28 +59,8 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                   }
                   currentActivity.isOpened = !currentActivity.isOpened;
                   setState(() {});
+                  widget.event.openCloseGymsList();
                 });
-
-                /* _listOfGymsBuilder(
-                  currentGym.name,
-                  currentGym.distanceFromClient!,
-                  "",
-                  () {
-                    event.changeCameraPosition(
-                      controller!,
-                      currentGym.latitude!,
-                      currentGym.longitude!,
-                    );
-                    event
-                        .setMarkerAsOpened(
-                          currentGym.latitude!,
-                          currentGym.longitude!,
-                        )
-                        .then(
-                          (value) => event.showPopUpOnMap(context),
-                        );
-                  },
-                ); */
               },
             ),
           );
@@ -156,7 +137,7 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
               ? Container(
                   margin: EdgeInsets.symmetric(horizontal: 16.w),
                   //color: Colors.red,
-                  height: 200.h,
+                  height: gymsList.length > 2 ? 150.h : null,
                   child: ListView.builder(
                       itemCount: gymsList.length,
                       shrinkWrap: true,
@@ -164,7 +145,7 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                         return _listOfGymsBuilder(
                           gymsList[index].name,
                           gymsList[index].address,
-                          gymsList[index].distanceFromClient ?? 34,
+                          gymsList[index].distanceFromClient ?? 3469,
                           "",
                           gymsList[index].isSelected,
                           () {
@@ -177,6 +158,21 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                             gymsList[index].isSelected =
                                 !gymsList[index].isSelected;
                             setState(() {});
+                            widget.event.changeCameraPosition(
+                              widget.controller!,
+                              double.parse(gymsList[index].latitude.toString()),
+                              double.parse(
+                                  gymsList[index].longitude.toString()),
+                            );
+                            widget.event
+                                .setMarkerAsOpened(
+                                  double.parse(
+                                      gymsList[index].latitude.toString()),
+                                  double.parse(
+                                      gymsList[index].longitude.toString()),
+                                )
+                                .then((value) =>
+                                    widget.event.showPopUpOnMap(context));
                           },
                         );
                       }),

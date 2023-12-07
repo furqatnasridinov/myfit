@@ -7,6 +7,7 @@ import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/pages/main2/widget/main2_header.dart';
 import 'package:activity/presentation/pages/main2/widget/widget.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -45,6 +46,9 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     final event = ref.read(scheduleProvider.notifier);
     final mapState = ref.watch(mapProvider);
     //LocalStorage.removeToken();
+    if (kDebugMode) {
+      print("token ${LocalStorage.getToken()}");
+    }
     if (controller.text.isEmpty && state.schedulesFoundBySearching.isNotEmpty) {
       event.cleanSearchList();
     }

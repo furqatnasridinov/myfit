@@ -38,9 +38,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           )
           .then((value) =>
               ref.read(mapProvider.notifier)..getGetListOfGymsFromDiapozone())
-          .whenComplete(
-            () => ref.read(mapProvider.notifier).getAllMarkers(),
-          )
+          .whenComplete(() => ref.read(mapProvider.notifier).setFlexes())
+          .then((value) => ref.read(mapProvider.notifier).getAllMarkers())
           .then((value) =>
               ref.read(mapProvider.notifier).addUserLocationMarker());
     });
@@ -52,8 +51,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final event = ref.read(mapProvider.notifier);
     if (kDebugMode) {
       print(
-          "activities with gyms inside lenth ${state.activitiesWithGymsInsideFromSelectedDiapozone.length}");
+          "lenth ${state.activitiesWithGymsInsideFromSelectedDiapozone.length}");
+      print("top flex ${state.topFlex}");
+      print("bottom flex ${state.bottomFlex}");
     }
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar: MapHeader(
@@ -66,27 +68,40 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             )
           : Column(
               children: [
-                10.verticalSpace,
-                // Карта активностей
-                MapPageTopSection(
-                  event: event,
-                  state: state,
+                // top section
+                Flexible(
+                  flex: state.topFlex,
+                  child: SizedBox(
+                    //color: Colors.amber.shade200,
+                    //height: 200.h,
+                    child: state.showMapOnly
+                        ? Column(
+                            children: [
+                              10.verticalSpace,
+                              MapPageTopSection(
+                                event: event,
+                                state: state,
+                              ),
+                              10.verticalSpace,
+                            ],
+                          )
+                        : ListView(children: [
+                            10.verticalSpace,
+                            MapPageTopSection(
+                              event: event,
+                              state: state,
+                            ),
+                            10.verticalSpace,
+                            MapListOfActivities(yandexMapController,
+                                event: event, state: state)
+                          ]),
+                  ),
                 ),
-                10.verticalSpace,
-                // listview builder
-                state.showMapOnly
-                    ? const SizedBox()
-                    : state.isloading
-                        ? const SizedBox()
-                        : MapListOfActivities(
-                            yandexMapController,
-                            event: event,
-                            state: state,
-                          ),
 
                 // map
                 Flexible(
-                  //flex: 5,
+                  //fit: FlexFit.tight,
+                  flex: state.bottomFlex,
                   child: Stack(
                     children: [
                       YandexMap(
@@ -124,38 +139,38 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                         alignment: Alignment.topCenter,
                         child: Padding(
                           padding: EdgeInsets.only(top: 10.h),
-                          child: CustomCard(
-                              radius: 8.r,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  15.horizontalSpace,
-                                  InkWell(
-                                    onTap: () {
-                                      if (state.showMapOnly) {
-                                        event.reduceMap();
-                                      } else {
-                                        event.showMapOnly();
-                                      }
-                                    },
-                                    child: CustomText(
+                          child: InkWell(
+                            onTap: () {
+                              if (state.showMapOnly) {
+                                event.reduceMap();
+                              } else {
+                                event.showMapOnly();
+                              }
+                            },
+                            child: CustomCard(
+                                radius: 8.r,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    15.horizontalSpace,
+                                    CustomText(
                                       text: state.showMapOnly
                                           ? "Показать список активностей"
                                           : "Карта на весь экран",
                                       fontSize: 14.sp,
                                       fontWeight: FontWeight.w500,
                                     ),
-                                  ),
-                                  10.horizontalSpace,
-                                  Icon(
-                                    state.showMapOnly
-                                        ? Icons.keyboard_arrow_down
-                                        : Icons.keyboard_arrow_up,
-                                    size: 18.r,
-                                  ),
-                                  15.horizontalSpace,
-                                ],
-                              )),
+                                    10.horizontalSpace,
+                                    Icon(
+                                      state.showMapOnly
+                                          ? Icons.keyboard_arrow_down
+                                          : Icons.keyboard_arrow_up,
+                                      size: 18.r,
+                                    ),
+                                    15.horizontalSpace,
+                                  ],
+                                )),
+                          ),
                         ),
                       ),
                     ],

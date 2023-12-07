@@ -75,6 +75,8 @@ class PopUpMap extends StatelessWidget {
                           children: [
                             InterText(
                               //text: "Спорткомплекс “Газпром”",
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
                               text: name,
                               fontSize: 11.sp,
                               fontWeight: FontWeight.w400,
