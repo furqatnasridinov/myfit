@@ -11,7 +11,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 @RoutePage()
@@ -54,7 +53,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     }
 
     return PopScope(
-      canPop: false,
+      //canPop: false,
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
         extendBodyBehindAppBar: true,
@@ -124,7 +123,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                             padding: EdgeInsets.symmetric(horizontal: 16.w),
                             child: Main2Map(mapState: mapState),
                           ),
-                          70.verticalSpace,
+                          32.verticalSpace,
                           const DecoratedTextOne(),
                         ],
                       ),

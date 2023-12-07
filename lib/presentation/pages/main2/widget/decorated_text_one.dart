@@ -11,9 +11,10 @@ class DecoratedTextOne extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          height: 250.h,
+          height: 260.h,
           width: double.infinity,
           decoration: const BoxDecoration(
+            //color: Colors.red,
             image: DecorationImage(
               image: AssetImage('assets/images/countbgr.png'),
               fit: BoxFit.cover,
@@ -91,93 +92,93 @@ class DecoratedTextOne extends StatelessWidget {
           ]),
         ),
         Positioned(
-          bottom: 36.h,
-          left: 72.w,
+          bottom: 210.h,
+          left: 30.w,
           child: Image(
             image: const AssetImage('assets/images/1.png'),
-            height: 26.h,
+            height: 28.h,
           ),
         ),
         Positioned(
-          bottom: 57.h,
-          right: 33.w,
+          bottom: 45.h,
+          left: 73.w,
           child: Image(
             image: const AssetImage('assets/images/2.png'),
-            height: 28.h,
+            height: 23.h,
           ),
         ),
         Positioned(
-          bottom: 187.h,
-          right: 20.w,
+          bottom: 55.h,
+          right: 33.w,
           child: Image(
             image: const AssetImage('assets/images/3.png'),
-            height: 28.h,
+            height: 23.h,
           ),
         ),
-       /*  Positioned(
-          bottom: 190.h,
-          left: 30.w,
+        Positioned(
+          bottom: 170.h,
+          right: 59.w,
           child: Image(
             image: const AssetImage('assets/images/4.png'),
             height: 15.h,
           ),
-        ), */
+        ),
         Positioned(
-          bottom: 170.h,
-          right: 59.w,
+          bottom: 110.h,
+          left: 33.w,
           child: Image(
             image: const AssetImage('assets/images/5.png'),
             height: 19.h,
           ),
         ),
         Positioned(
-          bottom: 152.h,
-          left: 25.w,
+          bottom: 35.h,
+          left: 235.w,
           child: Image(
             image: const AssetImage('assets/images/6.png'),
-            height: 30.h,
+            height: 17.h,
           ),
         ),
         Positioned(
-          bottom: 40.h,
-          right: 123.w,
-          child: Image(
-            image: const AssetImage('assets/images/7.png'),
-            height: 30.h,
-          ),
-        ),
-        Positioned(
-          bottom: 218.h,
+          bottom: 225.h,
           left: 158.w,
           child: Image(
-            image: const AssetImage('assets/images/8.png'),
-            height: 20.h,
+            image: const AssetImage('assets/images/7.png'),
+            height: 13.h,
           ),
         ),
         Positioned(
-          bottom: 63.h,
-          left: 165.w,
+          bottom: 180.h,
+          right: 280.w,
+          child: Image(
+            image: const AssetImage('assets/images/8.png'),
+            height: 17.h,
+          ),
+        ),
+        Positioned(
+          bottom: 223.h,
+          left: 219.w,
           child: Image(
             image: const AssetImage('assets/images/9.png'),
             height: 28.h,
           ),
         ),
-        /* Positioned(
-          bottom: 171.h,
-          left: 67.w,
+        Positioned(
+          bottom: 200.h,
+          right: 25.w,
           child: Image(
-            image: const AssetImage('assets/images/1.png'),
-            height: 28.h,
+            image: const AssetImage('assets/images/10.png'),
+            height: 26.h,
           ),
         ),
         Positioned(
-          top: 0.h,
-          right: 136.w,
+          bottom: 70.h,
+          left: 165.w,
           child: Image(
-            image: const AssetImage('assets/images/1.png'),
-            height: 28.h,
+            image: const AssetImage('assets/images/11.png'),
+            height: 13.h,
           ),
-        ), */
+        ),
       ],
     );
   }

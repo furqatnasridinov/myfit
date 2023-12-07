@@ -16,8 +16,6 @@ class RadioButton700 extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: ontap,
-      //setState(() {});
-
       child: Column(
         children: [
           Text(

@@ -11,10 +11,10 @@ class SplashNotifier extends StateNotifier<SplashState> {
     VoidCallback? goMain,
     VoidCallback? goLogin,
   }) async {
-    if (LocalStorage.getToken().isEmpty) {
-      goLogin?.call();
-    } else {
+    if (await LocalStorage.checkIfIsNotEmpty()) {
       goMain?.call();
+    } else {
+      goLogin?.call();
     }
   }
 }

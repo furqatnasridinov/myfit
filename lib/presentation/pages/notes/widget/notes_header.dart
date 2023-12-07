@@ -171,14 +171,12 @@ class _MainHeaderState extends State<NotesHeader> {
                   color: Colors.white,
                   shape: BoxShape.circle,
                 ),
-                child: InkWell(
+                child: GestureDetector(
                   onTap: () => context.popRoute(),
-                  borderRadius: BorderRadius.circular(500.r),
                   child: SizedBox(
-                    child: Icon(
-                      Icons.keyboard_arrow_left,
-                      size: 22.r,
-                      color: Colors.black,
+                    child: SvgPicture.asset(
+                      "assets/svg/back_icon.svg",
+                      fit: BoxFit.none,
                     ),
                   ),
                 ),
@@ -249,7 +247,7 @@ class _MainHeaderState extends State<NotesHeader> {
                         )
                       : null,
               prefixIcon: Container(
-                margin: EdgeInsets.all(3.r),
+                margin: EdgeInsets.all(4.r).copyWith(left: 0.w),
                 decoration: const BoxDecoration(
                   color: AppColors.backgroundColor,
                   shape: BoxShape.circle,
@@ -277,13 +275,24 @@ class _MainHeaderState extends State<NotesHeader> {
         textfieldFocusnode.hasFocus
             ? const SizedBox()
             : Container(
+                width: 95.w,
                 //height: 40.h,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(100.r),
-                  border: Border.all(
-                    color: AppColors.greyBorder,
-                    width: 1.w,
+                  border: Border(
+                    bottom: BorderSide(
+                      color: AppColors.greyBorder,
+                      width: 1.w,
+                    ),
+                    top: BorderSide(
+                      color: AppColors.greyBorder,
+                      width: 1.w,
+                    ),
+                    left: BorderSide(
+                      color: AppColors.greyBorder,
+                      width: 1.w,
+                    ),
                   ),
                 ),
                 margin: EdgeInsets.only(
@@ -292,7 +301,6 @@ class _MainHeaderState extends State<NotesHeader> {
                   bottom: 4.5.h,
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
                       padding: EdgeInsets.only(
@@ -309,9 +317,8 @@ class _MainHeaderState extends State<NotesHeader> {
                         //onTap: () => {context.go('/schedule')},
                       ),
                     ),
-                    SizedBox(width: 12.w),
-                    SizedOverflowBox(
-                      size: Size(40.w, 40.h),
+                    const Spacer(),
+                    SizedBox(
                       child: CircleAvatar(
                         radius: 20.r,
                         backgroundColor: AppColors.blueColor,

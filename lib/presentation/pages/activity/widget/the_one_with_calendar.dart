@@ -215,75 +215,71 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                                         elevation: 0,
                                         insetPadding: REdgeInsets.symmetric(
                                             horizontal: 16.w),
-                                        child: Flexible(
-                                          child: CustomCard(
-                                            height: 200.h,
-                                            borderColor: Colors.transparent,
-                                            width: double.maxFinite,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                CustomText(
-                                                  text: "Подтверждение!",
-                                                  fontSize: 16.sp,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                                16.verticalSpace,
-                                                CustomText(
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  maxLines: 4,
-                                                  text:
-                                                      'Вы действительно хотите записаться на занятия "${currentSchedule["description"]}" в $calendarDay - го числа?',
-                                                  fontSize: 13.sp,
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                                const Spacer(),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Expanded(
-                                                      child: CustomButton(
-                                                        buttonColor:
-                                                            Colors.white,
-                                                        fontSize: 14.sp,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        height: 30.h,
-                                                        onPressed: () {
-                                                          context.popRoute();
-                                                        },
-                                                        text: "Назад",
-                                                      ),
+                                        child: CustomCard(
+                                          height: 200.h,
+                                          borderColor: Colors.transparent,
+                                          width: double.maxFinite,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              CustomText(
+                                                text: "Подтверждение!",
+                                                fontSize: 16.sp,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                              16.verticalSpace,
+                                              CustomText(
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 4,
+                                                text:
+                                                    'Вы действительно хотите записаться на занятия "${currentSchedule["description"]}" в $calendarDay - го числа?',
+                                                fontSize: 13.sp,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                              const Spacer(),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Expanded(
+                                                    child: CustomButton(
+                                                      buttonColor: Colors.white,
+                                                      fontSize: 14.sp,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      height: 30.h,
+                                                      onPressed: () {
+                                                        context.popRoute();
+                                                      },
+                                                      text: "Назад",
                                                     ),
-                                                    5.horizontalSpace,
-                                                    Expanded(
-                                                      child: CustomButton(
-                                                        fontSize: 14.sp,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        buttonColor:
-                                                            AppColors.blueColor,
-                                                        textColor: Colors.white,
-                                                        height: 30.h,
-                                                        onPressed: () {
-                                                          // запись на трен
-                                                          widget.event
-                                                              .enrollToGym(
-                                                                  context,
-                                                                  currentSchedule[
-                                                                      "id"]);
-                                                        },
-                                                        text: "Подтвердить",
-                                                      ),
+                                                  ),
+                                                  5.horizontalSpace,
+                                                  Expanded(
+                                                    child: CustomButton(
+                                                      fontSize: 14.sp,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      buttonColor:
+                                                          AppColors.blueColor,
+                                                      textColor: Colors.white,
+                                                      height: 30.h,
+                                                      onPressed: () {
+                                                        // запись на трен
+                                                        widget.event
+                                                            .enrollToGym(
+                                                                context,
+                                                                currentSchedule[
+                                                                    "id"]);
+                                                      },
+                                                      text: "Подтвердить",
                                                     ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       );

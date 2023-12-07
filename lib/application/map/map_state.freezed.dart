@@ -285,7 +285,7 @@ class _$MapStateImpl extends _MapState {
       final List<LessonTypeWithGymsInside>
           activitiesWithGymsInsideFromSelectedDiapozone = const [],
       this.showMapOnly = false,
-      this.topFlex = 4,
+      this.topFlex = 2,
       this.bottomFlex = 6})
       : _listOfMarkers = listOfMarkers,
         _distances = distances,

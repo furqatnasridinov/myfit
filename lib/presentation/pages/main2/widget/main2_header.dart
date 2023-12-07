@@ -133,7 +133,7 @@ class _MainHeaderState extends State<Main2Header> {
                   )
                 : null,
             prefixIcon: Container(
-              margin: EdgeInsets.all(3.r),
+              margin: EdgeInsets.all(4.r).copyWith(left: 0.w),
               decoration: const BoxDecoration(
                 color: AppColors.backgroundColor,
                 shape: BoxShape.circle,
@@ -160,13 +160,23 @@ class _MainHeaderState extends State<Main2Header> {
         widget.state.isSearchbarOpened
             ? const SizedBox()
             : Container(
-                height: 40.h,
+                width: 95.w,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(100.r),
-                  border: Border.all(
-                    color: AppColors.greyBorder,
-                    width: 1.w,
+                  border: Border(
+                    bottom: BorderSide(
+                      color: AppColors.greyBorder,
+                      width: 1.w,
+                    ),
+                    top: BorderSide(
+                      color: AppColors.greyBorder,
+                      width: 1.w,
+                    ),
+                    left: BorderSide(
+                      color: AppColors.greyBorder,
+                      width: 1.w,
+                    ),
                   ),
                 ),
                 margin: EdgeInsets.only(
@@ -193,9 +203,8 @@ class _MainHeaderState extends State<Main2Header> {
                         //onTap: () => {context.go('/schedule')},
                       ),
                     ),
-                    12.horizontalSpace,
-                    SizedOverflowBox(
-                      size: Size(40.w, 40.h),
+                    const Spacer(),
+                    SizedBox(
                       child: CircleAvatar(
                         radius: 19.r,
                         backgroundColor: const Color.fromRGBO(119, 170, 249, 1),

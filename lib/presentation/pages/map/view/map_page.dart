@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 import '../widget/widget.dart';
 
@@ -54,6 +55,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           "lenth ${state.activitiesWithGymsInsideFromSelectedDiapozone.length}");
       print("top flex ${state.topFlex}");
       print("bottom flex ${state.bottomFlex}");
+      print("list of bool ${state.listOfBool}");
     }
 
     return Scaffold(
@@ -62,51 +64,50 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         event: event,
         state: state,
       ),
-      body: state.isloading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : Column(
-              children: [
-                // top section
-                Flexible(
-                  flex: state.topFlex,
-                  child: SizedBox(
-                    //color: Colors.amber.shade200,
-                    //height: 200.h,
-                    child: state.showMapOnly
-                        ? Column(
-                            children: [
-                              10.verticalSpace,
-                              MapPageTopSection(
-                                event: event,
-                                state: state,
-                              ),
-                              10.verticalSpace,
-                            ],
-                          )
-                        : ListView(children: [
-                            10.verticalSpace,
-                            MapPageTopSection(
-                              event: event,
-                              state: state,
-                            ),
-                            10.verticalSpace,
-                            MapListOfActivities(yandexMapController,
-                                event: event, state: state)
-                          ]),
-                  ),
-                ),
+      body: Column(
+        children: [
+          // top section
+          Flexible(
+            flex: state.topFlex,
+            child: SizedBox(
+              //color: Colors.amber.shade200,
+              //height: 200.h,
+              child: state.showMapOnly
+                  ? Column(
+                      children: [
+                        10.verticalSpace,
+                        MapPageTopSection(
+                          event: event,
+                          state: state,
+                        ),
+                        10.verticalSpace,
+                      ],
+                    )
+                  : ListView(children: [
+                      10.verticalSpace,
+                      MapPageTopSection(
+                        event: event,
+                        state: state,
+                      ),
+                      10.verticalSpace,
+                      MapListOfActivities(yandexMapController,
+                          event: event, state: state)
+                    ]),
+            ),
+          ),
 
-                // map
-                Flexible(
-                  //fit: FlexFit.tight,
-                  flex: state.bottomFlex,
-                  child: Stack(
-                    children: [
-                      YandexMap(
-                        // map objects
-                        mapObjects: event.getPlacemarkObjects(
+          // map
+          Flexible(
+            //fit: FlexFit.tight,
+            flex: state.bottomFlex,
+            child: Stack(
+              children: [
+                YandexMap(
+                  // map objects
+                  mapObjects: state
+                          .activitiesWithGymsInsideFromSelectedDiapozone.isEmpty
+                      ? []
+                      : event.getPlacemarkObjects(
                           onTap: (placemarkMapObject, point) {
                             event
                                 .setMarkerAsOpened(
@@ -119,65 +120,71 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                           },
                         ),
 
-                        // on map created
-                        onMapCreated: (controller) {
-                          yandexMapController = controller;
-                          setState(() {});
-                          event.setInitialCameraPosition(
-                            controller: yandexMapController!,
-                          );
-                        },
-                        //
-                        onCameraPositionChanged:
-                            (cameraPosition, reason, finished) {
-                          if (reason == CameraUpdateReason.gestures) {
-                            event.removePopUp();
-                          }
-                        },
-                      ),
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Padding(
-                          padding: EdgeInsets.only(top: 10.h),
-                          child: InkWell(
-                            onTap: () {
-                              if (state.showMapOnly) {
-                                event.reduceMap();
-                              } else {
-                                event.showMapOnly();
-                              }
-                            },
-                            child: CustomCard(
-                                radius: 8.r,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    15.horizontalSpace,
-                                    CustomText(
-                                      text: state.showMapOnly
-                                          ? "Показать список активностей"
-                                          : "Карта на весь экран",
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    10.horizontalSpace,
-                                    Icon(
-                                      state.showMapOnly
-                                          ? Icons.keyboard_arrow_down
-                                          : Icons.keyboard_arrow_up,
-                                      size: 18.r,
-                                    ),
-                                    15.horizontalSpace,
-                                  ],
-                                )),
-                          ),
-                        ),
-                      ),
-                    ],
+                  // on map created
+                  onMapCreated: (controller) {
+                    yandexMapController = controller;
+                    setState(() {});
+                    event.setInitialCameraPosition(
+                      controller: yandexMapController!,
+                    );
+                  },
+                  //
+                  onCameraPositionChanged: (cameraPosition, reason, finished) {
+                    if (reason == CameraUpdateReason.gestures) {
+                      event.removePopUp();
+                    }
+                  },
+                ),
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 10.h),
+                    child: InkWell(
+                      onTap: () {
+                        if (state.showMapOnly) {
+                          event.reduceMap();
+                          event.setFlexes();
+                        } else {
+                          event.showMapOnly();
+                          event.closeOpenedActivities();
+                        }
+                      },
+                      child: CustomCard(
+                          radius: 8.r,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              15.horizontalSpace,
+                              CustomText(
+                                text: state.showMapOnly
+                                    ? "Показать список активностей"
+                                    : "Карта на весь экран",
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              10.horizontalSpace,
+                              SvgPicture.asset(
+                                state.showMapOnly
+                                    ? "assets/svg/arrow_down.svg"
+                                    : "assets/svg/arrow_up.svg",
+                              ),
+                              /* Icon(
+                                state.showMapOnly
+                                    ? Icons.keyboard_arrow_down
+                                    : Icons.keyboard_arrow_up,
+                                size: 18.r,
+                              ), */
+                              15.horizontalSpace,
+                            ],
+                          )),
+                    ),
                   ),
                 ),
               ],
             ),
+          ),
+        ],
+      ),
     );
   }
 }

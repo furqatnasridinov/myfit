@@ -215,27 +215,23 @@ class _MainHeaderState extends State<MapHeader> {
           ? null
           : Container(
               margin: EdgeInsets.only(left: 10.5.w),
-              child: Ink(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: const Color.fromRGBO(233, 233, 233, 1),
-                    width: 1.w,
-                  ),
-                  color: Colors.white,
-                  shape: BoxShape.circle,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: const Color.fromRGBO(233, 233, 233, 1),
+                  width: 1.w,
                 ),
-                child: InkWell(
-                  onTap: () {
-                    widget.event.removePopUp();
-                    context.popRoute();
-                  },
-                  borderRadius: BorderRadius.circular(500.r),
-                  child: SizedBox(
-                    child: Icon(
-                      Icons.keyboard_arrow_left,
-                      size: 22.r,
-                      color: Colors.black,
-                    ),
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  widget.event.removePopUp();
+                  context.popRoute();
+                },
+                child: SizedBox(
+                  child: SvgPicture.asset(
+                    "assets/svg/back_icon.svg",
+                    fit: BoxFit.none,
                   ),
                 ),
               ),
@@ -305,7 +301,7 @@ class _MainHeaderState extends State<MapHeader> {
                         )
                       : null,
               prefixIcon: Container(
-                margin: EdgeInsets.all(3.r),
+                margin: EdgeInsets.all(4.r).copyWith(left: 0.w),
                 decoration: const BoxDecoration(
                   color: AppColors.backgroundColor,
                   shape: BoxShape.circle,
@@ -333,13 +329,23 @@ class _MainHeaderState extends State<MapHeader> {
         textfieldFocusnode.hasFocus
             ? const SizedBox()
             : Container(
-                //height: 40.h,
+                width: 95.w,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(100.r),
-                  border: Border.all(
-                    color: AppColors.greyBorder,
-                    width: 1.w,
+                  border: Border(
+                    bottom: BorderSide(
+                      color: AppColors.greyBorder,
+                      width: 1.w,
+                    ),
+                    top: BorderSide(
+                      color: AppColors.greyBorder,
+                      width: 1.w,
+                    ),
+                    left: BorderSide(
+                      color: AppColors.greyBorder,
+                      width: 1.w,
+                    ),
                   ),
                 ),
                 margin: EdgeInsets.only(
@@ -364,9 +370,8 @@ class _MainHeaderState extends State<MapHeader> {
                         //onTap: () => {context.go('/schedule')},
                       ),
                     ),
-                    SizedBox(width: 12.w),
-                    SizedOverflowBox(
-                      size: Size(40.w, 40.h),
+                    const Spacer(),
+                    SizedBox(
                       child: CircleAvatar(
                         radius: 20.r,
                         backgroundColor: const Color.fromRGBO(119, 170, 249, 1),

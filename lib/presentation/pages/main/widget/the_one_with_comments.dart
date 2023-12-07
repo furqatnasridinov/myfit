@@ -72,6 +72,8 @@ class TheOneWithComments extends StatelessWidget {
                           enableInfiniteScroll: false,
                           scrollDirection: Axis.vertical,
                           autoPlay: state.commentsAutoPlayMode,
+                          enlargeCenterPage: false,
+                          disableCenter: true,
                           onPageChanged: (index, reason) {
                             event.commenSetStep(index);
                             if (reason == CarouselPageChangedReason.manual) {

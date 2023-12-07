@@ -23,7 +23,7 @@ class MapState with _$MapState {
     List<LessonTypeWithGymsInside>
         activitiesWithGymsInsideFromSelectedDiapozone,
     @Default(false) bool showMapOnly,
-    @Default(4) int topFlex,
+    @Default(2) int topFlex,
     @Default(6) int bottomFlex,
   }) = _MapState;
   const MapState._();

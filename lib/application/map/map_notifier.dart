@@ -115,13 +115,13 @@ class MapNotifier extends StateNotifier<MapState> {
                       ? "assets/images/user_marker.png"
                       : e.id == state.activeMarker?.id
                           ? "assets/images/centered_icon.png"
-                          : "assets/images/map_icon.png",
+                          : "assets/images/map_icon_new.png",
                 ),
                 scale: e.name == "user"
-                    ? 2.5.r
+                    ? 2.0.r
                     : e.id == state.activeMarker?.id
-                        ? 2.5.r
-                        : 4.r,
+                        ? 2.5
+                        : 0.8.r,
               ),
             ),
             opacity: 1,
@@ -235,7 +235,7 @@ class MapNotifier extends StateNotifier<MapState> {
     if (list.isEmpty) {
       state = state.copyWith(
         topFlex: 2,
-        bottomFlex: 8,
+        bottomFlex: 7,
       );
     }
     if (list.length == 1) {
@@ -319,28 +319,30 @@ class MapNotifier extends StateNotifier<MapState> {
 
   void showPopUpOnMap(BuildContext context) {
     // remove prvious pop up first
-    removePopUp();
-    final overlay = Overlay.of(context);
-    entry = OverlayEntry(
-      builder: (context) {
-        return Positioned(
-          left: 50.w,
-          right: 50.w,
-          bottom: 30.h,
-          child: PopUpMap(
-            name: state.activeMarker!.name,
-            address: state.activeMarker?.address ?? "??",
-            onTap: () {
-              entry!.remove();
-              context.router.push(
-                ActivityRoute(gymId: state.activeMarker!.id),
-              );
-            },
-          ),
-        );
-      },
-    );
-    overlay.insert(entry!);
+    if (state.activeMarker?.name != "user") {
+      removePopUp();
+      final overlay = Overlay.of(context);
+      entry = OverlayEntry(
+        builder: (context) {
+          return Positioned(
+            left: 50.w,
+            right: 50.w,
+            bottom: 30.h,
+            child: PopUpMap(
+              name: state.activeMarker!.name,
+              address: state.activeMarker?.address ?? "??",
+              onTap: () {
+                entry!.remove();
+                context.router.push(
+                  ActivityRoute(gymId: state.activeMarker!.id),
+                );
+              },
+            ),
+          );
+        },
+      );
+      overlay.insert(entry!);
+    }
   }
 
   void removePopUp() {
@@ -391,10 +393,12 @@ class MapNotifier extends StateNotifier<MapState> {
     );
   }
 
-  Future<void> changeDiapozoneAndPop(
+  Future<void> changeDiapozoneAndGetActivities(
       int index, double diapozone, BuildContext context) async {
+    if (state.showMapOnly) {
+      reduceMap();
+    }
     changListOFBoolToTrue(index);
-
     try {
       await changeSelectedDiapozone(diapozone);
       closeOpenedActivities();
@@ -402,8 +406,7 @@ class MapNotifier extends StateNotifier<MapState> {
       await setFlexes();
       await getAllMarkers();
       await addUserLocationMarker();
-      // ignore: use_build_context_synchronously
-      context.popRoute();
+      //context.popRoute();
     } catch (error) {
       // Обработка ошибок
     }

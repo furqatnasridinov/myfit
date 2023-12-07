@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:activity/infrastructure/services/app_colors.dart';
@@ -11,8 +12,12 @@ class CustomTextField extends StatelessWidget {
   int? maxLines;
   TextInputType? keyboardType;
   Widget? suffixIcon;
+  String? counterText;
+  int? maxLength;
   EdgeInsetsGeometry? contentPadding;
   FocusNode? focusNode;
+  TextStyle? counterStyle;
+  List<TextInputFormatter>? inputFormatters;
   void Function(PointerDownEvent)? onTapOutside;
   void Function()? onEditingComplete;
   void Function()? onTap;
@@ -24,8 +29,12 @@ class CustomTextField extends StatelessWidget {
     this.controller,
     this.suffixIcon,
     this.contentPadding,
+    this.inputFormatters,
+    this.counterStyle,
     this.readOnly = false,
     this.maxLines,
+    this.counterText,
+    this.maxLength,
     this.focusNode,
     this.keyboardType,
     this.onEditingComplete,
@@ -39,9 +48,11 @@ class CustomTextField extends StatelessWidget {
       /* onTapOutside: (onTapOutside) {
         FocusScope.of(context).unfocus();
       }, */
+      inputFormatters: inputFormatters,
       focusNode: focusNode,
       readOnly: readOnly,
       maxLines: maxLines,
+      maxLength: maxLength,
       keyboardType: keyboardType,
       controller: controller,
       onTapOutside: onTapOutside,
@@ -54,6 +65,8 @@ class CustomTextField extends StatelessWidget {
         color: Colors.black,
       ),
       decoration: InputDecoration(
+        counterText: counterText,
+        counterStyle: counterStyle,
         suffixIcon: suffixIcon,
         contentPadding: contentPadding,
         hintText: hintText,

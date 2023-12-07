@@ -82,8 +82,7 @@ class LocalStorage {
   // remove user id
   static void removeToken() => _preferences?.remove(AppConstants.keyToken);
 
-
-    // save user id
+  // save user id
   static Future<void> setUserName(String? username) async {
     if (_preferences != null) {
       await _preferences?.setString(
@@ -98,5 +97,14 @@ class LocalStorage {
       _preferences?.getString(AppConstants.keyUserName) ?? "";
 
   // remove user id
-  static void removeUserName() => _preferences?.remove(AppConstants.keyUserName);
+  static void removeUserName() =>
+      _preferences?.remove(AppConstants.keyUserName);
+
+  static Future<bool> checkIfIsNotEmpty() async {
+    if (getToken().isNotEmpty && getUserId().isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

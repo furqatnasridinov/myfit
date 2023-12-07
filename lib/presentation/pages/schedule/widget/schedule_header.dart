@@ -233,18 +233,16 @@ class _MainHeaderState extends State<ScheduleHeader> {
                   color: Colors.white,
                   shape: BoxShape.circle,
                 ),
-                child: InkWell(
+                child: GestureDetector(
                   onTap: () {
                     widget.event.getNearestLesson(context).then(
                           (value) => context.popRoute(),
                         );
                   },
-                  borderRadius: BorderRadius.circular(500.r),
                   child: SizedBox(
-                    child: Icon(
-                      Icons.keyboard_arrow_left,
-                      size: 25.r,
-                      color: Colors.black54,
+                    child: SvgPicture.asset(
+                      "assets/svg/back_icon.svg",
+                      fit: BoxFit.none,
                     ),
                   ),
                 ),
@@ -312,7 +310,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
                         )
                       : null,
               prefixIcon: Container(
-                margin: EdgeInsets.all(3.r),
+                margin: EdgeInsets.all(4.r).copyWith(left: 0.w),
                 decoration: const BoxDecoration(
                   color: AppColors.backgroundColor,
                   shape: BoxShape.circle,

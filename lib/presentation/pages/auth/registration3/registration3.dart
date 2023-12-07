@@ -7,13 +7,14 @@ import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 @RoutePage()
 class Registration3Screen extends StatefulWidget {
- const  Registration3Screen({super.key});
+  const Registration3Screen({super.key});
 
   @override
   State<Registration3Screen> createState() => _Registration3ScreenState();
@@ -149,6 +150,16 @@ class _Registration3ScreenState extends State<Registration3Screen> {
                       height: 40.h,
                       width: double.maxFinite,
                       child: CustomTextField(
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                            RegExp(r'[a-zA-Zа-яА-Я]'),
+                          ),
+                        ],
+                        counterStyle: const TextStyle(
+                          height: double.minPositive,
+                        ),
+                        counterText: "",
+                        maxLength: 16,
                         controller: nameController,
                         focusNode: nameFocus,
                         onTapOutside: (onTapOutside) {

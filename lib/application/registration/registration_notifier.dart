@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:activity/application/registration/registration_state.dart';
 import 'package:activity/domain/interface/register.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
@@ -26,6 +28,7 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
         fontSize: 20.sp,
         color: Colors.black,
         fontWeight: FontWeight.w600,
+        fontFeatures: const [FontFeature.liningFigures()],
       ),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -46,6 +49,7 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
         fontSize: 20.sp,
         color: Colors.black,
         fontWeight: FontWeight.w600,
+        fontFeatures: const [FontFeature.liningFigures()],
       ),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -66,6 +70,7 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
         fontSize: 20.sp,
         color: Colors.black,
         fontWeight: FontWeight.w600,
+        fontFeatures: const [FontFeature.liningFigures()],
       ),
       decoration: BoxDecoration(
         color: Colors.white,

@@ -7,6 +7,7 @@ import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/pages/map/widget/no_gyms_in_diapozone.dart';
+import 'package:activity/presentation/pages/map/widget/widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
@@ -30,40 +31,44 @@ class MapListOfActivities extends StatefulWidget {
 class _MapListOfActivitiesState extends State<MapListOfActivities> {
   @override
   Widget build(BuildContext context) {
-    return widget.state.activitiesWithGymsInsideFromSelectedDiapozone.isEmpty
-        ? NoGymsInSelectedDiapozone(state: widget.state, event: widget.event)
-        : SizedBox(
-            child: ListView.builder(
-              padding:
-                  EdgeInsets.symmetric(horizontal: 16.w).copyWith(bottom: 10.h),
-              itemCount: widget
-                  .state.activitiesWithGymsInsideFromSelectedDiapozone.length,
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                final currentActivity = widget
-                    .state.activitiesWithGymsInsideFromSelectedDiapozone[index];
-                return _listOfActivitiesBuilder(
-                    currentActivity.lessontype ?? "??",
-                    currentActivity.listOfGyms!.length.toString(),
-                    currentActivity.isOpened,
-                    currentActivity.listOfGyms!,
-                    // ontap of gyms below
-                    () {
-                  for (var element in widget
-                      .state.activitiesWithGymsInsideFromSelectedDiapozone) {
-                    if (element.isOpened == true &&
-                        element != currentActivity) {
-                      element.isOpened = false;
+    return widget.state.isloading
+        ? const SearchingActivitiesCard()
+        : widget.state.activitiesWithGymsInsideFromSelectedDiapozone.isEmpty &&
+                !widget.state.isloading
+            ? NoGymsInSelectedDiapozone(
+                state: widget.state, event: widget.event)
+            : SizedBox(
+                child: ListView.builder(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w)
+                      .copyWith(bottom: 10.h),
+                  itemCount: widget.state
+                      .activitiesWithGymsInsideFromSelectedDiapozone.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    final currentActivity = widget.state
+                        .activitiesWithGymsInsideFromSelectedDiapozone[index];
+                    return _listOfActivitiesBuilder(
+                        currentActivity.lessontype ?? "??",
+                        currentActivity.listOfGyms!.length.toString(),
+                        currentActivity.isOpened,
+                        currentActivity.listOfGyms!,
+                        // ontap of gyms below
+                        () {
+                      for (var element in widget.state
+                          .activitiesWithGymsInsideFromSelectedDiapozone) {
+                        if (element.isOpened == true &&
+                            element != currentActivity) {
+                          element.isOpened = false;
+                          setState(() {});
+                        }
+                      }
+                      currentActivity.isOpened = !currentActivity.isOpened;
                       setState(() {});
-                    }
-                  }
-                  currentActivity.isOpened = !currentActivity.isOpened;
-                  setState(() {});
-                  widget.event.openCloseGymsList();
-                });
-              },
-            ),
-          );
+                      widget.event.openCloseGymsList();
+                    });
+                  },
+                ),
+              );
   }
 
   _listOfActivitiesBuilder(
