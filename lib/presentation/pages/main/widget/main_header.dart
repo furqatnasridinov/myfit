@@ -181,6 +181,7 @@ class _MainHeaderState extends State<MainHeader> {
             style: GoogleFonts.raleway(
               fontSize: 15.sp,
               fontWeight: FontWeight.w400,
+              fontFeatures: const [FontFeature.liningFigures()],
             ),
             controller: controller,
             onChanged: (value) {
@@ -236,6 +237,7 @@ class _MainHeaderState extends State<MainHeader> {
               hintStyle: GoogleFonts.raleway(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
+                fontFeatures: const [FontFeature.liningFigures()],
               ),
               hintText: "Найти занятие",
               border: InputBorder.none,

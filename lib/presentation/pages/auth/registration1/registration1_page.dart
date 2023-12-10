@@ -130,7 +130,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                               onTap: () {
                                 if (state.isValidPhone) {
                                   event.sendPhoneNumber(
-                                    "+7${state.phoneNumber}",
+                                    "+${state.phoneNumber}",
                                     context,
                                   );
                                 }

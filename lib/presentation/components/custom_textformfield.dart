@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -10,27 +12,46 @@ class CustomTextFormField extends StatelessWidget {
   TextEditingController? controller;
   int? maxLines;
   TextInputType? keyboardType;
+  int? maxLength;
   EdgeInsetsGeometry? contentPadding;
+  void Function(PointerDownEvent)? onTapOutside;
   String? initialValue;
   bool readOnly;
+  bool hasFocus;
+  FocusNode? focusNode;
+  bool dontShowBorders;
+  Widget? suffixIcon;
+  void Function()? onTap;
   CustomTextFormField({
     Key? key,
     this.hintText,
+    this.hasFocus = false,
     this.readOnly = false,
+    this.dontShowBorders = false,
+    this.onTap,
+    this.suffixIcon,
     this.contentPadding,
+    this.onTapOutside,
+    this.focusNode,
+    this.maxLength,
     this.maxLines,
     this.keyboardType,
     this.initialValue,
+    this.controller,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       readOnly: readOnly,
+      focusNode: focusNode,
       initialValue: initialValue,
       maxLines: maxLines,
+      maxLength: maxLength,
       keyboardType: keyboardType,
-      //controller: controller,
+      onTap: onTap,
+      onTapOutside: onTapOutside,
+      controller: controller,
       cursorColor: AppColors.greyText,
       style: GoogleFonts.inter(
         fontSize: 14.sp,
@@ -38,6 +59,11 @@ class CustomTextFormField extends StatelessWidget {
         color: Colors.black,
       ),
       decoration: InputDecoration(
+        counterStyle: const TextStyle(
+          height: double.minPositive,
+        ),
+        counterText: "",
+        suffixIcon: suffixIcon,
         contentPadding: contentPadding,
         hintText: hintText,
         hintStyle: GoogleFonts.inter(
@@ -49,14 +75,22 @@ class CustomTextFormField extends StatelessWidget {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
-            color: AppColors.greyBorder,
+            color: hasFocus
+                ? AppColors.blueBorder
+                : dontShowBorders
+                    ? Colors.transparent
+                    : AppColors.greyBorder,
             width: 1.w,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
-            color: AppColors.greyBorder,
+            color: hasFocus
+                ? AppColors.blueBorder
+                : dontShowBorders
+                    ? Colors.transparent
+                    : AppColors.greyBorder,
             width: 1.w,
           ),
         ),

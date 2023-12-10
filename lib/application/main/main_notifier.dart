@@ -20,12 +20,9 @@ class MainNotifier extends StateNotifier<MainState> {
       final response = await _mainRepositoryInterface.getAdvantages();
       response.when(
         success: (data) {
-         
           state = state.copyWith(advantages: data);
         },
-        failure: (error, statusCode) {
-         
-        },
+        failure: (error, statusCode) {},
       );
     } else {
       // ignore: use_build_context_synchronously
@@ -41,7 +38,6 @@ class MainNotifier extends StateNotifier<MainState> {
       final response = await _mainRepositoryInterface.getSubscribtions();
       response.when(
         success: (data) {
-        
           state = state.copyWith(subscribtions: data);
         },
         failure: (error, statusCode) {
@@ -62,11 +58,9 @@ class MainNotifier extends StateNotifier<MainState> {
       final response = await _mainRepositoryInterface.getComments();
       response.when(
         success: (data) {
-        
           state = state.copyWith(comments: data);
         },
-        failure: (error, statusCode) {
-        },
+        failure: (error, statusCode) {},
       );
     } else {
       // ignore: use_build_context_synchronously
@@ -97,7 +91,6 @@ class MainNotifier extends StateNotifier<MainState> {
       final response = await _mainRepositoryInterface.getGymsList();
       response.when(
         success: (data) {
-        
           List<ActivityNearClient> listcha = [];
           Map<String, dynamic> mapData = data["object"];
           mapData.forEach((key, value) {
@@ -111,8 +104,7 @@ class MainNotifier extends StateNotifier<MainState> {
           });
           state = state.copyWith(activitiesNearClient: listcha);
         },
-        failure: (error, statusCode) {
-        },
+        failure: (error, statusCode) {},
       );
     } else {
       // ignore: use_build_context_synchronously
@@ -172,6 +164,4 @@ class MainNotifier extends StateNotifier<MainState> {
     final containerHeight = renderBox.size.height;
     state = state.copyWith(commentsContainerHeight: containerHeight);
   }
-
-  
 }

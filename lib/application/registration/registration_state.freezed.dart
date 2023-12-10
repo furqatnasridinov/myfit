@@ -22,6 +22,7 @@ mixin _$RegistrationState {
   int get timeToCountDown => throw _privateConstructorUsedError;
   String get phoneNumber => throw _privateConstructorUsedError;
   bool get isValidPhone => throw _privateConstructorUsedError;
+  bool get isFormNotValidated => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $RegistrationStateCopyWith<RegistrationState> get copyWith =>
@@ -40,7 +41,8 @@ abstract class $RegistrationStateCopyWith<$Res> {
       bool isCodeError,
       int timeToCountDown,
       String phoneNumber,
-      bool isValidPhone});
+      bool isValidPhone,
+      bool isFormNotValidated});
 }
 
 /// @nodoc
@@ -62,6 +64,7 @@ class _$RegistrationStateCopyWithImpl<$Res, $Val extends RegistrationState>
     Object? timeToCountDown = null,
     Object? phoneNumber = null,
     Object? isValidPhone = null,
+    Object? isFormNotValidated = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -88,6 +91,10 @@ class _$RegistrationStateCopyWithImpl<$Res, $Val extends RegistrationState>
           ? _value.isValidPhone
           : isValidPhone // ignore: cast_nullable_to_non_nullable
               as bool,
+      isFormNotValidated: null == isFormNotValidated
+          ? _value.isFormNotValidated
+          : isFormNotValidated // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -106,7 +113,8 @@ abstract class _$$RegistrationStateImplCopyWith<$Res>
       bool isCodeError,
       int timeToCountDown,
       String phoneNumber,
-      bool isValidPhone});
+      bool isValidPhone,
+      bool isFormNotValidated});
 }
 
 /// @nodoc
@@ -126,6 +134,7 @@ class __$$RegistrationStateImplCopyWithImpl<$Res>
     Object? timeToCountDown = null,
     Object? phoneNumber = null,
     Object? isValidPhone = null,
+    Object? isFormNotValidated = null,
   }) {
     return _then(_$RegistrationStateImpl(
       isloading: null == isloading
@@ -152,6 +161,10 @@ class __$$RegistrationStateImplCopyWithImpl<$Res>
           ? _value.isValidPhone
           : isValidPhone // ignore: cast_nullable_to_non_nullable
               as bool,
+      isFormNotValidated: null == isFormNotValidated
+          ? _value.isFormNotValidated
+          : isFormNotValidated // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -165,7 +178,8 @@ class _$RegistrationStateImpl extends _RegistrationState {
       this.isCodeError = false,
       this.timeToCountDown = 59,
       this.phoneNumber = "",
-      this.isValidPhone = false})
+      this.isValidPhone = false,
+      this.isFormNotValidated = false})
       : super._();
 
   @override
@@ -186,10 +200,13 @@ class _$RegistrationStateImpl extends _RegistrationState {
   @override
   @JsonKey()
   final bool isValidPhone;
+  @override
+  @JsonKey()
+  final bool isFormNotValidated;
 
   @override
   String toString() {
-    return 'RegistrationState(isloading: $isloading, isPinCodeValidate: $isPinCodeValidate, isCodeError: $isCodeError, timeToCountDown: $timeToCountDown, phoneNumber: $phoneNumber, isValidPhone: $isValidPhone)';
+    return 'RegistrationState(isloading: $isloading, isPinCodeValidate: $isPinCodeValidate, isCodeError: $isCodeError, timeToCountDown: $timeToCountDown, phoneNumber: $phoneNumber, isValidPhone: $isValidPhone, isFormNotValidated: $isFormNotValidated)';
   }
 
   @override
@@ -208,12 +225,21 @@ class _$RegistrationStateImpl extends _RegistrationState {
             (identical(other.phoneNumber, phoneNumber) ||
                 other.phoneNumber == phoneNumber) &&
             (identical(other.isValidPhone, isValidPhone) ||
-                other.isValidPhone == isValidPhone));
+                other.isValidPhone == isValidPhone) &&
+            (identical(other.isFormNotValidated, isFormNotValidated) ||
+                other.isFormNotValidated == isFormNotValidated));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, isloading, isPinCodeValidate,
-      isCodeError, timeToCountDown, phoneNumber, isValidPhone);
+  int get hashCode => Object.hash(
+      runtimeType,
+      isloading,
+      isPinCodeValidate,
+      isCodeError,
+      timeToCountDown,
+      phoneNumber,
+      isValidPhone,
+      isFormNotValidated);
 
   @JsonKey(ignore: true)
   @override
@@ -230,7 +256,8 @@ abstract class _RegistrationState extends RegistrationState {
       final bool isCodeError,
       final int timeToCountDown,
       final String phoneNumber,
-      final bool isValidPhone}) = _$RegistrationStateImpl;
+      final bool isValidPhone,
+      final bool isFormNotValidated}) = _$RegistrationStateImpl;
   const _RegistrationState._() : super._();
 
   @override
@@ -245,6 +272,8 @@ abstract class _RegistrationState extends RegistrationState {
   String get phoneNumber;
   @override
   bool get isValidPhone;
+  @override
+  bool get isFormNotValidated;
   @override
   @JsonKey(ignore: true)
   _$$RegistrationStateImplCopyWith<_$RegistrationStateImpl> get copyWith =>

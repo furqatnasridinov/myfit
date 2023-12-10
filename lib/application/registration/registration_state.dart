@@ -11,6 +11,7 @@ class RegistrationState with _$RegistrationState {
     @Default(59) int timeToCountDown,
     @Default("") String phoneNumber,
     @Default(false) bool isValidPhone,
+    @Default(false) bool isFormNotValidated,
   }) = _RegistrationState;
   const RegistrationState._();
 }

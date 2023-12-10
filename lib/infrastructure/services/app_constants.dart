@@ -35,6 +35,11 @@ class AppConstants {
   static const String keyUserId = "key_user_id";
   static const String keyToken = "key_token";
   static const String keyUserName = "key_username";
+  static const String keyCity = "key_city";
+  static const String keyAge = "key_age";
+  static const String keyWeight = "key_weight";
+  static const String keyHeight = "key_height";
+  static const String keyAvatar = "key_avatar";
 
 
   // long texts

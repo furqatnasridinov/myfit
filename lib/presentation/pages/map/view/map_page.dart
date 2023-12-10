@@ -28,7 +28,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref
+      /*    ref
           .read(mapProvider.notifier)
           .getUserLocation()
           .then(
@@ -42,7 +42,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           .whenComplete(() => ref.read(mapProvider.notifier).setFlexes())
           .then((value) => ref.read(mapProvider.notifier).getAllMarkers())
           .then((value) =>
-              ref.read(mapProvider.notifier).addUserLocationMarker());
+              ref.read(mapProvider.notifier).addUserLocationMarker()); */
     });
   }
 
@@ -56,6 +56,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       print("top flex ${state.topFlex}");
       print("bottom flex ${state.bottomFlex}");
       print("list of bool ${state.listOfBool}");
+      print("markers count ${state.listOfMarkers.length}");
+      print(
+          "placemark lenth ${event.getPlacemarkObjects(onTap: (placemarkMapObject, point) {}).length}");
     }
 
     return Scaffold(
@@ -103,9 +106,24 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             child: Stack(
               children: [
                 YandexMap(
+                  // on map created
+                  onMapCreated: (controller) async {
+                    debugPrint("onMapCreated called");
+                    yandexMapController = controller;
+                    setState(() {});
+                    await event.getUserLocation();
+                    event.setInitialCameraPosition(
+                      controller: yandexMapController!,
+                    );
+                    // ignore: use_build_context_synchronously
+                    await event.getGymsList(context, widget.gymId!);
+                    await event.getGetListOfGymsFromDiapozone();
+                    await event.setFlexes();
+                    await event.getAllMarkers();
+                    //await event.addUserLocationMarker();
+                  },
                   // map objects
-                  mapObjects: state
-                          .activitiesWithGymsInsideFromSelectedDiapozone.isEmpty
+                  mapObjects: state.listOfMarkers.isEmpty
                       ? []
                       : event.getPlacemarkObjects(
                           onTap: (placemarkMapObject, point) {
@@ -120,14 +138,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                           },
                         ),
 
-                  // on map created
-                  onMapCreated: (controller) {
-                    yandexMapController = controller;
-                    setState(() {});
-                    event.setInitialCameraPosition(
-                      controller: yandexMapController!,
-                    );
-                  },
                   //
                   onCameraPositionChanged: (cameraPosition, reason, finished) {
                     if (reason == CameraUpdateReason.gestures) {

@@ -146,4 +146,13 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
       ),
     );
   }
+
+  
+  void enableFormNotValidated(){
+    state = state.copyWith(isFormNotValidated: true);
+  }
+
+  void formValidated(){
+    state = state.copyWith(isFormNotValidated: false);
+  }
 }

@@ -208,6 +208,7 @@ class _MainHeaderState extends State<NotesHeader> {
             style: GoogleFonts.raleway(
               fontSize: 14.sp,
               fontWeight: FontWeight.w500,
+              fontFeatures: const [FontFeature.liningFigures()],
             ),
             controller: controller,
             onChanged: (value) {
@@ -262,6 +263,7 @@ class _MainHeaderState extends State<NotesHeader> {
               hintStyle: GoogleFonts.raleway(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
+                fontFeatures: const [FontFeature.liningFigures()],
               ),
               hintText: "Заметка",
               border: InputBorder.none,

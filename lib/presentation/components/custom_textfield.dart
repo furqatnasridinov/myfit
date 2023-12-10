@@ -17,6 +17,9 @@ class CustomTextField extends StatelessWidget {
   EdgeInsetsGeometry? contentPadding;
   FocusNode? focusNode;
   TextStyle? counterStyle;
+  bool hasFocus;
+  bool isError;
+  String? Function(String?)? validator;
   List<TextInputFormatter>? inputFormatters;
   void Function(PointerDownEvent)? onTapOutside;
   void Function()? onEditingComplete;
@@ -32,6 +35,9 @@ class CustomTextField extends StatelessWidget {
     this.inputFormatters,
     this.counterStyle,
     this.readOnly = false,
+    this.hasFocus = false,
+    this.validator,
+    this.isError = false,
     this.maxLines,
     this.counterText,
     this.maxLength,
@@ -53,6 +59,7 @@ class CustomTextField extends StatelessWidget {
       readOnly: readOnly,
       maxLines: maxLines,
       maxLength: maxLength,
+      validator: validator,
       keyboardType: keyboardType,
       controller: controller,
       onTapOutside: onTapOutside,
@@ -81,14 +88,27 @@ class CustomTextField extends StatelessWidget {
           borderSide: BorderSide(
             color: focusNode!.hasFocus
                 ? AppColors.blueColor
-                : AppColors.greyBorder,
+                : isError
+                    ? Colors.red
+                    : AppColors.greyBorder,
+            width: 1.w,
+          ),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.r),
+          borderSide: BorderSide(
+            color: focusNode!.hasFocus
+                ? AppColors.blueColor
+                : isError
+                    ? Colors.red
+                    : AppColors.greyBorder,
             width: 1.w,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
-            color: AppColors.greyBorder,
+            color: isError ? Colors.red : AppColors.greyBorder,
             width: 1.w,
           ),
         ),

@@ -32,6 +32,7 @@ class NoGymsInSelectedDiapozone extends StatelessWidget {
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
                   color: Colors.black,
+                  
                 ),
               ),
               WidgetSpan(child: SizedBox(width: 3.w)),

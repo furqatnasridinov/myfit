@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:activity/application/main/main_notifier.dart';
 import 'package:activity/application/main/main_state.dart';
 import 'package:activity/presentation/components/custom_card.dart';
@@ -134,6 +136,7 @@ i   nt activePageIndex = 0;
                                 fontSize: 18.sp,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black,
+                                fontFeatures: const [FontFeature.liningFigures()],
                               ),
                             ),
                             TextSpan(

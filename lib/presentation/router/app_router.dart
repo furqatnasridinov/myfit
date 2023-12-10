@@ -58,5 +58,10 @@ class AppRouter extends $AppRouter {
           path: "/registration4",
           //path: "/",
         ),
+        AutoRoute(
+          page: SettingsRoute.page,
+          //path: "/settings"
+          //path: "/"
+        )
       ];
 }

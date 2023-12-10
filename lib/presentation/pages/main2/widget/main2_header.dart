@@ -92,6 +92,7 @@ class _MainHeaderState extends State<Main2Header> {
           style: GoogleFonts.raleway(
             fontSize: 14.sp,
             fontWeight: FontWeight.w500,
+            fontFeatures: const [FontFeature.liningFigures()],
           ),
 
           onChanged: (value) {
@@ -148,6 +149,7 @@ class _MainHeaderState extends State<Main2Header> {
             hintStyle: GoogleFonts.raleway(
               fontSize: 14.sp,
               fontWeight: FontWeight.w400,
+              fontFeatures: const [FontFeature.liningFigures()],
             ),
             hintText: "Найти занятие",
             border: InputBorder.none,
@@ -204,19 +206,25 @@ class _MainHeaderState extends State<Main2Header> {
                       ),
                     ),
                     const Spacer(),
-                    SizedBox(
-                      child: CircleAvatar(
-                        radius: 19.r,
-                        backgroundColor: const Color.fromRGBO(119, 170, 249, 1),
-                        child: Padding(
-                          padding: EdgeInsets.all(2.r),
-                          child: ClipOval(
-                            child: CachedNetworkImage(
-                              imageUrl: AppConstants.owlNetworkImage,
-                              fit: BoxFit.cover,
-                              errorWidget: (context, url, error) {
-                                return const SizedBox();
-                              },
+                    InkWell(
+                      onTap: () {
+                        context.router.push(const SettingsRoute());
+                      },
+                      child: SizedBox(
+                        child: CircleAvatar(
+                          radius: 19.r,
+                          backgroundColor:
+                              const Color.fromRGBO(119, 170, 249, 1),
+                          child: Padding(
+                            padding: EdgeInsets.all(2.r),
+                            child: ClipOval(
+                              child: CachedNetworkImage(
+                                imageUrl: AppConstants.owlNetworkImage,
+                                fit: BoxFit.cover,
+                                errorWidget: (context, url, error) {
+                                  return const SizedBox();
+                                },
+                              ),
                             ),
                           ),
                         ),

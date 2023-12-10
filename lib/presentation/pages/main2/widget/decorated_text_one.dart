@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -77,6 +79,7 @@ class DecoratedTextOne extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                       fontSize: 16.sp,
                       color: Colors.black,
+                      fontFeatures: const [FontFeature.liningFigures()],
                     ),
                   ),
                   TextSpan(
@@ -84,7 +87,9 @@ class DecoratedTextOne extends StatelessWidget {
                     style: GoogleFonts.raleway(
                         fontWeight: FontWeight.w600,
                         fontSize: 16.sp,
-                        color: AppColors.blueColor),
+                        color: AppColors.blueColor,
+                        fontFeatures: const [FontFeature.liningFigures()],
+                        ),
                   ),
                 ],
               ),
