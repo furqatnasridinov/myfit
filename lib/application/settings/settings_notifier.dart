@@ -1,9 +1,12 @@
 import 'package:activity/application/settings/settings_state.dart';
+import 'package:activity/infrastructure/models/data/city_to_select.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SettingsNotifier extends StateNotifier<SettingsState> {
-  SettingsNotifier() : super(const SettingsState()) {
+  SettingsNotifier() : super(const SettingsState());
+
+  void setUserInfos() {
     setPhone();
     setName();
     setSelectedCity();
@@ -21,7 +24,11 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 
   void setSelectedCity() {
-    state = state.copyWith(selectedCity: LocalStorage.getSelectedCity());
+    state = state.copyWith(
+      selectedCity: CityToSelect(
+        name: LocalStorage.getSelectedCity(),
+      ),
+    );
   }
 
   void setPhone() {

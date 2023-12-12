@@ -4,6 +4,7 @@ import 'package:activity/presentation/components/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+// ignore: must_be_immutable
 class EditButton extends StatelessWidget {
   void Function()? onTap;
   void Function()? cancelOntap;
@@ -21,7 +22,7 @@ class EditButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return newDataAdded
+    return /* newDataAdded
         ? Row(
             children: [
               InkWell(
@@ -45,7 +46,7 @@ class EditButton extends StatelessWidget {
               ),
             ],
           )
-        : InkWell(
+        : */ InkWell(
             onTap: onTap,
             child: CustomText(
               text: editingEnabled ? "Отменить" : "Изменить",

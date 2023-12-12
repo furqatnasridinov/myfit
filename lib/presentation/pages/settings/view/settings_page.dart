@@ -17,6 +17,14 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(settingsProvider.notifier).setUserInfos();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final state = ref.watch(settingsProvider);
     final event = ref.watch(settingsProvider.notifier);

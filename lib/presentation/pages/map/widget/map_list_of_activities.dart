@@ -10,6 +10,7 @@ import 'package:activity/presentation/pages/map/widget/no_gyms_in_diapozone.dart
 import 'package:activity/presentation/pages/map/widget/widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class MapListOfActivities extends StatefulWidget {
@@ -38,36 +39,79 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
             ? NoGymsInSelectedDiapozone(
                 state: widget.state, event: widget.event)
             : SizedBox(
-                child: ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w)
-                      .copyWith(bottom: 10.h),
-                  itemCount: widget.state
-                      .activitiesWithGymsInsideFromSelectedDiapozone.length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    final currentActivity = widget.state
-                        .activitiesWithGymsInsideFromSelectedDiapozone[index];
-                    return _listOfActivitiesBuilder(
-                        currentActivity.lessontype ?? "??",
-                        currentActivity.listOfGyms!.length.toString(),
-                        currentActivity.isOpened,
-                        currentActivity.listOfGyms!,
-                        // ontap of gyms below
-                        () {
-                      for (var element in widget.state
-                          .activitiesWithGymsInsideFromSelectedDiapozone) {
-                        if (element.isOpened == true &&
-                            element != currentActivity) {
-                          element.isOpened = false;
-                          setState(() {});
-                        }
-                      }
-                      currentActivity.isOpened = !currentActivity.isOpened;
-                      setState(() {});
-                      widget.event.openCloseGymsList();
-                    });
-                  },
-                ),
+                child: widget.state.locationPermissionIsNOtGiven
+                    ? Column(
+                        children: [
+                          EnableLocationSection(event: widget.event),
+                          //16.verticalSpace,
+                          ListView.builder(
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            itemCount: widget
+                                .state
+                                .activitiesWithGymsInsideFromSelectedDiapozone
+                                .length,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              final currentActivity = widget.state
+                                      .activitiesWithGymsInsideFromSelectedDiapozone[
+                                  index];
+                              return _listOfActivitiesBuilder(
+                                  currentActivity.lessontype ?? "??",
+                                  currentActivity.listOfGyms!.length.toString(),
+                                  currentActivity.isOpened,
+                                  currentActivity.listOfGyms!,
+                                  // ontap of gyms below
+                                  () {
+                                for (var element in widget.state
+                                    .activitiesWithGymsInsideFromSelectedDiapozone) {
+                                  if (element.isOpened == true &&
+                                      element != currentActivity) {
+                                    element.isOpened = false;
+                                    setState(() {});
+                                  }
+                                }
+                                currentActivity.isOpened =
+                                    !currentActivity.isOpened;
+                                setState(() {});
+                                widget.event.openCloseGymsList();
+                              });
+                            },
+                          ),
+                        ],
+                      )
+                    : ListView.builder(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        itemCount: widget
+                            .state
+                            .activitiesWithGymsInsideFromSelectedDiapozone
+                            .length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          final currentActivity = widget.state
+                                  .activitiesWithGymsInsideFromSelectedDiapozone[
+                              index];
+                          return _listOfActivitiesBuilder(
+                              currentActivity.lessontype ?? "??",
+                              currentActivity.listOfGyms!.length.toString(),
+                              currentActivity.isOpened,
+                              currentActivity.listOfGyms!,
+                              // ontap of gyms below
+                              () {
+                            for (var element in widget.state
+                                .activitiesWithGymsInsideFromSelectedDiapozone) {
+                              if (element.isOpened == true &&
+                                  element != currentActivity) {
+                                element.isOpened = false;
+                                setState(() {});
+                              }
+                            }
+                            currentActivity.isOpened =
+                                !currentActivity.isOpened;
+                            setState(() {});
+                            widget.event.openCloseGymsList();
+                          });
+                        },
+                      ),
               );
   }
 
@@ -79,7 +123,7 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
     void Function()? onTap,
   ) {
     return Container(
-      //height: 40.h,
+      height: isOpened ? null : 40.h,
       width: double.maxFinite,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -87,59 +131,68 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
         border: Border.all(color: AppColors.greyBorder, width: 1.w),
       ),
       margin: EdgeInsets.only(bottom: 5.h),
-      child: Column(
-        children: [
-          InkWell(
-            onTap: onTap,
-            child: ListTile(
-              leading: SizedBox(
-                width: 24.sp,
-                height: 24.sp,
-                child: Icon(
-                  Icons.snowboarding_rounded,
-                  color: AppColors.blueColor,
-                  size: 23.r,
+      child: isOpened
+          ? Column(
+              //mainAxisSize: MainAxisSize.min,
+              children: [
+                InkWell(
+                  onTap: onTap,
+                  child: Container(
+                    height: 40.h,
+                    margin:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
+                    //color: Colors.red,
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          child: SvgPicture.asset(
+                            "assets/svg/boxing.svg",
+                            height: 15.h,
+                          ),
+                        ),
+                        10.horizontalSpace,
+                        CustomText(
+                          text: title,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        const Spacer(),
+                        SizedBox(
+                          //color: Colors.red.shade100,
+                          width: 100.w,
+                          child: Row(
+                            children: [
+                              // count of gyms
+                              CustomText(
+                                text: countOfGyms,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.blueColor,
+                              ),
+                              5.horizontalSpace,
+                              Icon(
+                                isOpened
+                                    ? Icons.keyboard_arrow_up
+                                    : Icons.keyboard_arrow_down,
+                                color: AppColors.blueColor,
+                                size: 18.r,
+                              ),
+                              const Spacer(),
+                              CustomText(
+                                text: "${gymsList.first.distanceFromClient} км",
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.greyText,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-              title: CustomText(
-                text: title,
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w400,
-              ),
-              trailing: SizedBox(
-                //color: Colors.red.shade100,
-                width: 100.w,
-                child: Row(
-                  children: [
-                    // count of gyms
-                    CustomText(
-                      text: countOfGyms,
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.blueColor,
-                    ),
-                    5.horizontalSpace,
-                    Icon(
-                      isOpened
-                          ? Icons.keyboard_arrow_up
-                          : Icons.keyboard_arrow_down,
-                      color: AppColors.blueColor,
-                      size: 18.r,
-                    ),
-                    const Spacer(),
-                    CustomText(
-                      text: "${gymsList.first.distanceFromClient} км",
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.greyText,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          isOpened
-              ? Container(
+                //10.verticalSpace,
+                Container(
                   margin: EdgeInsets.symmetric(horizontal: 16.w),
                   //color: Colors.red,
                   height: gymsList.length > 2 ? 150.h : null,
@@ -181,10 +234,63 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                           },
                         );
                       }),
-                )
-              : const SizedBox()
-        ],
-      ),
+                ),
+              ],
+            )
+          : InkWell(
+              onTap: onTap,
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
+                //color: Colors.red,
+                child: Row(
+                  children: [
+                    SizedBox(
+                      child: SvgPicture.asset(
+                        "assets/svg/boxing.svg",
+                        height: 15.h,
+                      ),
+                    ),
+                    10.horizontalSpace,
+                    CustomText(
+                      text: title,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    const Spacer(),
+                    SizedBox(
+                      //color: Colors.red.shade100,
+                      width: 100.w,
+                      child: Row(
+                        children: [
+                          // count of gyms
+                          CustomText(
+                            text: countOfGyms,
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.blueColor,
+                          ),
+                          5.horizontalSpace,
+                          Icon(
+                            isOpened
+                                ? Icons.keyboard_arrow_up
+                                : Icons.keyboard_arrow_down,
+                            color: AppColors.blueColor,
+                            size: 18.r,
+                          ),
+                          const Spacer(),
+                          CustomText(
+                            text: "${gymsList.first.distanceFromClient} км",
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.greyText,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 }
@@ -197,37 +303,84 @@ _listOfGymsBuilder(
   bool isSelected,
   void Function()? onTap,
 ) {
-  return Container(
-    //height: 40.h,
-    width: double.maxFinite,
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(8.r),
-      border: Border.all(
-        color: isSelected ? AppColors.blueColor : AppColors.greyBorder,
-        width: 1.w,
-      ),
-    ),
-    margin: EdgeInsets.only(bottom: 5.h),
-    child: ListTile(
-      onTap: onTap,
-      title: InterText(
-        text: title ?? "",
-        fontSize: 12.sp,
-        fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-      ),
-      subtitle: CustomText(
-        text: subTitle ?? "",
-        fontSize: 10.sp,
-        fontWeight: FontWeight.w500,
-        color: AppColors.greyText,
-      ),
-      trailing: CustomText(
-        text: "${distance.toString()} km",
-        fontSize: 10.sp,
-        fontWeight: FontWeight.w500,
-        color: AppColors.greyText,
-      ),
-    ),
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+        //height: 40.h,
+        width: double.maxFinite,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.r),
+          border: Border.all(
+            color: isSelected ? AppColors.blueColor : AppColors.greyBorder,
+            width: 1.w,
+          ),
+        ),
+        margin: EdgeInsets.only(bottom: 5.h),
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
+          //color: Colors.red,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 210.w,
+                    //color: Colors.amber,
+                    child: InterText(
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      text: title ?? "",
+                      fontSize: 12.sp,
+                      fontWeight:
+                          isSelected ? FontWeight.w600 : FontWeight.w400,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 210.w,
+                    //color: Colors.amber,
+                    child: CustomText(
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      text: subTitle ?? "",
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.greyText,
+                    ),
+                  ),
+                ],
+              ),
+              CustomText(
+                text: "${distance.toString()} km",
+                fontSize: 10.sp,
+                fontWeight: FontWeight.w500,
+                color: AppColors.greyText,
+              ),
+            ],
+          ),
+        )
+        /* ListTile(
+        onTap: onTap,
+        title: InterText(
+          text: title ?? "",
+          fontSize: 12.sp,
+          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+        ),
+        subtitle: CustomText(
+          text: subTitle ?? "",
+          fontSize: 10.sp,
+          fontWeight: FontWeight.w500,
+          color: AppColors.greyText,
+        ),
+        trailing: CustomText(
+          text: "${distance.toString()} km",
+          fontSize: 10.sp,
+          fontWeight: FontWeight.w500,
+          color: AppColors.greyText,
+        ),
+      ), */
+        ),
   );
 }

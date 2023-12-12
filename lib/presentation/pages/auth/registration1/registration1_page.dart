@@ -70,7 +70,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                                 inputFormatters: [phoneMask],
                                 //maxLength: 17,
                                 maxLines: 1,
-                                controller: controller,
+                                //controller: controller,
                                 onChanged: (value) {
                                   event.setPhone(phoneMask.getUnmaskedText());
                                 },

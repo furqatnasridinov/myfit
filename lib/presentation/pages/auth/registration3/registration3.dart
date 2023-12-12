@@ -1,3 +1,4 @@
+import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_button.dart';
@@ -8,6 +9,7 @@ import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -68,9 +70,9 @@ class _Registration3ScreenState extends State<Registration3Screen> {
                         itemBuilder: (context, index) {
                           final currentCity = listofaddresses[index];
                           return _listiles(
-                            currentCity,
+                            currentCity.name ?? "??",
                             () {
-                              controller.text = currentCity;
+                              controller.text = currentCity.name ?? "??";
                               focusNode.unfocus();
                               setState(() {});
                             },
@@ -267,22 +269,29 @@ class _Registration3ScreenState extends State<Registration3Screen> {
                             ),
                           ],
                         ),
-                        child: CustomButton(
-                          buttonColor: AppColors.blueColor,
-                          textColor: Colors.white,
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                          onPressed: () {
-                            if (nameController.text.length > 2) {
-                              LocalStorage.setUserName(nameController.text);
-                              LocalStorage.setSelectedCity(controller.text);
-                              context.replaceRoute(const Registration4Route());
-                            } else {
-                              isFormNotValidated = true;
-                              setState(() {});
-                            }
+                        child: Consumer(
+                          builder: (context, ref, child) {
+                            final settingsEvent =
+                                ref.read(settingsProvider.notifier);
+                            return CustomButton(
+                              buttonColor: AppColors.blueColor,
+                              textColor: Colors.white,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                              onPressed: () {
+                                if (nameController.text.length > 2) {
+                                  LocalStorage.setUserName(nameController.text);
+                                  LocalStorage.setSelectedCity(controller.text);
+                                  context
+                                      .replaceRoute(const Registration4Route());
+                                } else {
+                                  isFormNotValidated = true;
+                                  setState(() {});
+                                }
+                              },
+                              text: "Продолжить",
+                            );
                           },
-                          text: "Продолжить",
                         ),
                       ),
                     ],

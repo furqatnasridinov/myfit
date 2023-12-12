@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
+// ignore: must_be_immutable
 class AppWidget extends StatelessWidget {
   AppWidget({super.key});
   AppRouter appRouter = AppRouter();

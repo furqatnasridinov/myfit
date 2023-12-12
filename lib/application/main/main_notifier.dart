@@ -139,8 +139,8 @@ class MainNotifier extends StateNotifier<MainState> {
           (e) => PlacemarkMapObject(
             mapId: MapObjectId("MapObject $e"),
             point: Point(
-              latitude: e.latitude,
-              longitude: e.longitude,
+              latitude: e.latitude ?? 0,
+              longitude: e.longitude ?? 0,
             ),
             consumeTapEvents: true,
             icon: PlacemarkIcon.single(

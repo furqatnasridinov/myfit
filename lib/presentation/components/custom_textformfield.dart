@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:activity/infrastructure/services/app_colors.dart';
@@ -12,6 +11,7 @@ class CustomTextFormField extends StatelessWidget {
   TextEditingController? controller;
   int? maxLines;
   TextInputType? keyboardType;
+  List<TextInputFormatter>? inputFormatters;
   int? maxLength;
   EdgeInsetsGeometry? contentPadding;
   void Function(PointerDownEvent)? onTapOutside;
@@ -29,6 +29,7 @@ class CustomTextFormField extends StatelessWidget {
     this.readOnly = false,
     this.dontShowBorders = false,
     this.onTap,
+    this.inputFormatters,
     this.suffixIcon,
     this.contentPadding,
     this.onTapOutside,
@@ -43,6 +44,7 @@ class CustomTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      inputFormatters: inputFormatters,
       readOnly: readOnly,
       focusNode: focusNode,
       initialValue: initialValue,

@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 import '../widget/widget.dart';
 
@@ -22,12 +23,15 @@ class MapScreen extends ConsumerStatefulWidget {
   ConsumerState<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends ConsumerState<MapScreen> {
+class _MapScreenState extends ConsumerState<MapScreen>
+    with WidgetsBindingObserver {
   YandexMapController? yandexMapController;
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      //settingInitDatas();
       /*    ref
           .read(mapProvider.notifier)
           .getUserLocation()
@@ -47,10 +51,46 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      checkPermissionAndSetLocation();
+    }
+  }
+
+  Future<void> checkPermissionAndSetLocation() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse) {
+      ref.read(mapProvider.notifier).setUserPosition().then((value) async {
+        await yandexMapController?.moveCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: Point(
+                latitude: ref.watch(mapProvider).userPosition!.latitude,
+                longitude: ref.watch(mapProvider).userPosition!.longitude,
+              ),
+            ),
+          ),
+          animation: const MapAnimation(duration: 1),
+        );
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final state = ref.watch(mapProvider);
     final event = ref.read(mapProvider.notifier);
     if (kDebugMode) {
+      print("user position data ${state.userPosition}");
       print(
           "lenth ${state.activitiesWithGymsInsideFromSelectedDiapozone.length}");
       print("top flex ${state.topFlex}");
@@ -111,7 +151,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     debugPrint("onMapCreated called");
                     yandexMapController = controller;
                     setState(() {});
-                    await event.getUserLocation();
+                    if (state.userPosition == null) {
+                      await event.getUserLocation();
+                    }
+                    await event.setLocationFromSelectedCity();
                     event.setInitialCameraPosition(
                       controller: yandexMapController!,
                     );
@@ -120,7 +163,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     await event.getGetListOfGymsFromDiapozone();
                     await event.setFlexes();
                     await event.getAllMarkers();
-                    //await event.addUserLocationMarker();
+                    await event.addUserLocationMarker();
                   },
                   // map objects
                   mapObjects: state.listOfMarkers.isEmpty

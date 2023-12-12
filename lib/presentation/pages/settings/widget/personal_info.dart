@@ -4,6 +4,7 @@ import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/application/settings/settings_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
+import 'package:activity/infrastructure/services/app_validator.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_text.dart';
@@ -15,7 +16,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class PersonalInfo extends StatefulWidget {
@@ -52,8 +52,9 @@ class _PersonalInfoState extends State<PersonalInfo> {
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
-      print("city ${LocalStorage.getSelectedCity()}");
-      print("phone ${LocalStorage.getPhoneNumber()}");
+      print("city ${widget.state.selectedCity?.name}");
+      print("phone ${widget.state.phoneNumber}");
+      print("name ${widget.state.userName}");
     }
     phoneController.addListener(() {
       if (phoneController.text.length == 12 &&
@@ -104,7 +105,9 @@ class _PersonalInfoState extends State<PersonalInfo> {
                     children: [
                       5.verticalSpace,
                       CustomText(
-                        text: widget.state.userName,
+                        text: widget.state.userName.isEmpty
+                            ? " widget.state.userName.isEmpty"
+                            : widget.state.userName,
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
                       ),
@@ -174,7 +177,7 @@ class _PersonalInfoState extends State<PersonalInfo> {
                 EditButton(
                   newDataAdded: newDataAdded,
                   editingEnabled: widget.state.isPhoneEditModeEnabled,
-                  submitOntap: () {
+                  /* submitOntap: () {
                     LocalStorage.setPhoneNumber(phoneController.text)
                         .then((value) => widget.event.setPhone());
                     newDataAdded = false;
@@ -186,12 +189,16 @@ class _PersonalInfoState extends State<PersonalInfo> {
                     phoneController.text = LocalStorage.getPhoneNumber();
                     widget.event.closeEditingPhone();
                     setState(() {});
-                  },
+                  }, */
                   onTap: () {
                     if (widget.state.isPhoneEditModeEnabled) {
                       if (phoneController.text !=
                           LocalStorage.getPhoneNumber()) {
                         phoneController.text = LocalStorage.getPhoneNumber();
+                        setState(() {});
+                      }
+                      if (newDataAdded) {
+                        newDataAdded = false;
                         setState(() {});
                       }
                       widget.event.closeEditingPhone();
@@ -206,25 +213,36 @@ class _PersonalInfoState extends State<PersonalInfo> {
             SizedBox(
               height: 40.h,
               child: CustomTextFormField(
+                keyboardType: TextInputType.phone,
+                //inputFormatters: [AppValidators().phoneMask],
                 contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
                 readOnly: !widget.state.isPhoneEditModeEnabled,
                 controller: phoneController,
                 dontShowBorders: !widget.state.isPhoneEditModeEnabled,
                 suffixIcon: newDataAdded
-                    ? Padding(
-                        padding: EdgeInsets.only(right: 2.w),
-                        child: Container(
-                          margin: EdgeInsets.all(5.r).copyWith(),
-                          width: 24.w,
-                          //height: 24.h,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6.r),
-                            color: AppColors.blueColor,
-                          ),
-                          child: Icon(
-                            Icons.done,
-                            color: Colors.white,
-                            size: 18.r,
+                    ? InkWell(
+                        onTap: () {
+                          LocalStorage.setPhoneNumber(phoneController.text)
+                              .then((value) => widget.event.setPhone());
+                          newDataAdded = false;
+                          widget.event.closeEditingPhone();
+                          setState(() {});
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.only(right: 2.w),
+                          child: Container(
+                            margin: EdgeInsets.all(5.r).copyWith(),
+                            width: 24.w,
+                            //height: 24.h,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(6.r),
+                              color: AppColors.blueColor,
+                            ),
+                            child: Icon(
+                              Icons.done,
+                              color: Colors.white,
+                              size: 18.r,
+                            ),
                           ),
                         ),
                       )

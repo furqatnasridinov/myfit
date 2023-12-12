@@ -5,6 +5,8 @@ import 'package:activity/infrastructure/models/data/gym_data.dart';
 import 'package:activity/infrastructure/models/data/lessontype_with_gyms_inside.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
+import 'package:activity/infrastructure/services/local_storage.dart';
+import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:activity/presentation/pages/map/widget/pop_up_map.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
@@ -20,16 +22,69 @@ class MapNotifier extends StateNotifier<MapState> {
   OverlayEntry? entry;
 
   Future<void> getUserLocation() async {
-    state = state.copyWith(isloading: true);
+    // state = state.copyWith(isloading: true);
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied ||
         permission == LocationPermission.deniedForever) {
+      state = state.copyWith(locationPermissionIsNOtGiven: true);
       await Geolocator.requestPermission();
     }
+    if (permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse) {
+      final postion = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      state = state.copyWith(userPosition: postion);
+      state = state.copyWith(locationPermissionIsNOtGiven: false);
+      // state = state.copyWith(isloading: false);
+    }
+  }
+
+  Future<void> setUserPosition() async {
+    state = state.copyWith(isloading: true);
     final postion = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     state = state.copyWith(userPosition: postion);
+    var markersList = state.listOfMarkers;
+    for (var element in markersList) {
+      if (element.name == "user") {
+        element.latitude = postion.latitude;
+        element.longitude = postion.longitude;
+      }
+    }
+    final withCalculatedDistances = // and sort
+        calculateDistanceOfGyms(state.activitiesWithGymsInsideAll);
+    state =
+        state.copyWith(activitiesWithGymsInsideAll: withCalculatedDistances);
+
+    state = state.copyWith(listOfMarkers: markersList);
+    state = state.copyWith(locationPermissionIsNOtGiven: false);
     state = state.copyWith(isloading: false);
+  }
+
+  Future<void> setLocationFromSelectedCity() async {
+    // checking whether user position is null
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      final listOfCities = DummyData().cityNames;
+      for (var element in listOfCities) {
+        if (element.name == LocalStorage.getSelectedCity()) {
+          state = state.copyWith(
+              userPosition: Position(
+            longitude: element.lon ?? 0,
+            latitude: element.lat ?? 0,
+            timestamp: DateTime.now(),
+            accuracy: 5,
+            altitude: 5,
+            altitudeAccuracy: 0.5,
+            heading: 0.5,
+            headingAccuracy: 0,
+            speed: 0,
+            speedAccuracy: 0,
+          ));
+        }
+      }
+    }
   }
 
   void setInitialCameraPosition({required YandexMapController controller}) {
@@ -46,20 +101,6 @@ class MapNotifier extends StateNotifier<MapState> {
           ),
         ),
         animation: const MapAnimation(duration: 2),
-      );
-    } else {
-      // move to fixed location      // Москва 55.755825  37.617519
-      controller.moveCamera(
-        CameraUpdate.newCameraPosition(
-          const CameraPosition(
-            zoom: 15.5,
-            target: Point(
-              latitude: 61.004851,
-              longitude: 30.223219,
-            ),
-          ),
-        ),
-        animation: const MapAnimation(duration: 3),
       );
     }
   }
@@ -104,8 +145,8 @@ class MapNotifier extends StateNotifier<MapState> {
           (e) => PlacemarkMapObject(
             mapId: MapObjectId("MapObject $e"),
             point: Point(
-              latitude: e.latitude,
-              longitude: e.longitude,
+              latitude: e.latitude ?? 0,
+              longitude: e.longitude ?? 0,
             ),
             consumeTapEvents: true,
             icon: PlacemarkIcon.single(
@@ -256,6 +297,12 @@ class MapNotifier extends StateNotifier<MapState> {
         bottomFlex: 8,
       );
     }
+    if (list.length > 1 && state.locationPermissionIsNOtGiven) {
+      state = state.copyWith(
+        topFlex: 4,
+        bottomFlex: 6,
+      );
+    }
   }
 
   void openGymslist() {
@@ -329,12 +376,12 @@ class MapNotifier extends StateNotifier<MapState> {
             right: 50.w,
             bottom: 30.h,
             child: PopUpMap(
-              name: state.activeMarker!.name,
+              name: state.activeMarker?.name ?? "??",
               address: state.activeMarker?.address ?? "??",
               onTap: () {
                 entry!.remove();
                 context.router.push(
-                  ActivityRoute(gymId: state.activeMarker!.id),
+                  ActivityRoute(gymId: state.activeMarker?.id ?? 0),
                 );
               },
             ),

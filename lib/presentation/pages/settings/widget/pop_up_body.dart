@@ -102,11 +102,11 @@ class _PopupBodyState extends State<PopupBody> {
                         itemBuilder: (context, index) {
                           final currentCity = listofaddresses[index];
                           return _listiles(
-                            currentCity,
+                            currentCity.name ?? "",
                             () {
                               //LocalStorage.setSelectedCity(currentCity);
                               //event.setSelectedCity();
-                              cityController.text = currentCity;
+                              cityController.text = currentCity.name!;
                               setState(() {});
                               hideOverlay();
                               widget.event.cityTextFieldUnfocus();
@@ -151,245 +151,247 @@ class _PopupBodyState extends State<PopupBody> {
         showOverlay(context);
       }
     });
-    return CustomCard(
-      borderColor: Colors.transparent,
-      width: double.maxFinite,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CustomText(
-            text: "Ваше имя",
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w500,
-          ),
-          5.verticalSpace,
-          SizedBox(
-            height: 40.h,
-            child: CustomTextFormField(
-              contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
-              controller: nameController,
+    return SingleChildScrollView(
+      child: CustomCard(
+        borderColor: Colors.transparent,
+        width: double.maxFinite,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomText(
+              text: "Ваше имя",
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w500,
             ),
-          ),
-          16.verticalSpace,
-          CustomText(
-            text: "В каком городе искать активности",
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w500,
-          ),
-          5.verticalSpace,
-
-          // city textfield
-          SizedBox(
-            key: sizedBoxKey,
-            height: 40.h,
-            child: CompositedTransformTarget(
-              link: layerlink,
+            5.verticalSpace,
+            SizedBox(
+              height: 40.h,
               child: CustomTextFormField(
                 contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
-                hasFocus: widget.state.cityTextFieldHasFocus,
-                onTap: () {
-                  if (!widget.state.cityTextFieldHasFocus) {
-                    widget.event.cityTextFieldRequestFocus();
-                  }
-                },
-                suffixIcon: SvgPicture.asset(
-                  !widget.state.cityTextFieldHasFocus
-                      ? "assets/svg/arrow_down.svg"
-                      : "assets/svg/arrow_up.svg",
-                  fit: BoxFit.none,
-                ),
-                readOnly: true,
-                controller: cityController,
+                controller: nameController,
               ),
             ),
-          ),
-          16.verticalSpace,
-
-          // user data section (возраст, вес, рост)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // возраст
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(
-                    text: "Возраст",
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w500,
+            16.verticalSpace,
+            CustomText(
+              text: "В каком городе искать активности",
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w500,
+            ),
+            5.verticalSpace,
+      
+            // city textfield
+            SizedBox(
+              key: sizedBoxKey,
+              height: 40.h,
+              child: CompositedTransformTarget(
+                link: layerlink,
+                child: CustomTextFormField(
+                  contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
+                  hasFocus: widget.state.cityTextFieldHasFocus,
+                  onTap: () {
+                    if (!widget.state.cityTextFieldHasFocus) {
+                      widget.event.cityTextFieldRequestFocus();
+                    }
+                  },
+                  suffixIcon: SvgPicture.asset(
+                    !widget.state.cityTextFieldHasFocus
+                        ? "assets/svg/arrow_down.svg"
+                        : "assets/svg/arrow_up.svg",
+                    fit: BoxFit.none,
                   ),
-                  5.verticalSpace,
-                  SizedBox(
-                    width: 93.w,
-                    height: 40.h,
-                    child: CustomTextFormField(
-                      controller: ageController,
-                      maxLines: 1,
-                      maxLength: 3,
-                      contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
-                    ),
-                  ),
-                ],
+                  readOnly: true,
+                  controller: cityController,
+                ),
               ),
-
-              // вес
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(
-                    text: "Вес, кг",
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  5.verticalSpace,
-                  SizedBox(
-                    width: 93.w,
-                    height: 40.h,
-                    child: CustomTextFormField(
-                      controller: weightController,
-                      maxLines: 1,
-                      maxLength: 3,
-                      contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
-                    ),
-                  ),
-                ],
-              ),
-
-              // рост
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(
-                    text: "Рост, см",
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  5.verticalSpace,
-                  SizedBox(
-                    width: 93.w,
-                    height: 40.h,
-                    child: CustomTextFormField(
-                      controller: heightController,
-                      maxLines: 1,
-                      maxLength: 3,
-                      contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-
-          // avatar section
-          16.verticalSpace,
-          CustomText(
-            text: "Аватар",
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w500,
-          ),
-          5.verticalSpace,
-          SizedBox(
-            height: 80.h,
-            child: Row(
+            ),
+            16.verticalSpace,
+      
+            // user data section (возраст, вес, рост)
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CircleAvatar(
-                  radius: 40.r,
-                  backgroundColor: AppColors.fadedBlueBorder,
-                  child: Padding(
-                    padding: EdgeInsets.all(3.r),
-                    child: ClipOval(
-                      child: CachedNetworkImage(
-                        imageUrl: AppConstants.owlNetworkImage,
-                        fit: BoxFit.cover,
-                        errorWidget: (context, url, error) {
-                          return const SizedBox();
-                        },
-                      ),
-                    ),
-                  ),
-                ),
+                // возраст
                 Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: CustomButton(
-                        width: 190.w,
-                        fontSize: 14.sp,
-                        borderColor: AppColors.fadedBlueBorder,
-                        onPressed: () {},
-                        text: "Заменить",
-                      ),
+                    CustomText(
+                      text: "Возраст",
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w500,
                     ),
                     5.verticalSpace,
-                    Expanded(
-                      child: CustomButton(
-                        width: 190.w,
-                        fontSize: 14.sp,
-                        borderColor: AppColors.fadedBlueBorder,
-                        onPressed: () {},
-                        text: "Удалить",
+                    SizedBox(
+                      width: 93.w,
+                      height: 40.h,
+                      child: CustomTextFormField(
+                        controller: ageController,
+                        maxLines: 1,
+                        maxLength: 3,
+                        contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
+                      ),
+                    ),
+                  ],
+                ),
+      
+                // вес
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomText(
+                      text: "Вес, кг",
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    5.verticalSpace,
+                    SizedBox(
+                      width: 93.w,
+                      height: 40.h,
+                      child: CustomTextFormField(
+                        controller: weightController,
+                        maxLines: 1,
+                        maxLength: 3,
+                        contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
+                      ),
+                    ),
+                  ],
+                ),
+      
+                // рост
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomText(
+                      text: "Рост, см",
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    5.verticalSpace,
+                    SizedBox(
+                      width: 93.w,
+                      height: 40.h,
+                      child: CustomTextFormField(
+                        controller: heightController,
+                        maxLines: 1,
+                        maxLength: 3,
+                        contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
                       ),
                     ),
                   ],
                 ),
               ],
             ),
-          ),
-
-          // buttons
-          16.verticalSpace,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomButton(
-                width: 130.w,
-                height: 40.h,
-                fontSize: 14.sp,
-                buttonColor: Colors.white,
-                onPressed: () {
-                  context.popRoute();
-                },
-                text: "Отменить",
+      
+            // avatar section
+            16.verticalSpace,
+            CustomText(
+              text: "Аватар",
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w500,
+            ),
+            5.verticalSpace,
+            SizedBox(
+              height: 80.h,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CircleAvatar(
+                    radius: 40.r,
+                    backgroundColor: AppColors.fadedBlueBorder,
+                    child: Padding(
+                      padding: EdgeInsets.all(3.r),
+                      child: ClipOval(
+                        child: CachedNetworkImage(
+                          imageUrl: AppConstants.owlNetworkImage,
+                          fit: BoxFit.cover,
+                          errorWidget: (context, url, error) {
+                            return const SizedBox();
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: CustomButton(
+                          width: 190.w,
+                          fontSize: 14.sp,
+                          borderColor: AppColors.fadedBlueBorder,
+                          onPressed: () {},
+                          text: "Заменить",
+                        ),
+                      ),
+                      5.verticalSpace,
+                      Expanded(
+                        child: CustomButton(
+                          width: 190.w,
+                          fontSize: 14.sp,
+                          borderColor: AppColors.fadedBlueBorder,
+                          onPressed: () {},
+                          text: "Удалить",
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              CustomButton(
-                width: 130.w,
-                height: 40.h,
-                fontSize: 14.sp,
-                buttonColor: AppColors.blueColor,
-                borderColor: AppColors.blueBorder,
-                textColor: Colors.white,
-                onPressed: () {
-                  // check whether user added new data
-                  if (LocalStorage.getUserName() !=
-                      nameController.text.trim()) {
-                    LocalStorage.setUserName(nameController.text)
-                        .then((value) => widget.event.setName());
-                  }
-                  if (LocalStorage.getSelectedCity() != cityController.text) {
-                    LocalStorage.setSelectedCity(cityController.text)
-                        .then((value) => widget.event.setSelectedCity());
-                  }
-                  if (LocalStorage.getAge() != ageController.text) {
-                    LocalStorage.setAge(ageController.text)
-                        .then((value) => widget.event.setAge());
-                  }
-                  if (LocalStorage.getWeight() != weightController.text) {
-                    LocalStorage.setWeight(weightController.text)
-                        .then((value) => widget.event.setWeight());
-                  }
-                  if (LocalStorage.getHeight() != heightController.text) {
-                    LocalStorage.setHeight(heightController.text)
-                        .then((value) => widget.event.setHeight());
-                  }
-                  context.popRoute();
-                },
-                text: "Сохранить",
-              ),
-            ],
-          ),
-        ],
+            ),
+      
+            // buttons
+            16.verticalSpace,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomButton(
+                  width: 130.w,
+                  height: 40.h,
+                  fontSize: 14.sp,
+                  buttonColor: Colors.white,
+                  onPressed: () {
+                    context.popRoute();
+                  },
+                  text: "Отменить",
+                ),
+                CustomButton(
+                  width: 130.w,
+                  height: 40.h,
+                  fontSize: 14.sp,
+                  buttonColor: AppColors.blueColor,
+                  borderColor: AppColors.blueBorder,
+                  textColor: Colors.white,
+                  onPressed: () {
+                    // check whether user added new data
+                    if (LocalStorage.getUserName() !=
+                        nameController.text.trim()) {
+                      LocalStorage.setUserName(nameController.text)
+                          .then((value) => widget.event.setName());
+                    }
+                    if (LocalStorage.getSelectedCity() != cityController.text) {
+                      LocalStorage.setSelectedCity(cityController.text)
+                          .then((value) => widget.event.setSelectedCity());
+                    }
+                    if (LocalStorage.getAge() != ageController.text) {
+                      LocalStorage.setAge(ageController.text)
+                          .then((value) => widget.event.setAge());
+                    }
+                    if (LocalStorage.getWeight() != weightController.text) {
+                      LocalStorage.setWeight(weightController.text)
+                          .then((value) => widget.event.setWeight());
+                    }
+                    if (LocalStorage.getHeight() != heightController.text) {
+                      LocalStorage.setHeight(heightController.text)
+                          .then((value) => widget.event.setHeight());
+                    }
+                    context.popRoute();
+                  },
+                  text: "Сохранить",
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

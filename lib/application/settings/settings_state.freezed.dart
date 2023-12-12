@@ -19,7 +19,7 @@ mixin _$SettingsState {
   bool get isloading => throw _privateConstructorUsedError;
   bool get cityTextFieldHasFocus => throw _privateConstructorUsedError;
   String get phoneNumber => throw _privateConstructorUsedError;
-  String get selectedCity => throw _privateConstructorUsedError;
+  CityToSelect? get selectedCity => throw _privateConstructorUsedError;
   String get userName => throw _privateConstructorUsedError;
   String get age => throw _privateConstructorUsedError;
   String get weight => throw _privateConstructorUsedError;
@@ -42,7 +42,7 @@ abstract class $SettingsStateCopyWith<$Res> {
       {bool isloading,
       bool cityTextFieldHasFocus,
       String phoneNumber,
-      String selectedCity,
+      CityToSelect? selectedCity,
       String userName,
       String age,
       String weight,
@@ -67,7 +67,7 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     Object? isloading = null,
     Object? cityTextFieldHasFocus = null,
     Object? phoneNumber = null,
-    Object? selectedCity = null,
+    Object? selectedCity = freezed,
     Object? userName = null,
     Object? age = null,
     Object? weight = null,
@@ -88,10 +88,10 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.phoneNumber
           : phoneNumber // ignore: cast_nullable_to_non_nullable
               as String,
-      selectedCity: null == selectedCity
+      selectedCity: freezed == selectedCity
           ? _value.selectedCity
           : selectedCity // ignore: cast_nullable_to_non_nullable
-              as String,
+              as CityToSelect?,
       userName: null == userName
           ? _value.userName
           : userName // ignore: cast_nullable_to_non_nullable
@@ -132,7 +132,7 @@ abstract class _$$SettingsStateImplCopyWith<$Res>
       {bool isloading,
       bool cityTextFieldHasFocus,
       String phoneNumber,
-      String selectedCity,
+      CityToSelect? selectedCity,
       String userName,
       String age,
       String weight,
@@ -155,7 +155,7 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     Object? isloading = null,
     Object? cityTextFieldHasFocus = null,
     Object? phoneNumber = null,
-    Object? selectedCity = null,
+    Object? selectedCity = freezed,
     Object? userName = null,
     Object? age = null,
     Object? weight = null,
@@ -176,10 +176,10 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value.phoneNumber
           : phoneNumber // ignore: cast_nullable_to_non_nullable
               as String,
-      selectedCity: null == selectedCity
+      selectedCity: freezed == selectedCity
           ? _value.selectedCity
           : selectedCity // ignore: cast_nullable_to_non_nullable
-              as String,
+              as CityToSelect?,
       userName: null == userName
           ? _value.userName
           : userName // ignore: cast_nullable_to_non_nullable
@@ -215,7 +215,7 @@ class _$SettingsStateImpl extends _SettingsState {
       {this.isloading = false,
       this.cityTextFieldHasFocus = false,
       this.phoneNumber = "",
-      this.selectedCity = "",
+      this.selectedCity = null,
       this.userName = "",
       this.age = "",
       this.weight = "",
@@ -235,7 +235,7 @@ class _$SettingsStateImpl extends _SettingsState {
   final String phoneNumber;
   @override
   @JsonKey()
-  final String selectedCity;
+  final CityToSelect? selectedCity;
   @override
   @JsonKey()
   final String userName;
@@ -310,7 +310,7 @@ abstract class _SettingsState extends SettingsState {
       {final bool isloading,
       final bool cityTextFieldHasFocus,
       final String phoneNumber,
-      final String selectedCity,
+      final CityToSelect? selectedCity,
       final String userName,
       final String age,
       final String weight,
@@ -326,7 +326,7 @@ abstract class _SettingsState extends SettingsState {
   @override
   String get phoneNumber;
   @override
-  String get selectedCity;
+  CityToSelect? get selectedCity;
   @override
   String get userName;
   @override
