@@ -116,26 +116,25 @@ class _MapScreenState extends ConsumerState<MapScreen>
               //color: Colors.amber.shade200,
               //height: 200.h,
               child: state.showMapOnly
-                  ? Column(
-                      children: [
-                        10.verticalSpace,
-                        MapPageTopSection(
-                          event: event,
-                          state: state,
-                        ),
-                        10.verticalSpace,
-                      ],
-                    )
-                  : ListView(children: [
-                      10.verticalSpace,
-                      MapPageTopSection(
+                  ? Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10.h),
+                      child: MapPageTopSection(
                         event: event,
                         state: state,
                       ),
-                      10.verticalSpace,
-                      MapListOfActivities(yandexMapController,
-                          event: event, state: state)
-                    ]),
+                    )
+                  : ListView(
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: [
+                          10.verticalSpace,
+                          MapPageTopSection(
+                            event: event,
+                            state: state,
+                          ),
+                          10.verticalSpace,
+                          MapListOfActivities(yandexMapController,
+                              event: event, state: state)
+                        ]),
             ),
           ),
 
@@ -145,48 +144,85 @@ class _MapScreenState extends ConsumerState<MapScreen>
             flex: state.bottomFlex,
             child: Stack(
               children: [
-                YandexMap(
-                  // on map created
-                  onMapCreated: (controller) async {
-                    debugPrint("onMapCreated called");
-                    yandexMapController = controller;
-                    setState(() {});
-                    if (state.userPosition == null) {
-                      await event.getUserLocation();
-                    }
-                    await event.setLocationFromSelectedCity();
-                    event.setInitialCameraPosition(
-                      controller: yandexMapController!,
-                    );
-                    // ignore: use_build_context_synchronously
-                    await event.getGymsList(context, widget.gymId!);
-                    await event.getGetListOfGymsFromDiapozone();
-                    await event.setFlexes();
-                    await event.getAllMarkers();
-                    await event.addUserLocationMarker();
-                  },
-                  // map objects
-                  mapObjects: state.listOfMarkers.isEmpty
-                      ? []
-                      : event.getPlacemarkObjects(
-                          onTap: (placemarkMapObject, point) {
-                            event
-                                .setMarkerAsOpened(
-                                  placemarkMapObject.point.latitude,
-                                  placemarkMapObject.point.longitude,
-                                )
-                                .then(
-                                  (value) => event.showPopUpOnMap(context),
-                                );
-                          },
-                        ),
+                Container(
+                  decoration: BoxDecoration(
+                    boxShadow: state.activitiesWithGymsInsideFromSelectedDiapozone
+                                    .length >
+                                5 &&
+                            (state.activitiesWithGymsInsideFromSelectedDiapozone
+                                        .length >
+                                    2 ||
+                                state.locationPermissionIsNOtGiven) &&
+                            !state.showMapOnly
+                        ? const [
+                            BoxShadow(
+                              color: Color.fromRGBO(0, 0, 0, 0.15),
+                              offset: Offset(0, 2),
+                              blurRadius: 5,
+                              spreadRadius: 0,
+                            ),
+                            BoxShadow(
+                              color: Color(0xFF6D96D4),
+                              offset: Offset(0, 15),
+                              blurRadius: 18,
+                              spreadRadius: -15,
+                            ),
+                            BoxShadow(
+                              color: Color.fromRGBO(0, 0, 0, 0.39),
+                              offset: Offset(0, -1),
+                              blurRadius: 20.4,
+                              spreadRadius: -2,
+                            ),
+                          ]
+                        : [],
+                  ),
+                  child: YandexMap(
+                    // on map created
+                    onMapCreated: (controller) async {
+                      debugPrint("onMapCreated called");
+                      yandexMapController = controller;
+                      setState(() {});
+                      if (state.userPosition == null) {
+                        await event.getUserLocation();
+                      }
+                      await event.setLocationFromSelectedCity();
+                      event.setInitialCameraPosition(
+                        controller: yandexMapController!,
+                      );
+                      // ignore: use_build_context_synchronously
+                      await event.getGymsList(context, widget.gymId!);
+                      await event.getGetListOfGymsFromDiapozone();
+                      await event.setFlexes();
+                      await event.getAllMarkers();
+                      await event.addUserLocationMarker();
+                    },
+                    // map objects
+                    mapObjects: state.listOfMarkers.isEmpty
+                        ? []
+                        : event.getPlacemarkObjects(
+                            onTap: (placemarkMapObject, point) {
+                              event
+                                  .setMarkerAsOpened(
+                                    placemarkMapObject.point.latitude,
+                                    placemarkMapObject.point.longitude,
+                                  )
+                                  .then(
+                                    (value) => event.showPopUpOnMap(context),
+                                  );
+                            },
+                          ),
 
-                  //
-                  onCameraPositionChanged: (cameraPosition, reason, finished) {
-                    if (reason == CameraUpdateReason.gestures) {
-                      event.removePopUp();
-                    }
-                  },
+                    //
+                    onCameraPositionChanged:
+                        (cameraPosition, reason, finished) {
+                      if (reason == CameraUpdateReason.gestures) {
+                        event.removePopUp();
+                      }
+                    },
+                    logoAlignment: const MapAlignment(
+                        horizontal: HorizontalAlignment.left,
+                        vertical: VerticalAlignment.bottom),
+                  ),
                 ),
                 Align(
                   alignment: Alignment.topCenter,
@@ -221,18 +257,57 @@ class _MapScreenState extends ConsumerState<MapScreen>
                                     ? "assets/svg/arrow_down.svg"
                                     : "assets/svg/arrow_up.svg",
                               ),
-                              /* Icon(
-                                state.showMapOnly
-                                    ? Icons.keyboard_arrow_down
-                                    : Icons.keyboard_arrow_up,
-                                size: 18.r,
-                              ), */
                               15.horizontalSpace,
                             ],
                           )),
                     ),
                   ),
                 ),
+                state.locationPermissionIsNOtGiven
+                    ? const SizedBox()
+                    : Align(
+                        alignment: Alignment.bottomRight,
+                        child: Padding(
+                          padding: EdgeInsets.only(right: 21.w, bottom: 21.h),
+                          child: InkWell(
+                            onTap: () async {
+                              if (!state.locationPermissionIsNOtGiven &&
+                                  await yandexMapController
+                                          ?.getCameraPosition() !=
+                                      CameraPosition(
+                                        target: Point(
+                                            latitude:
+                                                state.userPosition!.latitude,
+                                            longitude:
+                                                state.userPosition!.longitude),
+                                      )) {
+                                yandexMapController?.moveCamera(
+                                  CameraUpdate.newCameraPosition(
+                                    CameraPosition(
+                                      target: Point(
+                                        latitude: state.userPosition!.latitude,
+                                        longitude:
+                                            state.userPosition!.longitude,
+                                      ),
+                                    ),
+                                  ),
+                                  animation: const MapAnimation(duration: 1),
+                                );
+                              }
+                            },
+                            child: CustomCard(
+                              height: 40.h,
+                              width: 40.w,
+                              paddingAll: 8.r,
+                              child: SvgPicture.asset(
+                                "assets/svg/location_icon.svg",
+                                fit: BoxFit.contain,
+                                height: 24.h,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
               ],
             ),
           ),

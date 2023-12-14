@@ -37,7 +37,10 @@ class _PersonalInfoState extends State<PersonalInfo> {
   void initState() {
     super.initState();
     cityFocusNode = FocusNode();
-    phoneController = TextEditingController(text: widget.state.phoneNumber);
+    phoneController = TextEditingController(
+        text: widget.state.phoneNumber.isEmpty
+            ? LocalStorage.getPhoneNumber()
+            : widget.state.phoneNumber);
     emailController = TextEditingController();
   }
 

@@ -282,7 +282,7 @@ class MapNotifier extends StateNotifier<MapState> {
     if (list.length == 1) {
       state = state.copyWith(
         topFlex: 2,
-        bottomFlex: 8,
+        bottomFlex: 9,
       );
     }
     if (list.length == 2) {
@@ -297,10 +297,13 @@ class MapNotifier extends StateNotifier<MapState> {
         bottomFlex: 8,
       );
     }
-    if (list.length > 1 && state.locationPermissionIsNOtGiven) {
+    if (list.length > 5) {
+      state = state.copyWith(topFlex: 6, bottomFlex: 8);
+    }
+    if (list.length > 5 && state.locationPermissionIsNOtGiven) {
       state = state.copyWith(
-        topFlex: 4,
-        bottomFlex: 6,
+        topFlex: 7,
+        bottomFlex: 5,
       );
     }
   }
