@@ -26,6 +26,7 @@ class MapState with _$MapState {
     @Default(false) bool showMapOnly,
     @Default(2) int topFlex,
     @Default(6) int bottomFlex,
+    @Default(false) bool isLocationIconHidden,
   }) = _MapState;
   const MapState._();
 }

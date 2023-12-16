@@ -24,16 +24,89 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       final response = await _scheduleRepositoryInterface.getUsersSchedules();
       response.when(
         success: (data) {
-     
           state = state.copyWith(schedulesInMapForm: data["object"]);
         },
-        failure: (error, statusCode) {
-        },
+        failure: (error, statusCode) {},
       );
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
     state = state.copyWith(isloading: false);
+  }
+
+  String dateTimeNowToString(DateTime now) {
+    // Декабр 16
+    var month = now.month.toString();
+    var day = now.day.toString();
+    switch (month) {
+      case "01":
+        month = "Январ";
+        break;
+      case "02":
+        month = "Феврал";
+        break;
+      case "03":
+        month = "Март";
+        break;
+      case "04":
+        month = "Апрель";
+        break;
+      case "05":
+        month = "Май";
+        break;
+      case "06":
+        month = "Июнь";
+        break;
+      case "07":
+        month = "Июль";
+        break;
+      case "08":
+        month = "Август";
+        break;
+      case "09":
+        month = "Сентябрь";
+        break;
+      case "10":
+        month = "Октябрь";
+        break;
+      case "11":
+        month = "Ноябрь";
+        break;
+      case "12":
+        month = "Декабрь";
+        break;
+    }
+    switch (day) {
+      case "01":
+        day = "1";
+        break;
+      case "02":
+        day = "2";
+        break;
+      case "03":
+        day = "3";
+        break;
+      case "04":
+        day = "4";
+        break;
+      case "05":
+        day = "5";
+        break;
+      case "06":
+        day = "6";
+        break;
+      case "07":
+        day = "7";
+        break;
+      case "08":
+        day = "8";
+        break;
+      case "09":
+        day = "9";
+        break;
+      default:
+    }
+    return "$month $day";
   }
 
   String formatDay(String day) {
@@ -108,6 +181,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
         break;
       default:
     }
+
     return "$month $daysplitted";
   }
 
@@ -210,8 +284,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
             state = state.copyWith(nearestLesson: null);
           }
         },
-        failure: (error, statusCode) {
-        },
+        failure: (error, statusCode) {},
       );
     } else {
       AppHelpers.showCheckTopSnackBar(context);
@@ -232,8 +305,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
           );
           state = state.copyWith(statsForMonth: list!.reversed.toList());
         },
-        failure: (error, statusCode) {
-        },
+        failure: (error, statusCode) {},
       );
     } else {
       AppHelpers.showCheckTopSnackBar(context);
@@ -311,10 +383,8 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       );
       final response = await _scheduleRepositoryInterface.addNotes(request);
       response.when(
-        success: (data) {
-        },
-        failure: (error, statusCode) {
-        },
+        success: (data) {},
+        failure: (error, statusCode) {},
       );
     } else {
       AppHelpers.showCheckTopSnackBar(context);
@@ -431,10 +501,8 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     if (connect) {
       final response = await _scheduleRepositoryInterface.cancelActivity(id);
       response.when(
-        success: (data) {
-        },
-        failure: (error, statusCode) {
-        },
+        success: (data) {},
+        failure: (error, statusCode) {},
       );
     } else {
       AppHelpers.showCheckTopSnackBar(context);

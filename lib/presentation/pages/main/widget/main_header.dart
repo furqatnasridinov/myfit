@@ -135,6 +135,7 @@ class _MainHeaderState extends State<MainHeader> {
    
 
     return AppBar(
+      automaticallyImplyLeading: false,
       titleSpacing: 0.0,
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
       elevation: 0,
@@ -227,7 +228,7 @@ class _MainHeaderState extends State<MainHeader> {
                   color: AppColors.backgroundColor,
                   shape: BoxShape.circle,
                 ),
-                padding: EdgeInsets.all(7.r),
+                padding: EdgeInsets.all(5.r),
                 child: SvgPicture.asset(
                   "assets/svg/search.svg",
                   // ignore: deprecated_member_use

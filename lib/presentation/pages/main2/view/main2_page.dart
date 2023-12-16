@@ -25,7 +25,6 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
   final mapControllerCompleter = Completer<YandexMapController>();
   TextEditingController controller = TextEditingController();
   ScrollController scrollController = ScrollController();
-
   final layerlink = LayerLink();
 
   @override
@@ -43,10 +42,10 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
   Widget build(BuildContext context) {
     final state = ref.watch(scheduleProvider);
     final event = ref.read(scheduleProvider.notifier);
-    final mapState = ref.watch(mapProvider);
+    
     //LocalStorage.removeToken();
     if (kDebugMode) {
-      print("token ${LocalStorage.getToken()}");
+      //print("token ${LocalStorage.getToken()}");
     }
     if (controller.text.isEmpty && state.schedulesFoundBySearching.isNotEmpty) {
       event.cleanSearchList();
@@ -121,7 +120,12 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                           10.verticalSpace,
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16.w),
-                            child: Main2Map(mapState: mapState),
+                            child:  Container(
+                                width: double.maxFinite,
+                                height: 150.h,
+                                color: Colors.red,
+                              ) 
+                               // Main2Map(mapState: mapState),
                           ),
                           32.verticalSpace,
                           const DecoratedTextOne(),

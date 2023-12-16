@@ -41,6 +41,7 @@ class MapNotifier extends StateNotifier<MapState> {
 
   Future<void> setUserPosition() async {
     state = state.copyWith(isloading: true);
+    await setFlexes();
     final postion = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     state = state.copyWith(userPosition: postion);
@@ -59,6 +60,7 @@ class MapNotifier extends StateNotifier<MapState> {
     state = state.copyWith(listOfMarkers: markersList);
     state = state.copyWith(locationPermissionIsNOtGiven: false);
     state = state.copyWith(isloading: false);
+    setFlexes();
   }
 
   Future<void> setLocationFromSelectedCity() async {
@@ -189,6 +191,7 @@ class MapNotifier extends StateNotifier<MapState> {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
       state = state.copyWith(isloading: true);
+      await setFlexes();
       final response = await _mainRepositoryInterface.getGymsList();
       response.when(
         success: (data) {
@@ -273,10 +276,16 @@ class MapNotifier extends StateNotifier<MapState> {
   Future<void> setFlexes() async {
     await Future.delayed(const Duration(milliseconds: 100));
     final list = state.activitiesWithGymsInsideFromSelectedDiapozone;
+    if (state.isloading) {
+      state = state.copyWith(
+        topFlex: 3,
+        bottomFlex: 8,
+      );
+    }
     if (list.isEmpty) {
       state = state.copyWith(
-        topFlex: 2,
-        bottomFlex: 7,
+        topFlex: 3,
+        bottomFlex: 10,
       );
     }
     if (list.length == 1) {
@@ -297,7 +306,13 @@ class MapNotifier extends StateNotifier<MapState> {
         bottomFlex: 8,
       );
     }
-    if (list.length > 5) {
+    if (list.length == 4) {
+      state = state.copyWith(
+        topFlex: 5,
+        bottomFlex: 9,
+      );
+    }
+    if (list.length > 4 && !state.isloading) {
       state = state.copyWith(topFlex: 6, bottomFlex: 8);
     }
     if (list.length > 5 && state.locationPermissionIsNOtGiven) {
@@ -310,18 +325,21 @@ class MapNotifier extends StateNotifier<MapState> {
 
   void openGymslist() {
     final list = state.activitiesWithGymsInsideFromSelectedDiapozone;
-    if (list.length == 1) {
-      state = state.copyWith(topFlex: 3);
-      state = state.copyWith(bottomFlex: 6);
+    if (!state.locationPermissionIsNOtGiven) {
+      if (list.length == 1) {
+        state = state.copyWith(topFlex: 3);
+        state = state.copyWith(bottomFlex: 8);
+      }
+      if (list.length == 2) {
+        state = state.copyWith(topFlex: 4);
+        state = state.copyWith(bottomFlex: 5);
+      }
+      if (list.length > 2) {
+        state = state.copyWith(topFlex: 7);
+        state = state.copyWith(bottomFlex: 8);
+      }
     }
-    if (list.length == 2) {
-      state = state.copyWith(topFlex: 4);
-      state = state.copyWith(bottomFlex: 5);
-    }
-    if (list.length > 2) {
-      state = state.copyWith(topFlex: 7);
-      state = state.copyWith(bottomFlex: 6);
-    }
+
     /* state = state.copyWith(topFlex: 7);
     state = state.copyWith(bottomFlex: 6); */
   }
@@ -367,10 +385,21 @@ class MapNotifier extends StateNotifier<MapState> {
     state = state.copyWith(selectedDiapozone: diapozone);
   }
 
+  void hideLocationIcon() {
+    state = state.copyWith(isLocationIconHidden: true);
+  }
+
+  showLocationButton() {
+    state = state.copyWith(isLocationIconHidden: false);
+  }
+
   void showPopUpOnMap(BuildContext context) {
     // remove prvious pop up first
     if (state.activeMarker?.name != "user") {
       removePopUp();
+      if (!state.isLocationIconHidden) {
+        hideLocationIcon();
+      }
       final overlay = Overlay.of(context);
       entry = OverlayEntry(
         builder: (context) {
@@ -398,6 +427,7 @@ class MapNotifier extends StateNotifier<MapState> {
   void removePopUp() {
     if (entry != null && entry!.mounted) {
       entry?.remove();
+      showLocationButton();
     }
   }
 

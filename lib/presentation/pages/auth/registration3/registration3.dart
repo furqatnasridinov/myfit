@@ -1,4 +1,3 @@
-import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_button.dart';
@@ -271,8 +270,8 @@ class _Registration3ScreenState extends State<Registration3Screen> {
                         ),
                         child: Consumer(
                           builder: (context, ref, child) {
-                            final settingsEvent =
-                                ref.read(settingsProvider.notifier);
+                            /* final settingsEvent =
+                                ref.read(settingsProvider.notifier); */
                             return CustomButton(
                               buttonColor: AppColors.blueColor,
                               textColor: Colors.white,

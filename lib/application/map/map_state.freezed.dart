@@ -35,6 +35,7 @@ mixin _$MapState {
   bool get showMapOnly => throw _privateConstructorUsedError;
   int get topFlex => throw _privateConstructorUsedError;
   int get bottomFlex => throw _privateConstructorUsedError;
+  bool get isLocationIconHidden => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $MapStateCopyWith<MapState> get copyWith =>
@@ -62,7 +63,8 @@ abstract class $MapStateCopyWith<$Res> {
           activitiesWithGymsInsideFromSelectedDiapozone,
       bool showMapOnly,
       int topFlex,
-      int bottomFlex});
+      int bottomFlex,
+      bool isLocationIconHidden});
 }
 
 /// @nodoc
@@ -93,6 +95,7 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
     Object? showMapOnly = null,
     Object? topFlex = null,
     Object? bottomFlex = null,
+    Object? isLocationIconHidden = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -156,6 +159,10 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
           ? _value.bottomFlex
           : bottomFlex // ignore: cast_nullable_to_non_nullable
               as int,
+      isLocationIconHidden: null == isLocationIconHidden
+          ? _value.isLocationIconHidden
+          : isLocationIconHidden // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -184,7 +191,8 @@ abstract class _$$MapStateImplCopyWith<$Res>
           activitiesWithGymsInsideFromSelectedDiapozone,
       bool showMapOnly,
       int topFlex,
-      int bottomFlex});
+      int bottomFlex,
+      bool isLocationIconHidden});
 }
 
 /// @nodoc
@@ -213,6 +221,7 @@ class __$$MapStateImplCopyWithImpl<$Res>
     Object? showMapOnly = null,
     Object? topFlex = null,
     Object? bottomFlex = null,
+    Object? isLocationIconHidden = null,
   }) {
     return _then(_$MapStateImpl(
       isloading: null == isloading
@@ -276,6 +285,10 @@ class __$$MapStateImplCopyWithImpl<$Res>
           ? _value.bottomFlex
           : bottomFlex // ignore: cast_nullable_to_non_nullable
               as int,
+      isLocationIconHidden: null == isLocationIconHidden
+          ? _value.isLocationIconHidden
+          : isLocationIconHidden // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -300,7 +313,8 @@ class _$MapStateImpl extends _MapState {
           activitiesWithGymsInsideFromSelectedDiapozone = const [],
       this.showMapOnly = false,
       this.topFlex = 2,
-      this.bottomFlex = 6})
+      this.bottomFlex = 6,
+      this.isLocationIconHidden = false})
       : _listOfMarkers = listOfMarkers,
         _distances = distances,
         _listOfBool = listOfBool,
@@ -398,10 +412,13 @@ class _$MapStateImpl extends _MapState {
   @override
   @JsonKey()
   final int bottomFlex;
+  @override
+  @JsonKey()
+  final bool isLocationIconHidden;
 
   @override
   String toString() {
-    return 'MapState(isloading: $isloading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, activeMarker: $activeMarker, distances: $distances, selectedDiapozone: $selectedDiapozone, locationPermissionIsNOtGiven: $locationPermissionIsNOtGiven, listOfBool: $listOfBool, gymFoundBySearching: $gymFoundBySearching, isSearchbarOpened: $isSearchbarOpened, activitiesWithGymsInsideAll: $activitiesWithGymsInsideAll, activitiesWithGymsInsideFromSelectedDiapozone: $activitiesWithGymsInsideFromSelectedDiapozone, showMapOnly: $showMapOnly, topFlex: $topFlex, bottomFlex: $bottomFlex)';
+    return 'MapState(isloading: $isloading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, activeMarker: $activeMarker, distances: $distances, selectedDiapozone: $selectedDiapozone, locationPermissionIsNOtGiven: $locationPermissionIsNOtGiven, listOfBool: $listOfBool, gymFoundBySearching: $gymFoundBySearching, isSearchbarOpened: $isSearchbarOpened, activitiesWithGymsInsideAll: $activitiesWithGymsInsideAll, activitiesWithGymsInsideFromSelectedDiapozone: $activitiesWithGymsInsideFromSelectedDiapozone, showMapOnly: $showMapOnly, topFlex: $topFlex, bottomFlex: $bottomFlex, isLocationIconHidden: $isLocationIconHidden)';
   }
 
   @override
@@ -441,7 +458,9 @@ class _$MapStateImpl extends _MapState {
                 other.showMapOnly == showMapOnly) &&
             (identical(other.topFlex, topFlex) || other.topFlex == topFlex) &&
             (identical(other.bottomFlex, bottomFlex) ||
-                other.bottomFlex == bottomFlex));
+                other.bottomFlex == bottomFlex) &&
+            (identical(other.isLocationIconHidden, isLocationIconHidden) ||
+                other.isLocationIconHidden == isLocationIconHidden));
   }
 
   @override
@@ -462,7 +481,8 @@ class _$MapStateImpl extends _MapState {
           .hash(_activitiesWithGymsInsideFromSelectedDiapozone),
       showMapOnly,
       topFlex,
-      bottomFlex);
+      bottomFlex,
+      isLocationIconHidden);
 
   @JsonKey(ignore: true)
   @override
@@ -488,7 +508,8 @@ abstract class _MapState extends MapState {
           activitiesWithGymsInsideFromSelectedDiapozone,
       final bool showMapOnly,
       final int topFlex,
-      final int bottomFlex}) = _$MapStateImpl;
+      final int bottomFlex,
+      final bool isLocationIconHidden}) = _$MapStateImpl;
   const _MapState._() : super._();
 
   @override
@@ -522,6 +543,8 @@ abstract class _MapState extends MapState {
   int get topFlex;
   @override
   int get bottomFlex;
+  @override
+  bool get isLocationIconHidden;
   @override
   @JsonKey(ignore: true)
   _$$MapStateImplCopyWith<_$MapStateImpl> get copyWith =>

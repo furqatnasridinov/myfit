@@ -6,7 +6,6 @@ import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/components/ui_button_filled.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -253,7 +252,7 @@ class _MainHeaderState extends State<SettingsHeader> {
                   color: AppColors.backgroundColor,
                   shape: BoxShape.circle,
                 ),
-                padding: EdgeInsets.all(10.r),
+                padding: EdgeInsets.all(5.r),
                 child: SvgPicture.asset(
                   "assets/svg/search.svg",
                   // ignore: deprecated_member_use
@@ -327,14 +326,18 @@ class _MainHeaderState extends State<SettingsHeader> {
                         child: Padding(
                           padding: EdgeInsets.all(2.r),
                           child: ClipOval(
-                            child: CachedNetworkImage(
-                              imageUrl: AppConstants.owlNetworkImage,
-                              fit: BoxFit.cover,
-                              errorWidget: (context, url, error) {
-                                return const SizedBox();
-                              },
-                            ),
-                          ),
+                              child: Image.asset(
+                            AppConstants.cristianBale,
+                            fit: BoxFit.cover,
+                          )
+                              /* CachedNetworkImage(
+                                imageUrl: AppConstants.owlNetworkImage,
+                                fit: BoxFit.cover,
+                                errorWidget: (context, url, error) {
+                                  return const SizedBox();
+                                },
+                              ), */
+                              ),
                         ),
                       ),
                     ),

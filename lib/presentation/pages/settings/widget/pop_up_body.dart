@@ -9,7 +9,6 @@ import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/custom_textformfield.dart';
 import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -301,14 +300,18 @@ class _PopupBodyState extends State<PopupBody> {
                     child: Padding(
                       padding: EdgeInsets.all(3.r),
                       child: ClipOval(
-                        child: CachedNetworkImage(
-                          imageUrl: AppConstants.owlNetworkImage,
-                          fit: BoxFit.cover,
-                          errorWidget: (context, url, error) {
-                            return const SizedBox();
-                          },
-                        ),
-                      ),
+                                child: Image.asset(
+                              AppConstants.cristianBale,
+                              fit: BoxFit.cover,
+                            )
+                                /* CachedNetworkImage(
+                                imageUrl: AppConstants.owlNetworkImage,
+                                fit: BoxFit.cover,
+                                errorWidget: (context, url, error) {
+                                  return const SizedBox();
+                                },
+                              ), */
+                                ),
                     ),
                   ),
                   Column(

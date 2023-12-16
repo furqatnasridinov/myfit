@@ -2,7 +2,6 @@ import 'package:activity/domain/di/dependency_manager.dart';
 import 'package:activity/presentation/router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 // ignore: must_be_immutable
 class AppWidget extends StatelessWidget {
@@ -11,7 +10,7 @@ class AppWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AndroidYandexMap.useAndroidViewSurface = false;
+    //AndroidYandexMap.useAndroidViewSurface = false;
 
     return FutureBuilder(
       future: Future.wait(

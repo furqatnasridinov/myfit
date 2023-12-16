@@ -61,7 +61,7 @@ class TheOneWithComments extends StatelessWidget {
                               DateTime.now().year - int.parse(parts![0]);
                           return _comments(
                             currentComment?.message ?? "",
-                            AppConstants.owlNetworkImage,
+                            AppConstants.cristianBale,
                             "${currentComment?.user?.lastName} ${currentComment?.user?.firstName}",
                             currentComment?.user?.city?.name ?? "??",
                             "$formattedYear лет",

@@ -17,8 +17,10 @@ class MapListOfActivities extends StatefulWidget {
   final MapState state;
   final MapNotifier event;
   YandexMapController? controller;
+  ScrollController activitiesListController;
 
   MapListOfActivities(
+    this.activitiesListController,
     this.controller, {
     super.key,
     required this.state,
@@ -32,6 +34,18 @@ class MapListOfActivities extends StatefulWidget {
 class _MapListOfActivitiesState extends State<MapListOfActivities> {
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.state.activitiesWithGymsInsideFromSelectedDiapozone.length >
+              4 &&
+          widget.state.activitiesWithGymsInsideFromSelectedDiapozone.last
+              .isOpened) {
+        widget.activitiesListController.animateTo(
+          200,
+          curve: Curves.linear,
+          duration: const Duration(microseconds: 100),
+        );
+      }
+    });
     return widget.state.isloading
         ? const SearchingActivitiesCard()
         : widget.state.activitiesWithGymsInsideFromSelectedDiapozone.isEmpty &&
@@ -45,6 +59,8 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                           EnableLocationSection(event: widget.event),
                           //16.verticalSpace,
                           ListView.builder(
+                            //controller: widget.activitiesListController,
+                            physics: const NeverScrollableScrollPhysics(),
                             padding: EdgeInsets.symmetric(horizontal: 16.w),
                             itemCount: widget
                                 .state
@@ -80,6 +96,8 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                         ],
                       )
                     : ListView.builder(
+                        controller: widget.activitiesListController,
+                        //physics: const NeverScrollableScrollPhysics(),
                         padding: EdgeInsets.symmetric(horizontal: 16.w),
                         itemCount: widget
                             .state
@@ -133,7 +151,7 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
       margin: EdgeInsets.only(bottom: 5.h),
       child: isOpened
           ? Column(
-              //mainAxisSize: MainAxisSize.min,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 InkWell(
                   onTap: onTap,
@@ -195,10 +213,14 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 16.w),
                   //color: Colors.red,
-                  height: gymsList.length > 2 ? 150.h : null,
+                  height: gymsList.length == 1
+                      ? 50.h
+                      : gymsList.length == 2
+                          ? 100.h
+                          : 150.h,
                   child: ListView.builder(
                       itemCount: gymsList.length,
-                      shrinkWrap: true,
+                      //shrinkWrap: true,
                       itemBuilder: (context, index) {
                         return _listOfGymsBuilder(
                           gymsList[index].name,
@@ -360,27 +382,6 @@ _listOfGymsBuilder(
               ),
             ],
           ),
-        )
-        /* ListTile(
-        onTap: onTap,
-        title: InterText(
-          text: title ?? "",
-          fontSize: 12.sp,
-          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-        ),
-        subtitle: CustomText(
-          text: subTitle ?? "",
-          fontSize: 10.sp,
-          fontWeight: FontWeight.w500,
-          color: AppColors.greyText,
-        ),
-        trailing: CustomText(
-          text: "${distance.toString()} km",
-          fontSize: 10.sp,
-          fontWeight: FontWeight.w500,
-          color: AppColors.greyText,
-        ),
-      ), */
-        ),
+        )),
   );
 }

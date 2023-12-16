@@ -4,14 +4,12 @@ import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/application/settings/settings_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
-import 'package:activity/infrastructure/services/app_validator.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/custom_textformfield.dart';
 import 'package:activity/presentation/components/edit_button.dart';
 import 'package:activity/presentation/pages/settings/widget/widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -90,15 +88,19 @@ class _PersonalInfoState extends State<PersonalInfo> {
                       backgroundColor: AppColors.blueColor,
                       child: Padding(
                         padding: EdgeInsets.all(2.r),
-                        child: ClipOval(
-                          child: CachedNetworkImage(
-                            imageUrl: AppConstants.owlNetworkImage,
-                            fit: BoxFit.cover,
-                            errorWidget: (context, url, error) {
-                              return const SizedBox();
-                            },
-                          ),
-                        ),
+                        child:ClipOval(
+                                child: Image.asset(
+                              AppConstants.cristianBale,
+                              fit: BoxFit.cover,
+                            )
+                                /* CachedNetworkImage(
+                                imageUrl: AppConstants.owlNetworkImage,
+                                fit: BoxFit.cover,
+                                errorWidget: (context, url, error) {
+                                  return const SizedBox();
+                                },
+                              ), */
+                                ),
                       ),
                     ),
                   ),

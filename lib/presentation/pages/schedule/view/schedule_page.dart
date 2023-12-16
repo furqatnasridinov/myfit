@@ -32,11 +32,6 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
       ref.read(scheduleProvider.notifier).getUsersSchedules(context);
       ref.read(mapProvider.notifier).getUserLocation();
     });
-    /* scrollController.addListener(() {
-      if (FocusScope.of(context).hasFocus) {
-        FocusScope.of(context).unfocus();
-      }
-    }); */
   }
 
   @override

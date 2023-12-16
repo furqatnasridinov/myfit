@@ -86,7 +86,7 @@ class TheOneWithImage extends StatelessWidget {
                       width: 300.w,
                       child: CustomText(
                         color: Colors.white,
-                        maxLines: 1,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         fontSize: 19.sp,
                         fontWeight: FontWeight.w600,

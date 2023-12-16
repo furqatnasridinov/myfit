@@ -14,6 +14,7 @@ class ComingActivity extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<String> parts = state.nearestLesson!.bodyData!.date!.split("@");
+    final today = event.dateTimeNowToString(DateTime.now());
     final String formattedDay = event.formatDay(parts[0]);
     return UiCard(
       cardValue: Column(
@@ -55,7 +56,8 @@ class ComingActivity extends StatelessWidget {
                       //maxLines: 2,
                       //overflow: TextOverflow.ellipsis,
                       //text: "",
-                      text: state.nearestLesson?.bodyData?.description ?? "Empty",
+                      text:
+                          state.nearestLesson?.bodyData?.description ?? "Empty",
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
                     ),
@@ -79,7 +81,8 @@ class ComingActivity extends StatelessWidget {
                   ),
                   7.horizontalSpace,
                   CustomText(
-                    text: "$formattedDay  ${parts[1]} часа",
+                    text: today == formattedDay ? "${parts[1]}, Сегодня" :
+                    "${parts[1]}, $formattedDay",
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
                   ),
