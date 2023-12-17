@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:activity/infrastructure/models/data/each_markers_models.dart';
 import 'package:activity/infrastructure/models/data/gym_data.dart';
 import 'package:activity/infrastructure/models/data/lessontype_with_gyms_inside.dart';
@@ -24,6 +26,7 @@ class MapState with _$MapState {
     List<LessonTypeWithGymsInside>
         activitiesWithGymsInsideFromSelectedDiapozone,
     @Default(false) bool showMapOnly,
+    @Default(null) Uint8List? mapScreenShot,
     @Default(2) int topFlex,
     @Default(6) int bottomFlex,
     @Default(false) bool isLocationIconHidden,

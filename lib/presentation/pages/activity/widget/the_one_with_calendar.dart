@@ -75,12 +75,12 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                   },
                   child: Container(
                     width: 41.w,
-                    height: 67.h,
-                    padding: EdgeInsets.only(
+                    //height: 97.h,
+                    /* padding: EdgeInsets.only(
                       left: 4.w,
                       right: 4.w,
-                      bottom: 4.h,
-                    ),
+                      bottom: 14.h,
+                    ), */
                     decoration: BoxDecoration(
                       color: widget.state.selectedFormattedDay == currentDate
                           ? AppColors.blueColor
@@ -94,13 +94,18 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                       ),
                       boxShadow:
                           widget.state.selectedFormattedDay == currentDate
-                              ? [
-                                  const BoxShadow(
-                                    //color: Colors.red,
-                                    spreadRadius: -2,
+                              ? const [
+                                  BoxShadow(
+                                    offset: Offset(0, 5),
+                                    blurRadius: 5,
+                                    spreadRadius: -4,
                                     color: Color.fromRGBO(0, 0, 0, 0.15),
-                                    offset: Offset(0, 6),
-                                    blurRadius: 5.5,
+                                  ),
+                                  BoxShadow(
+                                    offset: Offset(0, 10),
+                                    blurRadius: 10,
+                                    spreadRadius: -8,
+                                    color: Color.fromRGBO(123, 163, 225, 0.73),
                                   ),
                                 ]
                               : [],
@@ -108,7 +113,7 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                     margin: EdgeInsets.only(right: 9.w),
                     child: Column(
                       children: [
-                        6.verticalSpace,
+                        7.verticalSpace,
                         InterText(
                           text: parts[0],
                           fontSize: 12.sp,

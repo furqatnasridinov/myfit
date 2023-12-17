@@ -33,6 +33,7 @@ mixin _$MapState {
       get activitiesWithGymsInsideFromSelectedDiapozone =>
           throw _privateConstructorUsedError;
   bool get showMapOnly => throw _privateConstructorUsedError;
+  Uint8List? get mapScreenShot => throw _privateConstructorUsedError;
   int get topFlex => throw _privateConstructorUsedError;
   int get bottomFlex => throw _privateConstructorUsedError;
   bool get isLocationIconHidden => throw _privateConstructorUsedError;
@@ -62,6 +63,7 @@ abstract class $MapStateCopyWith<$Res> {
       List<LessonTypeWithGymsInside>
           activitiesWithGymsInsideFromSelectedDiapozone,
       bool showMapOnly,
+      Uint8List? mapScreenShot,
       int topFlex,
       int bottomFlex,
       bool isLocationIconHidden});
@@ -93,6 +95,7 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
     Object? activitiesWithGymsInsideAll = null,
     Object? activitiesWithGymsInsideFromSelectedDiapozone = null,
     Object? showMapOnly = null,
+    Object? mapScreenShot = freezed,
     Object? topFlex = null,
     Object? bottomFlex = null,
     Object? isLocationIconHidden = null,
@@ -151,6 +154,10 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
           ? _value.showMapOnly
           : showMapOnly // ignore: cast_nullable_to_non_nullable
               as bool,
+      mapScreenShot: freezed == mapScreenShot
+          ? _value.mapScreenShot
+          : mapScreenShot // ignore: cast_nullable_to_non_nullable
+              as Uint8List?,
       topFlex: null == topFlex
           ? _value.topFlex
           : topFlex // ignore: cast_nullable_to_non_nullable
@@ -190,6 +197,7 @@ abstract class _$$MapStateImplCopyWith<$Res>
       List<LessonTypeWithGymsInside>
           activitiesWithGymsInsideFromSelectedDiapozone,
       bool showMapOnly,
+      Uint8List? mapScreenShot,
       int topFlex,
       int bottomFlex,
       bool isLocationIconHidden});
@@ -219,6 +227,7 @@ class __$$MapStateImplCopyWithImpl<$Res>
     Object? activitiesWithGymsInsideAll = null,
     Object? activitiesWithGymsInsideFromSelectedDiapozone = null,
     Object? showMapOnly = null,
+    Object? mapScreenShot = freezed,
     Object? topFlex = null,
     Object? bottomFlex = null,
     Object? isLocationIconHidden = null,
@@ -277,6 +286,10 @@ class __$$MapStateImplCopyWithImpl<$Res>
           ? _value.showMapOnly
           : showMapOnly // ignore: cast_nullable_to_non_nullable
               as bool,
+      mapScreenShot: freezed == mapScreenShot
+          ? _value.mapScreenShot
+          : mapScreenShot // ignore: cast_nullable_to_non_nullable
+              as Uint8List?,
       topFlex: null == topFlex
           ? _value.topFlex
           : topFlex // ignore: cast_nullable_to_non_nullable
@@ -312,6 +325,7 @@ class _$MapStateImpl extends _MapState {
       final List<LessonTypeWithGymsInside>
           activitiesWithGymsInsideFromSelectedDiapozone = const [],
       this.showMapOnly = false,
+      this.mapScreenShot = null,
       this.topFlex = 2,
       this.bottomFlex = 6,
       this.isLocationIconHidden = false})
@@ -408,6 +422,9 @@ class _$MapStateImpl extends _MapState {
   final bool showMapOnly;
   @override
   @JsonKey()
+  final Uint8List? mapScreenShot;
+  @override
+  @JsonKey()
   final int topFlex;
   @override
   @JsonKey()
@@ -418,7 +435,7 @@ class _$MapStateImpl extends _MapState {
 
   @override
   String toString() {
-    return 'MapState(isloading: $isloading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, activeMarker: $activeMarker, distances: $distances, selectedDiapozone: $selectedDiapozone, locationPermissionIsNOtGiven: $locationPermissionIsNOtGiven, listOfBool: $listOfBool, gymFoundBySearching: $gymFoundBySearching, isSearchbarOpened: $isSearchbarOpened, activitiesWithGymsInsideAll: $activitiesWithGymsInsideAll, activitiesWithGymsInsideFromSelectedDiapozone: $activitiesWithGymsInsideFromSelectedDiapozone, showMapOnly: $showMapOnly, topFlex: $topFlex, bottomFlex: $bottomFlex, isLocationIconHidden: $isLocationIconHidden)';
+    return 'MapState(isloading: $isloading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, activeMarker: $activeMarker, distances: $distances, selectedDiapozone: $selectedDiapozone, locationPermissionIsNOtGiven: $locationPermissionIsNOtGiven, listOfBool: $listOfBool, gymFoundBySearching: $gymFoundBySearching, isSearchbarOpened: $isSearchbarOpened, activitiesWithGymsInsideAll: $activitiesWithGymsInsideAll, activitiesWithGymsInsideFromSelectedDiapozone: $activitiesWithGymsInsideFromSelectedDiapozone, showMapOnly: $showMapOnly, mapScreenShot: $mapScreenShot, topFlex: $topFlex, bottomFlex: $bottomFlex, isLocationIconHidden: $isLocationIconHidden)';
   }
 
   @override
@@ -456,6 +473,8 @@ class _$MapStateImpl extends _MapState {
                 _activitiesWithGymsInsideFromSelectedDiapozone) &&
             (identical(other.showMapOnly, showMapOnly) ||
                 other.showMapOnly == showMapOnly) &&
+            const DeepCollectionEquality()
+                .equals(other.mapScreenShot, mapScreenShot) &&
             (identical(other.topFlex, topFlex) || other.topFlex == topFlex) &&
             (identical(other.bottomFlex, bottomFlex) ||
                 other.bottomFlex == bottomFlex) &&
@@ -480,6 +499,7 @@ class _$MapStateImpl extends _MapState {
       const DeepCollectionEquality()
           .hash(_activitiesWithGymsInsideFromSelectedDiapozone),
       showMapOnly,
+      const DeepCollectionEquality().hash(mapScreenShot),
       topFlex,
       bottomFlex,
       isLocationIconHidden);
@@ -507,6 +527,7 @@ abstract class _MapState extends MapState {
       final List<LessonTypeWithGymsInside>
           activitiesWithGymsInsideFromSelectedDiapozone,
       final bool showMapOnly,
+      final Uint8List? mapScreenShot,
       final int topFlex,
       final int bottomFlex,
       final bool isLocationIconHidden}) = _$MapStateImpl;
@@ -539,6 +560,8 @@ abstract class _MapState extends MapState {
       get activitiesWithGymsInsideFromSelectedDiapozone;
   @override
   bool get showMapOnly;
+  @override
+  Uint8List? get mapScreenShot;
   @override
   int get topFlex;
   @override

@@ -27,6 +27,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
     with WidgetsBindingObserver {
   YandexMapController? yandexMapController;
   late ScrollController activitiesListController;
+  bool wasLocationPermissionDenied = false;
   @override
   void initState() {
     super.initState();
@@ -49,15 +50,20 @@ class _MapScreenState extends ConsumerState<MapScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.resumed) {
+    if (state == AppLifecycleState.paused) {
+      _checkLocationPermission();
+    } else if (state == AppLifecycleState.resumed &&
+        wasLocationPermissionDenied) {
       checkPermissionAndSetLocation();
-      /* ref.listen(mapProvider, (previous, next) {
-      print("");
-        if (previous!.locationPermissionIsNOtGiven) {
-          checkPermissionAndSetLocation();
-        }
-      });  */
+      ref.read(mapProvider.notifier).getYandexMapImage(
+            context,
+          );
     }
+  }
+
+  void _checkLocationPermission() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    wasLocationPermissionDenied = permission == LocationPermission.denied;
   }
 
   Future<void> checkPermissionAndSetLocation() async {
@@ -319,9 +325,10 @@ class _MapScreenState extends ConsumerState<MapScreen>
                                     }
                                   },
                                   child: CustomCard(
-                                    height: 40.h,
-                                    width: 40.w,
-                                    //paddingAll: 8.r,
+                                    /* height: 40.h,
+                                    width: 40.w, */
+                                    radius: 8.r,
+                                    paddingAll: 8.r,
                                     child: SvgPicture.asset(
                                       "assets/svg/location_icon.svg",
                                       fit: BoxFit.contain,

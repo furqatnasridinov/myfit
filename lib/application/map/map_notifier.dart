@@ -3,6 +3,7 @@ import 'package:activity/domain/interface/main.dart';
 import 'package:activity/infrastructure/models/data/each_markers_models.dart';
 import 'package:activity/infrastructure/models/data/gym_data.dart';
 import 'package:activity/infrastructure/models/data/lessontype_with_gyms_inside.dart';
+import 'package:activity/infrastructure/models/request/get_yandex_map_image_request.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
@@ -61,6 +62,58 @@ class MapNotifier extends StateNotifier<MapState> {
     state = state.copyWith(locationPermissionIsNOtGiven: false);
     state = state.copyWith(isloading: false);
     setFlexes();
+  }
+
+  Future<void> getYandexMapImage(
+    BuildContext context,
+  ) async {
+    double? selectedCityLon;
+    double? selectedCityLat;
+    final connected = await AppConnectivity().connectivity();
+    state = state.copyWith(isloading: true);
+    if (state.userPosition == null) {
+      final listOfCities = DummyData().cityNames;
+      for (var element in listOfCities) {
+        if (element.name == LocalStorage.getSelectedCity()) {
+          selectedCityLon = element.lon!;
+          selectedCityLat = element.lat!;
+        }
+      }
+    }
+
+    final request = state.userPosition != null
+        ? GetYandexMapImageRequest(
+            latlon:
+                "${state.userPosition?.longitude},${state.userPosition?.latitude}",
+            marker:
+                "${state.userPosition?.longitude},${state.userPosition?.latitude},pm2rdm",
+            size: "300,150",
+            zoom: 11,
+            i: "map",
+          )
+        : GetYandexMapImageRequest(
+            latlon: "$selectedCityLon,$selectedCityLat",
+            marker: "$selectedCityLon,$selectedCityLat,pm2rdm",
+            size: "300,150",
+            zoom: 10,
+            i: "map",
+          );
+    final response =
+        await _mainRepositoryInterface.getYandexMapImage(request: request);
+    response.when(
+      success: (data) {
+        if (data != null) {
+          state = state.copyWith(mapScreenShot: data);
+        }
+      },
+      failure: (error, statusCode) {},
+    );
+    state = state.copyWith(isloading: false);
+    if (connected) {
+    } else {
+      // ignore: use_build_context_synchronously
+      AppHelpers.showCheckTopSnackBar(context);
+    }
   }
 
   Future<void> setLocationFromSelectedCity() async {

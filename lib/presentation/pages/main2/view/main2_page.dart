@@ -31,7 +31,12 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref.read(mapProvider.notifier).getUserLocation();
+      ref.read(mapProvider.notifier).getUserLocation().then((value) {
+        ref.read(mapProvider.notifier).getYandexMapImage(
+              context,
+            );
+      });
+
       ref.read(scheduleProvider.notifier)
         ..getNearestLesson(context)
         ..getUserStatsMonth(context);
@@ -42,11 +47,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
   Widget build(BuildContext context) {
     final state = ref.watch(scheduleProvider);
     final event = ref.read(scheduleProvider.notifier);
-    
-    //LocalStorage.removeToken();
-    if (kDebugMode) {
-      //print("token ${LocalStorage.getToken()}");
-    }
+    final mapState = ref.watch(mapProvider);
     if (controller.text.isEmpty && state.schedulesFoundBySearching.isNotEmpty) {
       event.cleanSearchList();
     }
@@ -120,12 +121,28 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                           10.verticalSpace,
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16.w),
-                            child:  Container(
-                                width: double.maxFinite,
-                                height: 150.h,
-                                color: Colors.red,
-                              ) 
-                               // Main2Map(mapState: mapState),
+                            child: mapState.isloading &&
+                                    mapState.mapScreenShot == null
+                                ? const Main2MapPlaceHolder()
+                                : Main2Map(
+                                    child: Image.memory(
+                                      mapState.mapScreenShot ?? Uint8List(100),
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        // Your fallback widget here
+                                        return SizedBox(
+                                          height: 147.h,
+                                          width: double.maxFinite,
+                                          child: Center(
+                                            child: CustomText(text: ""
+                                                //"Unable to load screenshot from Yandex Static API",
+                                                ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
                           ),
                           32.verticalSpace,
                           const DecoratedTextOne(),

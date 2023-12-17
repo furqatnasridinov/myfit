@@ -51,8 +51,7 @@ class _NotesCardMakerState extends State<NotesCardMaker> {
     List<String> parts = widget.day.split("@"); //2023-11-11@15:15
     String dayToFormat = parts[0]; //2023-11-11
     final formattedDay = widget.event.formatDay(dayToFormat); // Ноябрь 11
-    if (addedNotes.isNotEmpty) {
-    }
+    if (addedNotes.isNotEmpty) {}
     return Container(
       margin: EdgeInsets.only(bottom: 32.w),
       child: Column(
@@ -192,7 +191,7 @@ class _NotesCardMakerState extends State<NotesCardMaker> {
     return Column(
       children: [
         // textfields
-        MediaQuery.removePadding(
+        /* MediaQuery.removePadding(
           context: context,
           removeBottom: true,
           child: ListView.builder(
@@ -239,7 +238,7 @@ class _NotesCardMakerState extends State<NotesCardMaker> {
               );
             },
           ),
-        ),
+        ),  */
 
         // added notes part
         MediaQuery.removePadding(
