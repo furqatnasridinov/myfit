@@ -368,8 +368,6 @@ class _MainHeaderState extends State<MapHeader> {
                       child: GestureDetector(
                         child: SvgPicture.asset(
                           'assets/svg/calendar.svg',
-                          width: 24.w,
-                          height: 24.h,
                         ),
                         //onTap: () => {context.go('/schedule')},
                       ),
@@ -382,18 +380,18 @@ class _MainHeaderState extends State<MapHeader> {
                         child: Padding(
                           padding: EdgeInsets.all(2.r),
                           child: ClipOval(
-                                child: Image.asset(
-                              AppConstants.cristianBale,
-                              fit: BoxFit.cover,
-                            )
-                                /* CachedNetworkImage(
+                              child: Image.asset(
+                            AppConstants.cristianBale,
+                            fit: BoxFit.cover,
+                          )
+                              /* CachedNetworkImage(
                                 imageUrl: AppConstants.owlNetworkImage,
                                 fit: BoxFit.cover,
                                 errorWidget: (context, url, error) {
                                   return const SizedBox();
                                 },
                               ), */
-                                ),
+                              ),
                         ),
                       ),
                     ),

@@ -93,7 +93,6 @@ class _MainHeaderState extends State<Main2Header> {
             fontWeight: FontWeight.w500,
             fontFeatures: const [FontFeature.liningFigures()],
           ),
-
           onChanged: (value) {
             widget.controller.text = value;
             setState(() {});
