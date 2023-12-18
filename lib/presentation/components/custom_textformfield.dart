@@ -22,11 +22,13 @@ class CustomTextFormField extends StatelessWidget {
   bool dontShowBorders;
   Widget? suffixIcon;
   void Function()? onTap;
+  void Function(String)? onChanged;
   CustomTextFormField({
     Key? key,
     this.hintText,
     this.hasFocus = false,
     this.readOnly = false,
+    this.onChanged,
     this.dontShowBorders = false,
     this.onTap,
     this.inputFormatters,
@@ -55,6 +57,7 @@ class CustomTextFormField extends StatelessWidget {
       onTapOutside: onTapOutside,
       controller: controller,
       cursorColor: AppColors.greyText,
+      onChanged: onChanged,
       style: GoogleFonts.inter(
         fontSize: 14.sp,
         fontWeight: FontWeight.w400,

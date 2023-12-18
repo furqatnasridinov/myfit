@@ -40,6 +40,16 @@ class _PersonalInfoState extends State<PersonalInfo> {
             ? LocalStorage.getPhoneNumber()
             : widget.state.phoneNumber);
     emailController = TextEditingController();
+    phoneController.addListener(() {
+      if (phoneController.text.length == 12 &&
+          phoneController.text != LocalStorage.getPhoneNumber()) {
+        newDataAdded = true;
+        setState(() {});
+      } else {
+        newDataAdded = false;
+        setState(() {});
+      }
+    });
   }
 
   @override
@@ -56,14 +66,9 @@ class _PersonalInfoState extends State<PersonalInfo> {
       print("city ${widget.state.selectedCity?.name}");
       print("phone ${widget.state.phoneNumber}");
       print("name ${widget.state.userName}");
+      print(LocalStorage.getPhoneNumber());
     }
-    phoneController.addListener(() {
-      if (phoneController.text.length == 12 &&
-          phoneController.text != LocalStorage.getPhoneNumber()) {
-        newDataAdded = true;
-        setState(() {});
-      }
-    });
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -88,19 +93,19 @@ class _PersonalInfoState extends State<PersonalInfo> {
                       backgroundColor: AppColors.blueColor,
                       child: Padding(
                         padding: EdgeInsets.all(2.r),
-                        child:ClipOval(
-                                child: Image.asset(
-                              AppConstants.cristianBale,
-                              fit: BoxFit.cover,
-                            )
-                                /* CachedNetworkImage(
+                        child: ClipOval(
+                            child: Image.asset(
+                          AppConstants.cristianBale,
+                          fit: BoxFit.cover,
+                        )
+                            /* CachedNetworkImage(
                                 imageUrl: AppConstants.owlNetworkImage,
                                 fit: BoxFit.cover,
                                 errorWidget: (context, url, error) {
                                   return const SizedBox();
                                 },
                               ), */
-                                ),
+                            ),
                       ),
                     ),
                   ),
@@ -182,19 +187,6 @@ class _PersonalInfoState extends State<PersonalInfo> {
                 EditButton(
                   newDataAdded: newDataAdded,
                   editingEnabled: widget.state.isPhoneEditModeEnabled,
-                  /* submitOntap: () {
-                    LocalStorage.setPhoneNumber(phoneController.text)
-                        .then((value) => widget.event.setPhone());
-                    newDataAdded = false;
-                    widget.event.closeEditingPhone();
-                    setState(() {});
-                  },
-                  cancelOntap: () {
-                    newDataAdded = false;
-                    phoneController.text = LocalStorage.getPhoneNumber();
-                    widget.event.closeEditingPhone();
-                    setState(() {});
-                  }, */
                   onTap: () {
                     if (widget.state.isPhoneEditModeEnabled) {
                       if (phoneController.text !=
@@ -218,13 +210,17 @@ class _PersonalInfoState extends State<PersonalInfo> {
             SizedBox(
               height: 40.h,
               child: CustomTextFormField(
+                onChanged: (value) {
+                  phoneController.text = value;
+                  setState(() {});
+                },
                 keyboardType: TextInputType.phone,
                 //inputFormatters: [AppValidators().phoneMask],
                 contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
                 readOnly: !widget.state.isPhoneEditModeEnabled,
                 controller: phoneController,
                 dontShowBorders: !widget.state.isPhoneEditModeEnabled,
-                suffixIcon: newDataAdded
+                suffixIcon: newDataAdded && phoneController.text.length == 12
                     ? InkWell(
                         onTap: () {
                           LocalStorage.setPhoneNumber(phoneController.text)

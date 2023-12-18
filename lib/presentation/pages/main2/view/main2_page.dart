@@ -51,7 +51,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     if (controller.text.isEmpty && state.schedulesFoundBySearching.isNotEmpty) {
       event.cleanSearchList();
     }
-
+    //LocalStorage.removeToken();
     return PopScope(
       //canPop: false,
       child: Scaffold(

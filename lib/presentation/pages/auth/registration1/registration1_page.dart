@@ -24,8 +24,52 @@ class Registration1Screen extends ConsumerStatefulWidget {
 }
 
 class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
-  TextEditingController controller = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
   var phoneMask = AppValidators().phoneMask;
+
+  @override
+  void initState() {
+    super.initState();
+    phoneController.addListener(() {
+      String currentText = phoneController.text;
+      if (!currentText.startsWith('+7')) {
+        // Reset to '+7' if the user tries to delete it
+        phoneController.value = TextEditingValue(
+          text: '+7 ',
+          selection: TextSelection.collapsed(offset: 3),
+        );
+      } else if (currentText.length > 3) {
+        // Apply the mask only if there is more text beyond '+7'
+        String newText =
+            '+7 ' + applyMask(currentText.substring(3), '(###) ###-##-##');
+        if (newText != currentText) {
+          phoneController.value = TextEditingValue(
+            text: newText,
+            selection: TextSelection.collapsed(offset: newText.length),
+          );
+        }
+      }
+    });
+  }
+
+  String applyMask(String input, String mask) {
+    // Implement your masking logic here
+    String output = '';
+    int inputIndex = 0;
+    for (var maskChar in mask.split('')) {
+      if (inputIndex >= input.length) break;
+      if (maskChar == '#') {
+        output += input[inputIndex];
+        inputIndex++;
+      } else {
+        output += maskChar;
+        if (inputIndex < input.length && maskChar == input[inputIndex]) {
+          inputIndex++;
+        }
+      }
+    }
+    return output;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +91,6 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // with textfield one
-
                   CustomCard(
                     child: Column(
                       children: [
@@ -67,12 +110,15 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                               height: 40.h,
                               //color: Colors.red,
                               child: TextField(
-                                inputFormatters: [phoneMask],
+                                //inputFormatters: [phoneMask],
                                 //maxLength: 17,
                                 maxLines: 1,
-                                //controller: controller,
+                                controller: phoneController,
                                 onChanged: (value) {
-                                  event.setPhone(phoneMask.getUnmaskedText());
+                                  // Remove all non-numeric characters except the plus sign
+                                  String unformattedPhone = phoneController.text
+                                      .replaceAll(RegExp(r'[^\d+]'), '');
+                                  event.setPhone(unformattedPhone);
                                 },
                                 onTapOutside: (onTapOutside) {
                                   FocusScope.of(context).unfocus();
@@ -130,7 +176,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                               onTap: () {
                                 if (state.isValidPhone) {
                                   event.sendPhoneNumber(
-                                    "+${state.phoneNumber}",
+                                    state.phoneNumber,
                                     context,
                                   );
                                 }
