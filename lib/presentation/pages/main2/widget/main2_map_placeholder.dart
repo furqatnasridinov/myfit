@@ -9,12 +9,15 @@ class Main2MapPlaceHolder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomCard(
-      height: 100.h,
+      height: 147.h,
       width: double.maxFinite,
-      child: CustomText(
-        text: "Идет поиск заведений вокруг вас, пожалуйста подождите!",
-        fontSize: 14.sp,
-        fontWeight: FontWeight.w500,
+      child: Center(
+        child: CustomText(
+          text: "Идет поиск заведений вокруг вас, пожалуйста подождите!",
+          textAlign: TextAlign.center,
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }

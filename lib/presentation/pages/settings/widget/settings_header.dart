@@ -326,26 +326,26 @@ class _MainHeaderState extends State<SettingsHeader> {
                       ),
                     ),
                     const Spacer(),
-                    SizedBox(
-                      child: CircleAvatar(
-                        radius: 20.r,
-                        backgroundColor: AppColors.blueColor,
-                        child: Padding(
-                          padding: EdgeInsets.all(2.r),
-                          child: ClipOval(
-                              child: Image.asset(
-                            AppConstants.cristianBale,
-                            fit: BoxFit.cover,
-                          )
-                              /* CachedNetworkImage(
+                    Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.blueColor,
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(2.r),
+                        child: ClipOval(
+                            child: Image.asset(
+                          AppConstants.cristianBale,
+                          fit: BoxFit.cover,
+                        )
+                            /* CachedNetworkImage(
                                 imageUrl: AppConstants.owlNetworkImage,
                                 fit: BoxFit.cover,
                                 errorWidget: (context, url, error) {
                                   return const SizedBox();
                                 },
                               ), */
-                              ),
-                        ),
+                            ),
                       ),
                     ),
                   ],

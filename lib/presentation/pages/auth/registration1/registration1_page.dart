@@ -1,7 +1,6 @@
 import 'package:activity/application/registration/registration_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
-import 'package:activity/infrastructure/services/app_validator.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_card.dart';
@@ -25,7 +24,6 @@ class Registration1Screen extends ConsumerStatefulWidget {
 
 class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
   TextEditingController phoneController = TextEditingController();
-  var phoneMask = AppValidators().phoneMask;
 
   @override
   void initState() {
@@ -34,14 +32,14 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
       String currentText = phoneController.text;
       if (!currentText.startsWith('+7')) {
         // Reset to '+7' if the user tries to delete it
-        phoneController.value = TextEditingValue(
+        phoneController.value = const TextEditingValue(
           text: '+7 ',
           selection: TextSelection.collapsed(offset: 3),
         );
       } else if (currentText.length > 3) {
         // Apply the mask only if there is more text beyond '+7'
         String newText =
-            '+7 ' + applyMask(currentText.substring(3), '(###) ###-##-##');
+            '+7 ${applyMask(currentText.substring(3), '(###) ###-##-##')}';
         if (newText != currentText) {
           phoneController.value = TextEditingValue(
             text: newText,

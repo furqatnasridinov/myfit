@@ -5,7 +5,6 @@ import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -51,13 +50,17 @@ class _MapScreenState extends ConsumerState<MapScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.paused) {
-      _checkLocationPermission();
-    } else if (state == AppLifecycleState.resumed &&
-        wasLocationPermissionDenied) {
-      checkPermissionAndSetLocation();
-      ref.read(mapProvider.notifier).getYandexMapImage(
-            context,
-          );
+      if (ref.watch(mapProvider).locationPermissionIsNOtGiven) {
+        _checkLocationPermission();
+      }
+    }
+    if (state == AppLifecycleState.resumed) {
+      if (wasLocationPermissionDenied) {
+        checkPermissionAndSetLocation();
+      }
+      if (ref.watch(mapProvider).locationServiceIsNotEnabled) {
+        listenToLocationService();
+      }
     }
   }
 
@@ -86,25 +89,18 @@ class _MapScreenState extends ConsumerState<MapScreen>
     }
   }
 
+  Future<void> listenToLocationService() async {
+    bool isEnabled = await Geolocator.isLocationServiceEnabled();
+    if (isEnabled && ref.watch(mapProvider).locationServiceIsNotEnabled) {
+      ref.read(mapProvider.notifier).setLocationServiceAsEnabled();
+      checkPermissionAndSetLocation();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(mapProvider);
     final event = ref.read(mapProvider.notifier);
-    if (kDebugMode) {
-      print("hidelocation =>> ${state.isLocationIconHidden}");
-      print("user position data ${state.userPosition}");
-
-      print(
-          "list lenth ${state.activitiesWithGymsInsideFromSelectedDiapozone.length}");
-      print("top flex ${state.topFlex}");
-      print("bottom flex ${state.bottomFlex}");
-      print("tire ${"-----------------------------"}");
-      print("list of bool ${state.listOfBool}");
-      print("markers count ${state.listOfMarkers.length}");
-      print(
-          "placemark lenth ${event.getPlacemarkObjects(onTap: (placemarkMapObject, point) {}).length}");
-    }
-
     return PopScope(
       onPopInvoked: (didPop) {
         if (state.showMapOnly) {
@@ -161,7 +157,6 @@ class _MapScreenState extends ConsumerState<MapScreen>
                           ]),
               ),
             ),
-
             // map
             Flexible(
               //fit: FlexFit.tight,
@@ -206,10 +201,11 @@ class _MapScreenState extends ConsumerState<MapScreen>
                         debugPrint("onMapCreated called");
                         yandexMapController = controller;
                         setState(() {});
-                        if (state.userPosition == null) {
-                          await event.getUserLocation();
+                        await event.getUserLocation();
+                        if (state.userPosition == null ||
+                            state.locationServiceIsNotEnabled) {
+                          await event.setLocationFromSelectedCity();
                         }
-                        await event.setLocationFromSelectedCity();
                         event.setInitialCameraPosition(
                           controller: yandexMapController!,
                         );
@@ -325,14 +321,14 @@ class _MapScreenState extends ConsumerState<MapScreen>
                                     }
                                   },
                                   child: CustomCard(
-                                    /* height: 40.h,
-                                    width: 40.w, */
+                                    height: 40.h,
+                                    width: 40.w,
                                     radius: 8.r,
                                     paddingAll: 8.r,
                                     child: SvgPicture.asset(
                                       "assets/svg/location_icon.svg",
-                                      fit: BoxFit.contain,
-                                      height: 24.h,
+                                      fit: BoxFit.scaleDown,
+                                      //height: 24.h,
                                     ),
                                   ),
                                 ),

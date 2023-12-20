@@ -63,6 +63,7 @@ class MapPageTopSection extends StatelessWidget {
               ),
               child: SvgPicture.asset(
                 "assets/svg/icon_filter.svg",
+                fit: BoxFit.scaleDown,
               ),
             ),
           ),

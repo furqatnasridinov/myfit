@@ -321,6 +321,7 @@ class _MainHeaderState extends State<MapHeader> {
                 padding: EdgeInsets.all(5.r),
                 child: SvgPicture.asset(
                   "assets/svg/search.svg",
+                  fit: BoxFit.scaleDown,
                   // ignore: deprecated_member_use
                   color: AppColors.blueColor,
                 ),
@@ -375,6 +376,7 @@ class _MainHeaderState extends State<MapHeader> {
                       child: GestureDetector(
                         child: SvgPicture.asset(
                           'assets/svg/calendar.svg',
+                          fit: BoxFit.scaleDown,
                         ),
                         //onTap: () => {context.go('/schedule')},
                       ),

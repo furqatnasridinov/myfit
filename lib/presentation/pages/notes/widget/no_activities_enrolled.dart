@@ -7,7 +7,10 @@ class NoActivitiesEnrolled extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: CustomText(text: "У вас нет активных или завершенных занятий!"),
+      child: CustomText(
+        text: "У вас нет активных или завершенных занятий!",
+        textAlign: TextAlign.center,
+      ),
     );
   }
 }

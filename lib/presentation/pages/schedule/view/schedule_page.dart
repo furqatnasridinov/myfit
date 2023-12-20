@@ -30,7 +30,7 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(scheduleProvider.notifier).getUsersSchedules(context);
-      ref.read(mapProvider.notifier).getUserLocation();
+      //ref.read(mapProvider.notifier).getUserLocation();
     });
   }
 

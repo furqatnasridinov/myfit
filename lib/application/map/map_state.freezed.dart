@@ -24,6 +24,7 @@ mixin _$MapState {
   List<double> get distances => throw _privateConstructorUsedError;
   double get selectedDiapozone => throw _privateConstructorUsedError;
   bool get locationPermissionIsNOtGiven => throw _privateConstructorUsedError;
+  bool get locationServiceIsNotEnabled => throw _privateConstructorUsedError;
   List<bool> get listOfBool => throw _privateConstructorUsedError;
   List<GymData> get gymFoundBySearching => throw _privateConstructorUsedError;
   bool get isSearchbarOpened => throw _privateConstructorUsedError;
@@ -56,6 +57,7 @@ abstract class $MapStateCopyWith<$Res> {
       List<double> distances,
       double selectedDiapozone,
       bool locationPermissionIsNOtGiven,
+      bool locationServiceIsNotEnabled,
       List<bool> listOfBool,
       List<GymData> gymFoundBySearching,
       bool isSearchbarOpened,
@@ -89,6 +91,7 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
     Object? distances = null,
     Object? selectedDiapozone = null,
     Object? locationPermissionIsNOtGiven = null,
+    Object? locationServiceIsNotEnabled = null,
     Object? listOfBool = null,
     Object? gymFoundBySearching = null,
     Object? isSearchbarOpened = null,
@@ -128,6 +131,10 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
       locationPermissionIsNOtGiven: null == locationPermissionIsNOtGiven
           ? _value.locationPermissionIsNOtGiven
           : locationPermissionIsNOtGiven // ignore: cast_nullable_to_non_nullable
+              as bool,
+      locationServiceIsNotEnabled: null == locationServiceIsNotEnabled
+          ? _value.locationServiceIsNotEnabled
+          : locationServiceIsNotEnabled // ignore: cast_nullable_to_non_nullable
               as bool,
       listOfBool: null == listOfBool
           ? _value.listOfBool
@@ -190,6 +197,7 @@ abstract class _$$MapStateImplCopyWith<$Res>
       List<double> distances,
       double selectedDiapozone,
       bool locationPermissionIsNOtGiven,
+      bool locationServiceIsNotEnabled,
       List<bool> listOfBool,
       List<GymData> gymFoundBySearching,
       bool isSearchbarOpened,
@@ -221,6 +229,7 @@ class __$$MapStateImplCopyWithImpl<$Res>
     Object? distances = null,
     Object? selectedDiapozone = null,
     Object? locationPermissionIsNOtGiven = null,
+    Object? locationServiceIsNotEnabled = null,
     Object? listOfBool = null,
     Object? gymFoundBySearching = null,
     Object? isSearchbarOpened = null,
@@ -260,6 +269,10 @@ class __$$MapStateImplCopyWithImpl<$Res>
       locationPermissionIsNOtGiven: null == locationPermissionIsNOtGiven
           ? _value.locationPermissionIsNOtGiven
           : locationPermissionIsNOtGiven // ignore: cast_nullable_to_non_nullable
+              as bool,
+      locationServiceIsNotEnabled: null == locationServiceIsNotEnabled
+          ? _value.locationServiceIsNotEnabled
+          : locationServiceIsNotEnabled // ignore: cast_nullable_to_non_nullable
               as bool,
       listOfBool: null == listOfBool
           ? _value._listOfBool
@@ -317,6 +330,7 @@ class _$MapStateImpl extends _MapState {
       final List<double> distances = const [],
       this.selectedDiapozone = 5,
       this.locationPermissionIsNOtGiven = false,
+      this.locationServiceIsNotEnabled = false,
       final List<bool> listOfBool = const [false, false, false, true],
       final List<GymData> gymFoundBySearching = const [],
       this.isSearchbarOpened = false,
@@ -371,6 +385,9 @@ class _$MapStateImpl extends _MapState {
   @override
   @JsonKey()
   final bool locationPermissionIsNOtGiven;
+  @override
+  @JsonKey()
+  final bool locationServiceIsNotEnabled;
   final List<bool> _listOfBool;
   @override
   @JsonKey()
@@ -435,7 +452,7 @@ class _$MapStateImpl extends _MapState {
 
   @override
   String toString() {
-    return 'MapState(isloading: $isloading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, activeMarker: $activeMarker, distances: $distances, selectedDiapozone: $selectedDiapozone, locationPermissionIsNOtGiven: $locationPermissionIsNOtGiven, listOfBool: $listOfBool, gymFoundBySearching: $gymFoundBySearching, isSearchbarOpened: $isSearchbarOpened, activitiesWithGymsInsideAll: $activitiesWithGymsInsideAll, activitiesWithGymsInsideFromSelectedDiapozone: $activitiesWithGymsInsideFromSelectedDiapozone, showMapOnly: $showMapOnly, mapScreenShot: $mapScreenShot, topFlex: $topFlex, bottomFlex: $bottomFlex, isLocationIconHidden: $isLocationIconHidden)';
+    return 'MapState(isloading: $isloading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, activeMarker: $activeMarker, distances: $distances, selectedDiapozone: $selectedDiapozone, locationPermissionIsNOtGiven: $locationPermissionIsNOtGiven, locationServiceIsNotEnabled: $locationServiceIsNotEnabled, listOfBool: $listOfBool, gymFoundBySearching: $gymFoundBySearching, isSearchbarOpened: $isSearchbarOpened, activitiesWithGymsInsideAll: $activitiesWithGymsInsideAll, activitiesWithGymsInsideFromSelectedDiapozone: $activitiesWithGymsInsideFromSelectedDiapozone, showMapOnly: $showMapOnly, mapScreenShot: $mapScreenShot, topFlex: $topFlex, bottomFlex: $bottomFlex, isLocationIconHidden: $isLocationIconHidden)';
   }
 
   @override
@@ -459,6 +476,10 @@ class _$MapStateImpl extends _MapState {
                     locationPermissionIsNOtGiven) ||
                 other.locationPermissionIsNOtGiven ==
                     locationPermissionIsNOtGiven) &&
+            (identical(other.locationServiceIsNotEnabled,
+                    locationServiceIsNotEnabled) ||
+                other.locationServiceIsNotEnabled ==
+                    locationServiceIsNotEnabled) &&
             const DeepCollectionEquality()
                 .equals(other._listOfBool, _listOfBool) &&
             const DeepCollectionEquality()
@@ -492,6 +513,7 @@ class _$MapStateImpl extends _MapState {
       const DeepCollectionEquality().hash(_distances),
       selectedDiapozone,
       locationPermissionIsNOtGiven,
+      locationServiceIsNotEnabled,
       const DeepCollectionEquality().hash(_listOfBool),
       const DeepCollectionEquality().hash(_gymFoundBySearching),
       isSearchbarOpened,
@@ -520,6 +542,7 @@ abstract class _MapState extends MapState {
       final List<double> distances,
       final double selectedDiapozone,
       final bool locationPermissionIsNOtGiven,
+      final bool locationServiceIsNotEnabled,
       final List<bool> listOfBool,
       final List<GymData> gymFoundBySearching,
       final bool isSearchbarOpened,
@@ -547,6 +570,8 @@ abstract class _MapState extends MapState {
   double get selectedDiapozone;
   @override
   bool get locationPermissionIsNOtGiven;
+  @override
+  bool get locationServiceIsNotEnabled;
   @override
   List<bool> get listOfBool;
   @override

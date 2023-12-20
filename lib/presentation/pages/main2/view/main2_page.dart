@@ -36,7 +36,6 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
               context,
             );
       });
-
       ref.read(scheduleProvider.notifier)
         ..getNearestLesson(context)
         ..getUserStatsMonth(context);
@@ -130,16 +129,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                                       fit: BoxFit.cover,
                                       errorBuilder:
                                           (context, error, stackTrace) {
-                                        // Your fallback widget here
-                                        return SizedBox(
-                                          height: 147.h,
-                                          width: double.maxFinite,
-                                          child: Center(
-                                            child: CustomText(text: ""
-                                                //"Unable to load screenshot from Yandex Static API",
-                                                ),
-                                          ),
-                                        );
+                                        return const Main2MapPlaceHolder();
                                       },
                                     ),
                                   ),

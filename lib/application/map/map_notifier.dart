@@ -32,36 +32,56 @@ class MapNotifier extends StateNotifier<MapState> {
     }
     if (permission == LocationPermission.always ||
         permission == LocationPermission.whileInUse) {
-      final postion = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-      state = state.copyWith(userPosition: postion);
-      state = state.copyWith(locationPermissionIsNOtGiven: false);
+      try {
+        final postion = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high);
+        state = state.copyWith(userPosition: postion);
+        state = state.copyWith(locationPermissionIsNOtGiven: false);
+      } catch (e) {
+        state = state.copyWith(locationServiceIsNotEnabled: true);
+      }
+
       // state = state.copyWith(isloading: false);
     }
   }
 
+  /* Future<void> checkLocationService() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse) {
+      if (!serviceEnabled) {
+        state = state.copyWith(locationServiceIsNotEnabled: true);
+      }
+    }
+  } */
+
   Future<void> setUserPosition() async {
     state = state.copyWith(isloading: true);
     await setFlexes();
-    final postion = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    state = state.copyWith(userPosition: postion);
-    var markersList = state.listOfMarkers;
-    for (var element in markersList) {
-      if (element.name == "user") {
-        element.latitude = postion.latitude;
-        element.longitude = postion.longitude;
+    try {
+      final postion = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      state = state.copyWith(userPosition: postion);
+      var markersList = state.listOfMarkers;
+      for (var element in markersList) {
+        if (element.name == "user") {
+          element.latitude = postion.latitude;
+          element.longitude = postion.longitude;
+        }
       }
-    }
-    final withCalculatedDistances = // and sort
-        calculateDistanceOfGyms(state.activitiesWithGymsInsideAll);
-    state =
-        state.copyWith(activitiesWithGymsInsideAll: withCalculatedDistances);
+      final withCalculatedDistances = // and sort
+          calculateDistanceOfGyms(state.activitiesWithGymsInsideAll);
+      state =
+          state.copyWith(activitiesWithGymsInsideAll: withCalculatedDistances);
 
-    state = state.copyWith(listOfMarkers: markersList);
-    state = state.copyWith(locationPermissionIsNOtGiven: false);
-    state = state.copyWith(isloading: false);
-    setFlexes();
+      state = state.copyWith(listOfMarkers: markersList);
+      state = state.copyWith(locationPermissionIsNOtGiven: false);
+      state = state.copyWith(isloading: false);
+      setFlexes();
+    } catch (e) {
+      state = state.copyWith(locationServiceIsNotEnabled: true);
+    }
   }
 
   Future<void> getYandexMapImage(
@@ -72,7 +92,7 @@ class MapNotifier extends StateNotifier<MapState> {
     final connected = await AppConnectivity().connectivity();
     state = state.copyWith(isloading: true);
     if (connected) {
-      if (state.userPosition == null) {
+      if (state.userPosition == null || state.locationServiceIsNotEnabled) {
         final listOfCities = DummyData().cityNames;
         for (var element in listOfCities) {
           if (element.name == LocalStorage.getSelectedCity()) {
@@ -171,28 +191,28 @@ class MapNotifier extends StateNotifier<MapState> {
 
   Future<void> setLocationFromSelectedCity() async {
     // checking whether user position is null
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      final listOfCities = DummyData().cityNames;
-      for (var element in listOfCities) {
-        if (element.name == LocalStorage.getSelectedCity()) {
-          state = state.copyWith(
-              userPosition: Position(
-            longitude: element.lon ?? 0,
-            latitude: element.lat ?? 0,
-            timestamp: DateTime.now(),
-            accuracy: 5,
-            altitude: 5,
-            altitudeAccuracy: 0.5,
-            heading: 0.5,
-            headingAccuracy: 0,
-            speed: 0,
-            speedAccuracy: 0,
-          ));
-        }
+    final listOfCities = DummyData().cityNames;
+    for (var element in listOfCities) {
+      if (element.name == LocalStorage.getSelectedCity()) {
+        state = state.copyWith(
+            userPosition: Position(
+          longitude: element.lon ?? 0,
+          latitude: element.lat ?? 0,
+          timestamp: DateTime.now(),
+          accuracy: 5,
+          altitude: 5,
+          altitudeAccuracy: 0.5,
+          heading: 0.5,
+          headingAccuracy: 0,
+          speed: 0,
+          speedAccuracy: 0,
+        ));
       }
     }
+  }
+
+  void setLocationServiceAsEnabled(){
+    state = state.copyWith(locationServiceIsNotEnabled: false);
   }
 
   void setInitialCameraPosition({required YandexMapController controller}) {
@@ -421,7 +441,7 @@ class MapNotifier extends StateNotifier<MapState> {
     if (list.length > 4 && !state.isloading) {
       state = state.copyWith(topFlex: 6, bottomFlex: 8);
     }
-    if (list.length > 5 && state.locationPermissionIsNOtGiven) {
+    if (list.length > 5 && (state.locationPermissionIsNOtGiven || state.locationServiceIsNotEnabled)) {
       state = state.copyWith(
         topFlex: 7,
         bottomFlex: 5,

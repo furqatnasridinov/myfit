@@ -162,7 +162,6 @@ class _MainHeaderState extends State<Main2Header> {
             ? const SizedBox()
             : Container(
                 width: 95.w,
-                height: 40.h,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(100.r),
@@ -198,10 +197,8 @@ class _MainHeaderState extends State<Main2Header> {
                         },
                         child: SvgPicture.asset(
                           'assets/svg/calendar.svg',
-                          width: 24.w,
-                          height: 24.h,
+                          fit: BoxFit.scaleDown,
                         ),
-                        //onTap: () => {context.go('/schedule')},
                       ),
                     ),
                     const Spacer(),
@@ -209,30 +206,26 @@ class _MainHeaderState extends State<Main2Header> {
                       onTap: () {
                         context.router.push(const SettingsRoute());
                       },
-                      child: SizedBox(
-                        width: 40.w,
-                        height: 40.h,
-                        //color: Colors.red,
-                        child: CircleAvatar(
-                          radius: 20.r,
-                          backgroundColor:
-                              const Color.fromRGBO(119, 170, 249, 1),
-                          child: Padding(
-                            padding: EdgeInsets.all(2.r),
-                            child: ClipOval(
-                                child: Image.asset(
-                              AppConstants.cristianBale,
-                              fit: BoxFit.cover,
-                            )
-                                /* CachedNetworkImage(
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.blueColor,
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(2.r),
+                          child: ClipOval(
+                              child: Image.asset(
+                            AppConstants.cristianBale,
+                            fit: BoxFit.cover,
+                          )
+                              /* CachedNetworkImage(
                                 imageUrl: AppConstants.owlNetworkImage,
                                 fit: BoxFit.cover,
                                 errorWidget: (context, url, error) {
                                   return const SizedBox();
                                 },
                               ), */
-                                ),
-                          ),
+                              ),
                         ),
                       ),
                     ),

@@ -18,6 +18,7 @@ class MapState with _$MapState {
     @Default([]) List<double> distances,
     @Default(5) double selectedDiapozone,
     @Default(false) bool locationPermissionIsNOtGiven,
+    @Default(false) bool locationServiceIsNotEnabled,
     @Default([false, false, false, true]) List<bool> listOfBool,
     @Default([]) List<GymData> gymFoundBySearching,
     @Default(false) bool isSearchbarOpened,

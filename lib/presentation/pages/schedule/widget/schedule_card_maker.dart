@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/application/schedule/schedule_state.dart';
+import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/ui_dropdown_menu.dart';
 import 'package:activity/presentation/pages/schedule/widget/schedule_item.dart';
@@ -18,7 +19,7 @@ class ScheduleCardMaker extends StatelessWidget {
   final ScheduleNotifier event;
   final ScheduleState state;
 
- const  ScheduleCardMaker({
+  const ScheduleCardMaker({
     super.key,
     required this.date,
     required this.scheduleItems,
@@ -60,7 +61,7 @@ class ScheduleCardMaker extends StatelessWidget {
     return UiDropDownMenu(
       width: double.maxFinite,
       maxWidth: 263.w,
-      customOffset:  [-45.0.w, -40.0.h],
+      customOffset: [-45.0.w, -40.0.h],
       dropDownItemsList: [
         {
           'title': 'Найти что то новое',
@@ -74,7 +75,7 @@ class ScheduleCardMaker extends StatelessWidget {
             width: 18.w,
           ),
           'action': () => {
-                context.router.push( MapRoute(gymId: 0)),
+                context.router.push(MapRoute(gymId: 0)),
               }
         },
         {
@@ -96,15 +97,17 @@ class ScheduleCardMaker extends StatelessWidget {
       onOpenedAction: () => {event.triggerPlusState()},
       onClosedAction: () => {event.removePlusState()},
       dropDownChild: Container(
+        width: 40.w,
+        height: 40.h,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8.r),
           border: Border.all(
             width: 1.w,
-            color: const Color.fromRGBO(89, 154, 254, 1),
+            color: AppColors.blueColor,
           ),
-          color: const Color.fromRGBO(119, 170, 249, 1),
+          color: AppColors.blueColor
         ),
-        padding: EdgeInsets.all(11.r),
+        //padding: EdgeInsets.all(11.r),
         child: Transform.rotate(
           angle: state.plusState == true ? (45 * pi / 180) : (0 * pi / 180),
           child: Icon(

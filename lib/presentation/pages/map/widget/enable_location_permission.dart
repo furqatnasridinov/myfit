@@ -1,4 +1,5 @@
 import 'package:activity/application/map/map_notifier.dart';
+import 'package:activity/application/map/map_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:flutter/gestures.dart';
@@ -7,10 +8,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class EnableLocationSection extends StatelessWidget {
+class EnableLocationPermission extends StatelessWidget {
   final MapNotifier event;
-  const EnableLocationSection({super.key, required this.event});
-
+  final MapState state;
+  const EnableLocationPermission(
+      {super.key, required this.event, required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -33,16 +35,12 @@ class EnableLocationSection extends StatelessWidget {
               TextSpan(
                 recognizer: TapGestureRecognizer()
                   ..onTap = () async {
-                    await Geolocator.openAppSettings();
-                   /*  .then((value) async {
-                      LocationPermission permission =
-                          await Geolocator.checkPermission();
-                      if (permission == LocationPermission.always ||
-                          permission == LocationPermission.whileInUse) {
-                        // Perform the next action, e.g., call setUserPosition()
-                        event.setUserPosition();
-                      }
-                    }); */
+                    if (state.locationPermissionIsNOtGiven) {
+                      await Geolocator.openAppSettings();
+                    }
+                    if(state.locationServiceIsNotEnabled){
+                      await Geolocator.openLocationSettings();
+                    }
                   },
                 text: "Включить",
                 style: GoogleFonts.raleway(

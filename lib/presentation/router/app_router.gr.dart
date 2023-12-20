@@ -202,7 +202,7 @@ class MainRoute extends _i14.PageRouteInfo<void> {
 class MapRoute extends _i14.PageRouteInfo<MapRouteArgs> {
   MapRoute({
     required int? gymId,
-    _i15.Key? key,
+    _i16.Key? key,
     List<_i14.PageRouteInfo>? children,
   }) : super(
           MapRoute.name,
@@ -227,7 +227,7 @@ class MapRouteArgs {
 
   final int? gymId;
 
-  final _i15.Key? key;
+  final _i16.Key? key;
 
   @override
   String toString() {

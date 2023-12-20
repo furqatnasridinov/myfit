@@ -53,10 +53,12 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
             ? NoGymsInSelectedDiapozone(
                 state: widget.state, event: widget.event)
             : SizedBox(
-                child: widget.state.locationPermissionIsNOtGiven
+                child: widget.state.locationPermissionIsNOtGiven ||
+                        widget.state.locationServiceIsNotEnabled
                     ? Column(
                         children: [
-                          EnableLocationSection(event: widget.event),
+                          EnableLocationPermission(
+                              event: widget.event, state: widget.state),
                           //16.verticalSpace,
                           ListView.builder(
                             //controller: widget.activitiesListController,
