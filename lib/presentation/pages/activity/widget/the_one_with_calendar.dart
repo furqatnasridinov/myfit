@@ -39,9 +39,10 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
             color: Colors.black,
           ),
           10.verticalSpace,
-          SizedBox(
-            //color: Colors.red,
-            height: 67.h,
+          Container(
+            //color: Colors.red.shade300,
+            height: 80.h,
+            padding: EdgeInsets.symmetric(vertical: 5.w),
             width: double.maxFinite,
             child: ListView.builder(
               itemCount: widget.state.listOf15CalendarDaysFromNow.length,
@@ -73,97 +74,84 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                           )
                         : null;
                   },
-                  child: Container(
-                    width: 41.w,
-                    //height: 97.h,
-                    /* padding: EdgeInsets.only(
-                      left: 4.w,
-                      right: 4.w,
-                      bottom: 14.h,
-                    ), */
-                    decoration: BoxDecoration(
-                      color: widget.state.selectedFormattedDay == currentDate
-                          ? AppColors.blueColor
-                          : Colors.white,
-                      borderRadius: BorderRadius.circular(8.r),
-                      border: Border.all(
-                        color: isAvailable
-                            ? AppColors.greyBorder
-                            : Colors.transparent,
-                        width: 1.w,
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 9.w),
+                    child: Container(
+                      width: 41.w,
+                      decoration: BoxDecoration(
+                        color: widget.state.selectedFormattedDay == currentDate
+                            ? AppColors.blueColor
+                            : Colors.white,
+                        borderRadius: BorderRadius.circular(8.r),
+                        border: Border.all(
+                          color: isAvailable
+                              ? AppColors.greyBorder
+                              : Colors.transparent,
+                          width: 1.w,
+                        ),
+                        boxShadow: widget.state.selectedFormattedDay ==
+                                currentDate
+                            ? [
+                                /* BoxShadow(
+                                  color: Colors.black.withOpacity(0.15),
+                                  blurRadius: 20.r, // Увеличьте размытие
+                                  offset: Offset(
+                                      0, 10.r), // Смещение вниз увеличено
+                                  spreadRadius: -5
+                                      .r, // Добавьте отрицательный spreadRadius
+                                ),
+                                BoxShadow(
+                                  color: Color.fromRGBO(123, 163, 225, 0.73),
+                                  blurRadius: 20.r, // Увеличьте размытие
+                                  offset: Offset(
+                                      0, 10.r), // Смещение вниз увеличено
+                                  spreadRadius: -5
+                                      .r, // Добавьте отрицательный spreadRadius
+                                ), */
+                              ]
+                            : [],
                       ),
-                      boxShadow:
-                          widget.state.selectedFormattedDay == currentDate
-                              ? const [
-                                  BoxShadow(
-                                    offset: Offset(0, 5),
-                                    blurRadius: 5,
-                                    spreadRadius: -4,
-                                    color: Color.fromRGBO(0, 0, 0, 0.15),
-                                  ),
-                                  BoxShadow(
-                                    offset: Offset(0, 10),
-                                    blurRadius: 10,
-                                    spreadRadius: -8,
-                                    color: Color.fromRGBO(123, 163, 225, 0.73),
-                                  ),
-                                ]
-                              : [],
-                    ),
-                    margin: EdgeInsets.only(right: 9.w),
-                    child: Column(
-                      children: [
-                        7.verticalSpace,
-                        InterText(
-                          text: parts[0],
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w600,
-                          color:
-                              widget.state.selectedFormattedDay == currentDate
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          InterText(
+                              text: parts[0],
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w600,
+                              color: widget.state.selectedFormattedDay ==
+                                      currentDate
                                   ? Colors.white
                                   : isAvailable
                                       ? Colors.black
-                                      : const Color.fromRGBO(
-                                          176,
-                                          176,
-                                          176,
-                                          1,
-                                        ),
-                        ),
-                        CustomText(
-                          fontSize: 10.sp,
-                          fontWeight: FontWeight.w500,
-                          text: parts[1],
-                          color:
-                              widget.state.selectedFormattedDay == currentDate
+                                      : const Color.fromRGBO(176, 176, 176, 1)),
+                          CustomText(
+                              fontSize: 10.sp,
+                              fontWeight: FontWeight.w500,
+                              text: parts[1],
+                              color: widget.state.selectedFormattedDay ==
+                                      currentDate
                                   ? Colors.white
                                   : isAvailable
                                       ? Colors.black
-                                      : const Color.fromRGBO(
-                                          176,
-                                          176,
-                                          176,
-                                          1,
-                                        ),
-                        ),
-                        1.verticalSpace,
-                        CustomText(
-                          fontSize: 10.sp,
-                          fontWeight: FontWeight.w500,
-                          text: parts[2],
-                          color:
-                              widget.state.selectedFormattedDay == currentDate
-                                  ? Colors.white
-                                  : isAvailable
-                                      ? Colors.black
-                                      : const Color.fromRGBO(
-                                          176,
-                                          176,
-                                          176,
-                                          1,
-                                        ),
-                        ),
-                      ],
+                                      : const Color.fromRGBO(176, 176, 176, 1)),
+                          CustomText(
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.w500,
+                            text: parts[2],
+                            color:
+                                widget.state.selectedFormattedDay == currentDate
+                                    ? Colors.white
+                                    : isAvailable
+                                        ? Colors.black
+                                        : const Color.fromRGBO(
+                                            176,
+                                            176,
+                                            176,
+                                            1,
+                                          ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );

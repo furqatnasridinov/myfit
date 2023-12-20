@@ -21,6 +21,7 @@ class MainState with _$MainState {
     @Default([]) List<ActivityNearClient> activitiesNearClient,
     @Default([]) List<EachMarkersModel>listOfMarkers,
     @Default(0) double? commentsContainerHeight,  
+    @Default("")String latlongsYandexApi,
   }) = _MainState;
   const MainState._();
 }

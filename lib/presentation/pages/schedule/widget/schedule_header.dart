@@ -5,7 +5,6 @@ import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/components/ui_button_filled.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
@@ -33,10 +32,9 @@ class ScheduleHeader extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _MainHeaderState extends State<ScheduleHeader> {
-  TextEditingController controller = TextEditingController();
-  FocusNode textfieldFocusnode = FocusNode();
-  final layerlink = LayerLink();
-  final listofaddresses = DummyData().dummyAddresses;
+  late TextEditingController controller;
+  late FocusNode textfieldFocusnode;
+  late LayerLink layerlink;
   OverlayEntry? entry;
   String previousText = "";
 
@@ -166,7 +164,9 @@ class _MainHeaderState extends State<ScheduleHeader> {
   @override
   void initState() {
     super.initState();
-
+    controller = TextEditingController();
+    textfieldFocusnode = FocusNode();
+    layerlink = LayerLink();
     textfieldFocusnode.addListener(() {
       if (textfieldFocusnode.hasFocus) {
         showOverlay();
@@ -174,6 +174,13 @@ class _MainHeaderState extends State<ScheduleHeader> {
         hideOverlay();
       }
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+    textfieldFocusnode.dispose();
   }
 
   @override
@@ -194,9 +201,10 @@ class _MainHeaderState extends State<ScheduleHeader> {
     return AppBar(
       automaticallyImplyLeading: false,
       //backgroundColor: Colors.amber,
-      leadingWidth: 48.w,
-      backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
+      toolbarHeight: 40.h,
+      backgroundColor: AppColors.backgroundColor,
       elevation: 0,
+      leadingWidth: null,
       centerTitle: false,
       titleSpacing: textfieldFocusnode.hasFocus ? 14.w : 5.0,
       shape: RoundedRectangleBorder(
@@ -223,27 +231,24 @@ class _MainHeaderState extends State<ScheduleHeader> {
           ? null
           : Container(
               margin: EdgeInsets.only(left: 10.5.w),
-              child: Ink(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: const Color.fromRGBO(233, 233, 233, 1),
-                    width: 1.w,
-                  ),
-                  color: Colors.white,
-                  shape: BoxShape.circle,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: AppColors.greyBorder,
+                  width: 1.w,
                 ),
-                child: GestureDetector(
-                  onTap: () {
-                    widget.event.getNearestLesson(context).then(
-                          (value) => context.popRoute(),
-                        );
-                  },
-                  child: SizedBox(
-                    child: SvgPicture.asset(
-                      "assets/svg/back_icon.svg",
-                      height: 10.h,
-                      fit: BoxFit.scaleDown,
-                    ),
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  widget.event.getNearestLesson(context);
+                  context.popRoute();
+                },
+                child: SizedBox(
+                  child: SvgPicture.asset(
+                    "assets/svg/back_icon.svg",
+                    height: 10.h,
+                    fit: BoxFit.scaleDown,
                   ),
                 ),
               ),

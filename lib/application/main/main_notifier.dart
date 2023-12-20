@@ -112,6 +112,21 @@ class MainNotifier extends StateNotifier<MainState> {
     }
   }
 
+  void getUniqueGymLocations() {
+    final list = state.activitiesNearClient;
+    final Set<String> uniqueLocations = {};
+    for (final activity in list) {
+      if (activity.gymdata != null) {
+        for (final gym in activity.gymdata!) {
+          final location = "${gym.longitude},${gym.latitude}";
+          uniqueLocations.add(location);
+        }
+      }
+    }
+    final latlonString = uniqueLocations.map((e) => "$e,round").join('~');
+    state = state.copyWith(latlongsYandexApi: latlonString);
+  }
+
   Future<void> getAllMarkers() async {
     await Future.delayed(const Duration(milliseconds: 200));
     List<EachMarkersModel> markers = [];
@@ -134,29 +149,33 @@ class MainNotifier extends StateNotifier<MainState> {
   }
 
   List<PlacemarkMapObject> getPlacemarkObjects() {
-    return state.listOfMarkers
-        .map(
-          (e) => PlacemarkMapObject(
-            mapId: MapObjectId("MapObject $e"),
-            point: Point(
-              latitude: e.latitude ?? 0,
-              longitude: e.longitude ?? 0,
-            ),
-            consumeTapEvents: true,
-            icon: PlacemarkIcon.single(
-              PlacemarkIconStyle(
-                image: BitmapDescriptor.fromAssetImage(
-                  e.name == "user"
-                      ? "assets/images/user_marker.png"
-                      : "assets/images/map_icon.png",
-                ),
-                scale: e.name == "user" ? 2.5.r : 4.r,
-              ),
-            ),
-            opacity: 1,
+    List<EachMarkersModel> allMarkers = state.listOfMarkers;
+    List<PlacemarkMapObject> listofPlaceMarks = [];
+    for (var i = 0; i < allMarkers.length; i++) {
+      listofPlaceMarks.add(
+        PlacemarkMapObject(
+          mapId: MapObjectId("MapObject $i "),
+          point: Point(
+            latitude: allMarkers[i].latitude ?? 0,
+            longitude: allMarkers[i].longitude ?? 0,
           ),
-        )
-        .toList();
+          consumeTapEvents: true,
+          icon: PlacemarkIcon.single(
+            PlacemarkIconStyle(
+              image: BitmapDescriptor.fromAssetImage(
+                allMarkers[i].name == "user"
+                    ? "assets/images/user_marker.png"
+                    : "assets/images/map_icon.png",
+              ),
+              scale: allMarkers[i].name == "user" ? 2.5.r : 4.r,
+            ),
+          ),
+          opacity: 1,
+        ),
+      );
+    }
+ 
+    return listofPlaceMarks;
   }
 
   void determineContainerHeight(GlobalKey key) {

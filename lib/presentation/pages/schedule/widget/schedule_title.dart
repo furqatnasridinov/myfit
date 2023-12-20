@@ -51,8 +51,9 @@ class ScheduleTitle extends StatelessWidget {
                 padding: EdgeInsets.all(8.r),
                 child: SvgPicture.asset(
                   'assets/svg/edit_icon.svg',
-                  width: 24.w,
-                  height: 24.h,
+                  fit: BoxFit.scaleDown,
+                  /* width: 24.w,
+                  height: 24.h, */
                 ),
               ),
             ),
@@ -332,6 +333,7 @@ class ScheduleTitle extends StatelessWidget {
                 },
                 child: SvgPicture.asset(
                   "assets/svg/tune.svg",
+                  fit: BoxFit.scaleDown,
                 ),
               ),
             ),

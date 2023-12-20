@@ -26,9 +26,9 @@ class MapHeader extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _MainHeaderState extends State<MapHeader> {
-  TextEditingController controller = TextEditingController();
-  FocusNode textfieldFocusnode = FocusNode();
-  final layerlink = LayerLink();
+  late TextEditingController controller;
+  late FocusNode textfieldFocusnode;
+  late LayerLink layerlink;
   String previousText = "";
   OverlayEntry? entry;
 
@@ -157,7 +157,9 @@ class _MainHeaderState extends State<MapHeader> {
   @override
   void initState() {
     super.initState();
-
+    controller = TextEditingController();
+    textfieldFocusnode = FocusNode();
+    layerlink = LayerLink();
     textfieldFocusnode.addListener(() {
       if (textfieldFocusnode.hasFocus) {
         showOverlay();
@@ -165,6 +167,13 @@ class _MainHeaderState extends State<MapHeader> {
         hideOverlay();
       }
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+    textfieldFocusnode.dispose();
   }
 
   @override
@@ -185,7 +194,7 @@ class _MainHeaderState extends State<MapHeader> {
     return AppBar(
       scrolledUnderElevation: 0,
       automaticallyImplyLeading: false,
-      leadingWidth: 48.w,
+      toolbarHeight: 40.h,
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
       elevation: 0,
       centerTitle: false,
@@ -353,9 +362,7 @@ class _MainHeaderState extends State<MapHeader> {
                   ),
                 ),
                 margin: EdgeInsets.only(
-                  top: 4.5.h,
                   right: 16.w,
-                  bottom: 4.5.h,
                 ),
                 child: Row(
                   children: [

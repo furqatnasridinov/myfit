@@ -48,6 +48,7 @@ class _MainHeaderState extends State<Main2Header> {
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
       elevation: 0,
       centerTitle: false,
+      toolbarHeight: 40.h,
       titleSpacing: 0.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -161,6 +162,7 @@ class _MainHeaderState extends State<Main2Header> {
             ? const SizedBox()
             : Container(
                 width: 95.w,
+                height: 40.h,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(100.r),
@@ -179,8 +181,7 @@ class _MainHeaderState extends State<Main2Header> {
                     ),
                   ),
                 ),
-                margin: EdgeInsets.only(
-                    top: 4.5.h, right: 16.w, bottom: 4.5.h, left: 5.w),
+                margin: EdgeInsets.only(right: 16.w, left: 5.w),
                 child: Row(
                   children: [
                     Padding(
@@ -209,8 +210,11 @@ class _MainHeaderState extends State<Main2Header> {
                         context.router.push(const SettingsRoute());
                       },
                       child: SizedBox(
+                        width: 40.w,
+                        height: 40.h,
+                        //color: Colors.red,
                         child: CircleAvatar(
-                          radius: 19.r,
+                          radius: 20.r,
                           backgroundColor:
                               const Color.fromRGBO(119, 170, 249, 1),
                           child: Padding(

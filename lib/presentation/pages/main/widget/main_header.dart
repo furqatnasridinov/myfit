@@ -20,9 +20,9 @@ class MainHeader extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _MainHeaderState extends State<MainHeader> {
-  TextEditingController controller = TextEditingController();
-  FocusNode textfieldFocusnode = FocusNode();
-  final layerlink = LayerLink();
+  late TextEditingController controller;
+  late FocusNode textfieldFocusnode;
+  late LayerLink layerlink;
   final listofaddresses = DummyData().dummyAddresses;
 
   OverlayEntry? entry;
@@ -98,7 +98,7 @@ class _MainHeaderState extends State<MainHeader> {
                   const SizedBox(height: 10.0),
                   UiButtonFilled(
                     btnText: 'Показать на карте',
-                    onPressedAction: (){},
+                    onPressedAction: () {},
                     isFullWidth: true,
                   )
                 ]),
@@ -120,7 +120,9 @@ class _MainHeaderState extends State<MainHeader> {
   @override
   void initState() {
     super.initState();
-
+    controller = TextEditingController();
+    textfieldFocusnode = FocusNode();
+    layerlink = LayerLink();
     textfieldFocusnode.addListener(() {
       if (textfieldFocusnode.hasFocus) {
         showOverlay();
@@ -131,12 +133,18 @@ class _MainHeaderState extends State<MainHeader> {
   }
 
   @override
-  Widget build(BuildContext context) {
-   
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+    textfieldFocusnode.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
       titleSpacing: 0.0,
+      toolbarHeight: 40.h,
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
       elevation: 0,
       centerTitle: false,

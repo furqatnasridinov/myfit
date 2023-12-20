@@ -39,29 +39,31 @@ class _ScheduleItemScreen extends ConsumerState<NotesScreen> {
             )
           : SafeArea(
               bottom: false,
-              child: CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(child: SizedBox(height: 5.h)),
-                  SliverPadding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    sliver: SliverList.builder(
-                      itemCount: state.listOfGymWithTags.length,
-                      itemBuilder: (context, index) {
-                        final current = state.listOfGymWithTags[index];
-                        return NotesCardMaker(
-                          state: state,
-                          event: event,
-                          name: current.gym?.name ?? "??",
-                          startTime: current.date ?? "?",
-                          description: current.description ?? "?",
-                          day: current.date ?? "?",
-                          gymWithTags: current,
-                        );
-                      },
+              child: state.listOfGymWithTags.isEmpty
+                  ? const NoActivitiesEnrolled()
+                  : CustomScrollView(
+                      slivers: [
+                        SliverToBoxAdapter(child: SizedBox(height: 5.h)),
+                        SliverPadding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          sliver: SliverList.builder(
+                            itemCount: state.listOfGymWithTags.length,
+                            itemBuilder: (context, index) {
+                              final current = state.listOfGymWithTags[index];
+                              return NotesCardMaker(
+                                state: state,
+                                event: event,
+                                name: current.gym?.name ?? "??",
+                                startTime: current.date ?? "?",
+                                description: current.description ?? "?",
+                                day: current.date ?? "?",
+                                gymWithTags: current,
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
             ),
     );
   }

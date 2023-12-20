@@ -152,11 +152,13 @@ class TheOneWithComments extends StatelessWidget {
           Row(
             children: [
               SizedBox(
-                width: 37.0,
-                height: 37.0,
+                width: 37.w,
+                height: 37.h,
                 child: ClipOval(
-                  child: Image.network(img),
-                ),
+                    child: Image.asset(
+                  AppConstants.cristianBale,
+                  fit: BoxFit.cover,
+                )),
               ),
               const SizedBox(width: 10.0),
               Column(

@@ -27,7 +27,6 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
   ScrollController scrollController = ScrollController();
   final layerlink = LayerLink();
 
-
   @override
   void initState() {
     super.initState();
@@ -37,7 +36,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
               context,
             );
       });
-      
+
       ref.read(scheduleProvider.notifier)
         ..getNearestLesson(context)
         ..getUserStatsMonth(context);

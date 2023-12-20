@@ -92,7 +92,7 @@ class ScheduleRepository implements ScheduleRepositoryInterface {
     try {
       final client = inject<HttpService>().clientDio();
       final response = await client.get(
-        AppConstants.getSchedulesSearch,
+        AppConstants.getUserSchedules,
         queryParameters: {"notes": true},
       );
       return ApiResult.success(

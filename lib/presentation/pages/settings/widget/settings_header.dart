@@ -22,9 +22,9 @@ class SettingsHeader extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _MainHeaderState extends State<SettingsHeader> {
-  TextEditingController controller = TextEditingController();
-  FocusNode textfieldFocusnode = FocusNode();
-  final layerlink = LayerLink();
+  late TextEditingController controller;
+  late FocusNode textfieldFocusnode;
+  late LayerLink layerlink;
   final listofaddresses = DummyData().dummyAddresses;
 
   OverlayEntry? entry;
@@ -118,7 +118,9 @@ class _MainHeaderState extends State<SettingsHeader> {
   @override
   void initState() {
     super.initState();
-
+    controller = TextEditingController();
+    textfieldFocusnode = FocusNode();
+    layerlink = LayerLink();
     textfieldFocusnode.addListener(() {
       if (textfieldFocusnode.hasFocus) {
         showOverlay();
@@ -129,11 +131,18 @@ class _MainHeaderState extends State<SettingsHeader> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+    textfieldFocusnode.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
-      leadingWidth: 48.w,
-      backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
+      toolbarHeight: 40.h,
+      backgroundColor: AppColors.backgroundColor,
       elevation: 0,
       centerTitle: false,
       titleSpacing: textfieldFocusnode.hasFocus ? 14.w : 5.0,
@@ -277,7 +286,7 @@ class _MainHeaderState extends State<SettingsHeader> {
             ? const SizedBox()
             : Container(
                 width: 95.w,
-                //height: 40.h,
+                height: 40.h,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(100.r),
@@ -297,9 +306,7 @@ class _MainHeaderState extends State<SettingsHeader> {
                   ),
                 ),
                 margin: EdgeInsets.only(
-                  top: 4.5.h,
                   right: 16.w,
-                  bottom: 4.5.h,
                 ),
                 child: Row(
                   children: [

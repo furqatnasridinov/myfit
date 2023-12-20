@@ -191,7 +191,7 @@ class _NotesCardMakerState extends State<NotesCardMaker> {
     return Column(
       children: [
         // textfields
-        /* MediaQuery.removePadding(
+        MediaQuery.removePadding(
           context: context,
           removeBottom: true,
           child: ListView.builder(
@@ -238,7 +238,7 @@ class _NotesCardMakerState extends State<NotesCardMaker> {
               );
             },
           ),
-        ),  */
+        ),
 
         // added notes part
         MediaQuery.removePadding(

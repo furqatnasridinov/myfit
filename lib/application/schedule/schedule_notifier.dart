@@ -114,40 +114,40 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     String month = parts[1];
     switch (month) {
       case "01":
-        month = "Январ";
+        month = "Января";
         break;
       case "02":
-        month = "Феврал";
+        month = "Февраля";
         break;
       case "03":
-        month = "Март";
+        month = "Марта";
         break;
       case "04":
-        month = "Апрель";
+        month = "Апреля";
         break;
       case "05":
-        month = "Май";
+        month = "Мая";
         break;
       case "06":
-        month = "Июнь";
+        month = "Июня";
         break;
       case "07":
-        month = "Июль";
+        month = "Июля";
         break;
       case "08":
-        month = "Август";
+        month = "Августа";
         break;
       case "09":
-        month = "Сентябрь";
+        month = "Сентября";
         break;
       case "10":
-        month = "Октябрь";
+        month = "Октября";
         break;
       case "11":
-        month = "Ноябрь";
+        month = "Ноября";
         break;
       case "12":
-        month = "Декабрь";
+        month = "Декабря";
         break;
     }
     String daysplitted = parts[2];
@@ -182,7 +182,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       default:
     }
 
-    return "$month $daysplitted";
+    return "$daysplitted $month ";
   }
 
   String determineWeekday(String day) {

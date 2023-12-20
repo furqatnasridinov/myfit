@@ -53,9 +53,6 @@ class ComingActivity extends StatelessWidget {
                   7.horizontalSpace,
                   Flexible(
                     child: CustomText(
-                      //maxLines: 2,
-                      //overflow: TextOverflow.ellipsis,
-                      //text: "",
                       text:
                           state.nearestLesson?.bodyData?.description ?? "Empty",
                       fontSize: 13.sp,
@@ -81,8 +78,9 @@ class ComingActivity extends StatelessWidget {
                   ),
                   7.horizontalSpace,
                   CustomText(
-                    text: today == formattedDay ? "${parts[1]}, Сегодня" :
-                    "${parts[1]}, $formattedDay",
+                    text: today == formattedDay
+                        ? "${parts[1]}, Сегодня"
+                        : "${parts[1]}, $formattedDay",
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
                   ),
@@ -118,7 +116,7 @@ class ComingActivity extends StatelessWidget {
               ),
             ),
           ]),
-          10.verticalSpace,
+          /* 10.verticalSpace,
           Row(
             children: [
               InkWell(
@@ -147,7 +145,7 @@ class ComingActivity extends StatelessWidget {
                 ),
               ),
             ],
-          )
+          ) */
         ],
       ),
     );

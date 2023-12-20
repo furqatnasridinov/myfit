@@ -71,45 +71,98 @@ class MapNotifier extends StateNotifier<MapState> {
     double? selectedCityLat;
     final connected = await AppConnectivity().connectivity();
     state = state.copyWith(isloading: true);
-    if (state.userPosition == null) {
-      final listOfCities = DummyData().cityNames;
-      for (var element in listOfCities) {
-        if (element.name == LocalStorage.getSelectedCity()) {
-          selectedCityLon = element.lon!;
-          selectedCityLat = element.lat!;
+    if (connected) {
+      if (state.userPosition == null) {
+        final listOfCities = DummyData().cityNames;
+        for (var element in listOfCities) {
+          if (element.name == LocalStorage.getSelectedCity()) {
+            selectedCityLon = element.lon!;
+            selectedCityLat = element.lat!;
+          }
         }
       }
-    }
 
-    final request = state.userPosition != null
-        ? GetYandexMapImageRequest(
-            latlon:
-                "${state.userPosition?.longitude},${state.userPosition?.latitude}",
-            marker:
-                "${state.userPosition?.longitude},${state.userPosition?.latitude},pm2rdm",
-            size: "300,150",
-            zoom: 11,
-            i: "map",
-          )
-        : GetYandexMapImageRequest(
-            latlon: "$selectedCityLon,$selectedCityLat",
-            marker: "$selectedCityLon,$selectedCityLat,pm2rdm",
-            size: "300,150",
-            zoom: 10,
-            i: "map",
-          );
-    final response =
-        await _mainRepositoryInterface.getYandexMapImage(request: request);
-    response.when(
-      success: (data) {
-        if (data != null) {
-          state = state.copyWith(mapScreenShot: data);
-        }
-      },
-      failure: (error, statusCode) {},
-    );
-    state = state.copyWith(isloading: false);
+      final request = state.userPosition != null
+          ? GetYandexMapImageRequest(
+              latlon:
+                  "${state.userPosition?.longitude},${state.userPosition?.latitude}",
+              marker:
+                  "${state.userPosition?.longitude},${state.userPosition?.latitude},pm2rdm",
+              size: "300,150",
+              zoom: 11,
+              i: "map",
+            )
+          : GetYandexMapImageRequest(
+              latlon: "$selectedCityLon,$selectedCityLat",
+              marker: "$selectedCityLon,$selectedCityLat,pm2rdm",
+              size: "300,150",
+              zoom: 11,
+              i: "map",
+            );
+      final response =
+          await _mainRepositoryInterface.getYandexMapImage(request: request);
+      response.when(
+        success: (data) {
+          if (data != null) {
+            state = state.copyWith(mapScreenShot: data);
+          }
+        },
+        failure: (error, statusCode) {},
+      );
+      state = state.copyWith(isloading: false);
+    } else {
+      // ignore: use_build_context_synchronously
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> getYandexMapImageWithAllMarkers(
+    BuildContext context,
+    String markers,
+  ) async {
+    double? selectedCityLon;
+    double? selectedCityLat;
+    final connected = await AppConnectivity().connectivity();
     if (connected) {
+      state = state.copyWith(isloading: true);
+      if (state.userPosition == null) {
+        final listOfCities = DummyData().cityNames;
+        for (var element in listOfCities) {
+          if (element.name == LocalStorage.getSelectedCity()) {
+            selectedCityLon = element.lon!;
+            selectedCityLat = element.lat!;
+          }
+        }
+      }
+
+      final request = state.userPosition != null
+          ? GetYandexMapImageRequest(
+              latlon:
+                  "${state.userPosition?.longitude},${state.userPosition?.latitude}",
+              marker:
+                  "${state.userPosition?.longitude},${state.userPosition?.latitude},pm2rdm,$markers",
+              size: "300,150",
+              zoom: 11,
+              i: "map",
+            )
+          : GetYandexMapImageRequest(
+              latlon: "$selectedCityLon,$selectedCityLat",
+              marker: "$selectedCityLon,$selectedCityLat,pm2rdm,$markers",
+              size: "300,150",
+              zoom: 10,
+              i: "map",
+            );
+      final response =
+          await _mainRepositoryInterface.getYandexMapImage(request: request);
+      response.when(
+        success: (data) {
+          if (data != null) {
+            state = state.copyWith(mapScreenShot: data);
+          }
+        },
+        failure: (error, statusCode) {},
+      );
+      state = state.copyWith(isloading: false);
     } else {
       // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
