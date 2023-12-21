@@ -1,6 +1,6 @@
 class AppConstants {
   //  urls
-  static const String baseUrl = "http://77.222.53.122:8080/";
+  static const String baseUrl = "http://77.222.53.122:/";
   static const String getYandexMapImage = "https://static-maps.yandex.ru/1.x/";
   static const String getAdvantages = "api/main/advantages";
   static const String getSubscribtions = "api/main/subscription";

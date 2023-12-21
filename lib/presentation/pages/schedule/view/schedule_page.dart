@@ -76,7 +76,7 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
                       itemBuilder: (context, index) {
                         final date = allDayOfMonth[
                             index]; // "2023-11-01" till "2023-11-15",
-                        final formattedDay = event.formatDay(date); // Ноябрь 1
+                        final formattedDay = event.formatDay(date); //  1 Ноября
                         final formattedDayOfWeek =
                             event.determineWeekday(date); // Понедельник
                         if (state.schedulesInMapForm.containsKey(date)) {

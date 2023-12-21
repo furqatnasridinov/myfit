@@ -178,7 +178,7 @@ class _PopupBodyState extends State<PopupBody> {
               fontWeight: FontWeight.w500,
             ),
             5.verticalSpace,
-      
+
             // city textfield
             SizedBox(
               key: sizedBoxKey,
@@ -205,7 +205,7 @@ class _PopupBodyState extends State<PopupBody> {
               ),
             ),
             16.verticalSpace,
-      
+
             // user data section (возраст, вес, рост)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -232,7 +232,7 @@ class _PopupBodyState extends State<PopupBody> {
                     ),
                   ],
                 ),
-      
+
                 // вес
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,7 +255,7 @@ class _PopupBodyState extends State<PopupBody> {
                     ),
                   ],
                 ),
-      
+
                 // рост
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -280,7 +280,7 @@ class _PopupBodyState extends State<PopupBody> {
                 ),
               ],
             ),
-      
+
             // avatar section
             16.verticalSpace,
             CustomText(
@@ -300,18 +300,18 @@ class _PopupBodyState extends State<PopupBody> {
                     child: Padding(
                       padding: EdgeInsets.all(3.r),
                       child: ClipOval(
-                                child: Image.asset(
-                              AppConstants.cristianBale,
-                              fit: BoxFit.cover,
-                            )
-                                /* CachedNetworkImage(
+                          child: Image.asset(
+                        AppConstants.cristianBale,
+                        fit: BoxFit.cover,
+                      )
+                          /* CachedNetworkImage(
                                 imageUrl: AppConstants.owlNetworkImage,
                                 fit: BoxFit.cover,
                                 errorWidget: (context, url, error) {
                                   return const SizedBox();
                                 },
                               ), */
-                                ),
+                          ),
                     ),
                   ),
                   Column(
@@ -341,55 +341,60 @@ class _PopupBodyState extends State<PopupBody> {
                 ],
               ),
             ),
-      
             // buttons
             16.verticalSpace,
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CustomButton(
-                  width: 130.w,
-                  height: 40.h,
-                  fontSize: 14.sp,
-                  buttonColor: Colors.white,
-                  onPressed: () {
-                    context.popRoute();
-                  },
-                  text: "Отменить",
+                Expanded(
+                  child: CustomButton(
+                    width: 130.w,
+                    height: 40.h,
+                    fontSize: 14.sp,
+                    buttonColor: Colors.white,
+                    onPressed: () {
+                      context.popRoute();
+                    },
+                    text: "Отменить",
+                  ),
                 ),
-                CustomButton(
-                  width: 130.w,
-                  height: 40.h,
-                  fontSize: 14.sp,
-                  buttonColor: AppColors.blueColor,
-                  borderColor: AppColors.blueBorder,
-                  textColor: Colors.white,
-                  onPressed: () {
-                    // check whether user added new data
-                    if (LocalStorage.getUserName() !=
-                        nameController.text.trim()) {
-                      LocalStorage.setUserName(nameController.text)
-                          .then((value) => widget.event.setName());
-                    }
-                    if (LocalStorage.getSelectedCity() != cityController.text) {
-                      LocalStorage.setSelectedCity(cityController.text)
-                          .then((value) => widget.event.setSelectedCity());
-                    }
-                    if (LocalStorage.getAge() != ageController.text) {
-                      LocalStorage.setAge(ageController.text)
-                          .then((value) => widget.event.setAge());
-                    }
-                    if (LocalStorage.getWeight() != weightController.text) {
-                      LocalStorage.setWeight(weightController.text)
-                          .then((value) => widget.event.setWeight());
-                    }
-                    if (LocalStorage.getHeight() != heightController.text) {
-                      LocalStorage.setHeight(heightController.text)
-                          .then((value) => widget.event.setHeight());
-                    }
-                    context.popRoute();
-                  },
-                  text: "Сохранить",
+                10.horizontalSpace,
+                Expanded(
+                  child: CustomButton(
+                    width: 130.w,
+                    height: 40.h,
+                    fontSize: 14.sp,
+                    buttonColor: AppColors.blueColor,
+                    borderColor: AppColors.blueBorder,
+                    textColor: Colors.white,
+                    onPressed: () {
+                      // check whether user added new data
+                      if (LocalStorage.getUserName() !=
+                          nameController.text.trim()) {
+                        LocalStorage.setUserName(nameController.text)
+                            .then((value) => widget.event.setName());
+                      }
+                      if (LocalStorage.getSelectedCity() !=
+                          cityController.text) {
+                        LocalStorage.setSelectedCity(cityController.text)
+                            .then((value) => widget.event.setSelectedCity());
+                      }
+                      if (LocalStorage.getAge() != ageController.text) {
+                        LocalStorage.setAge(ageController.text)
+                            .then((value) => widget.event.setAge());
+                      }
+                      if (LocalStorage.getWeight() != weightController.text) {
+                        LocalStorage.setWeight(weightController.text)
+                            .then((value) => widget.event.setWeight());
+                      }
+                      if (LocalStorage.getHeight() != heightController.text) {
+                        LocalStorage.setHeight(heightController.text)
+                            .then((value) => widget.event.setHeight());
+                      }
+                      context.popRoute();
+                    },
+                    text: "Сохранить",
+                  ),
                 ),
               ],
             ),

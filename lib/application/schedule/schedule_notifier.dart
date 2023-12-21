@@ -257,16 +257,75 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
   }
 
   String formatDuration(Duration duration) {
-    String days = duration.inDays > 0 ? "${duration.inDays} дня" : "";
-    String hours =
-        duration.inHours % 24 > 0 ? "${duration.inHours % 24} час" : "";
-    String minutes =
-        duration.inMinutes % 60 > 0 ? "${duration.inMinutes % 60} минут" : "";
+    int days = duration.inDays;
+    int hours = duration.inHours % 24;
+    int minutes = duration.inMinutes % 60;
 
-    List<String> parts = [days, hours, minutes];
-    parts.removeWhere((part) => part.isEmpty);
+    String daysWord = getDayWord(days);
+    String hoursWord = getHourWord(hours);
+    String minutesWord = getMinuteWord(minutes);
+
+    List<String> parts = [
+      if (days > 0) '$days $daysWord',
+      if (hours > 0) '$hours $hoursWord',
+      if (minutes > 0) '$minutes $minutesWord'
+    ];
 
     return parts.join(' ');
+  }
+
+  String getDayWord(int number) {
+    number = number % 100;
+    if (number >= 11 && number <= 19) {
+      return 'дней';
+    } else {
+      switch (number % 10) {
+        case 1:
+          return 'день';
+        case 2:
+        case 3:
+        case 4:
+          return 'дня';
+        default:
+          return 'дней';
+      }
+    }
+  }
+
+  String getHourWord(int number) {
+    number = number % 100;
+    if (number >= 11 && number <= 19) {
+      return 'часов';
+    } else {
+      switch (number % 10) {
+        case 1:
+          return 'час';
+        case 2:
+        case 3:
+        case 4:
+          return 'часа';
+        default:
+          return 'часов';
+      }
+    }
+  }
+
+  String getMinuteWord(int number) {
+    number = number % 100;
+    if (number >= 11 && number <= 19) {
+      return 'минут';
+    } else {
+      switch (number % 10) {
+        case 1:
+          return 'минута';
+        case 2:
+        case 3:
+        case 4:
+          return 'минуты';
+        default:
+          return 'минут';
+      }
+    }
   }
 
   Future<void> getNearestLesson(BuildContext context) async {
@@ -277,6 +336,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       response.when(
         success: (data) {
           if (data.bodyData != null) {
+            //determineWhenActivityStarts("2023-12-31@13:59");
             determineWhenActivityStarts(data.bodyData!.date!);
             state = state.copyWith(nearestLesson: data);
           }

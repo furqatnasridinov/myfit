@@ -13,8 +13,9 @@ class AppRouter extends $AppRouter {
           page: ActivityRoute.page,
           //path: '/',
         ),
-        AutoRoute(
+        CustomRoute(
           page: ScheduleRoute.page,
+          transitionsBuilder: TransitionsBuilders.slideLeft,
           path: '/schedule',
           //path: '/',
         ),
@@ -30,11 +31,12 @@ class AppRouter extends $AppRouter {
           page: Main2Route.page,
           //path: "/"
         ),
-        AutoRoute(
-          page: MapRoute.page,
-          //path: "/map"
-          //path: "/",
-        ),
+        CustomRoute(
+            page: MapRoute.page,
+            transitionsBuilder: TransitionsBuilders.slideLeft,
+            path: "/map"
+            //path: "/",
+            ),
         AutoRoute(
           page: RegistrationRoute.page,
           //path: "/",
