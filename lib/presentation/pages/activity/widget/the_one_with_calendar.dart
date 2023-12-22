@@ -1,28 +1,36 @@
 import 'package:activity/application/activity/activity_notifier.dart';
 import 'package:activity/application/activity/activity_state.dart';
+import 'package:activity/application/schedule/schedule_provider.dart';
+import 'package:activity/infrastructure/models/data/chips_model.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/components.dart';
-import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/inter_text.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TheOneWithCalendar extends StatefulWidget {
   final ActivityState state;
   final ActivityNotifier event;
-  final int gymId;
 
-  const TheOneWithCalendar(
-      {super.key,
-      required this.state,
-      required this.event,
-      required this.gymId});
+  const TheOneWithCalendar({
+    super.key,
+    required this.state,
+    required this.event,
+  });
 
   @override
   State<TheOneWithCalendar> createState() => _TheOneWithCalendarState();
 }
+
+final List<ChipsModel> podActives = [
+  ChipsModel(text: "Показать всё", isActive: true),
+  ChipsModel(text: "Общая тренировка"),
+  ChipsModel(text: "Спарринг"),
+  ChipsModel(text: "Зал"),
+  ChipsModel(text: "Николай Борисович"),
+];
 
 class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
   @override
@@ -150,177 +158,208 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
             ),
           ),
           10.verticalSpace,
-          Container(
-            padding: EdgeInsets.all(16.r),
-            //height: 300.h,
-            width: double.maxFinite,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16.r),
-              border: Border.all(
-                color: AppColors.greyBorder,
-                width: 1.w,
-              ),
-            ),
-            child: widget.state.listOfSchedules.isEmpty &&
-                    widget.state.selectedFormattedDay.isEmpty
-                ? CustomText(
-                    text: "Список занятий пуст!",
-                    textAlign: TextAlign.center,
-                  )
-                : ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: widget.state.listOfSchedules.length,
-                    itemBuilder: (context, index) {
-                      final currentSchedule =
-                          widget.state.listOfSchedules[index];
-                      String times = currentSchedule["date"];
-                      List<String> parts = times.split("@");
-                      final currentTime = parts[1];
-                      String calendarDay = widget.event
-                          .formatOriginalToCalendarFullNames(parts[0]);
-                      final String endingTime = widget.event.getEndingTime(
-                          currentTime, currentSchedule["duration"]);
 
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: IntrinsicHeight(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              // starting time
-                              InkWell(
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return Dialog(
-                                        elevation: 0,
-                                        insetPadding: REdgeInsets.symmetric(
-                                            horizontal: 16.w),
-                                        child: CustomCard(
-                                          height: 200.h,
-                                          borderColor: Colors.transparent,
-                                          width: double.maxFinite,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              CustomText(
-                                                text: "Подтверждение!",
-                                                fontSize: 16.sp,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                              16.verticalSpace,
-                                              CustomText(
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 4,
-                                                text:
-                                                    'Вы действительно хотите записаться на занятия "${currentSchedule["description"]}" в $calendarDay - го числа?',
-                                                fontSize: 13.sp,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                              const Spacer(),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Expanded(
-                                                    child: CustomButton(
-                                                      buttonColor: Colors.white,
-                                                      fontSize: 14.sp,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      height: 30.h,
-                                                      onPressed: () {
-                                                        context.popRoute();
-                                                      },
-                                                      text: "Назад",
-                                                    ),
-                                                  ),
-                                                  5.horizontalSpace,
-                                                  Expanded(
-                                                    child: CustomButton(
-                                                      fontSize: 14.sp,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      buttonColor:
-                                                          AppColors.blueColor,
-                                                      textColor: Colors.white,
-                                                      height: 30.h,
-                                                      onPressed: () {
-                                                        // запись на трен
-                                                        widget.event
-                                                            .enrollToGym(
-                                                                context,
-                                                                currentSchedule[
-                                                                    "id"]);
-                                                      },
-                                                      text: "Подтвердить",
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 16.w,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.blueColor,
-                                    borderRadius: BorderRadius.circular(8.r),
-                                  ),
-                                  child: Center(
-                                    child: CustomText(
-                                      color: Colors.white,
-                                      text: currentTime,
-                                      //text: "12:45",
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              16.horizontalSpace,
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: 226.w,
-                                    child: CustomText(
-                                      text: currentSchedule["description"],
-                                      fontSize: 13.sp,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  1.verticalSpace,
-                                  CustomText(
-                                    text: "до $endingTime",
-                                    color: AppColors.greyText,
-                                    fontSize: 10.sp,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      );
-                    },
+          // подактивности (Блок с подактивностями скрывается,
+          //если владелец заведения их не добавил.)
+          widget.state.listOfSchedules.isEmpty &&
+                  widget.state.selectedFormattedDay.isEmpty
+              ? CustomCard(
+                  width: double.maxFinite,
+                  child: CustomText(
+                    text: "В ближайшее время в заведении нету активностей",
+                    textAlign: TextAlign.center,
                   ),
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomText(
+                      text: "${widget.state.selectedActivity}",
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    10.verticalSpace,
+                    Wrap(
+                      runSpacing: 5.h,
+                      spacing: 5.w,
+                      children: List.generate(podActives.length, (index) {
+                        final current = podActives[index];
+                        return InkWell(
+                          onTap: () {
+                            if (!current.isActive!) {
+                              for (var element in podActives) {
+                                if (element.isActive!) {
+                                  element.isActive = false;
+                                  setState(() {});
+                                }
+                              }
+                              current.isActive = true;
+                              setState(() {});
+                            }
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.w,
+                              vertical: 5.h,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(6.r),
+                              border: Border.all(
+                                color: current.isActive!
+                                    ? Colors.transparent
+                                    : AppColors.blueBorder,
+                              ),
+                              color: current.isActive!
+                                  ? AppColors.blueColor
+                                  : Colors.white,
+                            ),
+                            child: CustomText(
+                              text: current.text,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w400,
+                              color: current.isActive!
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ],
+                ),
+
+          10.verticalSpace,
+          // список занятий заведения на выбранный день
+          Consumer(
+            builder: (contex, ref, child) {
+              final scheduleEvent = ref.read(scheduleProvider.notifier);
+              return ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: widget.state.listOfSchedules.length,
+                itemBuilder: (context, index) {
+                  final currentSchedule = widget.state.listOfSchedules[index];
+                  return activityCard(
+                    currentSchedule.id,
+                    currentSchedule.startingTime ?? "??",
+                    currentSchedule.finishingTime ?? "??",
+                    currentSchedule.duration ?? "??",
+                    currentSchedule.name ?? "??",
+                    currentSchedule.status ?? 0,
+                    () async {
+                      widget.event.enrollToGym(
+                        context,
+                        currentSchedule.id,
+                      );
+                      currentSchedule.status = 2;
+                      setState(() {});
+                      await Future.delayed(const Duration(seconds: 2));
+                      currentSchedule.status = 3;
+                      setState(() {});
+                      // ignore: use_build_context_synchronously
+                      scheduleEvent.getNearestLesson(context);
+                    },
+                  );
+                },
+              );
+            },
           ),
+
           15.verticalSpace,
         ],
       ),
     );
   }
+}
+
+Widget activityCard(
+  int id,
+  String startTime,
+  String finishTime,
+  String duration,
+  String name,
+  int status,
+  void Function()? enrollFunction,
+) {
+  return CustomCard(
+    width: double.maxFinite,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // times
+            SizedBox(
+              child: Row(
+                children: [
+                  CustomText(
+                    text: startTime,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  2.horizontalSpace,
+                  const Text("-"),
+                  2.horizontalSpace,
+                  CustomText(
+                    text: finishTime,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              child: status == 1
+                  ? InkWell(
+                      onTap: enrollFunction,
+                      child: CustomText(
+                        text: "Записаться",
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.blueText,
+                      ),
+                    )
+                  : status == 2
+                      ? CustomText(
+                          text: "Ждём ответ от заведения",
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.greyText,
+                        )
+                      : Row(
+                          children: [
+                            CustomText(
+                              text: "Вы записаны",
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black,
+                            ),
+                            5.horizontalSpace,
+                            Icon(
+                              Icons.done,
+                              color: Colors.black,
+                              size: 16.r,
+                            )
+                          ],
+                        ),
+            ),
+          ],
+        ),
+        5.verticalSpace,
+        InterText(
+          text: name,
+          fontSize: 13.sp,
+          fontWeight: FontWeight.w400,
+        ),
+        5.verticalSpace,
+        CustomText(
+          text: duration,
+          fontSize: 10.sp,
+          fontWeight: FontWeight.w500,
+          color: AppColors.greyText,
+        )
+      ],
+    ),
+  );
 }

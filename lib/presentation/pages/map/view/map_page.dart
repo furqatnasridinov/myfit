@@ -272,10 +272,18 @@ class _MapScreenState extends ConsumerState<MapScreen>
                                   fontWeight: FontWeight.w500,
                                 ),
                                 10.horizontalSpace,
-                                SvgPicture.asset(
-                                  state.showMapOnly
-                                      ? "assets/svg/arrow_down.svg"
-                                      : "assets/svg/arrow_up.svg",
+                                SizedBox(
+                                  width: 18.w,
+                                  height: 18.h,
+                                  child: Center(
+                                    child: SvgPicture.asset(
+                                      state.showMapOnly
+                                          ? "assets/svg/arrow_down.svg"
+                                          : "assets/svg/arrow_up.svg",
+                                      width: 18.w,
+                                      height: 18.h,
+                                    ),
+                                  ),
                                 ),
                                 15.horizontalSpace,
                               ],

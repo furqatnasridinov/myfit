@@ -72,7 +72,7 @@ class CustomTextFormField extends StatelessWidget {
         contentPadding: contentPadding,
         hintText: hintText,
         hintStyle: GoogleFonts.inter(
-          fontSize: 13.sp,
+          fontSize: 14.sp,
           fontWeight: FontWeight.w400,
         ),
         fillColor: Colors.white,

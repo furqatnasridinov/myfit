@@ -47,7 +47,7 @@ class UiDropDownMenu extends StatelessWidget {
           : const Offset(0, -10),
       onOpened: onOpenedAction,
       onCanceled: onClosedAction,
-      constraints: BoxConstraints(maxWidth: 255.w),
+      constraints: BoxConstraints(maxWidth: maxWidth!),
       shape: OutlineInputBorder(
         borderSide: const BorderSide(color: Color.fromRGBO(119, 170, 249, 1)),
         borderRadius: BorderRadius.only(

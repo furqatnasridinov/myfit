@@ -195,9 +195,12 @@ class _MainHeaderState extends State<Main2Header> {
                             const ScheduleRoute(),
                           );
                         },
-                        child: SvgPicture.asset(
-                          'assets/svg/calendar.svg',
-                          fit: BoxFit.scaleDown,
+                        child: Center(
+                          child: SvgPicture.asset(
+                            'assets/svg/calendar.svg',
+                            width: 24.w,
+                            height: 24.h,
+                          ),
                         ),
                       ),
                     ),

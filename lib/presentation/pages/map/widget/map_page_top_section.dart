@@ -54,16 +54,14 @@ class MapPageTopSection extends StatelessWidget {
               height: 40.h,
               padding: EdgeInsets.all(8.r),
               decoration: BoxDecoration(
-                border: Border.all(
-                  width: 1.w,
-                  color: AppColors.greyBorder
-                ),
+                border: Border.all(width: 1.w, color: AppColors.greyBorder),
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(8.r),
               ),
-              child: SvgPicture.asset(
-                "assets/svg/icon_filter.svg",
-                fit: BoxFit.scaleDown,
+              child: Center(
+                child: SvgPicture.asset(
+                  "assets/svg/icon_filter.svg",
+                ),
               ),
             ),
           ),

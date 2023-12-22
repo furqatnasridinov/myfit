@@ -221,28 +221,29 @@ class _MainHeaderState extends State<MapHeader> {
       // leading
       leading: textfieldFocusnode.hasFocus
           ? null
-          : Container(
-              margin: EdgeInsets.only(left: 10.5.w),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: const Color.fromRGBO(233, 233, 233, 1),
-                  width: 1.w,
+          : InkWell(
+              onTap: () async {
+                widget.event.removePopUp();
+                if (widget.state.showMapOnly) {
+                  widget.event.reduceMap();
+                }
+                context.popRoute();
+              },
+              child: Container(
+                margin: EdgeInsets.only(left: 10.5.w),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: const Color.fromRGBO(233, 233, 233, 1),
+                    width: 1.w,
+                  ),
+                  color: Colors.white,
+                  shape: BoxShape.circle,
                 ),
-                color: Colors.white,
-                shape: BoxShape.circle,
-              ),
-              child: GestureDetector(
-                onTap: () async {
-                  widget.event.removePopUp();
-                  if (widget.state.showMapOnly) {
-                    widget.event.reduceMap();
-                  }
-                  context.popRoute();
-                },
-                child: SizedBox(
+                child: Center(
                   child: SvgPicture.asset(
                     "assets/svg/back_icon.svg",
-                    fit: BoxFit.none,
+                    width: 5.w,
+                    height: 10.h,
                   ),
                 ),
               ),

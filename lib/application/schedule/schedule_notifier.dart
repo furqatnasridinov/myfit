@@ -11,6 +11,7 @@ import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ScheduleNotifier extends StateNotifier<ScheduleState> {
   ScheduleNotifier(this._scheduleRepositoryInterface)
@@ -568,4 +569,5 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
+ 
 }

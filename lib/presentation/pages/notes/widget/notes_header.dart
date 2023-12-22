@@ -168,9 +168,10 @@ class _MainHeaderState extends State<NotesHeader> {
       // leading
       leading: textfieldFocusnode.hasFocus
           ? null
-          : Container(
-              margin: EdgeInsets.only(left: 10.5.w),
-              child: Ink(
+          : InkWell(
+              onTap: () => context.popRoute(),
+              child: Container(
+                margin: EdgeInsets.only(left: 10.5.w),
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: const Color.fromRGBO(233, 233, 233, 1),
@@ -179,13 +180,11 @@ class _MainHeaderState extends State<NotesHeader> {
                   color: Colors.white,
                   shape: BoxShape.circle,
                 ),
-                child: GestureDetector(
-                  onTap: () => context.popRoute(),
-                  child: SizedBox(
-                    child: SvgPicture.asset(
-                      "assets/svg/back_icon.svg",
-                      fit: BoxFit.none,
-                    ),
+                child: Center(
+                  child: SvgPicture.asset(
+                    "assets/svg/back_icon.svg",
+                    width: 5.w,
+                    height: 10.h,
                   ),
                 ),
               ),

@@ -229,26 +229,25 @@ class _MainHeaderState extends State<ScheduleHeader> {
       // leading
       leading: textfieldFocusnode.hasFocus
           ? null
-          : Container(
-              margin: EdgeInsets.only(left: 10.5.w),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: AppColors.greyBorder,
-                  width: 1.w,
+          : InkWell(
+              onTap: () {
+                context.popRoute();
+              },
+              child: Container(
+                margin: EdgeInsets.only(left: 10.5.w),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: AppColors.greyBorder,
+                    width: 1.w,
+                  ),
+                  color: Colors.white,
+                  shape: BoxShape.circle,
                 ),
-                color: Colors.white,
-                shape: BoxShape.circle,
-              ),
-              child: GestureDetector(
-                onTap: () {
-                  widget.event.getNearestLesson(context);
-                  context.popRoute();
-                },
-                child: SizedBox(
+                child: Center(
                   child: SvgPicture.asset(
                     "assets/svg/back_icon.svg",
+                    width: 5.w,
                     height: 10.h,
-                    fit: BoxFit.scaleDown,
                   ),
                 ),
               ),

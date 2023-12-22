@@ -210,7 +210,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                           return Dialog(
                             elevation: 0,
                             insetPadding:
-                                REdgeInsets.symmetric(horizontal: 16.w),
+                                EdgeInsets.symmetric(horizontal: 16.w),
                             child: CustomCard(
                                 height: 270.h,
                                 borderColor: Colors.transparent,

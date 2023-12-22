@@ -2,6 +2,7 @@
 
 import 'package:activity/application/activity/activity_state.dart';
 import 'package:activity/domain/interface/activity.dart';
+import 'package:activity/infrastructure/models/data/activity.dart';
 import 'package:activity/infrastructure/models/request/get_gym_photos_request.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
@@ -10,6 +11,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ActivityNotifier extends StateNotifier<ActivityState> {
   ActivityNotifier(this._activityRepositoryInterface)
@@ -329,22 +331,93 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
           //print("(notifier failure)");
         },
       );
-    // ignore: duplicate_ignore
+      // ignore: duplicate_ignore
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
 
   getSchedulesList(String data) {
-   
-      final Map<String, dynamic> mapData = state.scheddules;
-      if (mapData.containsKey(data)) {
-        //print("Найден ключ: $data");
-        state = state.copyWith(listOfSchedules: mapData[data]);
+    final Map<String, dynamic> mapData = state.scheddules;
+    List<Activity> activities = [];
+    if (mapData.containsKey(data)) {
+      for (var element in mapData[data]) {
+        final activity = Activity(
+          element["id"],
+          returnOnlyTime(element["date"]),
+          getEndingTime(returnOnlyTime(element["date"]), element["duration"]),
+          formatDuration(element["duration"]),
+          element["description"],
+        );
+        activities.add(activity);
       }
- 
-
+      //print("Найден ключ: $data");
+      state = state.copyWith(listOfSchedules: activities);
+    }
   }
+
+  String formatDuration(String time) {
+    final parts = time.split(':');
+    if (parts.length != 2) {
+      throw const FormatException('Неверный формат времени');
+    }
+    final hours = int.tryParse(parts[0]);
+    final minutes = int.tryParse(parts[1]);
+
+    if (hours == null || minutes == null) {
+      throw const FormatException('Неверный формат времени');
+    }
+
+    String hoursText = '';
+    String minutesText = '';
+
+    // Склонение часов
+    if (hours > 0) {
+      if (hours % 10 == 1 && hours % 100 != 11) {
+        hoursText = '$hours час';
+      } else if ([2, 3, 4].contains(hours % 10) &&
+          ![12, 13, 14].contains(hours % 100)) {
+        hoursText = '$hours часа';
+      } else {
+        hoursText = '$hours часов';
+      }
+    }
+
+    // Склонение минут
+    if (minutes % 10 == 1 && minutes % 100 != 11) {
+      minutesText = '$minutes минута';
+    } else if ([2, 3, 4].contains(minutes % 10) &&
+        ![12, 13, 14].contains(minutes % 100)) {
+      minutesText = '$minutes минуты';
+    } else {
+      minutesText = '$minutes минут';
+    }
+
+    return '${hoursText.isNotEmpty ? "$hoursText " : ""}$minutesText';
+  }
+
+  String returnOnlyTime(String text) {
+    final parts = text.split("@");
+    return parts[1];
+  }
+
+  Future<void> callTo(String phone) async {
+    Uri phoneScheme = Uri(scheme: "tel", path: phone);
+    if (await canLaunchUrl(phoneScheme)) {
+      await launchUrl(phoneScheme);
+    }
+  }
+
+ Future<void> launchTelegram() async {
+  const url = "https://t.me/furqatnasridinov";
+  final uri = Uri.parse(url);
+
+  if (await canLaunchUrl(uri)) {
+    await launchUrl(uri); // forceWebView is true now
+  } else {
+    throw 'Could not launch $url';
+  }
+}
 
   String? convertToOriginalDate(String dateString) {
     final parts = dateString.split(' ');
@@ -601,7 +674,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       response.when(
         success: (data) {
           if (data["operationResult"] == "OK") {
-            context.replaceRoute(const Main2Route());
+            //context.replaceRoute(const Main2Route());
           }
         },
         failure: (error, statusCode) {},
