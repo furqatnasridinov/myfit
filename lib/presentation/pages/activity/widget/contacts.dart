@@ -26,17 +26,17 @@ class Contacts extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SizedBox(
-                width: 165.w,
-                //color: Colors.red,
-                //height: 24.h,
-                child: Row(
-                  children: [
-                    InkWell(
-                      onTap: (){
-                        event.callTo("+79650292555");
-                      },
-                      child: Container(
+              InkWell(
+                onTap: () {
+                  event.callTo("+79650292555");
+                },
+                child: SizedBox(
+                  width: 165.w,
+                  //color: Colors.red,
+                  //height: 24.h,
+                  child: Row(
+                    children: [
+                      Container(
                         width: 24.w,
                         height: 24.h,
                         decoration: BoxDecoration(
@@ -49,27 +49,27 @@ class Contacts extends StatelessWidget {
                           color: Colors.white,
                         ),
                       ),
-                    ),
-                    10.horizontalSpace,
-                    CustomText(
-                      text: "+7 (965) 029 25-55",
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ],
+                      10.horizontalSpace,
+                      CustomText(
+                        text: "+7 (965) 029 25-55",
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              SizedBox(
-                width: 165.w,
-                //color: Colors.red,
-                //height: 24.h,
-                child: Row(
-                  children: [
-                    InkWell(
-                      onTap: (){
-                        event.launchTelegram();
-                      },
-                      child: Container(
+              InkWell(
+                onTap: () {
+                  event.launchTelegram();
+                },
+                child: SizedBox(
+                  width: 165.w,
+                  //color: Colors.red,
+                  //height: 24.h,
+                  child: Row(
+                    children: [
+                      Container(
                         width: 24.w,
                         height: 24.h,
                         decoration: BoxDecoration(
@@ -77,7 +77,7 @@ class Contacts extends StatelessWidget {
                             color: AppColors.blueColor),
                         padding: EdgeInsets.all(3.r),
                         child: Transform.rotate(
-                          angle: pi*90,
+                          angle: pi * 90,
                           child: Icon(
                             Icons.send,
                             color: Colors.white,
@@ -85,14 +85,14 @@ class Contacts extends StatelessWidget {
                           ),
                         ),
                       ),
-                    ),
-                    10.horizontalSpace,
-                    CustomText(
-                      text: "TopDogFC",
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ],
+                      10.horizontalSpace,
+                      CustomText(
+                        text: "TopDogFC",
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

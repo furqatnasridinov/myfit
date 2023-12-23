@@ -10,6 +10,7 @@ class CustomTextField extends StatelessWidget {
   String? hintText;
   TextEditingController? controller;
   int? maxLines;
+  TextStyle? style;
   TextInputType? keyboardType;
   Widget? suffixIcon;
   String? counterText;
@@ -19,6 +20,7 @@ class CustomTextField extends StatelessWidget {
   TextStyle? counterStyle;
   bool hasFocus;
   bool isError;
+  Color? cursorColor;
   String? Function(String?)? validator;
   List<TextInputFormatter>? inputFormatters;
   void Function(PointerDownEvent)? onTapOutside;
@@ -43,9 +45,11 @@ class CustomTextField extends StatelessWidget {
     this.maxLength,
     this.focusNode,
     this.keyboardType,
+    this.style,
     this.onEditingComplete,
     this.onTap,
     this.onTapOutside,
+    this.cursorColor = Colors.black
   }) : super(key: key);
 
   @override
@@ -64,13 +68,9 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       onTapOutside: onTapOutside,
       onTap: onTap,
-      cursorColor: Colors.black,
+      cursorColor: cursorColor,
       onEditingComplete: onEditingComplete,
-      style: GoogleFonts.inter(
-        fontSize: 14.sp,
-        fontWeight: FontWeight.w400,
-        color: Colors.black,
-      ),
+      style: style,
       decoration: InputDecoration(
         counterText: counterText,
         counterStyle: counterStyle,

@@ -108,15 +108,15 @@ class MapNotifier extends StateNotifier<MapState> {
                   "${state.userPosition?.longitude},${state.userPosition?.latitude}",
               marker:
                   "${state.userPosition?.longitude},${state.userPosition?.latitude},pm2rdm",
-              size: "300,150",
+              size: "350,150",
               zoom: 11,
               i: "map",
             )
           : GetYandexMapImageRequest(
               latlon: "$selectedCityLon,$selectedCityLat",
               marker: "$selectedCityLon,$selectedCityLat,pm2rdm",
-              size: "300,150",
-              zoom: 11,
+              size: "350,150",
+              zoom: 12,
               i: "map",
             );
       final response =
@@ -211,7 +211,7 @@ class MapNotifier extends StateNotifier<MapState> {
     }
   }
 
-  void setLocationServiceAsEnabled(){
+  void setLocationServiceAsEnabled() {
     state = state.copyWith(locationServiceIsNotEnabled: false);
   }
 
@@ -271,7 +271,7 @@ class MapNotifier extends StateNotifier<MapState> {
     return state.listOfMarkers
         .map(
           (e) => PlacemarkMapObject(
-            mapId: MapObjectId("MapObject $e"),
+            mapId: MapObjectId("MapObject ${e.id}"),
             point: Point(
               latitude: e.latitude ?? 0,
               longitude: e.longitude ?? 0,
@@ -287,10 +287,10 @@ class MapNotifier extends StateNotifier<MapState> {
                           : "assets/images/map_icon_new.png",
                 ),
                 scale: e.name == "user"
-                    ? 2.0.r
+                    ? 1.5.r
                     : e.id == state.activeMarker?.id
-                        ? 2.5
-                        : 0.8.r,
+                        ? 1.8.r
+                        : 0.5.r,
               ),
             ),
             opacity: 1,
@@ -307,7 +307,10 @@ class MapNotifier extends StateNotifier<MapState> {
   ) {
     controller.moveCamera(
       CameraUpdate.newCameraPosition(
-        CameraPosition(target: Point(latitude: lat, longitude: lon), zoom: 12),
+        CameraPosition(
+          target: Point(latitude: lat, longitude: lon),
+          zoom: 15,
+        ),
       ),
       animation: const MapAnimation(duration: 1),
     );
@@ -441,7 +444,9 @@ class MapNotifier extends StateNotifier<MapState> {
     if (list.length > 4 && !state.isloading) {
       state = state.copyWith(topFlex: 6, bottomFlex: 8);
     }
-    if (list.length > 5 && (state.locationPermissionIsNOtGiven || state.locationServiceIsNotEnabled)) {
+    if (list.length > 5 &&
+        (state.locationPermissionIsNOtGiven ||
+            state.locationServiceIsNotEnabled)) {
       state = state.copyWith(
         topFlex: 7,
         bottomFlex: 5,
@@ -530,9 +535,7 @@ class MapNotifier extends StateNotifier<MapState> {
       entry = OverlayEntry(
         builder: (context) {
           return Positioned(
-            left: 50.w,
-            right: 50.w,
-            bottom: 30.h,
+            bottom: 0,
             child: PopUpMap(
               name: state.activeMarker?.name ?? "??",
               address: state.activeMarker?.address ?? "??",

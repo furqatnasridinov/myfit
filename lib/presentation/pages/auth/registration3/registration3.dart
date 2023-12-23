@@ -146,6 +146,11 @@ class _Registration3ScreenState extends State<Registration3Screen> {
                           ),
                           counterText: "",
                           maxLength: 16,
+                          style: GoogleFonts.raleway(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
                           controller: nameController,
                           focusNode: nameFocus,
                           onTapOutside: (onTapOutside) {

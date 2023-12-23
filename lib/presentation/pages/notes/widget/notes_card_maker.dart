@@ -309,6 +309,11 @@ class _NotesCardMakerState extends State<NotesCardMaker> {
                   tagFocus.requestFocus();
                   setState(() {});
                 },
+                style: GoogleFonts.inter(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                ),
                 focusNode: tagFocus,
                 controller: tagController,
                 hintText: "Заметка",
@@ -327,6 +332,11 @@ class _NotesCardMakerState extends State<NotesCardMaker> {
                   descriptionFocus.requestFocus();
                   setState(() {});
                 },
+                style: GoogleFonts.inter(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                ),
                 focusNode: descriptionFocus,
                 controller: descriptionController,
                 hintText: "Описание",

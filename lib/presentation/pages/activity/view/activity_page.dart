@@ -106,7 +106,7 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
                       event: event,
                     ),
                     32.verticalSpace,
-                     Contacts(event: event),
+                    Contacts(event: event),
                     32.verticalSpace,
                     TheOneWithChips(
                       gymId: widget.gymId,

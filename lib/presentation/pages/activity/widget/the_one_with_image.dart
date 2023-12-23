@@ -1,22 +1,50 @@
+import 'dart:ui';
+
 import 'package:activity/application/activity/activity_notifier.dart';
 import 'package:activity/application/activity/activity_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/custom_textformfield.dart';
+import 'package:activity/presentation/components/custom_textfield.dart';
 import 'package:activity/presentation/components/ui_dropdown_menu.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class TheOneWithImage extends StatelessWidget {
+class TheOneWithImage extends StatefulWidget {
   final ActivityState state;
   final ActivityNotifier event;
 
   const TheOneWithImage({Key? key, required this.state, required this.event})
       : super(key: key);
+
+  @override
+  State<TheOneWithImage> createState() => _TheOneWithImageState();
+}
+
+late TextEditingController errorController;
+late TextEditingController complaintController;
+late FocusNode focusNode;
+
+class _TheOneWithImageState extends State<TheOneWithImage> {
+  @override
+  void initState() {
+    super.initState();
+    errorController = TextEditingController();
+    complaintController = TextEditingController();
+    focusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    errorController.dispose();
+    complaintController.dispose();
+    focusNode.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +72,7 @@ class TheOneWithImage extends StatelessWidget {
             ),
           ),
           child: CachedNetworkImage(
-            imageUrl: state.gym?.mainPictureUrl ?? "",
+            imageUrl: widget.state.gym?.mainPictureUrl ?? "",
             errorWidget: (context, url, error) {
               return Image.asset(
                 "assets/images/avatar.png",
@@ -88,34 +116,14 @@ class TheOneWithImage extends StatelessWidget {
                 SizedBox(
                   //color: Colors.red,
                   width: 246.w,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: 300.w,
-                        child: CustomText(
-                          color: Colors.white,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          fontSize: 19.sp,
-                          fontWeight: FontWeight.w600,
-                          //text: "Top DOG Fight Club",
-                          text: state.gym?.name ?? "",
-                        ),
-                      ),
-                      5.verticalSpace,
-                      SizedBox(
-                        child: CustomText(
-                          color: Colors.white,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16.sp,
-                          //text: "Зал смешанных единоборств",
-                          text: state.gym?.description ?? "",
-                        ),
-                      ),
-                    ],
+                  child: CustomText(
+                    color: Colors.white,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    fontSize: 19.sp,
+                    fontWeight: FontWeight.w600,
+                    //text: "Top DOG Fight Club",
+                    text: widget.state.gym?.name ?? "",
                   ),
                 ),
                 10.horizontalSpace,
@@ -144,7 +152,7 @@ class TheOneWithImage extends StatelessWidget {
                       'action': () => {showPopUp(false, context)}
                     }
                   ],
-                  customOffset: [-30.0.w, -65.0.h],
+                  customOffset: [-30.0.w, -30.0.h],
                   width: 317.w,
                   maxWidth: 317.w,
                   dropDownChild: Container(
@@ -170,24 +178,31 @@ class TheOneWithImage extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.only(left: 15.w, bottom: 15.h),
               child: Row(
+                //crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    width: 18.w,
-                    height: 18.h,
+                  Container(
+                    width: 24.w,
+                    height: 24.h,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6.r),
+                        color: AppColors.blueColor),
+                    padding: EdgeInsets.all(3.r),
                     child: SvgPicture.asset(
                       "assets/svg/location.svg",
                       fit: BoxFit.cover,
+                      // ignore: deprecated_member_use
+                      color: Colors.white,
                     ),
                   ),
                   7.horizontalSpace,
-                  SizedBox(
-                    width: 330.w,
-                    child: CustomText(
-                      //overflow: TextOverflow.ellipsis,
-                      color: Colors.white,
-                      text: state.gym?.address ?? "",
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14.sp,
+                  Flexible(
+                    child: SizedBox(
+                      child: CustomText(
+                        color: Colors.white,
+                        text: widget.state.gym?.address ?? "",
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14.sp,
+                      ),
                     ),
                   ),
                 ],
@@ -202,117 +217,145 @@ class TheOneWithImage extends StatelessWidget {
 
 void showPopUp(bool isFirstOne, BuildContext context) {
   showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) {
-        return Dialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.r),
-              side: const BorderSide(
-                color: AppColors.blueBorder,
-              )),
-          elevation: 0,
-          insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: Padding(
-            padding: EdgeInsets.all(16.r),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CustomText(
-                    text: isFirstOne
-                        ? "Сообщить об ошибке"
-                        : "Сообщить о неприемлемом контенте",
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  16.verticalSpace,
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 24.w,
-                        height: 24.h,
-                        decoration: BoxDecoration(
-                          color: AppColors.backgroundColor,
-                          borderRadius: BorderRadius.circular(6.r),
-                        ),
-                        child: Center(
-                          child: isFirstOne
-                              ? SvgPicture.asset(
-                                  "assets/svg/complaint.svg",
-                                  width: 15.w,
-                                  height: 15.h,
-                                )
-                              : SvgPicture.asset(
-                                  "assets/svg/complaint.svg",
-                                  colorFilter: const ColorFilter.mode(
-                                    Colors.red,
-                                    BlendMode.srcIn,
+        return StatefulBuilder(builder: (context, setstate) {
+          return Dialog(
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.r),
+                side: const BorderSide(
+                  color: AppColors.blueBorder,
+                )),
+            elevation: 0,
+            insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: Padding(
+              padding: EdgeInsets.all(16.r),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CustomText(
+                      text: isFirstOne
+                          ? "Сообщить об ошибке"
+                          : "Сообщить о неприемлемом контенте",
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    16.verticalSpace,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 24.w,
+                          height: 24.h,
+                          decoration: BoxDecoration(
+                            color: AppColors.backgroundColor,
+                            borderRadius: BorderRadius.circular(6.r),
+                          ),
+                          child: Center(
+                            child: isFirstOne
+                                ? SvgPicture.asset(
+                                    "assets/svg/complaint.svg",
+                                    width: 15.w,
+                                    height: 15.h,
+                                  )
+                                : SvgPicture.asset(
+                                    "assets/svg/complaint.svg",
+                                    colorFilter: const ColorFilter.mode(
+                                      Colors.red,
+                                      BlendMode.srcIn,
+                                    ),
+                                    width: 15.w,
+                                    height: 15.h,
                                   ),
-                                  width: 15.w,
-                                  height: 15.h,
-                                ),
+                          ),
                         ),
-                      ),
-                      10.horizontalSpace,
-                      Flexible(
-                        child: CustomText(
-                          text: isFirstOne
-                              ? "Опишите найденную ошибку как можно подробнее. Сообщение будет передано напрямую администрации заведения."
-                              : "Ваше сообщение попадёт напрямую разработчикам приложения, а не администрации заведения.Опишите ситуацию максимально подробно",
+                        10.horizontalSpace,
+                        Flexible(
+                          child: CustomText(
+                            text: isFirstOne
+                                ? "Опишите найденную ошибку как можно подробнее. Сообщение будет передано напрямую администрации заведения."
+                                : "Ваше сообщение попадёт напрямую разработчикам приложения, а не администрации заведения.Опишите ситуацию максимально подробно",
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        )
+                      ],
+                    ),
+                    16.verticalSpace,
+                    SizedBox(
+                      //height: 40.h,
+                      child: CustomTextField(
+                        counterStyle: const TextStyle(
+                          height: double.minPositive,
+                        ),
+                        onTap: () {
+                          if (!focusNode.hasFocus) {
+                            focusNode.requestFocus();
+                            setstate(() {});
+                          }
+                        },
+                        onTapOutside: (onTapOutside) {
+                          if (focusNode.hasFocus) {
+                            focusNode.unfocus();
+                          }
+                        },
+                        style: GoogleFonts.raleway(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
+                          color: Colors.black,
+                          fontFeatures: const [FontFeature.liningFigures()],
                         ),
-                      )
-                    ],
-                  ),
-                  16.verticalSpace,
-                  SizedBox(
-                    //height: 40.h,
-                    child: CustomTextFormField(
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      maxLength: 300,
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 10.h, horizontal: 8.w),
-                      hintText: "Опишите ситуацию",
+                        counterText: "",
+                        cursorColor: AppColors.greyText,
+                        controller:
+                            isFirstOne ? errorController : complaintController,
+                        focusNode: focusNode,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        maxLength: 300,
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 10.h, horizontal: 8.w),
+                        hintText: "Опишите ситуацию",
+                      ),
                     ),
-                  ),
-                  16.verticalSpace,
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CustomButton(
-                          buttonColor: Colors.white,
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                          height: 40.h,
-                          onPressed: () {
-                            context.popRoute();
-                          },
-                          text: "Отменить",
+                    16.verticalSpace,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomButton(
+                            buttonColor: Colors.white,
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            height: 40.h,
+                            onPressed: () {
+                              context.popRoute();
+                            },
+                            text: "Отменить",
+                          ),
                         ),
-                      ),
-                      5.horizontalSpace,
-                      Expanded(
-                        child: CustomButton(
-                          textColor: Colors.white,
-                          buttonColor: AppColors.blueColor,
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                          height: 40.h,
-                          onPressed: () {},
-                          text: "Сохранить",
+                        5.horizontalSpace,
+                        Expanded(
+                          child: CustomButton(
+                            textColor: Colors.white,
+                            buttonColor: AppColors.blueColor,
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            height: 40.h,
+                            onPressed: () {},
+                            text: "Отправить",
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
+          );
+        });
       });
 }

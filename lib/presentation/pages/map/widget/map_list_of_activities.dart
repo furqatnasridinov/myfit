@@ -245,6 +245,7 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                               double.parse(gymsList[index].latitude.toString()),
                               double.parse(
                                   gymsList[index].longitude.toString()),
+                                  
                             );
                             widget.event
                                 .setMarkerAsOpened(
