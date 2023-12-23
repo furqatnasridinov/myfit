@@ -1,4 +1,3 @@
-import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/dummy_data.dart';
@@ -38,16 +37,12 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(scheduleProvider);
     final event = ref.read(scheduleProvider.notifier);
-    final mapState = ref.watch(mapProvider);
-    final mapEvent = ref.read(mapProvider.notifier);
-
+    
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
       appBar: ScheduleHeader(
         event: event,
-        mapEvent: mapEvent,
-        mapState: mapState,
       ),
       body: state.isloading
           ? const Center(

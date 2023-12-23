@@ -1,5 +1,5 @@
-import 'package:activity/application/schedule/schedule_notifier.dart';
-import 'package:activity/application/schedule/schedule_state.dart';
+import 'package:activity/application/main2/main2_notifier.dart';
+import 'package:activity/application/main2/main2_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/ui_card.dart';
@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ComingActivity extends StatelessWidget {
-  final ScheduleState state;
-  final ScheduleNotifier event;
+  final Main2State state;
+  final Main2Notifier event;
   const ComingActivity({super.key, required this.state, required this.event});
 
   @override

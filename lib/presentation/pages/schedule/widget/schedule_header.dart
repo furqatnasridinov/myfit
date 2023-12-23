@@ -1,6 +1,5 @@
 import 'dart:ui';
-import 'package:activity/application/map/map_notifier.dart';
-import 'package:activity/application/map/map_state.dart';
+import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
@@ -10,19 +9,14 @@ import 'package:activity/presentation/components/ui_button_filled.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ScheduleHeader extends StatefulWidget implements PreferredSizeWidget {
-  final MapNotifier mapEvent;
-  final MapState mapState;
   final ScheduleNotifier event;
-  const ScheduleHeader(
-      {super.key,
-      required this.mapEvent,
-      required this.mapState,
-      required this.event});
+  const ScheduleHeader({super.key, required this.event});
 
   @override
   State<ScheduleHeader> createState() => _MainHeaderState();
@@ -66,80 +60,85 @@ class _MainHeaderState extends State<ScheduleHeader> {
                   setState(() {});
                 }
               },
-              child: Container(
-                height: controller.text.isEmpty ||
-                        widget.mapState.gymFoundBySearching.isEmpty
-                    ? 160.h
-                    : 290.h,
-                margin: EdgeInsets.only(left: 16.w, right: 16.w),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.0),
-                  color: Colors.white,
-                  border: Border.all(
-                    width: 1.0,
-                    color: const Color.fromRGBO(119, 170, 249, 1),
+              child: Consumer(builder: (context, ref, child) {
+                final mapState = ref.watch(mapProvider);
+                return Container(
+                  height: controller.text.isEmpty ||
+                          mapState.gymFoundBySearching.isEmpty
+                      ? 160.h
+                      : 290.h,
+                  margin: EdgeInsets.only(left: 16.w, right: 16.w),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16.0),
+                    color: Colors.white,
+                    border: Border.all(
+                      width: 1.0,
+                      color: const Color.fromRGBO(119, 170, 249, 1),
+                    ),
                   ),
-                ),
-                padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      controller.text.isEmpty
-                          ? Center(
-                              child: CustomText(
-                                text:
-                                    "Введите название занятия или заведения, которое хотите найти",
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            )
-                          : controller.text.length > 1 &&
-                                  widget.mapState.gymFoundBySearching.isEmpty
-                              ? CustomText(
-                                  text: "По вашему запросу ничего не найдено! ",
+                  padding:
+                      EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        controller.text.isEmpty
+                            ? Center(
+                                child: CustomText(
+                                  text:
+                                      "Введите название занятия или заведения, которое хотите найти",
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w500,
-                                )
-                              : Expanded(
-                                  child: MediaQuery.removePadding(
-                                    context: context,
-                                    removeTop: true,
-                                    child: ListView.builder(
-                                      shrinkWrap: true,
-                                      itemCount: widget
-                                          .mapState.gymFoundBySearching.length,
-                                      itemBuilder: (context, index) {
-                                        final currentGym = widget.mapState
-                                            .gymFoundBySearching[index];
-                                        return _listiles(
-                                          currentGym.name ?? "??",
-                                          "${currentGym.distanceFromClient.toString()} км от вас",
-                                          () {
-                                            textfieldFocusnode.unfocus();
-                                            setState(() {});
-                                            context.router.push(
-                                              ActivityRoute(
-                                                  gymId: currentGym.id!),
-                                            );
-                                            controller.clear();
-                                          },
-                                        );
-                                      },
+                                ),
+                              )
+                            : controller.text.length > 1 &&
+                                    mapState.gymFoundBySearching.isEmpty
+                                ? CustomText(
+                                    text:
+                                        "По вашему запросу ничего не найдено! ",
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w500,
+                                  )
+                                : Expanded(
+                                    child: MediaQuery.removePadding(
+                                      context: context,
+                                      removeTop: true,
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount:
+                                            mapState.gymFoundBySearching.length,
+                                        itemBuilder: (context, index) {
+                                          final currentGym = mapState
+                                              .gymFoundBySearching[index];
+                                          return _listiles(
+                                            currentGym.name ?? "??",
+                                            "${currentGym.distanceFromClient.toString()} км от вас",
+                                            () {
+                                              textfieldFocusnode.unfocus();
+                                              setState(() {});
+                                              context.router.push(
+                                                ActivityRoute(
+                                                    gymId: currentGym.id!),
+                                              );
+                                              controller.clear();
+                                            },
+                                          );
+                                        },
+                                      ),
                                     ),
                                   ),
-                                ),
-                      const SizedBox(height: 10.0),
-                      UiButtonFilled(
-                        btnText: 'Показать на карте',
-                        onPressedAction: () {
-                          textfieldFocusnode.unfocus();
-                          setState(() {});
-                          context.router.push(MapRoute(gymId: 0));
-                        },
-                        isFullWidth: true,
-                      )
-                    ]),
-              ),
+                        const SizedBox(height: 10.0),
+                        UiButtonFilled(
+                          btnText: 'Показать на карте',
+                          onPressedAction: () {
+                            textfieldFocusnode.unfocus();
+                            setState(() {});
+                            context.router.push(MapRoute(gymId: 0));
+                          },
+                          isFullWidth: true,
+                        )
+                      ]),
+                );
+              }),
             ),
           ),
         ),
@@ -185,18 +184,23 @@ class _MainHeaderState extends State<ScheduleHeader> {
 
   @override
   Widget build(BuildContext context) {
-    if (controller.text.length > 1 && controller.text != previousText) {
-      widget.mapEvent.searchGym(
-        context,
-        text: controller.text,
-      );
-      previousText = controller.text;
-      _updateOverlay();
-    }
-    if (widget.mapState.gymFoundBySearching.isEmpty &&
-        controller.text.isNotEmpty) {
-      _updateOverlay();
-    }
+    Consumer(builder: (context, ref, child) {
+      final mapEvent = ref.read(mapProvider.notifier);
+      final mapState = ref.watch(mapProvider);
+      if (controller.text.length > 1 && controller.text != previousText) {
+        mapEvent.searchGym(
+          context,
+          text: controller.text,
+        );
+        previousText = controller.text;
+        _updateOverlay();
+      }
+
+      if (mapState.gymFoundBySearching.isEmpty && controller.text.isNotEmpty) {
+        _updateOverlay();
+      }
+      return const SizedBox();
+    });
 
     return AppBar(
       automaticallyImplyLeading: false,

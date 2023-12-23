@@ -1,7 +1,7 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:activity/application/main2/main2_provider.dart';
 import 'package:activity/application/schedule/schedule_notifier.dart';
-import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/presentation/components/ui_dropdown_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,7 +26,7 @@ class DropDownMenuInsideCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final scheduleEvent = ref.read(scheduleProvider.notifier);
+        final main2Event = ref.read(main2Provider.notifier);
         return UiDropDownMenu(
           width: 230.w,
           maxWidth: 255.w,
@@ -230,7 +230,7 @@ class DropDownMenuInsideCard extends StatelessWidget {
                           (value) => event?.getUsersSchedules(context),
                         )
                         .then(
-                          (value) => scheduleEvent.getNearestLesson(context),
+                          (value) => main2Event.getNearestLesson(context),
                         ),
                   }
             },

@@ -6,8 +6,6 @@ import 'package:activity/infrastructure/models/data/activity.dart';
 import 'package:activity/infrastructure/models/request/get_gym_photos_request.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';

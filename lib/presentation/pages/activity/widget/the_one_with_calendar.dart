@@ -1,5 +1,6 @@
 import 'package:activity/application/activity/activity_notifier.dart';
 import 'package:activity/application/activity/activity_state.dart';
+import 'package:activity/application/main2/main2_provider.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/infrastructure/models/data/chips_model.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
@@ -232,7 +233,8 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
           // список занятий заведения на выбранный день
           Consumer(
             builder: (contex, ref, child) {
-              final scheduleEvent = ref.read(scheduleProvider.notifier);
+              final main2Event = ref.read(main2Provider.notifier);
+              final scheduleevent = ref.read(scheduleProvider.notifier);
               return ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -257,7 +259,9 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                       currentSchedule.status = 3;
                       setState(() {});
                       // ignore: use_build_context_synchronously
-                      scheduleEvent.getNearestLesson(context);
+                      main2Event.getNearestLesson(context);
+                      // ignore: use_build_context_synchronously
+                      scheduleevent.getUsersSchedules(context);
                     },
                   );
                 },

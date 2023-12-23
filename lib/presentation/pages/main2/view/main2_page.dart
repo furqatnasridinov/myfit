@@ -1,6 +1,6 @@
 import 'dart:async';
+import 'package:activity/application/main2/main2_provider.dart';
 import 'package:activity/application/map/map_provider.dart';
-import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_text.dart';
@@ -23,12 +23,13 @@ class Main2Screen extends ConsumerStatefulWidget {
 
 class _LoginScreen extends ConsumerState<Main2Screen> {
   final mapControllerCompleter = Completer<YandexMapController>();
-  TextEditingController controller = TextEditingController();
-  ScrollController scrollController = ScrollController();
-  final layerlink = LayerLink();
+  late TextEditingController controller;
+  late LayerLink layerlink;
 
   @override
   void initState() {
+    controller = TextEditingController();
+    layerlink = LayerLink();
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(mapProvider.notifier).getUserLocation().then((value) {
@@ -36,17 +37,22 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
               context,
             );
       });
-      ref.read(scheduleProvider.notifier)
+      ref.read(main2Provider.notifier)
         ..getNearestLesson(context)
         ..getUserStatsMonth(context);
     });
   }
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final state = ref.watch(scheduleProvider);
-    final event = ref.read(scheduleProvider.notifier);
-    final mapState = ref.watch(mapProvider);
+    final state = ref.watch(main2Provider);
+    final event = ref.read(main2Provider.notifier);
     if (controller.text.isEmpty && state.schedulesFoundBySearching.isNotEmpty) {
       event.cleanSearchList();
     }
@@ -72,7 +78,6 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                     SingleChildScrollView(
                       keyboardDismissBehavior:
                           ScrollViewKeyboardDismissBehavior.onDrag,
-                      controller: scrollController,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -118,22 +123,25 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                             ),
                           ),
                           10.verticalSpace,
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16.w),
-                            child: mapState.isloading &&
-                                    mapState.mapScreenShot == null
-                                ? const Main2MapPlaceHolder()
-                                : Main2Map(
-                                    child: Image.memory(
-                                      mapState.mapScreenShot ?? Uint8List(100),
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                        return const Main2MapPlaceHolder();
-                                      },
+                          Consumer(builder: (context, ref, child) {
+                            final mapState = ref.watch(mapProvider);
+                            return Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16.w),
+                              child: mapState.mapScreenShot == null
+                                  ? const Main2MapPlaceHolder()
+                                  : Main2Map(
+                                      child: Image.memory(
+                                        mapState.mapScreenShot ??
+                                            Uint8List(100),
+                                        fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return const Main2MapPlaceHolder();
+                                        },
+                                      ),
                                     ),
-                                  ),
-                          ),
+                            );
+                          }),
                           32.verticalSpace,
                           const DecoratedTextOne(),
                         ],

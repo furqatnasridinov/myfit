@@ -1,6 +1,6 @@
 import 'dart:ui';
-import 'package:activity/application/schedule/schedule_notifier.dart';
-import 'package:activity/application/schedule/schedule_state.dart';
+import 'package:activity/application/main2/main2_notifier.dart';
+import 'package:activity/application/main2/main2_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/custom_text.dart';
@@ -13,8 +13,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Main2Header extends StatefulWidget implements PreferredSizeWidget {
-  final ScheduleState state;
-  final ScheduleNotifier event;
+  final Main2State state;
+  final Main2Notifier event;
   final TextEditingController controller;
   const Main2Header({
     super.key,
