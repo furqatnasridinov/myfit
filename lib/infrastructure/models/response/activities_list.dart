@@ -8,7 +8,7 @@ class ActivitiesListResponse {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data =  Map<String, dynamic>();
+    final Map<String, dynamic> data =  <String, dynamic>{};
     data['object'] = object;
     return data;
   }

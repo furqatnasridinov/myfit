@@ -20,15 +20,24 @@ mixin _$MapState {
   Position? get userPosition => throw _privateConstructorUsedError;
   List<EachMarkersModel> get listOfMarkers =>
       throw _privateConstructorUsedError;
-  List<GymData> get listOfActivities => throw _privateConstructorUsedError;
   EachMarkersModel? get activeMarker => throw _privateConstructorUsedError;
   List<double> get distances => throw _privateConstructorUsedError;
   double get selectedDiapozone => throw _privateConstructorUsedError;
+  bool get locationPermissionIsNOtGiven => throw _privateConstructorUsedError;
+  bool get locationServiceIsNotEnabled => throw _privateConstructorUsedError;
   List<bool> get listOfBool => throw _privateConstructorUsedError;
-  List<GymData> get listOfActivitiesFromSelectedDiapozone =>
-      throw _privateConstructorUsedError;
   List<GymData> get gymFoundBySearching => throw _privateConstructorUsedError;
   bool get isSearchbarOpened => throw _privateConstructorUsedError;
+  List<LessonTypeWithGymsInside> get activitiesWithGymsInsideAll =>
+      throw _privateConstructorUsedError;
+  List<LessonTypeWithGymsInside>
+      get activitiesWithGymsInsideFromSelectedDiapozone =>
+          throw _privateConstructorUsedError;
+  bool get showMapOnly => throw _privateConstructorUsedError;
+  Uint8List? get mapScreenShot => throw _privateConstructorUsedError;
+  int get topFlex => throw _privateConstructorUsedError;
+  int get bottomFlex => throw _privateConstructorUsedError;
+  bool get isLocationIconHidden => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $MapStateCopyWith<MapState> get copyWith =>
@@ -44,14 +53,22 @@ abstract class $MapStateCopyWith<$Res> {
       {bool isloading,
       Position? userPosition,
       List<EachMarkersModel> listOfMarkers,
-      List<GymData> listOfActivities,
       EachMarkersModel? activeMarker,
       List<double> distances,
       double selectedDiapozone,
+      bool locationPermissionIsNOtGiven,
+      bool locationServiceIsNotEnabled,
       List<bool> listOfBool,
-      List<GymData> listOfActivitiesFromSelectedDiapozone,
       List<GymData> gymFoundBySearching,
-      bool isSearchbarOpened});
+      bool isSearchbarOpened,
+      List<LessonTypeWithGymsInside> activitiesWithGymsInsideAll,
+      List<LessonTypeWithGymsInside>
+          activitiesWithGymsInsideFromSelectedDiapozone,
+      bool showMapOnly,
+      Uint8List? mapScreenShot,
+      int topFlex,
+      int bottomFlex,
+      bool isLocationIconHidden});
 }
 
 /// @nodoc
@@ -70,14 +87,21 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
     Object? isloading = null,
     Object? userPosition = freezed,
     Object? listOfMarkers = null,
-    Object? listOfActivities = null,
     Object? activeMarker = freezed,
     Object? distances = null,
     Object? selectedDiapozone = null,
+    Object? locationPermissionIsNOtGiven = null,
+    Object? locationServiceIsNotEnabled = null,
     Object? listOfBool = null,
-    Object? listOfActivitiesFromSelectedDiapozone = null,
     Object? gymFoundBySearching = null,
     Object? isSearchbarOpened = null,
+    Object? activitiesWithGymsInsideAll = null,
+    Object? activitiesWithGymsInsideFromSelectedDiapozone = null,
+    Object? showMapOnly = null,
+    Object? mapScreenShot = freezed,
+    Object? topFlex = null,
+    Object? bottomFlex = null,
+    Object? isLocationIconHidden = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -92,10 +116,6 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
           ? _value.listOfMarkers
           : listOfMarkers // ignore: cast_nullable_to_non_nullable
               as List<EachMarkersModel>,
-      listOfActivities: null == listOfActivities
-          ? _value.listOfActivities
-          : listOfActivities // ignore: cast_nullable_to_non_nullable
-              as List<GymData>,
       activeMarker: freezed == activeMarker
           ? _value.activeMarker
           : activeMarker // ignore: cast_nullable_to_non_nullable
@@ -108,15 +128,18 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
           ? _value.selectedDiapozone
           : selectedDiapozone // ignore: cast_nullable_to_non_nullable
               as double,
+      locationPermissionIsNOtGiven: null == locationPermissionIsNOtGiven
+          ? _value.locationPermissionIsNOtGiven
+          : locationPermissionIsNOtGiven // ignore: cast_nullable_to_non_nullable
+              as bool,
+      locationServiceIsNotEnabled: null == locationServiceIsNotEnabled
+          ? _value.locationServiceIsNotEnabled
+          : locationServiceIsNotEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
       listOfBool: null == listOfBool
           ? _value.listOfBool
           : listOfBool // ignore: cast_nullable_to_non_nullable
               as List<bool>,
-      listOfActivitiesFromSelectedDiapozone: null ==
-              listOfActivitiesFromSelectedDiapozone
-          ? _value.listOfActivitiesFromSelectedDiapozone
-          : listOfActivitiesFromSelectedDiapozone // ignore: cast_nullable_to_non_nullable
-              as List<GymData>,
       gymFoundBySearching: null == gymFoundBySearching
           ? _value.gymFoundBySearching
           : gymFoundBySearching // ignore: cast_nullable_to_non_nullable
@@ -124,6 +147,35 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
       isSearchbarOpened: null == isSearchbarOpened
           ? _value.isSearchbarOpened
           : isSearchbarOpened // ignore: cast_nullable_to_non_nullable
+              as bool,
+      activitiesWithGymsInsideAll: null == activitiesWithGymsInsideAll
+          ? _value.activitiesWithGymsInsideAll
+          : activitiesWithGymsInsideAll // ignore: cast_nullable_to_non_nullable
+              as List<LessonTypeWithGymsInside>,
+      activitiesWithGymsInsideFromSelectedDiapozone: null ==
+              activitiesWithGymsInsideFromSelectedDiapozone
+          ? _value.activitiesWithGymsInsideFromSelectedDiapozone
+          : activitiesWithGymsInsideFromSelectedDiapozone // ignore: cast_nullable_to_non_nullable
+              as List<LessonTypeWithGymsInside>,
+      showMapOnly: null == showMapOnly
+          ? _value.showMapOnly
+          : showMapOnly // ignore: cast_nullable_to_non_nullable
+              as bool,
+      mapScreenShot: freezed == mapScreenShot
+          ? _value.mapScreenShot
+          : mapScreenShot // ignore: cast_nullable_to_non_nullable
+              as Uint8List?,
+      topFlex: null == topFlex
+          ? _value.topFlex
+          : topFlex // ignore: cast_nullable_to_non_nullable
+              as int,
+      bottomFlex: null == bottomFlex
+          ? _value.bottomFlex
+          : bottomFlex // ignore: cast_nullable_to_non_nullable
+              as int,
+      isLocationIconHidden: null == isLocationIconHidden
+          ? _value.isLocationIconHidden
+          : isLocationIconHidden // ignore: cast_nullable_to_non_nullable
               as bool,
     ) as $Val);
   }
@@ -141,14 +193,22 @@ abstract class _$$MapStateImplCopyWith<$Res>
       {bool isloading,
       Position? userPosition,
       List<EachMarkersModel> listOfMarkers,
-      List<GymData> listOfActivities,
       EachMarkersModel? activeMarker,
       List<double> distances,
       double selectedDiapozone,
+      bool locationPermissionIsNOtGiven,
+      bool locationServiceIsNotEnabled,
       List<bool> listOfBool,
-      List<GymData> listOfActivitiesFromSelectedDiapozone,
       List<GymData> gymFoundBySearching,
-      bool isSearchbarOpened});
+      bool isSearchbarOpened,
+      List<LessonTypeWithGymsInside> activitiesWithGymsInsideAll,
+      List<LessonTypeWithGymsInside>
+          activitiesWithGymsInsideFromSelectedDiapozone,
+      bool showMapOnly,
+      Uint8List? mapScreenShot,
+      int topFlex,
+      int bottomFlex,
+      bool isLocationIconHidden});
 }
 
 /// @nodoc
@@ -165,14 +225,21 @@ class __$$MapStateImplCopyWithImpl<$Res>
     Object? isloading = null,
     Object? userPosition = freezed,
     Object? listOfMarkers = null,
-    Object? listOfActivities = null,
     Object? activeMarker = freezed,
     Object? distances = null,
     Object? selectedDiapozone = null,
+    Object? locationPermissionIsNOtGiven = null,
+    Object? locationServiceIsNotEnabled = null,
     Object? listOfBool = null,
-    Object? listOfActivitiesFromSelectedDiapozone = null,
     Object? gymFoundBySearching = null,
     Object? isSearchbarOpened = null,
+    Object? activitiesWithGymsInsideAll = null,
+    Object? activitiesWithGymsInsideFromSelectedDiapozone = null,
+    Object? showMapOnly = null,
+    Object? mapScreenShot = freezed,
+    Object? topFlex = null,
+    Object? bottomFlex = null,
+    Object? isLocationIconHidden = null,
   }) {
     return _then(_$MapStateImpl(
       isloading: null == isloading
@@ -187,10 +254,6 @@ class __$$MapStateImplCopyWithImpl<$Res>
           ? _value._listOfMarkers
           : listOfMarkers // ignore: cast_nullable_to_non_nullable
               as List<EachMarkersModel>,
-      listOfActivities: null == listOfActivities
-          ? _value._listOfActivities
-          : listOfActivities // ignore: cast_nullable_to_non_nullable
-              as List<GymData>,
       activeMarker: freezed == activeMarker
           ? _value.activeMarker
           : activeMarker // ignore: cast_nullable_to_non_nullable
@@ -203,15 +266,18 @@ class __$$MapStateImplCopyWithImpl<$Res>
           ? _value.selectedDiapozone
           : selectedDiapozone // ignore: cast_nullable_to_non_nullable
               as double,
+      locationPermissionIsNOtGiven: null == locationPermissionIsNOtGiven
+          ? _value.locationPermissionIsNOtGiven
+          : locationPermissionIsNOtGiven // ignore: cast_nullable_to_non_nullable
+              as bool,
+      locationServiceIsNotEnabled: null == locationServiceIsNotEnabled
+          ? _value.locationServiceIsNotEnabled
+          : locationServiceIsNotEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
       listOfBool: null == listOfBool
           ? _value._listOfBool
           : listOfBool // ignore: cast_nullable_to_non_nullable
               as List<bool>,
-      listOfActivitiesFromSelectedDiapozone: null ==
-              listOfActivitiesFromSelectedDiapozone
-          ? _value._listOfActivitiesFromSelectedDiapozone
-          : listOfActivitiesFromSelectedDiapozone // ignore: cast_nullable_to_non_nullable
-              as List<GymData>,
       gymFoundBySearching: null == gymFoundBySearching
           ? _value._gymFoundBySearching
           : gymFoundBySearching // ignore: cast_nullable_to_non_nullable
@@ -219,6 +285,35 @@ class __$$MapStateImplCopyWithImpl<$Res>
       isSearchbarOpened: null == isSearchbarOpened
           ? _value.isSearchbarOpened
           : isSearchbarOpened // ignore: cast_nullable_to_non_nullable
+              as bool,
+      activitiesWithGymsInsideAll: null == activitiesWithGymsInsideAll
+          ? _value._activitiesWithGymsInsideAll
+          : activitiesWithGymsInsideAll // ignore: cast_nullable_to_non_nullable
+              as List<LessonTypeWithGymsInside>,
+      activitiesWithGymsInsideFromSelectedDiapozone: null ==
+              activitiesWithGymsInsideFromSelectedDiapozone
+          ? _value._activitiesWithGymsInsideFromSelectedDiapozone
+          : activitiesWithGymsInsideFromSelectedDiapozone // ignore: cast_nullable_to_non_nullable
+              as List<LessonTypeWithGymsInside>,
+      showMapOnly: null == showMapOnly
+          ? _value.showMapOnly
+          : showMapOnly // ignore: cast_nullable_to_non_nullable
+              as bool,
+      mapScreenShot: freezed == mapScreenShot
+          ? _value.mapScreenShot
+          : mapScreenShot // ignore: cast_nullable_to_non_nullable
+              as Uint8List?,
+      topFlex: null == topFlex
+          ? _value.topFlex
+          : topFlex // ignore: cast_nullable_to_non_nullable
+              as int,
+      bottomFlex: null == bottomFlex
+          ? _value.bottomFlex
+          : bottomFlex // ignore: cast_nullable_to_non_nullable
+              as int,
+      isLocationIconHidden: null == isLocationIconHidden
+          ? _value.isLocationIconHidden
+          : isLocationIconHidden // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
   }
@@ -231,21 +326,30 @@ class _$MapStateImpl extends _MapState {
       {this.isloading = false,
       this.userPosition = null,
       final List<EachMarkersModel> listOfMarkers = const [],
-      final List<GymData> listOfActivities = const [],
       this.activeMarker = null,
       final List<double> distances = const [],
       this.selectedDiapozone = 5,
+      this.locationPermissionIsNOtGiven = false,
+      this.locationServiceIsNotEnabled = false,
       final List<bool> listOfBool = const [false, false, false, true],
-      final List<GymData> listOfActivitiesFromSelectedDiapozone = const [],
       final List<GymData> gymFoundBySearching = const [],
-      this.isSearchbarOpened = false})
+      this.isSearchbarOpened = false,
+      final List<LessonTypeWithGymsInside> activitiesWithGymsInsideAll =
+          const [],
+      final List<LessonTypeWithGymsInside>
+          activitiesWithGymsInsideFromSelectedDiapozone = const [],
+      this.showMapOnly = false,
+      this.mapScreenShot = null,
+      this.topFlex = 2,
+      this.bottomFlex = 6,
+      this.isLocationIconHidden = false})
       : _listOfMarkers = listOfMarkers,
-        _listOfActivities = listOfActivities,
         _distances = distances,
         _listOfBool = listOfBool,
-        _listOfActivitiesFromSelectedDiapozone =
-            listOfActivitiesFromSelectedDiapozone,
         _gymFoundBySearching = gymFoundBySearching,
+        _activitiesWithGymsInsideAll = activitiesWithGymsInsideAll,
+        _activitiesWithGymsInsideFromSelectedDiapozone =
+            activitiesWithGymsInsideFromSelectedDiapozone,
         super._();
 
   @override
@@ -263,16 +367,6 @@ class _$MapStateImpl extends _MapState {
     return EqualUnmodifiableListView(_listOfMarkers);
   }
 
-  final List<GymData> _listOfActivities;
-  @override
-  @JsonKey()
-  List<GymData> get listOfActivities {
-    if (_listOfActivities is EqualUnmodifiableListView)
-      return _listOfActivities;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_listOfActivities);
-  }
-
   @override
   @JsonKey()
   final EachMarkersModel? activeMarker;
@@ -288,6 +382,12 @@ class _$MapStateImpl extends _MapState {
   @override
   @JsonKey()
   final double selectedDiapozone;
+  @override
+  @JsonKey()
+  final bool locationPermissionIsNOtGiven;
+  @override
+  @JsonKey()
+  final bool locationServiceIsNotEnabled;
   final List<bool> _listOfBool;
   @override
   @JsonKey()
@@ -295,16 +395,6 @@ class _$MapStateImpl extends _MapState {
     if (_listOfBool is EqualUnmodifiableListView) return _listOfBool;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_listOfBool);
-  }
-
-  final List<GymData> _listOfActivitiesFromSelectedDiapozone;
-  @override
-  @JsonKey()
-  List<GymData> get listOfActivitiesFromSelectedDiapozone {
-    if (_listOfActivitiesFromSelectedDiapozone is EqualUnmodifiableListView)
-      return _listOfActivitiesFromSelectedDiapozone;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_listOfActivitiesFromSelectedDiapozone);
   }
 
   final List<GymData> _gymFoundBySearching;
@@ -320,10 +410,49 @@ class _$MapStateImpl extends _MapState {
   @override
   @JsonKey()
   final bool isSearchbarOpened;
+  final List<LessonTypeWithGymsInside> _activitiesWithGymsInsideAll;
+  @override
+  @JsonKey()
+  List<LessonTypeWithGymsInside> get activitiesWithGymsInsideAll {
+    if (_activitiesWithGymsInsideAll is EqualUnmodifiableListView)
+      return _activitiesWithGymsInsideAll;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_activitiesWithGymsInsideAll);
+  }
+
+  final List<LessonTypeWithGymsInside>
+      _activitiesWithGymsInsideFromSelectedDiapozone;
+  @override
+  @JsonKey()
+  List<LessonTypeWithGymsInside>
+      get activitiesWithGymsInsideFromSelectedDiapozone {
+    if (_activitiesWithGymsInsideFromSelectedDiapozone
+        is EqualUnmodifiableListView)
+      return _activitiesWithGymsInsideFromSelectedDiapozone;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(
+        _activitiesWithGymsInsideFromSelectedDiapozone);
+  }
+
+  @override
+  @JsonKey()
+  final bool showMapOnly;
+  @override
+  @JsonKey()
+  final Uint8List? mapScreenShot;
+  @override
+  @JsonKey()
+  final int topFlex;
+  @override
+  @JsonKey()
+  final int bottomFlex;
+  @override
+  @JsonKey()
+  final bool isLocationIconHidden;
 
   @override
   String toString() {
-    return 'MapState(isloading: $isloading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, listOfActivities: $listOfActivities, activeMarker: $activeMarker, distances: $distances, selectedDiapozone: $selectedDiapozone, listOfBool: $listOfBool, listOfActivitiesFromSelectedDiapozone: $listOfActivitiesFromSelectedDiapozone, gymFoundBySearching: $gymFoundBySearching, isSearchbarOpened: $isSearchbarOpened)';
+    return 'MapState(isloading: $isloading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, activeMarker: $activeMarker, distances: $distances, selectedDiapozone: $selectedDiapozone, locationPermissionIsNOtGiven: $locationPermissionIsNOtGiven, locationServiceIsNotEnabled: $locationServiceIsNotEnabled, listOfBool: $listOfBool, gymFoundBySearching: $gymFoundBySearching, isSearchbarOpened: $isSearchbarOpened, activitiesWithGymsInsideAll: $activitiesWithGymsInsideAll, activitiesWithGymsInsideFromSelectedDiapozone: $activitiesWithGymsInsideFromSelectedDiapozone, showMapOnly: $showMapOnly, mapScreenShot: $mapScreenShot, topFlex: $topFlex, bottomFlex: $bottomFlex, isLocationIconHidden: $isLocationIconHidden)';
   }
 
   @override
@@ -337,23 +466,41 @@ class _$MapStateImpl extends _MapState {
                 other.userPosition == userPosition) &&
             const DeepCollectionEquality()
                 .equals(other._listOfMarkers, _listOfMarkers) &&
-            const DeepCollectionEquality()
-                .equals(other._listOfActivities, _listOfActivities) &&
             (identical(other.activeMarker, activeMarker) ||
                 other.activeMarker == activeMarker) &&
             const DeepCollectionEquality()
                 .equals(other._distances, _distances) &&
             (identical(other.selectedDiapozone, selectedDiapozone) ||
                 other.selectedDiapozone == selectedDiapozone) &&
+            (identical(other.locationPermissionIsNOtGiven,
+                    locationPermissionIsNOtGiven) ||
+                other.locationPermissionIsNOtGiven ==
+                    locationPermissionIsNOtGiven) &&
+            (identical(other.locationServiceIsNotEnabled,
+                    locationServiceIsNotEnabled) ||
+                other.locationServiceIsNotEnabled ==
+                    locationServiceIsNotEnabled) &&
             const DeepCollectionEquality()
                 .equals(other._listOfBool, _listOfBool) &&
-            const DeepCollectionEquality().equals(
-                other._listOfActivitiesFromSelectedDiapozone,
-                _listOfActivitiesFromSelectedDiapozone) &&
             const DeepCollectionEquality()
                 .equals(other._gymFoundBySearching, _gymFoundBySearching) &&
             (identical(other.isSearchbarOpened, isSearchbarOpened) ||
-                other.isSearchbarOpened == isSearchbarOpened));
+                other.isSearchbarOpened == isSearchbarOpened) &&
+            const DeepCollectionEquality().equals(
+                other._activitiesWithGymsInsideAll,
+                _activitiesWithGymsInsideAll) &&
+            const DeepCollectionEquality().equals(
+                other._activitiesWithGymsInsideFromSelectedDiapozone,
+                _activitiesWithGymsInsideFromSelectedDiapozone) &&
+            (identical(other.showMapOnly, showMapOnly) ||
+                other.showMapOnly == showMapOnly) &&
+            const DeepCollectionEquality()
+                .equals(other.mapScreenShot, mapScreenShot) &&
+            (identical(other.topFlex, topFlex) || other.topFlex == topFlex) &&
+            (identical(other.bottomFlex, bottomFlex) ||
+                other.bottomFlex == bottomFlex) &&
+            (identical(other.isLocationIconHidden, isLocationIconHidden) ||
+                other.isLocationIconHidden == isLocationIconHidden));
   }
 
   @override
@@ -362,15 +509,22 @@ class _$MapStateImpl extends _MapState {
       isloading,
       userPosition,
       const DeepCollectionEquality().hash(_listOfMarkers),
-      const DeepCollectionEquality().hash(_listOfActivities),
       activeMarker,
       const DeepCollectionEquality().hash(_distances),
       selectedDiapozone,
+      locationPermissionIsNOtGiven,
+      locationServiceIsNotEnabled,
       const DeepCollectionEquality().hash(_listOfBool),
-      const DeepCollectionEquality()
-          .hash(_listOfActivitiesFromSelectedDiapozone),
       const DeepCollectionEquality().hash(_gymFoundBySearching),
-      isSearchbarOpened);
+      isSearchbarOpened,
+      const DeepCollectionEquality().hash(_activitiesWithGymsInsideAll),
+      const DeepCollectionEquality()
+          .hash(_activitiesWithGymsInsideFromSelectedDiapozone),
+      showMapOnly,
+      const DeepCollectionEquality().hash(mapScreenShot),
+      topFlex,
+      bottomFlex,
+      isLocationIconHidden);
 
   @JsonKey(ignore: true)
   @override
@@ -384,14 +538,22 @@ abstract class _MapState extends MapState {
       {final bool isloading,
       final Position? userPosition,
       final List<EachMarkersModel> listOfMarkers,
-      final List<GymData> listOfActivities,
       final EachMarkersModel? activeMarker,
       final List<double> distances,
       final double selectedDiapozone,
+      final bool locationPermissionIsNOtGiven,
+      final bool locationServiceIsNotEnabled,
       final List<bool> listOfBool,
-      final List<GymData> listOfActivitiesFromSelectedDiapozone,
       final List<GymData> gymFoundBySearching,
-      final bool isSearchbarOpened}) = _$MapStateImpl;
+      final bool isSearchbarOpened,
+      final List<LessonTypeWithGymsInside> activitiesWithGymsInsideAll,
+      final List<LessonTypeWithGymsInside>
+          activitiesWithGymsInsideFromSelectedDiapozone,
+      final bool showMapOnly,
+      final Uint8List? mapScreenShot,
+      final int topFlex,
+      final int bottomFlex,
+      final bool isLocationIconHidden}) = _$MapStateImpl;
   const _MapState._() : super._();
 
   @override
@@ -401,21 +563,36 @@ abstract class _MapState extends MapState {
   @override
   List<EachMarkersModel> get listOfMarkers;
   @override
-  List<GymData> get listOfActivities;
-  @override
   EachMarkersModel? get activeMarker;
   @override
   List<double> get distances;
   @override
   double get selectedDiapozone;
   @override
-  List<bool> get listOfBool;
+  bool get locationPermissionIsNOtGiven;
   @override
-  List<GymData> get listOfActivitiesFromSelectedDiapozone;
+  bool get locationServiceIsNotEnabled;
+  @override
+  List<bool> get listOfBool;
   @override
   List<GymData> get gymFoundBySearching;
   @override
   bool get isSearchbarOpened;
+  @override
+  List<LessonTypeWithGymsInside> get activitiesWithGymsInsideAll;
+  @override
+  List<LessonTypeWithGymsInside>
+      get activitiesWithGymsInsideFromSelectedDiapozone;
+  @override
+  bool get showMapOnly;
+  @override
+  Uint8List? get mapScreenShot;
+  @override
+  int get topFlex;
+  @override
+  int get bottomFlex;
+  @override
+  bool get isLocationIconHidden;
   @override
   @JsonKey(ignore: true)
   _$$MapStateImplCopyWith<_$MapStateImpl> get copyWith =>

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../components/components.dart';
 
-class TheOneWithChips extends StatefulWidget {
+class TheOneWithChips extends StatelessWidget {
   final ActivityState state;
   final ActivityNotifier event;
   final int gymId;
@@ -18,11 +18,6 @@ class TheOneWithChips extends StatefulWidget {
   });
 
   @override
-  State<TheOneWithChips> createState() => _TheOneWithChipsState();
-}
-
-class _TheOneWithChipsState extends State<TheOneWithChips> {
-  @override
 /*   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -33,7 +28,7 @@ class _TheOneWithChipsState extends State<TheOneWithChips> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.state.activities!.isEmpty
+    return state.activities!.isEmpty
         ? const SizedBox()
         : Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -51,11 +46,10 @@ class _TheOneWithChipsState extends State<TheOneWithChips> {
                   runSpacing: 5,
                   spacing: 5.w,
                   children: List.generate(
-                    widget.state.activities!.length,
+                    state.activities!.length,
                     (index) {
-                      final activity = widget.state.activities![index];
-                      final isSelected =
-                          activity == widget.state.selectedActivity;
+                      final activity = state.activities![index];
+                      final isSelected = activity == state.selectedActivity;
                       return InkWell(
                         onTap: () {
                           //widget.event.getGymPhotos(activity,widget.gymId);
@@ -75,35 +69,27 @@ class _TheOneWithChipsState extends State<TheOneWithChips> {
                           selectedColor: const Color.fromRGBO(119, 170, 249, 1),
                           backgroundColor: Colors.white,
                           selected: isSelected,
-                          onSelected: (selected) {
+                          onSelected: (selected)  {
                             if (selected) {
-                              widget.event.setSingleSelectedActivity(activity);
-                              widget.event.getGymPhotos(activity, widget.gymId);
-                             /*  int index =
-                                  widget.state.activities!.indexOf(activity) +
-                                      1; */
-                              widget.event
-                                  .getSchedulesDates(context, id: widget.gymId)
+                              event.setSingleSelectedActivity(activity);
+                              event.getGymPhotos(activity, gymId);
+                              event
+                                  .getSchedulesDates(context, id: gymId)
                                   .then((value) async {
                                 await Future.delayed(
                                   const Duration(milliseconds: 100),
                                 );
-                              })
-                                  /* .then(
-                                    (value) => widget.event.selectADay(widget
-                                        .state.availableFormattedDates[0]),
-                                  ) */
-                                  .then(
-                                (value) => widget.event
+                              }).then(
+                                (value) => event
                                     .determineDefaultOriginalDate()
-                                    .then((value) => widget.event
-                                        .determineDefaultFormattedDate())
+                                    .then((value) =>
+                                        event.determineDefaultFormattedDate())
                                     .then((value) async {
                                   await Future.delayed(
                                       const Duration(milliseconds: 100));
                                 }).then(
-                                  (value) => widget.event.getSchedulesList(
-                                    widget.state.selectedOriginalDate,
+                                  (value) => event.getSchedulesList(
+                                    state.selectedOriginalDate,
                                   ),
                                 ),
                               );

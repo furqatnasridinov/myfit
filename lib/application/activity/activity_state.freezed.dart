@@ -25,7 +25,7 @@ mixin _$ActivityState {
   Map<String, dynamic> get scheddules => throw _privateConstructorUsedError;
   List<String> get availableFormattedDates =>
       throw _privateConstructorUsedError;
-  List<dynamic> get listOfSchedules => throw _privateConstructorUsedError;
+  List<Activity> get listOfSchedules => throw _privateConstructorUsedError;
   String get defaultDate => throw _privateConstructorUsedError;
   String get selectedOriginalDate => throw _privateConstructorUsedError;
   List<String> get listOf15CalendarDaysFromNow =>
@@ -54,7 +54,7 @@ abstract class $ActivityStateCopyWith<$Res> {
       List<String> originalDates,
       Map<String, dynamic> scheddules,
       List<String> availableFormattedDates,
-      List<dynamic> listOfSchedules,
+      List<Activity> listOfSchedules,
       String defaultDate,
       String selectedOriginalDate,
       List<String> listOf15CalendarDaysFromNow,
@@ -126,7 +126,7 @@ class _$ActivityStateCopyWithImpl<$Res, $Val extends ActivityState>
       listOfSchedules: null == listOfSchedules
           ? _value.listOfSchedules
           : listOfSchedules // ignore: cast_nullable_to_non_nullable
-              as List<dynamic>,
+              as List<Activity>,
       defaultDate: null == defaultDate
           ? _value.defaultDate
           : defaultDate // ignore: cast_nullable_to_non_nullable
@@ -168,7 +168,7 @@ abstract class _$$ActivityStateImplCopyWith<$Res>
       List<String> originalDates,
       Map<String, dynamic> scheddules,
       List<String> availableFormattedDates,
-      List<dynamic> listOfSchedules,
+      List<Activity> listOfSchedules,
       String defaultDate,
       String selectedOriginalDate,
       List<String> listOf15CalendarDaysFromNow,
@@ -238,7 +238,7 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
       listOfSchedules: null == listOfSchedules
           ? _value._listOfSchedules
           : listOfSchedules // ignore: cast_nullable_to_non_nullable
-              as List<dynamic>,
+              as List<Activity>,
       defaultDate: null == defaultDate
           ? _value.defaultDate
           : defaultDate // ignore: cast_nullable_to_non_nullable
@@ -275,7 +275,7 @@ class _$ActivityStateImpl extends _ActivityState {
       final List<String> originalDates = const [],
       final Map<String, dynamic> scheddules = const {},
       final List<String> availableFormattedDates = const [],
-      final List<dynamic> listOfSchedules = const [],
+      final List<Activity> listOfSchedules = const [],
       this.defaultDate = "",
       this.selectedOriginalDate = "",
       final List<String> listOf15CalendarDaysFromNow = const [],
@@ -350,10 +350,10 @@ class _$ActivityStateImpl extends _ActivityState {
     return EqualUnmodifiableListView(_availableFormattedDates);
   }
 
-  final List<dynamic> _listOfSchedules;
+  final List<Activity> _listOfSchedules;
   @override
   @JsonKey()
-  List<dynamic> get listOfSchedules {
+  List<Activity> get listOfSchedules {
     if (_listOfSchedules is EqualUnmodifiableListView) return _listOfSchedules;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_listOfSchedules);
@@ -464,7 +464,7 @@ abstract class _ActivityState extends ActivityState {
       final List<String> originalDates,
       final Map<String, dynamic> scheddules,
       final List<String> availableFormattedDates,
-      final List<dynamic> listOfSchedules,
+      final List<Activity> listOfSchedules,
       final String defaultDate,
       final String selectedOriginalDate,
       final List<String> listOf15CalendarDaysFromNow,
@@ -489,7 +489,7 @@ abstract class _ActivityState extends ActivityState {
   @override
   List<String> get availableFormattedDates;
   @override
-  List<dynamic> get listOfSchedules;
+  List<Activity> get listOfSchedules;
   @override
   String get defaultDate;
   @override

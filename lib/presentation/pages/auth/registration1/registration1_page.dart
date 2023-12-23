@@ -15,7 +15,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 @RoutePage()
 class Registration1Screen extends ConsumerStatefulWidget {
- const  Registration1Screen({super.key});
+  const Registration1Screen({super.key});
 
   @override
   ConsumerState<Registration1Screen> createState() =>
@@ -23,12 +23,60 @@ class Registration1Screen extends ConsumerStatefulWidget {
 }
 
 class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
-  TextEditingController controller = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    phoneController.addListener(() {
+      String currentText = phoneController.text;
+      if (!currentText.startsWith('+7')) {
+        // Reset to '+7' if the user tries to delete it
+        phoneController.value = const TextEditingValue(
+          text: '+7 ',
+          selection: TextSelection.collapsed(offset: 3),
+        );
+      } else if (currentText.length > 3) {
+        // Apply the mask only if there is more text beyond '+7'
+        String newText =
+            '+7 ${applyMask(currentText.substring(3), '(###) ###-##-##')}';
+        if (newText != currentText) {
+          phoneController.value = TextEditingValue(
+            text: newText,
+            selection: TextSelection.collapsed(offset: newText.length),
+          );
+        }
+      }
+    });
+  }
+
+  String applyMask(String input, String mask) {
+    // Implement your masking logic here
+    String output = '';
+    int inputIndex = 0;
+    for (var maskChar in mask.split('')) {
+      if (inputIndex >= input.length) break;
+      if (maskChar == '#') {
+        output += input[inputIndex];
+        inputIndex++;
+      } else {
+        output += maskChar;
+        if (inputIndex < input.length && maskChar == input[inputIndex]) {
+          inputIndex++;
+        }
+      }
+    }
+    return output;
+  }
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final event = ref.read(registrationProvider.notifier);
+    final state = ref.watch(registrationProvider);
+    debugPrint("phone number ${state.phoneNumber}");
+    debugPrint("phone lenth ${state.phoneNumber.length}");
+    debugPrint("phone isvalid ${state.isValidPhone}");
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: Stack(
@@ -41,7 +89,6 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // with textfield one
-
                   CustomCard(
                     child: Column(
                       children: [
@@ -61,18 +108,15 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                               height: 40.h,
                               //color: Colors.red,
                               child: TextField(
-                                /* inputFormatters: [
-                                  MaskTextInputFormatter(
-                                    mask: '+# (###) ###-##-##',
-                                    filter: {"#": RegExp(r'[0-9]')},
-                                  ), 
-                                ], */
-                                maxLength: 12,
+                                //inputFormatters: [phoneMask],
+                                //maxLength: 17,
                                 maxLines: 1,
-                                controller: controller,
+                                controller: phoneController,
                                 onChanged: (value) {
-                                  controller.text = value;
-                                  setState(() {});
+                                  // Remove all non-numeric characters except the plus sign
+                                  String unformattedPhone = phoneController.text
+                                      .replaceAll(RegExp(r'[^\d+]'), '');
+                                  event.setPhone(unformattedPhone);
                                 },
                                 onTapOutside: (onTapOutside) {
                                   FocusScope.of(context).unfocus();
@@ -94,7 +138,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8.r),
                                     borderSide: BorderSide(
-                                      color: controller.text.length >= 12
+                                      color: state.isValidPhone
                                           ? AppColors.blueColor
                                           : AppColors.greyBorder,
                                       width: 1.w,
@@ -103,7 +147,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8.r),
                                     borderSide: BorderSide(
-                                      color: controller.text.length >= 12
+                                      color: state.isValidPhone
                                           ? AppColors.blueColor
                                           : AppColors.greyBorder,
                                       width: 1.w,
@@ -128,9 +172,9 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                             // button
                             InkWell(
                               onTap: () {
-                                if (controller.text.length >= 12) {
+                                if (state.isValidPhone) {
                                   event.sendPhoneNumber(
-                                    controller.text,
+                                    state.phoneNumber,
                                     context,
                                   );
                                 }
@@ -139,7 +183,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                                 width: 40.w,
                                 height: 40.h,
                                 decoration: BoxDecoration(
-                                  color: controller.text.length >= 12
+                                  color: state.isValidPhone
                                       ? AppColors.blueColor
                                       : Colors.grey,
                                   borderRadius: BorderRadius.circular(8.r),
@@ -166,7 +210,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                           return Dialog(
                             elevation: 0,
                             insetPadding:
-                                REdgeInsets.symmetric(horizontal: 16.w),
+                                EdgeInsets.symmetric(horizontal: 16.w),
                             child: CustomCard(
                                 height: 270.h,
                                 borderColor: Colors.transparent,

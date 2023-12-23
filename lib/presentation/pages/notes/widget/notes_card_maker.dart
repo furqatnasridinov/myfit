@@ -1,10 +1,12 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, deprecated_member_use
+import 'dart:ui';
+
+import 'package:activity/application/notes/notes_notifer.dart';
+import 'package:activity/application/notes/notes_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:activity/application/schedule/schedule_notifier.dart';
-import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/infrastructure/models/data/gym_with_tags.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_button.dart';
@@ -13,9 +15,10 @@ import 'package:activity/presentation/components/custom_textfield.dart';
 import 'package:activity/presentation/components/custom_textformfield.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 
+// ignore: must_be_immutable
 class NotesCardMaker extends StatefulWidget {
-  final ScheduleNotifier event;
-  ScheduleState state;
+  final NotesNotifier event;
+  NotesState state;
   final String name;
   final String startTime;
   final String description;
@@ -48,8 +51,7 @@ class _NotesCardMakerState extends State<NotesCardMaker> {
     List<String> parts = widget.day.split("@"); //2023-11-11@15:15
     String dayToFormat = parts[0]; //2023-11-11
     final formattedDay = widget.event.formatDay(dayToFormat); // Ноябрь 11
-    if (addedNotes.isNotEmpty) {
-    }
+    if (addedNotes.isNotEmpty) {}
     return Container(
       margin: EdgeInsets.only(bottom: 32.w),
       child: Column(
@@ -78,6 +80,7 @@ class _NotesCardMakerState extends State<NotesCardMaker> {
                     color: AppColors.blueColor,
                     fontWeight: FontWeight.w600,
                     fontSize: 20.sp,
+                    fontFeatures: const [FontFeature.liningFigures()],
                   ),
                 ),
               ],
@@ -306,6 +309,11 @@ class _NotesCardMakerState extends State<NotesCardMaker> {
                   tagFocus.requestFocus();
                   setState(() {});
                 },
+                style: GoogleFonts.inter(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                ),
                 focusNode: tagFocus,
                 controller: tagController,
                 hintText: "Заметка",
@@ -324,6 +332,11 @@ class _NotesCardMakerState extends State<NotesCardMaker> {
                   descriptionFocus.requestFocus();
                   setState(() {});
                 },
+                style: GoogleFonts.inter(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                ),
                 focusNode: descriptionFocus,
                 controller: descriptionController,
                 hintText: "Описание",

@@ -2,10 +2,6 @@
 
 import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/domain/interface/schedule.dart';
-import 'package:activity/infrastructure/models/data/gym_with_tags.dart';
-import 'package:activity/infrastructure/models/data/schedule_and_gym.dart';
-import 'package:activity/infrastructure/models/request/add_note_request.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:flutter/material.dart';
@@ -24,11 +20,9 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       final response = await _scheduleRepositoryInterface.getUsersSchedules();
       response.when(
         success: (data) {
-     
           state = state.copyWith(schedulesInMapForm: data["object"]);
         },
-        failure: (error, statusCode) {
-        },
+        failure: (error, statusCode) {},
       );
     } else {
       AppHelpers.showCheckTopSnackBar(context);
@@ -41,40 +35,40 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     String month = parts[1];
     switch (month) {
       case "01":
-        month = "Январ";
+        month = "Января";
         break;
       case "02":
-        month = "Феврал";
+        month = "Февраля";
         break;
       case "03":
-        month = "Март";
+        month = "Марта";
         break;
       case "04":
-        month = "Апрель";
+        month = "Апреля";
         break;
       case "05":
-        month = "Май";
+        month = "Мая";
         break;
       case "06":
-        month = "Июнь";
+        month = "Июня";
         break;
       case "07":
-        month = "Июль";
+        month = "Июля";
         break;
       case "08":
-        month = "Август";
+        month = "Августа";
         break;
       case "09":
-        month = "Сентябрь";
+        month = "Сентября";
         break;
       case "10":
-        month = "Октябрь";
+        month = "Октября";
         break;
       case "11":
-        month = "Ноябрь";
+        month = "Ноября";
         break;
       case "12":
-        month = "Декабр";
+        month = "Декабря";
         break;
     }
     String daysplitted = parts[2];
@@ -108,7 +102,8 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
         break;
       default:
     }
-    return "$month $daysplitted";
+
+    return "$daysplitted $month ";
   }
 
   String determineWeekday(String day) {
@@ -141,18 +136,6 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     return dayOfWeek;
   }
 
-  String durationToHour(String duration) {
-    List<String> parts = duration.split(':');
-    if (parts.length != 2) {
-      return 'Неверный формат';
-    }
-    int hours = int.parse(parts[0]);
-    int minutes = int.parse(parts[1]);
-    double durationInHours = hours + minutes / 60;
-    String formattedDuration = '${durationInHours.toStringAsFixed(1)} часа';
-    return formattedDuration;
-  }
-
   String durationToTillWhen(String startTime, String duration) {
     List<String> startParts = startTime.split(':');
     List<String> durationParts = duration.split(':');
@@ -171,211 +154,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     return formattedTime;
   }
 
-  void determineWhenActivityStarts(String startTime) {
-    // startTime 2023-11-11@13:15
-    List<String> parts = startTime.split("@");
-    String formatted = "${parts[0]} ${parts[1]}:00";
-    DateTime startingTimeInDTFormat = DateTime.parse(formatted);
-    DateTime now = DateTime.now();
-    Duration resultOnDuration = startingTimeInDTFormat.difference(now);
-    String formattedDifference = formatDuration(resultOnDuration);
-    state = state.copyWith(whenActivityStarts: formattedDifference);
-  }
-
-  String formatDuration(Duration duration) {
-    String days = duration.inDays > 0 ? "${duration.inDays} дня" : "";
-    String hours =
-        duration.inHours % 24 > 0 ? "${duration.inHours % 24} час" : "";
-    String minutes =
-        duration.inMinutes % 60 > 0 ? "${duration.inMinutes % 60} минут" : "";
-
-    List<String> parts = [days, hours, minutes];
-    parts.removeWhere((part) => part.isEmpty);
-
-    return parts.join(' ');
-  }
-
-  Future<void> getNearestLesson(BuildContext context) async {
-    state = state.copyWith(isloading: true);
-    final connect = await AppConnectivity().connectivity();
-    if (connect) {
-      final response = await _scheduleRepositoryInterface.getNearestLesson();
-      response.when(
-        success: (data) {
-          if (data.bodyData != null) {
-            determineWhenActivityStarts(data.bodyData!.date!);
-            state = state.copyWith(nearestLesson: data);
-          }
-          if (data.bodyData == null) {
-            state = state.copyWith(nearestLesson: null);
-          }
-        },
-        failure: (error, statusCode) {
-        },
-      );
-    } else {
-      AppHelpers.showCheckTopSnackBar(context);
-    }
-    state = state.copyWith(isloading: false);
-  }
-
-  Future<void> getUserStatsMonth(BuildContext context) async {
-    final connect = await AppConnectivity().connectivity();
-    if (connect) {
-      final response = await _scheduleRepositoryInterface.getUserStatsMonth();
-      response.when(
-        success: (data) {
-          // sorting list by its count
-          final list = data.bodyData;
-          list?.sort(
-            (a, b) => a.count!.compareTo(b.count!),
-          );
-          state = state.copyWith(statsForMonth: list!.reversed.toList());
-        },
-        failure: (error, statusCode) {
-        },
-      );
-    } else {
-      AppHelpers.showCheckTopSnackBar(context);
-    }
-  }
-
-  Future<void> getNotes(BuildContext context, String gymName) async {
-    final connect = await AppConnectivity().connectivity();
-    if (connect) {
-      state = state.copyWith(isloading: true);
-      final response = await _scheduleRepositoryInterface.getNotes();
-      response.when(
-        success: (data) {
-          if (gymName.isNotEmpty) {
-            List<GymWithTags> list = [];
-            final mapData = data["object"];
-            mapData.forEach((key, value) {
-              value.forEach((element) {
-                if (gymName == element["gym"]["name"]) {
-                  final data = GymWithTags(
-                    date: element["date"],
-                    id: element["id"],
-                    description: element["description"],
-                    duration: element["duration"],
-                    gym: Gym.fromJson(element["gym"] ?? {}),
-                    tag: (element["tag"] as List<dynamic>?)
-                        ?.map((tag) => Tag.fromJson(tag))
-                        .toList(),
-                  );
-                  list.add(data);
-                }
-              });
-            });
-            state = state.copyWith(listOfGymWithTags: list);
-          } else {
-            List<GymWithTags> _list = [];
-            final mapData = data["object"];
-            mapData.forEach((key, value) {
-              value.forEach((element) {
-                final data = GymWithTags(
-                  date: element["date"],
-                  id: element["id"],
-                  description: element["description"],
-                  duration: element["duration"],
-                  gym: Gym.fromJson(element["gym"] ?? {}),
-                  tag: (element["tag"] as List<dynamic>?)
-                      ?.map((tag) => Tag.fromJson(tag))
-                      .toList(),
-                );
-                _list.add(data);
-              });
-            });
-            state = state.copyWith(listOfGymWithTags: _list);
-          }
-          state = state.copyWith(isloading: false);
-          //state = state.copyWith(notesMapData: mapData);
-        },
-        failure: (error, statusCode) {
-          state = state.copyWith(isloading: false);
-        },
-      );
-    } else {
-      AppHelpers.showCheckTopSnackBar(context);
-    }
-  }
-
-  Future<void> addNote(
-      String tag, String description, int id, BuildContext context) async {
-    final connect = await AppConnectivity().connectivity();
-    if (connect) {
-      final request = AddNoteRequest(
-        tag: tag,
-        description: description,
-        lesson: Lesson(id: id),
-      );
-      final response = await _scheduleRepositoryInterface.addNotes(request);
-      response.when(
-        success: (data) {
-        },
-        failure: (error, statusCode) {
-        },
-      );
-    } else {
-      AppHelpers.showCheckTopSnackBar(context);
-    }
-  }
-
-  void addNewNote(Tag tag) {
-    List<GymWithTags> newAddedTages = [];
-    newAddedTages.addAll(state.listOfGymWithTagsWithNewAddedTags);
-    newAddedTages.add(GymWithTags(tag: [tag]));
-    state = state.copyWith(listOfGymWithTagsWithNewAddedTags: newAddedTages);
-  }
-
-  Future<void> searchingSchedules(BuildContext context,
-      {required String schedule}) async {
-    final connect = await AppConnectivity().connectivity();
-    if (connect) {
-      final response = await _scheduleRepositoryInterface.searchingForSchedules(
-        schedule: schedule,
-      );
-      response.when(
-        success: (data) {
-          if (data["operationResult"] == "OK") {
-            final Map<String, dynamic> mapData = data["object"];
-            final list = <ScheduleAndGym>[];
-            mapData.forEach((key, value) {
-              value.forEach((element) {
-                final data = ScheduleAndGym(
-                  id: element["id"],
-                  date: element["date"],
-                  description: element["description"],
-                  duration: element["duration"],
-                  gym: Gymdata.fromJson(element["gym"]),
-                );
-                list.add(data);
-              });
-            });
-            state = state.copyWith(schedulesFoundBySearching: list);
-          }
-        },
-        failure: (error, statusCode) {},
-      );
-    } else {
-      AppHelpers.showCheckTopSnackBar(context);
-    }
-  }
-
-  void openSearchBar() {
-    state = state.copyWith(isSearchbarOpened: true);
-  }
-
-  void closeSearchBar() {
-    state = state.copyWith(isSearchbarOpened: false);
-  }
-
-  Future<void> cleanSearchList() async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    final listcha = <ScheduleAndGym>[];
-    state = state.copyWith(schedulesFoundBySearching: listcha);
-  }
-
+  
   void showTilWhen() {
     state = state.copyWith(showTillWhen: true);
   }
@@ -408,20 +187,6 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     state = state.copyWith(isFlashButtonActivated: false);
   }
 
-  Color getColors(int index) {
-    if (index == 0) {
-      return AppColors.goldText;
-    }
-    if (index == 1) {
-      return AppColors.purpleText;
-    }
-    if (index == 2) {
-      return AppColors.blueColor;
-    } else {
-      return Colors.grey.shade400;
-    }
-  }
-
   void changeNotificationTime(String newTime) {
     state = state.copyWith(notificationTime: newTime);
   }
@@ -431,10 +196,8 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     if (connect) {
       final response = await _scheduleRepositoryInterface.cancelActivity(id);
       response.when(
-        success: (data) {
-        },
-        failure: (error, statusCode) {
-        },
+        success: (data) {},
+        failure: (error, statusCode) {},
       );
     } else {
       AppHelpers.showCheckTopSnackBar(context);

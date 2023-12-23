@@ -15,17 +15,15 @@ class SplashScreen extends ConsumerStatefulWidget {
 class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
-   
     super.initState();
     ref.read(splashprovider.notifier).checkUserIfExists(
       context,
       goMain: () {
         context.replaceRoute(const Main2Route());
-        //context.replaceRoute( Registration3Route());
+        
       },
       goLogin: () {
-        context.replaceRoute(const RegistrationRoute());
-        //context.replaceRoute(const ScheduleRoute());
+        context.replaceRoute(const RegistrationRoute());       
       },
     );
   }

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 
 import 'package:activity/application/registration/registration_provider.dart';
@@ -145,6 +147,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                     32.verticalSpace,
                     Center(
                       child: Pinput(
+                        autofocus: true,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
                         onTapOutside: (onTapOutside) {

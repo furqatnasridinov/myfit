@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:activity/infrastructure/services/app_colors.dart';
@@ -10,38 +11,68 @@ class CustomTextFormField extends StatelessWidget {
   TextEditingController? controller;
   int? maxLines;
   TextInputType? keyboardType;
+  List<TextInputFormatter>? inputFormatters;
+  int? maxLength;
   EdgeInsetsGeometry? contentPadding;
+  void Function(PointerDownEvent)? onTapOutside;
   String? initialValue;
   bool readOnly;
+  bool hasFocus;
+  FocusNode? focusNode;
+  bool dontShowBorders;
+  Widget? suffixIcon;
+  void Function()? onTap;
+  void Function(String)? onChanged;
   CustomTextFormField({
     Key? key,
     this.hintText,
+    this.hasFocus = false,
     this.readOnly = false,
+    this.onChanged,
+    this.dontShowBorders = false,
+    this.onTap,
+    this.inputFormatters,
+    this.suffixIcon,
     this.contentPadding,
+    this.onTapOutside,
+    this.focusNode,
+    this.maxLength,
     this.maxLines,
     this.keyboardType,
     this.initialValue,
+    this.controller,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      inputFormatters: inputFormatters,
       readOnly: readOnly,
+      focusNode: focusNode,
       initialValue: initialValue,
       maxLines: maxLines,
+      maxLength: maxLength,
       keyboardType: keyboardType,
-      //controller: controller,
+      onTap: onTap,
+      onTapOutside: onTapOutside,
+      controller: controller,
       cursorColor: AppColors.greyText,
+      onChanged: onChanged,
       style: GoogleFonts.inter(
         fontSize: 14.sp,
         fontWeight: FontWeight.w400,
         color: Colors.black,
       ),
       decoration: InputDecoration(
+        counterStyle: const TextStyle(
+          height: double.minPositive,
+        ),
+        counterText: "",
+        suffixIcon: suffixIcon,
         contentPadding: contentPadding,
         hintText: hintText,
         hintStyle: GoogleFonts.inter(
-          fontSize: 13.sp,
+          fontSize: 14.sp,
           fontWeight: FontWeight.w400,
         ),
         fillColor: Colors.white,
@@ -49,14 +80,22 @@ class CustomTextFormField extends StatelessWidget {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
-            color: AppColors.greyBorder,
+            color: hasFocus
+                ? AppColors.blueBorder
+                : dontShowBorders
+                    ? Colors.transparent
+                    : AppColors.greyBorder,
             width: 1.w,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
-            color: AppColors.greyBorder,
+            color: hasFocus
+                ? AppColors.blueBorder
+                : dontShowBorders
+                    ? Colors.transparent
+                    : AppColors.greyBorder,
             width: 1.w,
           ),
         ),

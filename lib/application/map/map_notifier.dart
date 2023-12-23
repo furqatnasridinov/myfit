@@ -2,8 +2,12 @@ import 'package:activity/application/map/map_state.dart';
 import 'package:activity/domain/interface/main.dart';
 import 'package:activity/infrastructure/models/data/each_markers_models.dart';
 import 'package:activity/infrastructure/models/data/gym_data.dart';
+import 'package:activity/infrastructure/models/data/lessontype_with_gyms_inside.dart';
+import 'package:activity/infrastructure/models/request/get_yandex_map_image_request.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
+import 'package:activity/infrastructure/services/local_storage.dart';
+import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:activity/presentation/pages/map/widget/pop_up_map.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
@@ -19,16 +23,196 @@ class MapNotifier extends StateNotifier<MapState> {
   OverlayEntry? entry;
 
   Future<void> getUserLocation() async {
-    state = state.copyWith(isloading: true);
+    // state = state.copyWith(isloading: true);
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied ||
         permission == LocationPermission.deniedForever) {
+      state = state.copyWith(locationPermissionIsNOtGiven: true);
       await Geolocator.requestPermission();
     }
-    final postion = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    state = state.copyWith(userPosition: postion);
-    state = state.copyWith(isloading: false);
+    if (permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse) {
+      try {
+        final postion = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high);
+        state = state.copyWith(userPosition: postion);
+        state = state.copyWith(locationPermissionIsNOtGiven: false);
+      } catch (e) {
+        state = state.copyWith(locationServiceIsNotEnabled: true);
+      }
+
+      // state = state.copyWith(isloading: false);
+    }
+  }
+
+  /* Future<void> checkLocationService() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse) {
+      if (!serviceEnabled) {
+        state = state.copyWith(locationServiceIsNotEnabled: true);
+      }
+    }
+  } */
+
+  Future<void> setUserPosition() async {
+    state = state.copyWith(isloading: true);
+    await setFlexes();
+    try {
+      final postion = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      state = state.copyWith(userPosition: postion);
+      var markersList = state.listOfMarkers;
+      for (var element in markersList) {
+        if (element.name == "user") {
+          element.latitude = postion.latitude;
+          element.longitude = postion.longitude;
+        }
+      }
+      final withCalculatedDistances = // and sort
+          calculateDistanceOfGyms(state.activitiesWithGymsInsideAll);
+      state =
+          state.copyWith(activitiesWithGymsInsideAll: withCalculatedDistances);
+
+      state = state.copyWith(listOfMarkers: markersList);
+      state = state.copyWith(locationPermissionIsNOtGiven: false);
+      state = state.copyWith(isloading: false);
+      setFlexes();
+    } catch (e) {
+      state = state.copyWith(locationServiceIsNotEnabled: true);
+    }
+  }
+
+  Future<void> getYandexMapImage(
+    BuildContext context,
+  ) async {
+    double? selectedCityLon;
+    double? selectedCityLat;
+    final connected = await AppConnectivity().connectivity();
+    state = state.copyWith(isloading: true);
+    if (connected) {
+      if (state.userPosition == null || state.locationServiceIsNotEnabled) {
+        final listOfCities = DummyData().cityNames;
+        for (var element in listOfCities) {
+          if (element.name == LocalStorage.getSelectedCity()) {
+            selectedCityLon = element.lon!;
+            selectedCityLat = element.lat!;
+          }
+        }
+      }
+
+      final request = state.userPosition != null
+          ? GetYandexMapImageRequest(
+              latlon:
+                  "${state.userPosition?.longitude},${state.userPosition?.latitude}",
+              marker:
+                  "${state.userPosition?.longitude},${state.userPosition?.latitude},pm2rdm",
+              size: "350,150",
+              zoom: 11,
+              i: "map",
+            )
+          : GetYandexMapImageRequest(
+              latlon: "$selectedCityLon,$selectedCityLat",
+              marker: "$selectedCityLon,$selectedCityLat,pm2rdm",
+              size: "350,150",
+              zoom: 12,
+              i: "map",
+            );
+      final response =
+          await _mainRepositoryInterface.getYandexMapImage(request: request);
+      response.when(
+        success: (data) {
+          if (data != null) {
+            state = state.copyWith(mapScreenShot: data);
+          }
+        },
+        failure: (error, statusCode) {},
+      );
+      state = state.copyWith(isloading: false);
+    } else {
+      // ignore: use_build_context_synchronously
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> getYandexMapImageWithAllMarkers(
+    BuildContext context,
+    String markers,
+  ) async {
+    double? selectedCityLon;
+    double? selectedCityLat;
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      state = state.copyWith(isloading: true);
+      if (state.userPosition == null) {
+        final listOfCities = DummyData().cityNames;
+        for (var element in listOfCities) {
+          if (element.name == LocalStorage.getSelectedCity()) {
+            selectedCityLon = element.lon!;
+            selectedCityLat = element.lat!;
+          }
+        }
+      }
+
+      final request = state.userPosition != null
+          ? GetYandexMapImageRequest(
+              latlon:
+                  "${state.userPosition?.longitude},${state.userPosition?.latitude}",
+              marker:
+                  "${state.userPosition?.longitude},${state.userPosition?.latitude},pm2rdm,$markers",
+              size: "300,150",
+              zoom: 11,
+              i: "map",
+            )
+          : GetYandexMapImageRequest(
+              latlon: "$selectedCityLon,$selectedCityLat",
+              marker: "$selectedCityLon,$selectedCityLat,pm2rdm,$markers",
+              size: "300,150",
+              zoom: 10,
+              i: "map",
+            );
+      final response =
+          await _mainRepositoryInterface.getYandexMapImage(request: request);
+      response.when(
+        success: (data) {
+          if (data != null) {
+            state = state.copyWith(mapScreenShot: data);
+          }
+        },
+        failure: (error, statusCode) {},
+      );
+      state = state.copyWith(isloading: false);
+    } else {
+      // ignore: use_build_context_synchronously
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> setLocationFromSelectedCity() async {
+    // checking whether user position is null
+    final listOfCities = DummyData().cityNames;
+    for (var element in listOfCities) {
+      if (element.name == LocalStorage.getSelectedCity()) {
+        state = state.copyWith(
+            userPosition: Position(
+          longitude: element.lon ?? 0,
+          latitude: element.lat ?? 0,
+          timestamp: DateTime.now(),
+          accuracy: 5,
+          altitude: 5,
+          altitudeAccuracy: 0.5,
+          heading: 0.5,
+          headingAccuracy: 0,
+          speed: 0,
+          speedAccuracy: 0,
+        ));
+      }
+    }
+  }
+
+  void setLocationServiceAsEnabled() {
+    state = state.copyWith(locationServiceIsNotEnabled: false);
   }
 
   void setInitialCameraPosition({required YandexMapController controller}) {
@@ -46,35 +230,23 @@ class MapNotifier extends StateNotifier<MapState> {
         ),
         animation: const MapAnimation(duration: 2),
       );
-    } else {
-      // move to fixed location      // Москва 55.755825  37.617519
-      controller.moveCamera(
-        CameraUpdate.newCameraPosition(
-          const CameraPosition(
-            zoom: 15.5,
-            target: Point(
-              latitude: 61.004851,
-              longitude: 30.223219,
-            ),
-          ),
-        ),
-        animation: const MapAnimation(duration: 3),
-      );
     }
   }
 
   Future<void> getAllMarkers() async {
     await Future.delayed(const Duration(milliseconds: 200));
     List<EachMarkersModel> markers = [];
-    for (var element in state.listOfActivitiesFromSelectedDiapozone) {
-      final marker = EachMarkersModel(
-        name: element.name ?? "",
-        latitude: element.latitude ?? 0,
-        longitude: element.longitude ?? 0,
-        address: element.address ?? "",
-        id: element.id ?? 0,
-      );
-      markers.add(marker);
+    for (var element in state.activitiesWithGymsInsideFromSelectedDiapozone) {
+      element.listOfGyms?.forEach((gym) {
+        final marker = EachMarkersModel(
+          name: gym.name ?? "",
+          latitude: double.parse(gym.latitude!),
+          longitude: double.parse(gym.longitude!),
+          address: gym.address ?? "",
+          id: gym.id ?? 0,
+        );
+        markers.add(marker);
+      });
     }
     state = state.copyWith(listOfMarkers: markers);
   }
@@ -99,10 +271,10 @@ class MapNotifier extends StateNotifier<MapState> {
     return state.listOfMarkers
         .map(
           (e) => PlacemarkMapObject(
-            mapId: MapObjectId("MapObject $e"),
+            mapId: MapObjectId("MapObject ${e.id}"),
             point: Point(
-              latitude: e.latitude,
-              longitude: e.longitude,
+              latitude: e.latitude ?? 0,
+              longitude: e.longitude ?? 0,
             ),
             consumeTapEvents: true,
             icon: PlacemarkIcon.single(
@@ -110,9 +282,15 @@ class MapNotifier extends StateNotifier<MapState> {
                 image: BitmapDescriptor.fromAssetImage(
                   e.name == "user"
                       ? "assets/images/user_marker.png"
-                      : "assets/images/map_icon.png",
+                      : e.id == state.activeMarker?.id
+                          ? "assets/images/centered_icon.png"
+                          : "assets/images/map_icon_new.png",
                 ),
-                scale: e.name == "user" ? 2.5.r : 4.r,
+                scale: e.name == "user"
+                    ? 1.5.r
+                    : e.id == state.activeMarker?.id
+                        ? 1.8.r
+                        : 0.5.r,
               ),
             ),
             opacity: 1,
@@ -129,66 +307,66 @@ class MapNotifier extends StateNotifier<MapState> {
   ) {
     controller.moveCamera(
       CameraUpdate.newCameraPosition(
-        CameraPosition(target: Point(latitude: lat, longitude: lon), zoom: 15),
+        CameraPosition(
+          target: Point(latitude: lat, longitude: lon),
+          zoom: 15,
+        ),
       ),
       animation: const MapAnimation(duration: 1),
     );
   }
 
   Future<void> getGymsList(BuildContext context, int gymId) async {
-    state = state.copyWith(isloading: true);
     final connect = await AppConnectivity().connectivity();
     if (connect) {
+      state = state.copyWith(isloading: true);
+      await setFlexes();
       final response = await _mainRepositoryInterface.getGymsList();
       response.when(
         success: (data) {
           final gymsMapFromServer = data["object"] as Map<String, dynamic>;
-          // 1) создаем лист чтобы потом добавить объекты к нему
-          final activities = <GymData>[];
-          gymsMapFromServer.forEach((category, gymList) {
-            // 2) мапим данные с сервера на key and value
-            /* 
-            здесь gym  равно Map<String, dynamic> вот так напирмер это один из них;
-            так как это цикл оно берет каждого из них один за другим
-            {
-                "id": 1,
-                "name": "Фитнес-клуб Mytimefitness",
-                "address": "ул. Ильюшина, 14, Санкт-Петербург, 197372",
-                "latitude": "60.00485084852601",
-                "longitude": " 30.263218872586002"
-            }, 
-            */
-            for (var gym in gymList) {
-              final gymData = GymData(
-                id: gym['id'],
-                name: gym['name'],
-                address: gym['address'],
-                latitude: double.parse(gym['latitude']),
-                longitude: double.parse(gym['longitude']),
-                distanceFromClient: calCulateDistanceSrazy(
-                  state.userPosition!.latitude,
-                  state.userPosition!.longitude,
-                  double.parse(gym['latitude']),
-                  double.parse(gym['longitude']),
-                ),
-              );
-              // сортируем чтобы в лист не добавили одинаковые Gymdata
-              if (!activities.any((element) => element.id == gymData.id)) {
-                activities.add(gymData);
-              }
-            }
+          final listToCollectActivitiesWithGyms = <LessonTypeWithGymsInside>[];
+          gymsMapFromServer.forEach((key, value) {
+            final data = LessonTypeWithGymsInside(
+              false,
+              lessontype: key,
+              listOfGyms:
+                  (value as List).map((gym) => Gymdata.fromJson(gym)).toList(),
+            );
+            listToCollectActivitiesWithGyms.add(data);
           });
-
-          state = state.copyWith(listOfActivities: activities);
+          final withCalculatedDistances = // and sort
+              calculateDistanceOfGyms(listToCollectActivitiesWithGyms);
+          state = state.copyWith(
+              activitiesWithGymsInsideAll: withCalculatedDistances);
         },
-        failure: (error, statusCode) {
-        },
+        failure: (error, statusCode) {},
       );
+      state = state.copyWith(isloading: false);
     } else {
       // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
     state = state.copyWith(isloading: false);
+  }
+
+  List<LessonTypeWithGymsInside> calculateDistanceOfGyms(
+      List<LessonTypeWithGymsInside> list) {
+    final listToCollect = <LessonTypeWithGymsInside>[];
+    for (var element in list) {
+      element.listOfGyms?.forEach((gym) {
+        gym.distanceFromClient = calCulateDistanceSrazy(
+          state.userPosition!.latitude,
+          state.userPosition!.longitude,
+          double.parse(gym.latitude!),
+          double.parse(gym.longitude!),
+        );
+      });
+      element.listOfGyms?.sort((a, b) => a.distanceFromClient!
+          .compareTo(num.parse(b.distanceFromClient.toString())));
+      listToCollect.add(element);
+    }
+    return listToCollect;
   }
 
   double calCulateDistanceSrazy(
@@ -214,6 +392,113 @@ class MapNotifier extends StateNotifier<MapState> {
     return formattedDistance; // in kilometer
   }
 
+  void showMapOnly() {
+    state = state.copyWith(topFlex: 0);
+    state = state.copyWith(showMapOnly: true);
+  }
+
+  void reduceMap() {
+    state = state.copyWith(topFlex: 4);
+    state = state.copyWith(showMapOnly: false);
+  }
+
+  Future<void> setFlexes() async {
+    await Future.delayed(const Duration(milliseconds: 100));
+    final list = state.activitiesWithGymsInsideFromSelectedDiapozone;
+    if (state.isloading) {
+      state = state.copyWith(
+        topFlex: 3,
+        bottomFlex: 8,
+      );
+    }
+    if (list.isEmpty) {
+      state = state.copyWith(
+        topFlex: 3,
+        bottomFlex: 10,
+      );
+    }
+    if (list.length == 1) {
+      state = state.copyWith(
+        topFlex: 2,
+        bottomFlex: 9,
+      );
+    }
+    if (list.length == 2) {
+      state = state.copyWith(
+        topFlex: 3,
+        bottomFlex: 8,
+      );
+    }
+    if (list.length == 3) {
+      state = state.copyWith(
+        topFlex: 4,
+        bottomFlex: 8,
+      );
+    }
+    if (list.length == 4) {
+      state = state.copyWith(
+        topFlex: 5,
+        bottomFlex: 9,
+      );
+    }
+    if (list.length > 4 && !state.isloading) {
+      state = state.copyWith(topFlex: 6, bottomFlex: 8);
+    }
+    if (list.length > 5 &&
+        (state.locationPermissionIsNOtGiven ||
+            state.locationServiceIsNotEnabled)) {
+      state = state.copyWith(
+        topFlex: 7,
+        bottomFlex: 5,
+      );
+    }
+  }
+
+  void openGymslist() {
+    final list = state.activitiesWithGymsInsideFromSelectedDiapozone;
+    if (!state.locationPermissionIsNOtGiven) {
+      if (list.length == 1) {
+        state = state.copyWith(topFlex: 3);
+        state = state.copyWith(bottomFlex: 8);
+      }
+      if (list.length == 2) {
+        state = state.copyWith(topFlex: 4);
+        state = state.copyWith(bottomFlex: 5);
+      }
+      if (list.length > 2) {
+        state = state.copyWith(topFlex: 7);
+        state = state.copyWith(bottomFlex: 8);
+      }
+    }
+
+    /* state = state.copyWith(topFlex: 7);
+    state = state.copyWith(bottomFlex: 6); */
+  }
+
+  void closeGymslist() {
+    setFlexes();
+  }
+
+  void openCloseGymsList() {
+    final list = state.activitiesWithGymsInsideFromSelectedDiapozone;
+    bool isOpened = list.any((element) => element.isOpened);
+    if (isOpened) {
+      openGymslist();
+    } else {
+      closeGymslist();
+    }
+  }
+
+  void closeOpenedActivities() {
+    bool isAnyOpened = state.activitiesWithGymsInsideFromSelectedDiapozone
+        .any((element) => element.isOpened);
+    if (isAnyOpened) {
+      for (var element in state.activitiesWithGymsInsideFromSelectedDiapozone) {
+        element.isOpened = false;
+      }
+    }
+  }
+
   Future<void> setMarkerAsOpened(double lat, double lon) async {
     if (state.activeMarker?.latitude == lat ||
         state.activeMarker?.longitude == lon) {
@@ -231,35 +516,47 @@ class MapNotifier extends StateNotifier<MapState> {
     state = state.copyWith(selectedDiapozone: diapozone);
   }
 
+  void hideLocationIcon() {
+    state = state.copyWith(isLocationIconHidden: true);
+  }
+
+  showLocationButton() {
+    state = state.copyWith(isLocationIconHidden: false);
+  }
+
   void showPopUpOnMap(BuildContext context) {
-    // remove prvious pop up first 
-    removePopUp();
-    final overlay = Overlay.of(context);
-    entry = OverlayEntry(
-      builder: (context) {
-        return Positioned(
-          left: 50.w,
-          right: 50.w,
-          bottom: 30.h,
-          child: PopUpMap(
-            name: state.activeMarker!.name,
-            address: state.activeMarker?.address ?? "??",
-            onTap: () {
-              entry!.remove();
-              context.router.push(
-                ActivityRoute(gymId: state.activeMarker!.id),
-              );
-            },
-          ),
-        );
-      },
-    );
-    overlay.insert(entry!);
+    // remove prvious pop up first
+    if (state.activeMarker?.name != "user") {
+      removePopUp();
+      if (!state.isLocationIconHidden) {
+        hideLocationIcon();
+      }
+      final overlay = Overlay.of(context);
+      entry = OverlayEntry(
+        builder: (context) {
+          return Positioned(
+            bottom: 0,
+            child: PopUpMap(
+              name: state.activeMarker?.name ?? "??",
+              address: state.activeMarker?.address ?? "??",
+              onTap: () {
+                entry!.remove();
+                context.router.push(
+                  ActivityRoute(gymId: state.activeMarker?.id ?? 0),
+                );
+              },
+            ),
+          );
+        },
+      );
+      overlay.insert(entry!);
+    }
   }
 
   void removePopUp() {
     if (entry != null && entry!.mounted) {
       entry?.remove();
+      showLocationButton();
     }
   }
 
@@ -270,37 +567,58 @@ class MapNotifier extends StateNotifier<MapState> {
     state = state.copyWith(listOfBool: bools);
   }
 
-  Future<void> getGetListOfActivitiesFromDiapozone() async {
+  Future<void> getGetListOfGymsFromDiapozone() async {
     await Future.delayed(const Duration(milliseconds: 100));
-    List<GymData> list = <GymData>[];
 
+    List<LessonTypeWithGymsInside> listToCollect = [];
     double selectedDiapozone = state.selectedDiapozone;
+    final activityWithGyms =
+        List<LessonTypeWithGymsInside>.from(state.activitiesWithGymsInsideAll);
+
     if (selectedDiapozone == 5) {
-      list.addAll(state.listOfActivities);
-    }
-    if (selectedDiapozone != 5) {
-      for (var element in state.listOfActivities) {
-        if (element.distanceFromClient! < selectedDiapozone) {
-          list.add(element);
+      listToCollect.addAll(state.activitiesWithGymsInsideAll);
+    } else {
+      for (var element in activityWithGyms) {
+        var listOfGymsCopy = <Gymdata>[];
+        element.listOfGyms?.forEach((gymdata) {
+          if (gymdata.distanceFromClient! < selectedDiapozone) {
+            //var gymdataCopy = gymdata.copyWith();
+            listOfGymsCopy.add(gymdata);
+          }
+        });
+
+        if (listOfGymsCopy.isNotEmpty) {
+          var elementCopy = LessonTypeWithGymsInside(
+            false,
+            lessontype: element.lessontype,
+            listOfGyms: listOfGymsCopy,
+          );
+          listToCollect.add(elementCopy);
         }
       }
     }
-
-    state = state.copyWith(listOfActivitiesFromSelectedDiapozone: list);
+    state = state.copyWith(
+      activitiesWithGymsInsideFromSelectedDiapozone: listToCollect,
+    );
   }
 
-  void changeDiapozoneAndPop(
-      int index, double diapozone, BuildContext context) {
+  Future<void> changeDiapozoneAndGetActivities(
+      int index, double diapozone, BuildContext context) async {
+    if (state.showMapOnly) {
+      reduceMap();
+    }
     changListOFBoolToTrue(index);
-    changeSelectedDiapozone(diapozone).then(
-      (value) => getGetListOfActivitiesFromDiapozone().then(
-        (value) => getAllMarkers().then(
-          (value) => addUserLocationMarker().then(
-            (value) => context.popRoute(),
-          ),
-        ),
-      ),
-    );
+    try {
+      await changeSelectedDiapozone(diapozone);
+      closeOpenedActivities();
+      await getGetListOfGymsFromDiapozone();
+      await setFlexes();
+      await getAllMarkers();
+      await addUserLocationMarker();
+      //context.popRoute();
+    } catch (error) {
+      // Обработка ошибок
+    }
   }
 
   Future<void> searchGym(BuildContext context, {required String text}) async {

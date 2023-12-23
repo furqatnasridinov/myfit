@@ -7,13 +7,15 @@ import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 @RoutePage()
 class Registration3Screen extends StatefulWidget {
- const  Registration3Screen({super.key});
+  const Registration3Screen({super.key});
 
   @override
   State<Registration3Screen> createState() => _Registration3ScreenState();
@@ -24,21 +26,19 @@ class _Registration3ScreenState extends State<Registration3Screen> {
   TextEditingController nameController = TextEditingController();
   FocusNode focusNode = FocusNode();
   FocusNode nameFocus = FocusNode();
+  final formKey = GlobalKey<FormState>();
   final layerlink = LayerLink();
   final listofaddresses = DummyData().cityNames;
-
+  bool isFormNotValidated = false;
   OverlayEntry? entry;
 
   void showOverlay() {
     final overlay = Overlay.of(context);
     final renderBox = context.findRenderObject() as RenderBox;
     final size = renderBox.size;
-    // final offset = renderBox.localToGlobal(Offset.zero);
 
     entry = OverlayEntry(
       builder: (context) => Positioned(
-        // left: offset.dx,
-        // top: offset.dy + size.height + 2.5,
         width: size.width,
         child: CompositedTransformFollower(
           offset: Offset(-16, 50.h),
@@ -46,22 +46,6 @@ class _Registration3ScreenState extends State<Registration3Screen> {
           child: Material(
             color: Colors.transparent,
             child: TapRegion(
-              /* onTapOutside: (event) {
-                final position = event.position;
-                final textFieldRenderBox =
-                    context.findRenderObject() as RenderBox;
-                final textFieldRect =
-                    textFieldRenderBox.localToGlobal(Offset.zero) &
-                        textFieldRenderBox.size;
-                if (!textFieldRect.contains(position)) {
-                  focusNode.unfocus();
-                  setState(() {});
-                }
-              }, */
-              /*  onTapOutside: (event) {
-                textfieldFocusnode.unfocus();
-                setState(() {});
-              }, */
               child: Container(
                 height: 294.h,
                 margin: EdgeInsets.only(left: 16.w, right: 16.w),
@@ -85,9 +69,9 @@ class _Registration3ScreenState extends State<Registration3Screen> {
                         itemBuilder: (context, index) {
                           final currentCity = listofaddresses[index];
                           return _listiles(
-                            currentCity,
+                            currentCity.name ?? "??",
                             () {
-                              controller.text = currentCity;
+                              controller.text = currentCity.name ?? "??";
                               focusNode.unfocus();
                               setState(() {});
                             },
@@ -132,151 +116,194 @@ class _Registration3ScreenState extends State<Registration3Screen> {
         child: Stack(
           children: [
             // main body
-            Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomText(
-                      text: "Как к вам обращаться",
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    5.verticalSpace,
-                    SizedBox(
-                      height: 40.h,
-                      width: double.maxFinite,
-                      child: CustomTextField(
-                        controller: nameController,
-                        focusNode: nameFocus,
-                        onTapOutside: (onTapOutside) {
-                          if (nameFocus.hasFocus) {
-                            nameFocus.unfocus();
-                          }
-                        },
-                        onTap: () {
-                          if (!nameFocus.hasFocus) {
-                            nameFocus.requestFocus();
-                          }
-                        },
-                        onEditingComplete: () {
-                          if (!nameFocus.hasFocus) {
-                            nameFocus.requestFocus();
-                          }
-                        },
-                        maxLines: 1,
-                        contentPadding: EdgeInsets.zero.copyWith(left: 10.w),
-                        hintText: "Ваше имя",
+            Form(
+              key: formKey,
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomText(
+                        text: "Как к вам обращаться",
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
                       ),
-                    ),
-                    32.verticalSpace,
-                    CustomText(
-                      text: "В каком городе искать активности",
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    5.verticalSpace,
-                    SizedBox(
-                      height: 40.h,
-                      width: double.maxFinite,
-                      child: CompositedTransformTarget(
-                        link: layerlink,
-                        child: TextField(
-                          style: GoogleFonts.inter(
+                      5.verticalSpace,
+                      SizedBox(
+                        height: 40.h,
+                        width: double.maxFinite,
+                        child: CustomTextField(
+                          isError: isFormNotValidated,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                              RegExp(r'[a-zA-Zа-яА-Я]'),
+                            ),
+                          ],
+                          counterStyle: const TextStyle(
+                            height: double.minPositive,
+                          ),
+                          counterText: "",
+                          maxLength: 16,
+                          style: GoogleFonts.raleway(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w400,
                             color: Colors.black,
                           ),
-                          onTap: () {
-                            if (!focusNode.hasFocus) {
-                              focusNode.requestFocus();
-                              setState(() {});
-                            } else {
-                              focusNode.unfocus();
+                          controller: nameController,
+                          focusNode: nameFocus,
+                          onTapOutside: (onTapOutside) {
+                            if (nameFocus.hasFocus) {
+                              nameFocus.unfocus();
                             }
                           },
-                          readOnly: true,
-                          focusNode: focusNode,
-                          controller: controller,
-                          decoration: InputDecoration(
-                            suffixIcon: Icon(
-                              focusNode.hasFocus
-                                  ? Icons.keyboard_arrow_up
-                                  : Icons.keyboard_arrow_down,
-                              size: 23.r,
-                            ),
-                            contentPadding:
-                                EdgeInsets.zero.copyWith(left: 10.w),
-                            hintStyle: GoogleFonts.inter(
+                          onTap: () {
+                            if (!nameFocus.hasFocus) {
+                              nameFocus.requestFocus();
+                            }
+                          },
+                          onEditingComplete: () {
+                            if (!nameFocus.hasFocus) {
+                              nameFocus.requestFocus();
+                            }
+                          },
+                          maxLines: 1,
+                          contentPadding: EdgeInsets.zero.copyWith(left: 10.w),
+                          hintText: "Ваше имя",
+                        ),
+                      ),
+                      isFormNotValidated
+                          ? Padding(
+                              padding: EdgeInsets.only(top: 5.h),
+                              child: CustomText(
+                                text: "Имя должна содержать хотя бы 3 буквы",
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.red,
+                              ),
+                            )
+                          : const SizedBox(),
+
+                      32.verticalSpace,
+                      CustomText(
+                        text: "В каком городе искать активности",
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      5.verticalSpace,
+                      SizedBox(
+                        height: 40.h,
+                        width: double.maxFinite,
+                        child: CompositedTransformTarget(
+                          link: layerlink,
+                          child: TextField(
+                            style: GoogleFonts.inter(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w400,
+                              color: Colors.black,
                             ),
-                            fillColor: Colors.white,
-                            filled: true,
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(
-                                color: focusNode.hasFocus
-                                    ? AppColors.blueColor
-                                    : AppColors.greyBorder,
-                                width: 1.w,
+                            onTap: () {
+                              if (!focusNode.hasFocus) {
+                                focusNode.requestFocus();
+                                setState(() {});
+                              } else {
+                                focusNode.unfocus();
+                              }
+                            },
+                            readOnly: true,
+                            focusNode: focusNode,
+                            controller: controller,
+                            decoration: InputDecoration(
+                              suffixIcon: Icon(
+                                focusNode.hasFocus
+                                    ? Icons.keyboard_arrow_up
+                                    : Icons.keyboard_arrow_down,
+                                size: 23.r,
                               ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(
-                                color: AppColors.greyBorder,
-                                width: 1.w,
+                              contentPadding:
+                                  EdgeInsets.zero.copyWith(left: 10.w),
+                              hintStyle: GoogleFonts.inter(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              fillColor: Colors.white,
+                              filled: true,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.r),
+                                borderSide: BorderSide(
+                                  color: focusNode.hasFocus
+                                      ? AppColors.blueColor
+                                      : AppColors.greyBorder,
+                                  width: 1.w,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.r),
+                                borderSide: BorderSide(
+                                  color: AppColors.greyBorder,
+                                  width: 1.w,
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    32.verticalSpace,
+                      32.verticalSpace,
 
-                    // button
-                    Container(
-                      margin: focusNode.hasFocus
-                          ? EdgeInsets.symmetric(horizontal: 3.w)
-                          : EdgeInsets.zero,
-                      height: 56.h,
-                      decoration: const BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color.fromRGBO(0, 0, 0, 0.15),
-                            offset: Offset(0, 2),
-                            blurRadius: 5,
-                            spreadRadius: 0,
-                          ),
-                          BoxShadow(
-                            color: Color.fromRGBO(109, 150, 212, 1),
-                            offset: Offset(0, 15),
-                            blurRadius: 18,
-                            spreadRadius: -15,
-                          ),
-                        ],
+                      // button
+                      Container(
+                        margin: focusNode.hasFocus
+                            ? EdgeInsets.symmetric(horizontal: 3.w)
+                            : EdgeInsets.zero,
+                        height: 56.h,
+                        decoration: const BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color.fromRGBO(0, 0, 0, 0.15),
+                              offset: Offset(0, 2),
+                              blurRadius: 5,
+                              spreadRadius: 0,
+                            ),
+                            BoxShadow(
+                              color: Color.fromRGBO(109, 150, 212, 1),
+                              offset: Offset(0, 15),
+                              blurRadius: 18,
+                              spreadRadius: -15,
+                            ),
+                          ],
+                        ),
+                        child: Consumer(
+                          builder: (context, ref, child) {
+                            /* final settingsEvent =
+                                ref.read(settingsProvider.notifier); */
+                            return CustomButton(
+                              buttonColor: AppColors.blueColor,
+                              textColor: Colors.white,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                              onPressed: () {
+                                if (nameController.text.length > 2) {
+                                  LocalStorage.setUserName(nameController.text);
+                                  LocalStorage.setSelectedCity(controller.text);
+                                  context
+                                      .replaceRoute(const Registration4Route());
+                                } else {
+                                  isFormNotValidated = true;
+                                  setState(() {});
+                                }
+                              },
+                              text: "Продолжить",
+                            );
+                          },
+                        ),
                       ),
-                      child: CustomButton(
-                        buttonColor: AppColors.blueColor,
-                        textColor: Colors.white,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        onPressed: () {
-                          LocalStorage.setUserName(nameController.text);
-                          context.replaceRoute(const Registration4Route());
-                        },
-                        text: "Продолжить",
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
             // waves
-
             Align(
               alignment: Alignment.bottomCenter,
               child: nameFocus.hasFocus

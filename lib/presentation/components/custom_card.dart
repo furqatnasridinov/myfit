@@ -9,6 +9,8 @@ class CustomCard extends StatelessWidget {
   Color? color;
   Color borderColor;
   double radius;
+  double? bottomPadding;
+  double? topPadding;
   double? paddingAll;
   final Widget child;
   double? marginBottom;
@@ -17,6 +19,8 @@ class CustomCard extends StatelessWidget {
     this.width,
     this.height,
     this.marginBottom,
+    this.topPadding,
+    this.bottomPadding,
     this.color = Colors.white,
     this.borderColor = AppColors.greyBorder,
     this.radius = 16,
@@ -35,7 +39,7 @@ class CustomCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(radius.r),
       ),
       margin: EdgeInsets.only(bottom: marginBottom ?? 0),
-      padding: EdgeInsets.all(paddingAll!.r),
+      padding: EdgeInsets.all(paddingAll!.r).copyWith(top: topPadding, bottom: bottomPadding),
       child: child,
     );
   }

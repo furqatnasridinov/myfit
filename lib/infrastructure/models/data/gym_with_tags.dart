@@ -19,26 +19,26 @@ class GymWithTags {
     date = json['date'];
     description = json['description'];
     duration = json['duration'];
-    gym = json['gym'] != null ? new Gym.fromJson(json['gym']) : null;
+    gym = json['gym'] != null ?  Gym.fromJson(json['gym']) : null;
     if (json['tag'] != null) {
       tag = <Tag>[];
       json['tag'].forEach((v) {
-        tag!.add(new Tag.fromJson(v));
+        tag!.add( Tag.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['date'] = this.date;
-    data['description'] = this.description;
-    data['duration'] = this.duration;
-    if (this.gym != null) {
-      data['gym'] = this.gym!.toJson();
+    final Map<String, dynamic> data =  <String, dynamic>{};
+    data['id'] = id;
+    data['date'] = date;
+    data['description'] = description;
+    data['duration'] = duration;
+    if (gym != null) {
+      data['gym'] = gym!.toJson();
     }
-    if (this.tag != null) {
-      data['tag'] = this.tag!.map((v) => v.toJson()).toList();
+    if (tag != null) {
+      data['tag'] = tag!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -91,14 +91,14 @@ class Gym {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['address'] = this.address;
-    data['latitude'] = this.latitude;
-    data['longitude'] = this.longitude;
-    data['description'] = this.description;
-    data['mainPictureUrl'] = this.mainPictureUrl;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['address'] = address;
+    data['latitude'] = latitude;
+    data['longitude'] = longitude;
+    data['description'] = description;
+    data['mainPictureUrl'] = mainPictureUrl;
     return data;
   }
 }
@@ -117,10 +117,10 @@ class Tag {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['tag'] = this.tag;
-    data['description'] = this.description;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['tag'] = tag;
+    data['description'] = description;
     return data;
   }
 }

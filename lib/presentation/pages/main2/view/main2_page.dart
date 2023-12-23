@@ -1,16 +1,16 @@
 import 'dart:async';
+import 'package:activity/application/main2/main2_provider.dart';
 import 'package:activity/application/map/map_provider.dart';
-import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/pages/main2/widget/main2_header.dart';
 import 'package:activity/presentation/pages/main2/widget/widget.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 @RoutePage()
@@ -23,35 +23,42 @@ class Main2Screen extends ConsumerStatefulWidget {
 
 class _LoginScreen extends ConsumerState<Main2Screen> {
   final mapControllerCompleter = Completer<YandexMapController>();
-  TextEditingController controller = TextEditingController();
-  ScrollController scrollController = ScrollController();
-
-  final layerlink = LayerLink();
+  late TextEditingController controller;
+  late LayerLink layerlink;
 
   @override
   void initState() {
+    controller = TextEditingController();
+    layerlink = LayerLink();
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref.read(mapProvider.notifier).getUserLocation();
-      ref.read(scheduleProvider.notifier)
+      ref.read(mapProvider.notifier).getUserLocation().then((value) {
+        ref.read(mapProvider.notifier).getYandexMapImage(
+              context,
+            );
+      });
+      ref.read(main2Provider.notifier)
         ..getNearestLesson(context)
         ..getUserStatsMonth(context);
     });
-    
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(scheduleProvider);
-    final event = ref.read(scheduleProvider.notifier);
-    final mapState = ref.watch(mapProvider);
-        //LocalStorage.removeToken();
+    final state = ref.watch(main2Provider);
+    final event = ref.read(main2Provider.notifier);
     if (controller.text.isEmpty && state.schedulesFoundBySearching.isNotEmpty) {
       event.cleanSearchList();
     }
-
+    //LocalStorage.removeToken();
     return PopScope(
-      canPop: false,
+      //canPop: false,
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
         extendBodyBehindAppBar: true,
@@ -71,7 +78,6 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                     SingleChildScrollView(
                       keyboardDismissBehavior:
                           ScrollViewKeyboardDismissBehavior.onDrag,
-                      controller: scrollController,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -97,7 +103,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                               event: event,
                             ),
                           ),
-                          10.verticalSpace,
+                          32.verticalSpace,
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16.w),
                             child: state.nearestLesson == null
@@ -117,10 +123,26 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                             ),
                           ),
                           10.verticalSpace,
-                          Padding(
+                          Consumer(builder: (context, ref, child) {
+                            final mapState = ref.watch(mapProvider);
+                            return Padding(
                               padding: EdgeInsets.symmetric(horizontal: 16.w),
-                              child: Main2Map(mapState: mapState),),
-                          70.verticalSpace,
+                              child: mapState.mapScreenShot == null
+                                  ? const Main2MapPlaceHolder()
+                                  : Main2Map(
+                                      child: Image.memory(
+                                        mapState.mapScreenShot ??
+                                            Uint8List(100),
+                                        fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return const Main2MapPlaceHolder();
+                                        },
+                                      ),
+                                    ),
+                            );
+                          }),
+                          32.verticalSpace,
                           const DecoratedTextOne(),
                         ],
                       ),

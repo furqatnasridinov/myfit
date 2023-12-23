@@ -6,7 +6,6 @@ import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/components/ui_button_filled.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -23,9 +22,9 @@ class NotesHeader extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _MainHeaderState extends State<NotesHeader> {
-  TextEditingController controller = TextEditingController();
-  FocusNode textfieldFocusnode = FocusNode();
-  final layerlink = LayerLink();
+  late TextEditingController controller;
+  late FocusNode textfieldFocusnode;
+  late LayerLink layerlink;
   final listofaddresses = DummyData().dummyAddresses;
 
   OverlayEntry? entry;
@@ -119,7 +118,9 @@ class _MainHeaderState extends State<NotesHeader> {
   @override
   void initState() {
     super.initState();
-
+    controller = TextEditingController();
+    textfieldFocusnode = FocusNode();
+    layerlink = LayerLink();
     textfieldFocusnode.addListener(() {
       if (textfieldFocusnode.hasFocus) {
         showOverlay();
@@ -130,10 +131,17 @@ class _MainHeaderState extends State<NotesHeader> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+    textfieldFocusnode.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
-      leadingWidth: 48.w,
+      toolbarHeight: 40.h,
       backgroundColor: const Color.fromRGBO(245, 249, 255, 0.966),
       elevation: 0,
       centerTitle: false,
@@ -160,9 +168,10 @@ class _MainHeaderState extends State<NotesHeader> {
       // leading
       leading: textfieldFocusnode.hasFocus
           ? null
-          : Container(
-              margin: EdgeInsets.only(left: 10.5.w),
-              child: Ink(
+          : InkWell(
+              onTap: () => context.popRoute(),
+              child: Container(
+                margin: EdgeInsets.only(left: 10.5.w),
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: const Color.fromRGBO(233, 233, 233, 1),
@@ -171,15 +180,11 @@ class _MainHeaderState extends State<NotesHeader> {
                   color: Colors.white,
                   shape: BoxShape.circle,
                 ),
-                child: InkWell(
-                  onTap: () => context.popRoute(),
-                  borderRadius: BorderRadius.circular(500.r),
-                  child: SizedBox(
-                    child: Icon(
-                      Icons.keyboard_arrow_left,
-                      size: 22.r,
-                      color: Colors.black,
-                    ),
+                child: Center(
+                  child: SvgPicture.asset(
+                    "assets/svg/back_icon.svg",
+                    width: 5.w,
+                    height: 10.h,
                   ),
                 ),
               ),
@@ -210,6 +215,7 @@ class _MainHeaderState extends State<NotesHeader> {
             style: GoogleFonts.raleway(
               fontSize: 14.sp,
               fontWeight: FontWeight.w500,
+              fontFeatures: const [FontFeature.liningFigures()],
             ),
             controller: controller,
             onChanged: (value) {
@@ -249,12 +255,12 @@ class _MainHeaderState extends State<NotesHeader> {
                         )
                       : null,
               prefixIcon: Container(
-                margin: EdgeInsets.all(3.r),
+                margin: EdgeInsets.all(4.r).copyWith(left: 0.w),
                 decoration: const BoxDecoration(
                   color: AppColors.backgroundColor,
                   shape: BoxShape.circle,
                 ),
-                padding: EdgeInsets.all(10.r),
+                padding: EdgeInsets.all(5.r),
                 child: SvgPicture.asset(
                   "assets/svg/search.svg",
                   // ignore: deprecated_member_use
@@ -264,6 +270,7 @@ class _MainHeaderState extends State<NotesHeader> {
               hintStyle: GoogleFonts.raleway(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
+                fontFeatures: const [FontFeature.liningFigures()],
               ),
               hintText: "Заметка",
               border: InputBorder.none,
@@ -277,22 +284,30 @@ class _MainHeaderState extends State<NotesHeader> {
         textfieldFocusnode.hasFocus
             ? const SizedBox()
             : Container(
-                //height: 40.h,
+                width: 95.w,
+                height: 40.h,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(100.r),
-                  border: Border.all(
-                    color: AppColors.greyBorder,
-                    width: 1.w,
+                  border: Border(
+                    bottom: BorderSide(
+                      color: AppColors.greyBorder,
+                      width: 1.w,
+                    ),
+                    top: BorderSide(
+                      color: AppColors.greyBorder,
+                      width: 1.w,
+                    ),
+                    left: BorderSide(
+                      color: AppColors.greyBorder,
+                      width: 1.w,
+                    ),
                   ),
                 ),
                 margin: EdgeInsets.only(
-                  top: 4.5.h,
                   right: 16.w,
-                  bottom: 4.5.h,
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
                       padding: EdgeInsets.only(
@@ -309,24 +324,27 @@ class _MainHeaderState extends State<NotesHeader> {
                         //onTap: () => {context.go('/schedule')},
                       ),
                     ),
-                    SizedBox(width: 12.w),
-                    SizedOverflowBox(
-                      size: Size(40.w, 40.h),
-                      child: CircleAvatar(
-                        radius: 20.r,
-                        backgroundColor: AppColors.blueColor,
-                        child: Padding(
-                          padding: EdgeInsets.all(2.r),
-                          child: ClipOval(
-                            child: CachedNetworkImage(
-                              imageUrl: AppConstants.owlNetworkImage,
-                              fit: BoxFit.cover,
-                              errorWidget: (context, url, error) {
-                                return const SizedBox();
-                              },
+                    const Spacer(),
+                    Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.blueColor,
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(2.r),
+                        child: ClipOval(
+                            child: Image.asset(
+                          AppConstants.cristianBale,
+                          fit: BoxFit.cover,
+                        )
+                            /* CachedNetworkImage(
+                                imageUrl: AppConstants.owlNetworkImage,
+                                fit: BoxFit.cover,
+                                errorWidget: (context, url, error) {
+                                  return const SizedBox();
+                                },
+                              ), */
                             ),
-                          ),
-                        ),
                       ),
                     ),
                   ],

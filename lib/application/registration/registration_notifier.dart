@@ -1,6 +1,9 @@
+import 'dart:ui';
+
 import 'package:activity/application/registration/registration_state.dart';
 import 'package:activity/domain/interface/register.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/infrastructure/services/app_validator.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
@@ -25,6 +28,7 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
         fontSize: 20.sp,
         color: Colors.black,
         fontWeight: FontWeight.w600,
+        fontFeatures: const [FontFeature.liningFigures()],
       ),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -45,6 +49,7 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
         fontSize: 20.sp,
         color: Colors.black,
         fontWeight: FontWeight.w600,
+        fontFeatures: const [FontFeature.liningFigures()],
       ),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -65,6 +70,7 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
         fontSize: 20.sp,
         color: Colors.black,
         fontWeight: FontWeight.w600,
+        fontFeatures: const [FontFeature.liningFigures()],
       ),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -75,6 +81,11 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
         borderRadius: BorderRadius.circular(8.r),
       ),
     );
+  }
+
+  void setPhone(String text) {
+    state = state.copyWith(phoneNumber: text);
+    state = state.copyWith(isValidPhone: AppValidators.isValidPhone(text));
   }
 
   Future<void> sendPhoneNumber(String phoneNumber, BuildContext context) async {
@@ -88,15 +99,13 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
             // save phone number to local storage
             LocalStorage.setPhoneNumber(phoneNumber)
                 .then((value) => context.router.push(
-                      Registration2Route(),
+                      const Registration2Route(),
                     ));
           }
         },
         failure: (error, statusCode) {
           AppHelpers.showSnack(
-            context,
-            "${error.toString()} ${"statuscode $statusCode"}"
-          );
+              context, "${error.toString()} ${"statuscode $statusCode"}");
         },
       );
     } else {
@@ -133,8 +142,17 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
   Future<void> moveClientToThirdPage(BuildContext context) async {
     await Future.delayed(const Duration(milliseconds: 1500)).then(
       (value) => context.replaceRoute(
-        Registration3Route(),
+        const Registration3Route(),
       ),
     );
+  }
+
+  
+  void enableFormNotValidated(){
+    state = state.copyWith(isFormNotValidated: true);
+  }
+
+  void formValidated(){
+    state = state.copyWith(isFormNotValidated: false);
   }
 }

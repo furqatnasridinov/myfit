@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:activity/infrastructure/services/app_colors.dart';
@@ -9,10 +10,19 @@ class CustomTextField extends StatelessWidget {
   String? hintText;
   TextEditingController? controller;
   int? maxLines;
+  TextStyle? style;
   TextInputType? keyboardType;
   Widget? suffixIcon;
+  String? counterText;
+  int? maxLength;
   EdgeInsetsGeometry? contentPadding;
   FocusNode? focusNode;
+  TextStyle? counterStyle;
+  bool hasFocus;
+  bool isError;
+  Color? cursorColor;
+  String? Function(String?)? validator;
+  List<TextInputFormatter>? inputFormatters;
   void Function(PointerDownEvent)? onTapOutside;
   void Function()? onEditingComplete;
   void Function()? onTap;
@@ -24,13 +34,22 @@ class CustomTextField extends StatelessWidget {
     this.controller,
     this.suffixIcon,
     this.contentPadding,
+    this.inputFormatters,
+    this.counterStyle,
     this.readOnly = false,
+    this.hasFocus = false,
+    this.validator,
+    this.isError = false,
     this.maxLines,
+    this.counterText,
+    this.maxLength,
     this.focusNode,
     this.keyboardType,
+    this.style,
     this.onEditingComplete,
     this.onTap,
     this.onTapOutside,
+    this.cursorColor = Colors.black
   }) : super(key: key);
 
   @override
@@ -39,21 +58,22 @@ class CustomTextField extends StatelessWidget {
       /* onTapOutside: (onTapOutside) {
         FocusScope.of(context).unfocus();
       }, */
+      inputFormatters: inputFormatters,
       focusNode: focusNode,
       readOnly: readOnly,
       maxLines: maxLines,
+      maxLength: maxLength,
+      validator: validator,
       keyboardType: keyboardType,
       controller: controller,
       onTapOutside: onTapOutside,
       onTap: onTap,
-      cursorColor: Colors.black,
+      cursorColor: cursorColor,
       onEditingComplete: onEditingComplete,
-      style: GoogleFonts.inter(
-        fontSize: 14.sp,
-        fontWeight: FontWeight.w400,
-        color: Colors.black,
-      ),
+      style: style,
       decoration: InputDecoration(
+        counterText: counterText,
+        counterStyle: counterStyle,
         suffixIcon: suffixIcon,
         contentPadding: contentPadding,
         hintText: hintText,
@@ -68,14 +88,27 @@ class CustomTextField extends StatelessWidget {
           borderSide: BorderSide(
             color: focusNode!.hasFocus
                 ? AppColors.blueColor
-                : AppColors.greyBorder,
+                : isError
+                    ? Colors.red
+                    : AppColors.greyBorder,
+            width: 1.w,
+          ),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.r),
+          borderSide: BorderSide(
+            color: focusNode!.hasFocus
+                ? AppColors.blueColor
+                : isError
+                    ? Colors.red
+                    : AppColors.greyBorder,
             width: 1.w,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
-            color: AppColors.greyBorder,
+            color: isError ? Colors.red : AppColors.greyBorder,
             width: 1.w,
           ),
         ),

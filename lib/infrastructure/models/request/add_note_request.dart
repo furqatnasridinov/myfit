@@ -9,15 +9,15 @@ class AddNoteRequest {
     tag = json['tag'];
     description = json['description'];
     lesson =
-        json['lesson'] != null ? new Lesson.fromJson(json['lesson']) : null;
+        json['lesson'] != null ? Lesson.fromJson(json['lesson']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['tag'] = this.tag;
-    data['description'] = this.description;
-    if (this.lesson != null) {
-      data['lesson'] = this.lesson!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['tag'] = tag;
+    data['description'] = description;
+    if (lesson != null) {
+      data['lesson'] = lesson!.toJson();
     }
     return data;
   }
@@ -33,8 +33,8 @@ class Lesson {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
     return data;
   }
 }

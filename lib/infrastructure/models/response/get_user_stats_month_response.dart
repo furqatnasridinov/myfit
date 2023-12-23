@@ -9,16 +9,16 @@ class GetUserStatsMonthResponse {
     if (json['object'] != null) {
       bodyData = <UserStats>[];
       json['object'].forEach((v) {
-        bodyData!.add(new UserStats.fromJson(v));
+        bodyData!.add(UserStats.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['operationResult'] = this.operationResult;
-    if (this.bodyData != null) {
-      data['object'] = this.bodyData!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['operationResult'] = operationResult;
+    if (bodyData != null) {
+      data['object'] = bodyData!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -36,9 +36,9 @@ class UserStats {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['count'] = this.count;
-    data['lessonType'] = this.lessonType;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['count'] = count;
+    data['lessonType'] = lessonType;
     return data;
   }
 }

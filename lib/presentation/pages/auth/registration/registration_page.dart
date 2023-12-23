@@ -95,8 +95,8 @@ class RegistrationScreen extends StatelessWidget {
                                               textColor: Colors.white,
                                               height: 40.h,
                                               onPressed: () {
-                                                context.replaceRoute(
-                                                    Registration1Route());
+                                                context.pushRoute(
+                                                    const Registration1Route());
                                               },
                                               text: "Я согласен, продолжить",
                                             ),
@@ -148,7 +148,7 @@ class RegistrationScreen extends StatelessWidget {
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w600,
                               onPressed: () {
-                                context.replaceRoute(Registration1Route());
+                                context.pushRoute(const Registration1Route());
                               },
                               text: "Продолжить",
                             ),

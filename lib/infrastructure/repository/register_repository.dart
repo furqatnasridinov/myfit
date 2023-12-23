@@ -45,11 +45,11 @@ class RegisterRepository implements RegisterRepositoryInterface {
         data: AuthResponse.fromJson(response.data),
       );
     } catch (e) {
-      throw e;
-      /*  return ApiResult.failure(
+      //throw e;
+       return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      ); */
+      ); 
     }
   }
 }

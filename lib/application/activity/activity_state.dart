@@ -1,3 +1,4 @@
+import 'package:activity/infrastructure/models/data/activity.dart';
 import 'package:activity/infrastructure/models/response/gym_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -14,7 +15,7 @@ class ActivityState with _$ActivityState {
     @Default([]) List<String> originalDates,
     @Default({}) Map<String, dynamic> scheddules,
     @Default([]) List<String> availableFormattedDates,
-    @Default([]) List listOfSchedules,
+    @Default([]) List<Activity> listOfSchedules,
     @Default("") String defaultDate,
     @Default("") String selectedOriginalDate,
     @Default([]) List<String> listOf15CalendarDaysFromNow,

@@ -61,7 +61,7 @@ class TheOneWithComments extends StatelessWidget {
                               DateTime.now().year - int.parse(parts![0]);
                           return _comments(
                             currentComment?.message ?? "",
-                            AppConstants.owlNetworkImage,
+                            AppConstants.cristianBale,
                             "${currentComment?.user?.lastName} ${currentComment?.user?.firstName}",
                             currentComment?.user?.city?.name ?? "??",
                             "$formattedYear лет",
@@ -72,6 +72,8 @@ class TheOneWithComments extends StatelessWidget {
                           enableInfiniteScroll: false,
                           scrollDirection: Axis.vertical,
                           autoPlay: state.commentsAutoPlayMode,
+                          enlargeCenterPage: false,
+                          disableCenter: true,
                           onPageChanged: (index, reason) {
                             event.commenSetStep(index);
                             if (reason == CarouselPageChangedReason.manual) {
@@ -150,11 +152,13 @@ class TheOneWithComments extends StatelessWidget {
           Row(
             children: [
               SizedBox(
-                width: 37.0,
-                height: 37.0,
+                width: 37.w,
+                height: 37.h,
                 child: ClipOval(
-                  child: Image.network(img),
-                ),
+                    child: Image.asset(
+                  AppConstants.cristianBale,
+                  fit: BoxFit.cover,
+                )),
               ),
               const SizedBox(width: 10.0),
               Column(

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:activity/application/main/main_notifier.dart';
 import 'package:activity/application/main/main_state.dart';
 import 'package:activity/presentation/components/custom_card.dart';
@@ -10,6 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
+// ignore: must_be_immutable
 class TheOneWithAdvantages extends StatelessWidget {
   final MainState state;
   final MainNotifier event;
@@ -133,6 +136,7 @@ i   nt activePageIndex = 0;
                                 fontSize: 18.sp,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black,
+                                fontFeatures: const [FontFeature.liningFigures()],
                               ),
                             ),
                             TextSpan(

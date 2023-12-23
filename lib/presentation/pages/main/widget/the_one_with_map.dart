@@ -5,8 +5,6 @@ import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/pages/main/widget/map_inside_near_activities.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -25,9 +23,9 @@ class TheOneWithMap extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.only(
-            left: 10.0,
-            bottom: 10.0,
+          padding: EdgeInsets.only(
+            left: 10.w,
+            bottom: 10.h,
           ),
           child: Align(
             alignment: Alignment.centerLeft,
@@ -63,11 +61,11 @@ class TheOneWithMap extends StatelessWidget {
                       current.activityName ?? "?",
                       current.gymdata!.length.toString(),
                       () {
-                        context.router.push(
+                        /* context.router.push(
                           MapRoute(
                             gymId: 0,
                           ),
-                        );
+                        ); */
                       },
                     );
                   },
@@ -93,9 +91,9 @@ class TheOneWithMap extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: SizedBox(
-        width: 120.w,
+        //width: 120.w,
         //color: Colors.red,
-        child: Row(
+        child: Wrap(
           children: [
             Container(
               width: 24.w,

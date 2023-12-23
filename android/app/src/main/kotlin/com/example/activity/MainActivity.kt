@@ -1,12 +1,17 @@
 package com.example.activity
-import androidx.annotation.NonNull
-import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.embedding.android.FlutterActivity
 import com.yandex.mapkit.MapKitFactory
+import io.flutter.embedding.android.FlutterFragmentActivity
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugins.GeneratedPluginRegistrant
 
-class MainActivity: FlutterActivity() {
-    override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
-    MapKitFactory.setApiKey("e00661b4-ef69-4150-8589-8c8a600941f6") 
-    super.configureFlutterEngine(flutterEngine)
-  }
+class MainActivity : FlutterFragmentActivity() {
+
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        try {
+            MapKitFactory.setApiKey("523fed12-dd4d-4253-91a7-2585ae0b8b27") 
+        } catch (e: AssertionError) {
+
+        }
+        GeneratedPluginRegistrant.registerWith(flutterEngine)
+    }
 }

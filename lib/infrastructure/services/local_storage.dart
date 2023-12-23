@@ -48,6 +48,93 @@ class LocalStorage {
   static void removePhone() =>
       _preferences?.remove(AppConstants.keyPhoneNumber);
 
+  // save city
+  static Future<void> setSelectedCity(String? city) async {
+    if (_preferences != null) {
+      await _preferences?.setString(
+        AppConstants.keyCity,
+        city ?? "??",
+      );
+    }
+  }
+
+  // get city
+  static String getSelectedCity() =>
+      _preferences?.getString(AppConstants.keyCity) ?? "";
+
+  // remove city
+  static void removeSelectedCity() =>
+      _preferences?.remove(AppConstants.keyCity);
+
+  // save age
+  static Future<void> setAge(String? age) async {
+    if (_preferences != null) {
+      await _preferences?.setString(
+        AppConstants.keyAge,
+        age ?? "??",
+      );
+    }
+  }
+
+  // get age
+  static String getAge() => _preferences?.getString(AppConstants.keyAge) ?? "0";
+
+  // remove age
+  static void removeAge() => _preferences?.remove(AppConstants.keyAge);
+
+  // save weight
+  static Future<void> setWeight(String? weight) async {
+    if (_preferences != null) {
+      await _preferences?.setString(
+        AppConstants.keyWeight,
+        weight ?? "??",
+      );
+    }
+  }
+
+  // get weight
+  static String getWeight() =>
+      _preferences?.getString(AppConstants.keyWeight) ?? "0";
+
+  // remove weight
+  static void removeWeight() => _preferences?.remove(AppConstants.keyWeight);
+
+  // save height
+  static Future<void> setHeight(String? height) async {
+    if (_preferences != null) {
+      await _preferences?.setString(
+        AppConstants.keyHeight,
+        height ?? "??",
+      );
+    }
+  }
+
+  // get height
+  static String getHeight() =>
+      _preferences?.getString(AppConstants.keyHeight) ?? "0";
+
+  // remove height
+  static void removeHeight() => _preferences?.remove(AppConstants.keyHeight);
+
+
+ // save avatar
+  static Future<void> setAvatar(String? avatar) async {
+    if (_preferences != null) {
+      await _preferences?.setString(
+        AppConstants.keyAvatar,
+        avatar ?? "??",
+      );
+    }
+  }
+
+  // get avatar
+  static String getAvatar() =>
+      _preferences?.getString(AppConstants.keyAvatar) ?? "";
+
+  // remove avatar
+  static void removeAvatar() => _preferences?.remove(AppConstants.keyAvatar);
+
+
   // save user id
   static Future<void> setUserId(String? id) async {
     if (_preferences != null) {
@@ -82,8 +169,7 @@ class LocalStorage {
   // remove user id
   static void removeToken() => _preferences?.remove(AppConstants.keyToken);
 
-
-    // save user id
+  // save user id
   static Future<void> setUserName(String? username) async {
     if (_preferences != null) {
       await _preferences?.setString(
@@ -98,5 +184,14 @@ class LocalStorage {
       _preferences?.getString(AppConstants.keyUserName) ?? "";
 
   // remove user id
-  static void removeUserName() => _preferences?.remove(AppConstants.keyUserName);
+  static void removeUserName() =>
+      _preferences?.remove(AppConstants.keyUserName);
+
+  static Future<bool> checkIfIsNotEmpty() async {
+    if (getToken().isNotEmpty && getUserId().isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

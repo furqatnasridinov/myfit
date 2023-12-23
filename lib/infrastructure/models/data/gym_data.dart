@@ -5,6 +5,7 @@ class GymData {
   double? longitude;
   String? address;
   double? distanceFromClient;
+  List<String>? activitiesOfGym;
 
   GymData({
     this.id,
@@ -13,5 +14,6 @@ class GymData {
     this.longitude,
     this.address,
     this.distanceFromClient,
+    this.activitiesOfGym,
   });
 }

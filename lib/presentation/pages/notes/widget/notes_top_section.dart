@@ -1,3 +1,7 @@
+// ignore_for_file: deprecated_member_use
+
+import 'dart:ui';
+
 import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
@@ -42,6 +46,7 @@ class NotesTopSection extends StatelessWidget {
                   color: AppColors.blueColor,
                   fontWeight: FontWeight.w600,
                   fontSize: 20.sp,
+                  fontFeatures: const [FontFeature.liningFigures()],
                 ),
               ),
             ],

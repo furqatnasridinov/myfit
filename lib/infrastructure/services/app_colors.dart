@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-class AppColors{
+class AppColors {
   static const Color backgroundColor = Color.fromRGBO(245, 249, 255, 1);
   static const Color blueColor = Color.fromRGBO(119, 170, 249, 1);
   static const Color blueBorder = Color.fromRGBO(89, 154, 254, 1);
@@ -11,5 +11,3 @@ class AppColors{
   static const Color fadedBlueBorder = Color.fromRGBO(212, 229, 255, 1);
   static const Color blueText = Color.fromRGBO(62, 134, 245, 1);
 }
-
-// rgba()

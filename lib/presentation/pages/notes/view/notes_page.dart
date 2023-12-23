@@ -1,4 +1,4 @@
-import 'package:activity/application/schedule/schedule_provider.dart';
+import 'package:activity/application/notes/notes_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/pages/notes/widget/notes_header.dart';
 import 'package:activity/presentation/pages/notes/widget/widget.dart';
@@ -21,14 +21,14 @@ class _ScheduleItemScreen extends ConsumerState<NotesScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref.read(scheduleProvider.notifier).getNotes(context, widget.gymName);
+      ref.read(notesProvider.notifier).getNotes(context, widget.gymName);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(scheduleProvider);
-    final event = ref.read(scheduleProvider.notifier);
+    final state = ref.watch(notesProvider);
+    final event = ref.read(notesProvider.notifier);
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: AppColors.backgroundColor,
@@ -39,29 +39,31 @@ class _ScheduleItemScreen extends ConsumerState<NotesScreen> {
             )
           : SafeArea(
               bottom: false,
-              child: CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(child: SizedBox(height: 5.h)),
-                  SliverPadding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    sliver: SliverList.builder(
-                      itemCount: state.listOfGymWithTags.length,
-                      itemBuilder: (context, index) {
-                        final current = state.listOfGymWithTags[index];
-                        return NotesCardMaker(
-                          state: state,
-                          event: event,
-                          name: current.gym?.name ?? "??",
-                          startTime: current.date ?? "?",
-                          description: current.description ?? "?",
-                          day: current.date ?? "?",
-                          gymWithTags: current,
-                        );
-                      },
+              child: state.listOfGymWithTags.isEmpty
+                  ? const NoActivitiesEnrolled()
+                  : CustomScrollView(
+                      slivers: [
+                        SliverToBoxAdapter(child: SizedBox(height: 5.h)),
+                        SliverPadding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          sliver: SliverList.builder(
+                            itemCount: state.listOfGymWithTags.length,
+                            itemBuilder: (context, index) {
+                              final current = state.listOfGymWithTags[index];
+                              return NotesCardMaker(
+                                state: state,
+                                event: event,
+                                name: current.gym?.name ?? "??",
+                                startTime: current.date ?? "?",
+                                description: current.description ?? "?",
+                                day: current.date ?? "?",
+                                gymWithTags: current,
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
             ),
     );
   }

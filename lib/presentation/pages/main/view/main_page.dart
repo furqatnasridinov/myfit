@@ -21,14 +21,17 @@ class _BlogScreen extends ConsumerState<MainScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref.read(mapProvider.notifier).getUserLocation();
       ref.read(mainProvider.notifier)
         ..getAdvantages(context)
         ..getSubscribtions(context)
-        ..getComments(context)
-        ..getGymsList(context).then(
-          (value) => ref.read(mainProvider.notifier).getAllMarkers(),
-        );
+        ..getComments(context);
+      ref.read(mainProvider.notifier).getGymsList(context).then((value) {
+        ref.read(mainProvider.notifier).getUniqueGymLocations();
+        ref.read(mapProvider.notifier).getUserLocation().then((value) {
+          ref.read(mapProvider.notifier).getYandexMapImageWithAllMarkers(
+              context, ref.watch(mainProvider).latlongsYandexApi);
+        });
+      });
     });
   }
 
@@ -37,6 +40,7 @@ class _BlogScreen extends ConsumerState<MainScreen> {
     final state = ref.watch(mainProvider);
     final event = ref.read(mainProvider.notifier);
     final mapState = ref.watch(mapProvider);
+    //debugPrint("///  ${state.latlongsYandexApi}");
     // mapEvent.removePopUp();
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,

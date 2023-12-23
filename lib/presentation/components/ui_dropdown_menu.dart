@@ -38,6 +38,8 @@ class UiDropDownMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
+      //padding: EdgeInsets.zero,
+
       elevation: 0,
       color: Colors.white,
       offset: customOffset != null
@@ -45,18 +47,18 @@ class UiDropDownMenu extends StatelessWidget {
           : const Offset(0, -10),
       onOpened: onOpenedAction,
       onCanceled: onClosedAction,
-      constraints: BoxConstraints(maxWidth: 255.w),
+      constraints: BoxConstraints(maxWidth: maxWidth!),
       shape: OutlineInputBorder(
         borderSide: const BorderSide(color: Color.fromRGBO(119, 170, 249, 1)),
         borderRadius: BorderRadius.only(
-          bottomLeft: const Radius.circular(16.0),
-          bottomRight: const Radius.circular(16.0),
+          bottomLeft: Radius.circular(16.r),
+          bottomRight: Radius.circular(16.r),
           topLeft: leftCornerShape == true
-              ? const Radius.circular(4.0)
-              : const Radius.circular(16.0),
+              ? Radius.circular(4.r)
+              : Radius.circular(16.r),
           topRight: leftCornerShape == true
-              ? const Radius.circular(16.0)
-              : const Radius.circular(4.0),
+              ? Radius.circular(16.r)
+              : Radius.circular(4.r),
         ),
       ),
       //color: Colors.white,

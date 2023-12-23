@@ -7,7 +7,7 @@ class GymActiveListResponse {
   GymActiveListResponse.fromJson(Map<String, dynamic> json) {
     operationResult = json['operationResult'];
     bodyData = json['object'] != null
-        ? new BodyData.fromJson(json['object'])
+        ? BodyData.fromJson(json['object'])
         : null;
   }
 }
@@ -23,19 +23,19 @@ class BodyData {
     if (json['POOL'] != null) {
       pOOL = <POOL>[];
       json['POOL'].forEach((v) {
-        pOOL!.add(new POOL.fromJson(v));
+        pOOL!.add(POOL.fromJson(v));
       });
     }
     if (json['GYM'] != null) {
       gYM = <GYM>[];
       json['GYM'].forEach((v) {
-        gYM!.add(new GYM.fromJson(v));
+        gYM!.add(GYM.fromJson(v));
       });
     }
     if (json['MASSAGE'] != null) {
       mASSAGE = <MASSAGE>[];
       json['MASSAGE'].forEach((v) {
-        mASSAGE!.add(new MASSAGE.fromJson(v));
+        mASSAGE!.add(MASSAGE.fromJson(v));
       });
     }
   }

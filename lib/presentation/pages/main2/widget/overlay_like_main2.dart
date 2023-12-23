@@ -1,5 +1,5 @@
-import 'package:activity/application/schedule/schedule_notifier.dart';
-import 'package:activity/application/schedule/schedule_state.dart';
+import 'package:activity/application/main2/main2_notifier.dart';
+import 'package:activity/application/main2/main2_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/inter_text.dart';
@@ -10,8 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class OverlayLikeMain2 extends StatefulWidget {
-  final ScheduleState state;
-  final ScheduleNotifier event;
+final Main2State state;
+  final Main2Notifier event;
   final TextEditingController controller;
   const OverlayLikeMain2({
     super.key,
@@ -38,7 +38,6 @@ class _OverlayLikeMain2State extends State<OverlayLikeMain2> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getSizeAndOffsets();

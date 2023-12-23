@@ -30,6 +30,7 @@ mixin _$MainState {
   List<EachMarkersModel> get listOfMarkers =>
       throw _privateConstructorUsedError;
   double? get commentsContainerHeight => throw _privateConstructorUsedError;
+  String get latlongsYandexApi => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $MainStateCopyWith<MainState> get copyWith =>
@@ -52,7 +53,8 @@ abstract class $MainStateCopyWith<$Res> {
       bool commentsAutoPlayMode,
       List<ActivityNearClient> activitiesNearClient,
       List<EachMarkersModel> listOfMarkers,
-      double? commentsContainerHeight});
+      double? commentsContainerHeight,
+      String latlongsYandexApi});
 }
 
 /// @nodoc
@@ -79,6 +81,7 @@ class _$MainStateCopyWithImpl<$Res, $Val extends MainState>
     Object? activitiesNearClient = null,
     Object? listOfMarkers = null,
     Object? commentsContainerHeight = freezed,
+    Object? latlongsYandexApi = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -125,6 +128,10 @@ class _$MainStateCopyWithImpl<$Res, $Val extends MainState>
           ? _value.commentsContainerHeight
           : commentsContainerHeight // ignore: cast_nullable_to_non_nullable
               as double?,
+      latlongsYandexApi: null == latlongsYandexApi
+          ? _value.latlongsYandexApi
+          : latlongsYandexApi // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -148,7 +155,8 @@ abstract class _$$MainStateImplCopyWith<$Res>
       bool commentsAutoPlayMode,
       List<ActivityNearClient> activitiesNearClient,
       List<EachMarkersModel> listOfMarkers,
-      double? commentsContainerHeight});
+      double? commentsContainerHeight,
+      String latlongsYandexApi});
 }
 
 /// @nodoc
@@ -173,6 +181,7 @@ class __$$MainStateImplCopyWithImpl<$Res>
     Object? activitiesNearClient = null,
     Object? listOfMarkers = null,
     Object? commentsContainerHeight = freezed,
+    Object? latlongsYandexApi = null,
   }) {
     return _then(_$MainStateImpl(
       isloading: null == isloading
@@ -219,6 +228,10 @@ class __$$MainStateImplCopyWithImpl<$Res>
           ? _value.commentsContainerHeight
           : commentsContainerHeight // ignore: cast_nullable_to_non_nullable
               as double?,
+      latlongsYandexApi: null == latlongsYandexApi
+          ? _value.latlongsYandexApi
+          : latlongsYandexApi // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -237,7 +250,8 @@ class _$MainStateImpl extends _MainState {
       this.commentsAutoPlayMode = true,
       final List<ActivityNearClient> activitiesNearClient = const [],
       final List<EachMarkersModel> listOfMarkers = const [],
-      this.commentsContainerHeight = 0})
+      this.commentsContainerHeight = 0,
+      this.latlongsYandexApi = ""})
       : _activitiesNearClient = activitiesNearClient,
         _listOfMarkers = listOfMarkers,
         super._();
@@ -288,10 +302,13 @@ class _$MainStateImpl extends _MainState {
   @override
   @JsonKey()
   final double? commentsContainerHeight;
+  @override
+  @JsonKey()
+  final String latlongsYandexApi;
 
   @override
   String toString() {
-    return 'MainState(isloading: $isloading, advantages: $advantages, subscribtions: $subscribtions, comments: $comments, activeStepState: $activeStepState, advantagesAutoPlayMode: $advantagesAutoPlayMode, commentActiveStepper: $commentActiveStepper, commentsAutoPlayMode: $commentsAutoPlayMode, activitiesNearClient: $activitiesNearClient, listOfMarkers: $listOfMarkers, commentsContainerHeight: $commentsContainerHeight)';
+    return 'MainState(isloading: $isloading, advantages: $advantages, subscribtions: $subscribtions, comments: $comments, activeStepState: $activeStepState, advantagesAutoPlayMode: $advantagesAutoPlayMode, commentActiveStepper: $commentActiveStepper, commentsAutoPlayMode: $commentsAutoPlayMode, activitiesNearClient: $activitiesNearClient, listOfMarkers: $listOfMarkers, commentsContainerHeight: $commentsContainerHeight, latlongsYandexApi: $latlongsYandexApi)';
   }
 
   @override
@@ -321,7 +338,9 @@ class _$MainStateImpl extends _MainState {
                 .equals(other._listOfMarkers, _listOfMarkers) &&
             (identical(
                     other.commentsContainerHeight, commentsContainerHeight) ||
-                other.commentsContainerHeight == commentsContainerHeight));
+                other.commentsContainerHeight == commentsContainerHeight) &&
+            (identical(other.latlongsYandexApi, latlongsYandexApi) ||
+                other.latlongsYandexApi == latlongsYandexApi));
   }
 
   @override
@@ -337,7 +356,8 @@ class _$MainStateImpl extends _MainState {
       commentsAutoPlayMode,
       const DeepCollectionEquality().hash(_activitiesNearClient),
       const DeepCollectionEquality().hash(_listOfMarkers),
-      commentsContainerHeight);
+      commentsContainerHeight,
+      latlongsYandexApi);
 
   @JsonKey(ignore: true)
   @override
@@ -358,7 +378,8 @@ abstract class _MainState extends MainState {
       final bool commentsAutoPlayMode,
       final List<ActivityNearClient> activitiesNearClient,
       final List<EachMarkersModel> listOfMarkers,
-      final double? commentsContainerHeight}) = _$MainStateImpl;
+      final double? commentsContainerHeight,
+      final String latlongsYandexApi}) = _$MainStateImpl;
   const _MainState._() : super._();
 
   @override
@@ -383,6 +404,8 @@ abstract class _MainState extends MainState {
   List<EachMarkersModel> get listOfMarkers;
   @override
   double? get commentsContainerHeight;
+  @override
+  String get latlongsYandexApi;
   @override
   @JsonKey(ignore: true)
   _$$MainStateImplCopyWith<_$MainStateImpl> get copyWith =>
