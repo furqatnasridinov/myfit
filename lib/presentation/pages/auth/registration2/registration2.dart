@@ -27,7 +27,7 @@ class Registration2Screen extends ConsumerStatefulWidget {
 }
 
 class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
-  TextEditingController controller = TextEditingController();
+  late TextEditingController controller ;
 
   final String predefinedCode = '1234';
   bool isCodeError = false;
@@ -82,14 +82,18 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
   @override
   void dispose() {
     _timer?.cancel();
+    controller.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
+    controller = TextEditingController();
     startTimer();
   }
+
+  
 
   @override
   Widget build(BuildContext context) {

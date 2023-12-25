@@ -17,6 +17,10 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$ActivityState {
   bool get isloading => throw _privateConstructorUsedError;
+  bool get isGymLoading => throw _privateConstructorUsedError;
+  bool get isActivitiesListLoading => throw _privateConstructorUsedError;
+  bool get isPhotosLoading => throw _privateConstructorUsedError;
+  bool get isSchedulesLoading => throw _privateConstructorUsedError;
   GymResponse? get gym => throw _privateConstructorUsedError;
   List<String>? get activities => throw _privateConstructorUsedError;
   String? get selectedActivity => throw _privateConstructorUsedError;
@@ -47,6 +51,10 @@ abstract class $ActivityStateCopyWith<$Res> {
   @useResult
   $Res call(
       {bool isloading,
+      bool isGymLoading,
+      bool isActivitiesListLoading,
+      bool isPhotosLoading,
+      bool isSchedulesLoading,
       GymResponse? gym,
       List<String>? activities,
       String? selectedActivity,
@@ -76,6 +84,10 @@ class _$ActivityStateCopyWithImpl<$Res, $Val extends ActivityState>
   @override
   $Res call({
     Object? isloading = null,
+    Object? isGymLoading = null,
+    Object? isActivitiesListLoading = null,
+    Object? isPhotosLoading = null,
+    Object? isSchedulesLoading = null,
     Object? gym = freezed,
     Object? activities = freezed,
     Object? selectedActivity = freezed,
@@ -94,6 +106,22 @@ class _$ActivityStateCopyWithImpl<$Res, $Val extends ActivityState>
       isloading: null == isloading
           ? _value.isloading
           : isloading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isGymLoading: null == isGymLoading
+          ? _value.isGymLoading
+          : isGymLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isActivitiesListLoading: null == isActivitiesListLoading
+          ? _value.isActivitiesListLoading
+          : isActivitiesListLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isPhotosLoading: null == isPhotosLoading
+          ? _value.isPhotosLoading
+          : isPhotosLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isSchedulesLoading: null == isSchedulesLoading
+          ? _value.isSchedulesLoading
+          : isSchedulesLoading // ignore: cast_nullable_to_non_nullable
               as bool,
       gym: freezed == gym
           ? _value.gym
@@ -161,6 +189,10 @@ abstract class _$$ActivityStateImplCopyWith<$Res>
   @useResult
   $Res call(
       {bool isloading,
+      bool isGymLoading,
+      bool isActivitiesListLoading,
+      bool isPhotosLoading,
+      bool isSchedulesLoading,
       GymResponse? gym,
       List<String>? activities,
       String? selectedActivity,
@@ -188,6 +220,10 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? isloading = null,
+    Object? isGymLoading = null,
+    Object? isActivitiesListLoading = null,
+    Object? isPhotosLoading = null,
+    Object? isSchedulesLoading = null,
     Object? gym = freezed,
     Object? activities = freezed,
     Object? selectedActivity = freezed,
@@ -206,6 +242,22 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
       isloading: null == isloading
           ? _value.isloading
           : isloading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isGymLoading: null == isGymLoading
+          ? _value.isGymLoading
+          : isGymLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isActivitiesListLoading: null == isActivitiesListLoading
+          ? _value.isActivitiesListLoading
+          : isActivitiesListLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isPhotosLoading: null == isPhotosLoading
+          ? _value.isPhotosLoading
+          : isPhotosLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isSchedulesLoading: null == isSchedulesLoading
+          ? _value.isSchedulesLoading
+          : isSchedulesLoading // ignore: cast_nullable_to_non_nullable
               as bool,
       gym: freezed == gym
           ? _value.gym
@@ -268,6 +320,10 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
 class _$ActivityStateImpl extends _ActivityState {
   const _$ActivityStateImpl(
       {this.isloading = false,
+      this.isGymLoading = false,
+      this.isActivitiesListLoading = false,
+      this.isPhotosLoading = false,
+      this.isSchedulesLoading = false,
       this.gym = null,
       final List<String>? activities = const [],
       this.selectedActivity = "",
@@ -294,6 +350,18 @@ class _$ActivityStateImpl extends _ActivityState {
   @override
   @JsonKey()
   final bool isloading;
+  @override
+  @JsonKey()
+  final bool isGymLoading;
+  @override
+  @JsonKey()
+  final bool isActivitiesListLoading;
+  @override
+  @JsonKey()
+  final bool isPhotosLoading;
+  @override
+  @JsonKey()
+  final bool isSchedulesLoading;
   @override
   @JsonKey()
   final GymResponse? gym;
@@ -391,7 +459,7 @@ class _$ActivityStateImpl extends _ActivityState {
 
   @override
   String toString() {
-    return 'ActivityState(isloading: $isloading, gym: $gym, activities: $activities, selectedActivity: $selectedActivity, photos: $photos, originalDates: $originalDates, scheddules: $scheddules, availableFormattedDates: $availableFormattedDates, listOfSchedules: $listOfSchedules, defaultDate: $defaultDate, selectedOriginalDate: $selectedOriginalDate, listOf15CalendarDaysFromNow: $listOf15CalendarDaysFromNow, listOf15OriginalDaysFromNow: $listOf15OriginalDaysFromNow, selectedFormattedDay: $selectedFormattedDay)';
+    return 'ActivityState(isloading: $isloading, isGymLoading: $isGymLoading, isActivitiesListLoading: $isActivitiesListLoading, isPhotosLoading: $isPhotosLoading, isSchedulesLoading: $isSchedulesLoading, gym: $gym, activities: $activities, selectedActivity: $selectedActivity, photos: $photos, originalDates: $originalDates, scheddules: $scheddules, availableFormattedDates: $availableFormattedDates, listOfSchedules: $listOfSchedules, defaultDate: $defaultDate, selectedOriginalDate: $selectedOriginalDate, listOf15CalendarDaysFromNow: $listOf15CalendarDaysFromNow, listOf15OriginalDaysFromNow: $listOf15OriginalDaysFromNow, selectedFormattedDay: $selectedFormattedDay)';
   }
 
   @override
@@ -401,6 +469,15 @@ class _$ActivityStateImpl extends _ActivityState {
             other is _$ActivityStateImpl &&
             (identical(other.isloading, isloading) ||
                 other.isloading == isloading) &&
+            (identical(other.isGymLoading, isGymLoading) ||
+                other.isGymLoading == isGymLoading) &&
+            (identical(
+                    other.isActivitiesListLoading, isActivitiesListLoading) ||
+                other.isActivitiesListLoading == isActivitiesListLoading) &&
+            (identical(other.isPhotosLoading, isPhotosLoading) ||
+                other.isPhotosLoading == isPhotosLoading) &&
+            (identical(other.isSchedulesLoading, isSchedulesLoading) ||
+                other.isSchedulesLoading == isSchedulesLoading) &&
             (identical(other.gym, gym) || other.gym == gym) &&
             const DeepCollectionEquality()
                 .equals(other._activities, _activities) &&
@@ -433,6 +510,10 @@ class _$ActivityStateImpl extends _ActivityState {
   int get hashCode => Object.hash(
       runtimeType,
       isloading,
+      isGymLoading,
+      isActivitiesListLoading,
+      isPhotosLoading,
+      isSchedulesLoading,
       gym,
       const DeepCollectionEquality().hash(_activities),
       selectedActivity,
@@ -457,6 +538,10 @@ class _$ActivityStateImpl extends _ActivityState {
 abstract class _ActivityState extends ActivityState {
   const factory _ActivityState(
       {final bool isloading,
+      final bool isGymLoading,
+      final bool isActivitiesListLoading,
+      final bool isPhotosLoading,
+      final bool isSchedulesLoading,
       final GymResponse? gym,
       final List<String>? activities,
       final String? selectedActivity,
@@ -474,6 +559,14 @@ abstract class _ActivityState extends ActivityState {
 
   @override
   bool get isloading;
+  @override
+  bool get isGymLoading;
+  @override
+  bool get isActivitiesListLoading;
+  @override
+  bool get isPhotosLoading;
+  @override
+  bool get isSchedulesLoading;
   @override
   GymResponse? get gym;
   @override

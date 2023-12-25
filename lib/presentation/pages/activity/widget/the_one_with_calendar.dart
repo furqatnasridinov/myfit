@@ -167,7 +167,9 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
               ? CustomCard(
                   width: double.maxFinite,
                   child: CustomText(
-                    text: "В ближайшее время в заведении нету активностей",
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                    text: "В ближайшее время в заведении нет доступных занятий",
                     textAlign: TextAlign.center,
                   ),
                 )

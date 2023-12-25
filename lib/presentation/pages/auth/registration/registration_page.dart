@@ -62,10 +62,10 @@ class RegistrationScreen extends StatelessWidget {
                                     insetPadding:
                                         REdgeInsets.symmetric(horizontal: 16.w),
                                     child: CustomCard(
-                                        height: 444.h,
                                         borderColor: Colors.transparent,
                                         width: double.maxFinite,
                                         child: Column(
+                                          mainAxisSize: MainAxisSize.min,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
@@ -105,6 +105,7 @@ class RegistrationScreen extends StatelessWidget {
                                               fontSize: 14.sp,
                                               fontWeight: FontWeight.w500,
                                               height: 40.h,
+                                              buttonColor: Colors.white,
                                               onPressed: () {
                                                 context.popRoute();
                                               },

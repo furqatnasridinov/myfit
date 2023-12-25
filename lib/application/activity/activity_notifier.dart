@@ -16,60 +16,49 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       : super(const ActivityState());
   final ActivityRepositoryInterface _activityRepositoryInterface;
 
-  Future<void> getInitData(BuildContext context, int gymId) async {
-    getGymInfo(gymId: gymId).then((value) {
-      getActivitiesList(gymId: gymId).then((value) {
-        determineDefaultActivity().then((value) {
-          getGymPhotos(state.selectedActivity, gymId).then((value) => {
-                getSchedulesDates(context, id: gymId).then((value) {
-                  getListOf15CalendarDatesFromToday().then((value) {
-                    determineDefaultOriginalDate().then((value) => {
-                          determineDefaultFormattedDate().then((value) {
-                            getSchedulesList(state.selectedOriginalDate);
-                          })
-                        });
-                  });
-                })
-              });
-        });
-      });
-    });
+  Future<void> getGymInfo(BuildContext context, {required int gymId}) async {
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      state = state.copyWith(isGymLoading: true);
+      final response =
+          await _activityRepositoryInterface.getInfoAboutGym(id: gymId);
+      response.when(
+        success: (data) {
+          state = state.copyWith(gym: data, isGymLoading: false);
+        },
+        failure: (error, statusCode) {
+          state = state.copyWith(isGymLoading: false);
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
+        },
+      );
+    }else{
+      AppHelpers.showCheckTopSnackBar(context);
+    }
   }
 
-  Future<void> getGymInfo({required int gymId}) async {
-    state = state.copyWith(isloading: true);
-    final response =
-        await _activityRepositoryInterface.getInfoAboutGym(id: gymId);
-    response.when(
-      success: (data) {
-        state = state.copyWith(gym: data);
-      },
-      failure: (error, statusCode) {
-        //print("getGymInfo notifier failure >> $error");
-      },
-    );
-    state = state.copyWith(isloading: false);
-  }
-
-  Future<void> getActivitiesList({required int gymId}) async {
+  Future<void> getActivitiesList(BuildContext context,
+      {required int gymId}) async {
     await Future.delayed(const Duration(milliseconds: 10));
-    state = state.copyWith(isloading: true);
-    final response =
-        await _activityRepositoryInterface.getActivities(gymId: gymId);
-    response.when(
-      success: (data) {
-        //print("notifier get activitis success");
-        //print("getActivitiesList notifier data[object] ${data["object"]}");
-        state = state.copyWith(activities: data.object);
-        state = state.copyWith(isloading: false);
-      },
-      failure: (error, statusCode) {
-        //print("notifier get activitis failure");
-
-        //print("getActivitiesList notifier failure>> $error");
-        state = state.copyWith(isloading: false);
-      },
-    );
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      state = state.copyWith(isActivitiesListLoading: true);
+      final response =
+          await _activityRepositoryInterface.getActivities(gymId: gymId);
+      response.when(
+        success: (data) {
+          state = state.copyWith(
+            activities: data.object,
+            isActivitiesListLoading: false,
+          );
+        },
+        failure: (error, statusCode) {
+          state = state.copyWith(isActivitiesListLoading: false);
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
+        },
+      );
+    }else{
+      AppHelpers.showCheckTopSnackBar(context);
+    }
   }
 
   Future<void> determineDefaultActivity() async {
@@ -79,23 +68,33 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
-  Future<void> getGymPhotos(String? lessonType, int gymId) async {
-    final request = GetGymPhotosRequest(lessonType: lessonType);
-    final response = await _activityRepositoryInterface.getGymPhotos(
-      request: request,
-      gymId: gymId,
-    );
-    response.when(
-      success: (data) {
-        final list = data.object;
-        for (var i = 0; i < list!.length; i++) {
-          List<String> photoUrls = [];
-          photoUrls.add(list[i].pictureUrl!);
-          state = state.copyWith(photos: photoUrls);
-        }
-      },
-      failure: (error, statusCode) {},
-    );
+  Future<void> getGymPhotos(
+      BuildContext context, String? lessonType, int gymId) async {
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      state = state.copyWith(isPhotosLoading: true);
+      final request = GetGymPhotosRequest(lessonType: lessonType);
+      final response = await _activityRepositoryInterface.getGymPhotos(
+        request: request,
+        gymId: gymId,
+      );
+      response.when(
+        success: (data) {
+          final list = data.object;
+          for (var i = 0; i < list!.length; i++) {
+            List<String> photoUrls = [];
+            photoUrls.add(list[i].pictureUrl!);
+            state = state.copyWith(photos: photoUrls, isPhotosLoading: false);
+          }
+        },
+        failure: (error, statusCode) {
+          state = state.copyWith(isPhotosLoading: false);
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
+        },
+      );
+    }else{
+      AppHelpers.showCheckTopSnackBar(context);
+    }
   }
 
   Future<void> determineDefaultOriginalDate() async {
@@ -245,6 +244,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   }) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
+      state = state.copyWith(isSchedulesLoading: true);
       final response = await _activityRepositoryInterface.getSchedules(id: id);
       response.when(
         success: (data) {
@@ -323,13 +323,13 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
             }).toList();
           }
 
-          state = state.copyWith(availableFormattedDates: formattedDates());
+          state = state.copyWith(availableFormattedDates: formattedDates(),isSchedulesLoading: false);
         },
         failure: (error, statusCode) {
-          //print("(notifier failure)");
+          state = state.copyWith(isSchedulesLoading: false);
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
         },
       );
-      // ignore: duplicate_ignore
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
@@ -406,16 +406,16 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
- Future<void> launchTelegram() async {
-  const url = "https://t.me/furqatnasridinov";
-  final uri = Uri.parse(url);
+  Future<void> launchTelegram() async {
+    const url = "https://t.me/furqatnasridinov";
+    final uri = Uri.parse(url);
 
-  if (await canLaunchUrl(uri)) {
-    await launchUrl(uri); // forceWebView is true now
-  } else {
-    throw 'Could not launch $url';
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri); // forceWebView is true now
+    } else {
+      throw 'Could not launch $url';
+    }
   }
-}
 
   String? convertToOriginalDate(String dateString) {
     final parts = dateString.split(' ');

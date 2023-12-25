@@ -11,8 +11,6 @@ class Main2Notifier extends StateNotifier<Main2State> {
   Main2Notifier(this._scheduleRepositoryInterface) : super(const Main2State());
   final ScheduleRepositoryInterface _scheduleRepositoryInterface;
 
-
-
   String dateTimeNowToString(DateTime now) {
     // Декабр 16
     var month = now.month.toString();
@@ -248,33 +246,41 @@ class Main2Notifier extends StateNotifier<Main2State> {
   }
 
   Future<void> getNearestLesson(BuildContext context) async {
-    state = state.copyWith(isloading: true);
     final connect = await AppConnectivity().connectivity();
     if (connect) {
+      state = state.copyWith(nearestLessonIsLoading: true);
       final response = await _scheduleRepositoryInterface.getNearestLesson();
       response.when(
         success: (data) {
           if (data.bodyData != null) {
-            //determineWhenActivityStarts("2023-12-31@13:59");
             determineWhenActivityStarts(data.bodyData!.date!);
-            state = state.copyWith(nearestLesson: data);
+            state = state.copyWith(
+              nearestLesson: data,
+              nearestLessonIsLoading: false,
+            );
           }
           if (data.bodyData == null) {
-            state = state.copyWith(nearestLesson: null);
+            state = state.copyWith(
+              nearestLesson: null,
+              nearestLessonIsLoading: false,
+            );
           }
         },
-        failure: (error, statusCode) {},
+        failure: (error, statusCode) {
+          state = state.copyWith(nearestLessonIsLoading: false);
+          AppHelpers.showErrorSnack(context, error.toString());
+        },
       );
     } else {
       // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
-    state = state.copyWith(isloading: false);
   }
 
   Future<void> getUserStatsMonth(BuildContext context) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
+      state = state.copyWith(statsMonthIsloading: true);
       final response = await _scheduleRepositoryInterface.getUserStatsMonth();
       response.when(
         success: (data) {
@@ -283,11 +289,18 @@ class Main2Notifier extends StateNotifier<Main2State> {
           list?.sort(
             (a, b) => a.count!.compareTo(b.count!),
           );
-          state = state.copyWith(statsForMonth: list!.reversed.toList());
+          state = state.copyWith(
+            statsMonthIsloading: false,
+            statsForMonth: list!.reversed.toList(),
+          );
         },
-        failure: (error, statusCode) {},
+        failure: (error, statusCode) {
+          state = state.copyWith(statsMonthIsloading: false);
+          AppHelpers.showErrorSnack(context, error.toString());
+        },
       );
     } else {
+      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
@@ -353,5 +366,4 @@ class Main2Notifier extends StateNotifier<Main2State> {
       return Colors.grey.shade400;
     }
   }
-
 }

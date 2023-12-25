@@ -23,10 +23,10 @@ class ScheduleRepository implements ScheduleRepositoryInterface {
       );
     } catch (e) {
       //throw e;
-       return ApiResult.failure(
+      return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      ); 
+      );
     }
   }
 
@@ -99,11 +99,10 @@ class ScheduleRepository implements ScheduleRepositoryInterface {
         data: response.data,
       );
     } catch (e) {
-      throw e;
-      /* return ApiResult.failure(
+      return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      ); */
+      );
     }
   }
 

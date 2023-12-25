@@ -23,10 +23,11 @@ class Registration1Screen extends ConsumerStatefulWidget {
 }
 
 class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
-  TextEditingController phoneController = TextEditingController();
+  late TextEditingController phoneController;
 
   @override
   void initState() {
+    phoneController = TextEditingController();
     super.initState();
     phoneController.addListener(() {
       String currentText = phoneController.text;
@@ -48,6 +49,12 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
         }
       }
     });
+  }
+
+  @override
+  void dispose() {
+    phoneController.dispose();
+    super.dispose();
   }
 
   String applyMask(String input, String mask) {
@@ -74,9 +81,9 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
     final width = MediaQuery.of(context).size.width;
     final event = ref.read(registrationProvider.notifier);
     final state = ref.watch(registrationProvider);
-    debugPrint("phone number ${state.phoneNumber}");
+/*     debugPrint("phone number ${state.phoneNumber}");
     debugPrint("phone lenth ${state.phoneNumber.length}");
-    debugPrint("phone isvalid ${state.isValidPhone}");
+    debugPrint("phone isvalid ${state.isValidPhone}"); */
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: Stack(
@@ -212,10 +219,10 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                             insetPadding:
                                 EdgeInsets.symmetric(horizontal: 16.w),
                             child: CustomCard(
-                                height: 270.h,
                                 borderColor: Colors.transparent,
                                 width: double.maxFinite,
                                 child: Column(
+                                  mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     CustomText(

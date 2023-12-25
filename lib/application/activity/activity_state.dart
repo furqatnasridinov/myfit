@@ -8,6 +8,10 @@ part 'activity_state.freezed.dart';
 class ActivityState with _$ActivityState {
   const factory ActivityState({
     @Default(false) bool isloading,
+    @Default(false) bool isGymLoading,
+    @Default(false) bool isActivitiesListLoading,
+    @Default(false) bool isPhotosLoading,
+    @Default(false) bool isSchedulesLoading,
     @Default(null) GymResponse? gym,
     @Default([]) List<String>? activities,
     @Default("") String? selectedActivity,

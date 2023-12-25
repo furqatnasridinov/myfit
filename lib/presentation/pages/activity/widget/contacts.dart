@@ -26,7 +26,7 @@ class Contacts extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              InkWell(
+              GestureDetector(
                 onTap: () {
                   event.callTo("+79650292555");
                 },
@@ -59,7 +59,7 @@ class Contacts extends StatelessWidget {
                   ),
                 ),
               ),
-              InkWell(
+              GestureDetector(
                 onTap: () {
                   event.launchTelegram();
                 },

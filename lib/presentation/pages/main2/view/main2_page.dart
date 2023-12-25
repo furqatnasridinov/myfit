@@ -67,101 +67,97 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
           event: event,
           controller: controller,
         ),
-        body: state.isloading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : SafeArea(
-                bottom: false,
-                child: Stack(
+        body: SafeArea(
+          bottom: false,
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SingleChildScrollView(
-                      keyboardDismissBehavior:
-                          ScrollViewKeyboardDismissBehavior.onDrag,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          10.verticalSpace,
-                          Padding(
-                            padding: EdgeInsets.only(left: 26.w),
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: CustomText(
-                                text: LocalStorage.getUserName().isNotEmpty
-                                    ? "Привет, ${LocalStorage.getUserName()}!"
-                                    : 'Привет, George!',
-                                fontWeight: FontWeight.w600,
-                                fontSize: 20.sp,
-                              ),
-                            ),
-                          ),
-                          10.verticalSpace,
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16.w),
-                            child: FirstTwoCards(
-                              state: state,
-                              event: event,
-                            ),
-                          ),
-                          32.verticalSpace,
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16.w),
-                            child: state.nearestLesson == null
-                                ? const PlaceholderComingActivity()
-                                : ComingActivity(
-                                    state: state,
-                                    event: event,
-                                  ),
-                          ),
-                          32.verticalSpace,
-                          Padding(
-                            padding: EdgeInsets.only(left: 25.w),
-                            child: CustomText(
-                              text: 'Бассейны поблизости',
-                              fontSize: 20.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          10.verticalSpace,
-                          Consumer(builder: (context, ref, child) {
-                            final mapState = ref.watch(mapProvider);
-                            return Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16.w),
-                              child: mapState.mapScreenShot == null
-                                  ? const Main2MapPlaceHolder()
-                                  : Main2Map(
-                                      child: Image.memory(
-                                        mapState.mapScreenShot ??
-                                            Uint8List(100),
-                                        fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return const Main2MapPlaceHolder();
-                                        },
-                                      ),
-                                    ),
-                            );
-                          }),
-                          32.verticalSpace,
-                          const DecoratedTextOne(),
-                        ],
+                    10.verticalSpace,
+                    Padding(
+                      padding: EdgeInsets.only(left: 26.w),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: CustomText(
+                          text: LocalStorage.getUserName().isNotEmpty
+                              ? "Привет, ${LocalStorage.getUserName()}!"
+                              : 'Привет, George!',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 20.sp,
+                        ),
                       ),
                     ),
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      child: state.isSearchbarOpened
-                          ? OverlayLikeMain2(
-                              state: state,
-                              event: event,
-                              controller: controller,
-                            )
-                          : const SizedBox.shrink(),
+                    10.verticalSpace,
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: FirstTwoCards(
+                        state: state,
+                        event: event,
+                      ),
                     ),
+                    32.verticalSpace,
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child:/*  state.nearestLessonIsLoading
+                          ? const NearestLessonShimmer()
+                          : */ state.nearestLesson == null
+                              ? const PlaceholderComingActivity()
+                              : ComingActivity(
+                                  state: state,
+                                  event: event,
+                                ),
+                    ),
+                    32.verticalSpace,
+                    Padding(
+                      padding: EdgeInsets.only(left: 25.w),
+                      child: CustomText(
+                        text: 'Бассейны поблизости',
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    10.verticalSpace,
+                    Consumer(builder: (context, ref, child) {
+                      final mapState = ref.watch(mapProvider);
+                      return Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        child: mapState.mapScreenShot == null
+                            ? const Main2MapPlaceHolder()
+                            : Main2Map(
+                                child: Image.memory(
+                                  mapState.mapScreenShot ?? Uint8List(100),
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return const Main2MapPlaceHolder();
+                                  },
+                                ),
+                              ),
+                      );
+                    }),
+                    32.verticalSpace,
+                    const DecoratedTextOne(),
                   ],
                 ),
               ),
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: state.isSearchbarOpened
+                    ? OverlayLikeMain2(
+                        state: state,
+                        event: event,
+                        controller: controller,
+                      )
+                    : const SizedBox.shrink(),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -72,7 +72,7 @@ class TheOneWithChips extends StatelessWidget {
                           onSelected: (selected)  {
                             if (selected) {
                               event.setSingleSelectedActivity(activity);
-                              event.getGymPhotos(activity, gymId);
+                              event.getGymPhotos(context, activity, gymId);
                               event
                                   .getSchedulesDates(context, id: gymId)
                                   .then((value) async {

@@ -40,21 +40,8 @@ class MapNotifier extends StateNotifier<MapState> {
       } catch (e) {
         state = state.copyWith(locationServiceIsNotEnabled: true);
       }
-
-      // state = state.copyWith(isloading: false);
     }
   }
-
-  /* Future<void> checkLocationService() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (permission == LocationPermission.always ||
-        permission == LocationPermission.whileInUse) {
-      if (!serviceEnabled) {
-        state = state.copyWith(locationServiceIsNotEnabled: true);
-      }
-    }
-  } */
 
   Future<void> setUserPosition() async {
     state = state.copyWith(isloading: true);
@@ -541,6 +528,7 @@ class MapNotifier extends StateNotifier<MapState> {
               address: state.activeMarker?.address ?? "??",
               onTap: () {
                 entry!.remove();
+                showLocationButton();
                 context.router.push(
                   ActivityRoute(gymId: state.activeMarker?.id ?? 0),
                 );
@@ -655,6 +643,27 @@ class MapNotifier extends StateNotifier<MapState> {
       // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
+  }
+
+  void locationButtonFunction(YandexMapController? mapController) async {
+    if (state.locationPermissionIsNOtGiven) {
+      await Geolocator.requestPermission();
+    }
+    if (!state.locationPermissionIsNOtGiven &&
+        state.locationServiceIsNotEnabled) {
+      await Geolocator.openLocationSettings();
+    }
+    mapController?.moveCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: Point(
+            latitude: state.userPosition!.latitude,
+            longitude: state.userPosition!.longitude,
+          ),
+        ),
+      ),
+      animation: const MapAnimation(duration: 1),
+    );
   }
 
   void openSearchBar() {

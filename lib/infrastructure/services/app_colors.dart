@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 class AppColors {
   static const Color backgroundColor = Color.fromRGBO(245, 249, 255, 1);
@@ -10,4 +10,5 @@ class AppColors {
   static const Color goldText = Color.fromRGBO(236, 191, 117, 1);
   static const Color fadedBlueBorder = Color.fromRGBO(212, 229, 255, 1);
   static const Color blueText = Color.fromRGBO(62, 134, 245, 1);
+  static  Color shimmerBase = Colors.grey.shade300;
 }

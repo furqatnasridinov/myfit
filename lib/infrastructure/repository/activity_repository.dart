@@ -8,7 +8,6 @@ import 'package:activity/infrastructure/models/response/get_gym_activities_respo
 import 'package:activity/infrastructure/models/response/get_gym_photos_response.dart';
 import 'package:activity/infrastructure/models/response/gym_response.dart';
 
-
 class ActivityRepository implements ActivityRepositoryInterface {
   @override
   Future<ApiResult<GymResponse>> getInfoAboutGym({required int id}) async {
@@ -35,7 +34,8 @@ class ActivityRepository implements ActivityRepositoryInterface {
       final response = await client.get("api/gym/$gymId/types");
       //print("respotitory response data ${response.data}");
       return ApiResult.success(
-          data: GetGymActivitiesResponse.fromJson(response.data));
+        data: GetGymActivitiesResponse.fromJson(response.data),
+      );
     } catch (e) {
       return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
@@ -59,10 +59,11 @@ class ActivityRepository implements ActivityRepositoryInterface {
         data: GetGymPhotosResponse.fromJson(response.data),
       );
     } catch (e) {
-      return ApiResult.failure(
+      throw e;
+      /* return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      );
+      ); */
     }
   }
 
@@ -99,10 +100,10 @@ class ActivityRepository implements ActivityRepositoryInterface {
       );
     } catch (e) {
       //throw e;
-       return ApiResult.failure(
+      return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      ); 
+      );
     }
   }
 }

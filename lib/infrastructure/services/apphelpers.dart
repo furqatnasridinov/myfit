@@ -25,6 +25,16 @@ class AppHelpers {
     );
   }
 
+  static showErrorSnack(BuildContext context, String text) {
+    return showTopSnackBar(
+      Overlay.of(context),
+      CustomSnackBar.error(
+        message: text,
+      ),
+    );
+  }
+
+
   static void showCustomModalBottomSheet({
     required BuildContext context,
     required EdgeInsets padding,

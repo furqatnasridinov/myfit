@@ -26,12 +26,13 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
         ref
             .read(activityProvider.notifier)
             .getGymInfo(
+              context,
               gymId: widget.gymId,
             )
             .then((value) {
           ref
               .read(activityProvider.notifier)
-              .getActivitiesList(gymId: widget.gymId)
+              .getActivitiesList(context, gymId: widget.gymId)
               .then(
                 (value) => ref
                     .read(activityProvider.notifier)
@@ -39,6 +40,7 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
                     .then(
                       (value) =>
                           ref.read(activityProvider.notifier).getGymPhotos(
+                                context,
                                 ref.watch(activityProvider).selectedActivity,
                                 widget.gymId,
                               ),
