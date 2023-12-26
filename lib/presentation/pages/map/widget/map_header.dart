@@ -221,7 +221,7 @@ class _MainHeaderState extends State<MapHeader> {
       // leading
       leading: textfieldFocusnode.hasFocus
           ? null
-          : InkWell(
+          : GestureDetector(
               onTap: () async {
                 widget.event.removePopUp();
                 if (widget.state.showMapOnly) {

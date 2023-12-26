@@ -1,14 +1,17 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/application/map/map_notifier.dart';
 import 'package:activity/application/map/map_state.dart';
 import 'package:activity/infrastructure/models/data/lessontype_with_gyms_inside.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/pages/map/widget/no_gyms_in_diapozone.dart';
 import 'package:activity/presentation/pages/map/widget/widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
@@ -166,7 +169,7 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                       children: [
                         SizedBox(
                           child: SvgPicture.asset(
-                            "assets/svg/boxing.svg",
+                            AppHelpers().getIconSvg(title),
                             height: 15.h,
                           ),
                         ),
@@ -220,45 +223,53 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                       : gymsList.length == 2
                           ? 100.h
                           : 150.h,
-                  child: ListView.builder(
-                      itemCount: gymsList.length,
-                      //shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return _listOfGymsBuilder(
-                          gymsList[index].name,
-                          gymsList[index].address,
-                          gymsList[index].distanceFromClient ?? 3469,
-                          "",
-                          gymsList[index].isSelected,
-                          () {
-                            for (var element in gymsList) {
-                              if (element.isSelected == true) {
-                                element.isSelected = false;
+                  child: Consumer(
+                    builder: (context, ref, child) {
+                      final activityEvent = ref.read(activityProvider.notifier);
+                      return ListView.builder(
+                          itemCount: gymsList.length,
+                          //shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            return _listOfGymsBuilder(
+                              gymsList[index].name,
+                              gymsList[index].address,
+                              gymsList[index].distanceFromClient ?? 3469,
+                              "",
+                              gymsList[index].isSelected,
+                              () {
+                                for (var element in gymsList) {
+                                  if (element.isSelected == true) {
+                                    element.isSelected = false;
+                                    setState(() {});
+                                  }
+                                }
+                                gymsList[index].isSelected =
+                                    !gymsList[index].isSelected;
                                 setState(() {});
-                              }
-                            }
-                            gymsList[index].isSelected =
-                                !gymsList[index].isSelected;
-                            setState(() {});
-                            widget.event.changeCameraPosition(
-                              widget.controller!,
-                              double.parse(gymsList[index].latitude.toString()),
-                              double.parse(
-                                  gymsList[index].longitude.toString()),
-                                  
-                            );
-                            widget.event
-                                .setMarkerAsOpened(
+                                //
+                                activityEvent.getActivityTypes(context,
+                                    gymId: gymsList[index].id!);
+                                widget.event.changeCameraPosition(
+                                  widget.controller!,
                                   double.parse(
                                       gymsList[index].latitude.toString()),
                                   double.parse(
                                       gymsList[index].longitude.toString()),
-                                )
-                                .then((value) =>
-                                    widget.event.showPopUpOnMap(context));
-                          },
-                        );
-                      }),
+                                );
+                                widget.event
+                                    .setMarkerAsOpened(
+                                      double.parse(
+                                          gymsList[index].latitude.toString()),
+                                      double.parse(
+                                          gymsList[index].longitude.toString()),
+                                    )
+                                    .then((value) =>
+                                        widget.event.showPopUpOnMap(context));
+                              },
+                            );
+                          });
+                    },
+                  ),
                 ),
               ],
             )
@@ -271,7 +282,9 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                   children: [
                     SizedBox(
                       child: SvgPicture.asset(
-                        "assets/svg/boxing.svg",
+                        AppHelpers().getIconSvg(title).isEmpty
+                            ? "assets/svg/gym.svg"
+                            : AppHelpers().getIconSvg(title),
                         height: 15.h,
                       ),
                     ),

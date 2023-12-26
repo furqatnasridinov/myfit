@@ -3,7 +3,7 @@
 import 'package:activity/application/activity/activity_state.dart';
 import 'package:activity/domain/interface/activity.dart';
 import 'package:activity/infrastructure/models/data/activity.dart';
-import 'package:activity/infrastructure/models/request/get_gym_photos_request.dart';
+import 'package:activity/infrastructure/models/data/description_and_peculiarities.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:flutter/material.dart';
@@ -31,12 +31,12 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
           AppHelpers.showErrorSnack(context, "$error $statusCode");
         },
       );
-    }else{
+    } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
 
-  Future<void> getActivitiesList(BuildContext context,
+  Future<void> getActivityTypes(BuildContext context,
       {required int gymId}) async {
     await Future.delayed(const Duration(milliseconds: 10));
     final connected = await AppConnectivity().connectivity();
@@ -47,7 +47,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       response.when(
         success: (data) {
           state = state.copyWith(
-            activities: data.object,
+            activityTypes: data.object,
             isActivitiesListLoading: false,
           );
         },
@@ -56,35 +56,32 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
           AppHelpers.showErrorSnack(context, "$error $statusCode");
         },
       );
-    }else{
+    } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
 
   Future<void> determineDefaultActivity() async {
     //await Future.delayed(const Duration(seconds: 1));
-    if (state.activities!.isNotEmpty) {
-      state = state.copyWith(selectedActivity: state.activities?[0]);
+    if (state.activityTypes!.isNotEmpty) {
+      state = state.copyWith(selectedActivity: state.activityTypes?[0]);
     }
   }
 
-  Future<void> getGymPhotos(
-      BuildContext context, String? lessonType, int gymId) async {
+  Future<void> getGymPhotos(BuildContext context, int gymId) async {
     final connected = await AppConnectivity().connectivity();
     if (connected) {
       state = state.copyWith(isPhotosLoading: true);
-      final request = GetGymPhotosRequest(lessonType: lessonType);
       final response = await _activityRepositoryInterface.getGymPhotos(
-        request: request,
         gymId: gymId,
       );
       response.when(
         success: (data) {
-          final list = data.object;
-          for (var i = 0; i < list!.length; i++) {
-            List<String> photoUrls = [];
-            photoUrls.add(list[i].pictureUrl!);
-            state = state.copyWith(photos: photoUrls, isPhotosLoading: false);
+          if (data["object"] != null) {
+            state = state.copyWith(
+              allPhotos: data["object"],
+              isPhotosLoading: false,
+            );
           }
         },
         failure: (error, statusCode) {
@@ -92,9 +89,52 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
           AppHelpers.showErrorSnack(context, "$error $statusCode");
         },
       );
-    }else{
+    } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
+  }
+
+  Future<void> getInfoForType(BuildContext context, {required int id}) async {
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      final response =
+          await _activityRepositoryInterface.getInfoForType(id: id);
+      response.when(
+        success: (data) {
+          if (data["object"] != null) {
+            state = state.copyWith(infosForType: data["object"]);
+          }
+        },
+        failure: (error, statusCode) {
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> getDescribtionAndPeculiarities(String selectedActivity) async{
+    final mapData = state.infosForType;
+    if (mapData.containsKey(selectedActivity)) {
+      for (var element in mapData[selectedActivity]) {
+        final data = DescribtionAndPeculiarities(
+            typeDescription: element["typeDescription"],
+            peculiarities: element["peculiarities"]);
+        state = state.copyWith(describtionAndPeculiarities: data);
+      }
+    }
+  }
+
+  void getPhotosOfSelectedActivity(String selectedActivity) {
+    final mapData = state.allPhotos;
+    List<String> photos = [];
+    if (mapData.containsKey(selectedActivity)) {
+      for (var element in mapData[selectedActivity]) {
+        photos.add(element);
+      }
+    }
+    state = state.copyWith(photosOfSelectedActivity: photos);
   }
 
   Future<void> determineDefaultOriginalDate() async {
@@ -230,7 +270,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     return '$month $day';
   }
 
-  void setSingleSelectedActivity(String? value) {
+  Future<void> setSingleSelectedActivity(String? value) async {
     if (value == state.selectedActivity) {
       return;
     } else {
@@ -323,7 +363,9 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
             }).toList();
           }
 
-          state = state.copyWith(availableFormattedDates: formattedDates(),isSchedulesLoading: false);
+          state = state.copyWith(
+              availableFormattedDates: formattedDates(),
+              isSchedulesLoading: false);
         },
         failure: (error, statusCode) {
           state = state.copyWith(isSchedulesLoading: false);

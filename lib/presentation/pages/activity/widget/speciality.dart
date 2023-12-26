@@ -1,7 +1,9 @@
+import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -49,14 +51,17 @@ class Speciality extends StatelessWidget {
             ],
           ),
           10.verticalSpace,
-          ListView.builder(
-            itemCount: list.length,
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              return eachList(list[index]);
-            },
-          ),
+          Consumer(builder: (context, ref, child) {
+            final state = ref.watch(activityProvider);
+            return ListView.builder(
+              itemCount: 1,//list.length,
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return eachList(state.describtionAndPeculiarities?.peculiarities ?? "");
+              },
+            );
+          }),
         ],
       ),
     );

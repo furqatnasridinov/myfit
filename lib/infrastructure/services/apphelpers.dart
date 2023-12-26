@@ -34,7 +34,6 @@ class AppHelpers {
     );
   }
 
-
   static void showCustomModalBottomSheet({
     required BuildContext context,
     required EdgeInsets padding,
@@ -61,4 +60,28 @@ class AppHelpers {
     );
   }
 
+  String getIconSvg(String activityName) {
+    String path = "";
+    switch (activityName) {
+      case "Йога":
+        path = "assets/svg/yoga.svg";
+        break;
+      case "Бассейн":
+        path = "assets/svg/pool.svg";
+        break;
+      case "Медитации":
+        path = "assets/svg/meditation.svg";
+        break;
+      case "Спортзал":
+        path = "assets/svg/gym.svg";
+        break;
+      case "Секция бокса":
+        path = "assets/svg/boxing.svg";
+        break;
+      case "Кардио-тренировки":
+        path = "assets/svg/cardio.svg";
+        break;
+    }
+    return path;
+  }
 }

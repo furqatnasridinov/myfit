@@ -99,10 +99,11 @@ class ScheduleRepository implements ScheduleRepositoryInterface {
         data: response.data,
       );
     } catch (e) {
-      return ApiResult.failure(
+      throw e;
+      /* return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      );
+      ); */
     }
   }
 

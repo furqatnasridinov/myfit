@@ -20,14 +20,21 @@ class ComingActivity extends StatelessWidget {
       cardValue: Column(
         children: [
           Row(
-            //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CustomText(
-                text: 'Ближайшее событие:',
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w600,
+              Expanded(
+                flex: 1,
+                child: SizedBox(
+                  //color: Colors.red,
+                  //width: 60.w,
+                  child: CustomText(
+                    text: 'Ближайшее событие:',
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
-              15.horizontalSpace,
+              //15.horizontalSpace,
               //const Spacer(),
               Flexible(
                 child: CustomText(

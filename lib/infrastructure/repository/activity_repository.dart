@@ -3,9 +3,7 @@ import 'package:activity/domain/handlers/api_result.dart';
 import 'package:activity/domain/handlers/http_service.dart';
 import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/activity.dart';
-import 'package:activity/infrastructure/models/request/get_gym_photos_request.dart';
 import 'package:activity/infrastructure/models/response/get_gym_activities_response.dart';
-import 'package:activity/infrastructure/models/response/get_gym_photos_response.dart';
 import 'package:activity/infrastructure/models/response/gym_response.dart';
 
 class ActivityRepository implements ActivityRepositoryInterface {
@@ -45,18 +43,17 @@ class ActivityRepository implements ActivityRepositoryInterface {
   }
 
   @override
-  Future<ApiResult<GetGymPhotosResponse>> getGymPhotos(
-      {required GetGymPhotosRequest request, required int gymId}) async {
+  Future<ApiResult<Map<String, dynamic>>> getGymPhotos(
+      {required int gymId}) async {
     try {
       final client = inject<HttpService>().clientDio();
       final response = await client.get(
         "api/gym/$gymId/photo",
-        queryParameters: request.toJson(),
       );
       //print("request.toJson ${request.toJson()}");
       //print("repository response ${response.data["object"]}");
       return ApiResult.success(
-        data: GetGymPhotosResponse.fromJson(response.data),
+        data: response.data,
       );
     } catch (e) {
       throw e;
@@ -95,6 +92,24 @@ class ActivityRepository implements ActivityRepositoryInterface {
       final response = await client.post(
         "api/schedule/$id/add",
       );
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      //throw e;
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      );
+    }
+  }
+
+  @override
+  Future<ApiResult<Map<String, dynamic>>> getInfoForType(
+      {required int id}) async {
+    try {
+      final client = inject<HttpService>().clientDio();
+      final response = await client.get("api/gym/$id/infoForType");
       return ApiResult.success(
         data: response.data,
       );

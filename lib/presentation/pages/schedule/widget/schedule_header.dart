@@ -233,7 +233,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
       // leading
       leading: textfieldFocusnode.hasFocus
           ? null
-          : InkWell(
+          : GestureDetector(
               onTap: () {
                 context.popRoute();
               },

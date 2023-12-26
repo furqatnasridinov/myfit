@@ -28,7 +28,7 @@ class TheOneWithChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return state.activities!.isEmpty
+    return state.activityTypes!.isEmpty
         ? const SizedBox()
         : Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -43,12 +43,11 @@ class TheOneWithChips extends StatelessWidget {
                 ),
                 10.verticalSpace,
                 Wrap(
-                  runSpacing: 5,
                   spacing: 5.w,
                   children: List.generate(
-                    state.activities!.length,
+                    state.activityTypes!.length,
                     (index) {
-                      final activity = state.activities![index];
+                      final activity = state.activityTypes![index];
                       final isSelected = activity == state.selectedActivity;
                       return InkWell(
                         onTap: () {
@@ -56,23 +55,26 @@ class TheOneWithChips extends StatelessWidget {
                         },
                         child: ChoiceChip(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 16.w, vertical: 5.h),
+                            horizontal: 16.w,
+                            //vertical: 5.h,
+                          ),
                           showCheckmark: false,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(6.r),
                             side: const BorderSide(color: AppColors.blueColor),
                           ),
                           labelPadding: EdgeInsets.symmetric(
-                            vertical: 1.h,
+                            vertical: 1,
                             horizontal: 12.w,
                           ),
                           selectedColor: const Color.fromRGBO(119, 170, 249, 1),
                           backgroundColor: Colors.white,
                           selected: isSelected,
-                          onSelected: (selected)  {
+                          onSelected: (selected) async{
                             if (selected) {
                               event.setSingleSelectedActivity(activity);
-                              event.getGymPhotos(context, activity, gymId);
+                              event.getDescribtionAndPeculiarities(activity);
+                              event.getPhotosOfSelectedActivity(activity);
                               event
                                   .getSchedulesDates(context, id: gymId)
                                   .then((value) async {

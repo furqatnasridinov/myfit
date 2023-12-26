@@ -168,7 +168,7 @@ class _MainHeaderState extends State<NotesHeader> {
       // leading
       leading: textfieldFocusnode.hasFocus
           ? null
-          : InkWell(
+          : GestureDetector(
               onTap: () => context.popRoute(),
               child: Container(
                 margin: EdgeInsets.only(left: 10.5.w),

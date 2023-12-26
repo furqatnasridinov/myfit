@@ -167,7 +167,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                     decoration: BoxDecoration(
                       boxShadow: state.activitiesWithGymsInsideFromSelectedDiapozone
                                       .length >
-                                  5 ||
+                                  5 &&
                               (state.activitiesWithGymsInsideFromSelectedDiapozone
                                               .length >
                                           2 ||
@@ -292,10 +292,10 @@ class _MapScreenState extends ConsumerState<MapScreen>
                     ),
                   ),
                   Positioned(
-                    right: -7.w,
-                    bottom: state.isLocationIconHidden ? 135.h : 0.h,
+                    right: 0.w,
+                    bottom: state.isLocationIconHidden ? 145.h : 10.h,
                     child: Padding(
-                      padding: EdgeInsets.only(right: 21.w, bottom: 21.h),
+                      padding: EdgeInsets.only(right: 10.w, bottom: 10.h),
                       child: InkWell(
                         onTap: () {
                           event.locationButtonFunction(yandexMapController);

@@ -1,12 +1,15 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 
 class PopUpMap extends StatelessWidget {
   final String name;
@@ -52,11 +55,14 @@ class PopUpMap extends StatelessWidget {
                     height: 26.h,
                     child: Consumer(
                       builder: (context, ref, child) {
+                        final activityState = ref.watch(activityProvider);
+                        //final activityEvent = ref.read(activityProvider.notifier);
                         return ListView.builder(
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
-                          itemCount: 4,
+                          itemCount: activityState.activityTypes?.length,
                           itemBuilder: (context, index) {
+                            final name = activityState.activityTypes?[index];
                             return Container(
                               margin: EdgeInsets.only(right: 10.w),
                               width: 24.w,
@@ -65,9 +71,11 @@ class PopUpMap extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(6.r),
                                 color: AppColors.backgroundColor,
                               ),
-                              child: const Icon(
-                                Icons.sports_gymnastics_sharp,
-                                color: AppColors.blueColor,
+                              child: SvgPicture.asset(
+                                AppHelpers().getIconSvg(name!).isEmpty
+                                    ? "assets/svg/gym.svg"
+                                    : AppHelpers().getIconSvg(name),
+                                height: 15.h,
                               ),
                             );
                           },
