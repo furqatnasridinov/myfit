@@ -335,6 +335,7 @@ class Main2Notifier extends StateNotifier<Main2State> {
         failure: (error, statusCode) {},
       );
     } else {
+      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }

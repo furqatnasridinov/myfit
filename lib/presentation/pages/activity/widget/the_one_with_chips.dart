@@ -44,6 +44,7 @@ class TheOneWithChips extends StatelessWidget {
                 10.verticalSpace,
                 Wrap(
                   spacing: 5.w,
+                  runSpacing: -5.h,
                   children: List.generate(
                     state.activityTypes!.length,
                     (index) {
@@ -54,23 +55,20 @@ class TheOneWithChips extends StatelessWidget {
                           //widget.event.getGymPhotos(activity,widget.gymId);
                         },
                         child: ChoiceChip(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            //vertical: 5.h,
-                          ),
+                          padding: EdgeInsets.zero,
                           showCheckmark: false,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(6.r),
                             side: const BorderSide(color: AppColors.blueColor),
                           ),
                           labelPadding: EdgeInsets.symmetric(
-                            vertical: 1,
-                            horizontal: 12.w,
+                            vertical: 0.h,
+                            horizontal: 16.w,
                           ),
                           selectedColor: const Color.fromRGBO(119, 170, 249, 1),
                           backgroundColor: Colors.white,
                           selected: isSelected,
-                          onSelected: (selected) async{
+                          onSelected: (selected) async {
                             if (selected) {
                               event.setSingleSelectedActivity(activity);
                               event.getDescribtionAndPeculiarities(activity);

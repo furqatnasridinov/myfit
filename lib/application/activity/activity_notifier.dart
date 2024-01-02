@@ -542,8 +542,10 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       if (fullMonth == null || fullDayOfWeek == null) {
         return null;
       }
+
+      String year = fullMonth == "01" ? "2024" : DateTime.now().year.toString();
       final formattedDate =
-          "${DateTime.now().year}-$fullMonth-${parts[1].padLeft(2, '0')}";
+          "$year-$fullMonth-${parts[1].padLeft(2, '0')}";
 
       return formattedDate;
     }

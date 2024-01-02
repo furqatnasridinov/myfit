@@ -332,7 +332,7 @@ class ScheduleTitle extends StatelessWidget {
                   );
                 },
                 child: SvgPicture.asset(
-                  "assets/svg/tune.svg",
+                  "assets/svg/icon_filter.svg",
                   fit: BoxFit.scaleDown,
                 ),
               ),

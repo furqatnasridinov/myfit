@@ -375,9 +375,11 @@ class _MainHeaderState extends State<MapHeader> {
                         bottom: 8.h,
                       ),
                       child: GestureDetector(
-                        child: SvgPicture.asset(
-                          'assets/svg/calendar.svg',
-                          fit: BoxFit.scaleDown,
+                        child: Center(
+                          child: SvgPicture.asset(
+                            'assets/svg/calendar.svg',
+                            
+                          ),
                         ),
                         //onTap: () => {context.go('/schedule')},
                       ),

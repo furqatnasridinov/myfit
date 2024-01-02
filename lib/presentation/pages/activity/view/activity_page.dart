@@ -103,6 +103,7 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
       print("list of original dates >> ${state.originalDates}");
       print("available formatted dates ${state.availableFormattedDates}");
       print("15 calendar days from now ${state.listOf15CalendarDaysFromNow}");
+      print("15 original days from now ${state.listOf15OriginalDaysFromNow}");
       print("selectedOriginalDate ${state.selectedOriginalDate}");
       print("selectedFormatted ${state.selectedFormattedDay}");
       print(

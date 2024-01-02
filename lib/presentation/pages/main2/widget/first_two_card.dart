@@ -204,10 +204,12 @@ class FirstTwoCards extends StatelessWidget {
           ),
         ),
         10.horizontalSpace,
-        CustomText(
-          text: text,
-          fontSize: 10.sp,
-          fontWeight: FontWeight.w500,
+        Flexible(
+          child: CustomText(
+            text: text,
+            fontSize: 10.sp,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ],
     );

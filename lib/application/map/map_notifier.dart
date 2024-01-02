@@ -78,6 +78,7 @@ class MapNotifier extends StateNotifier<MapState> {
     double? selectedCityLat;
     final connected = await AppConnectivity().connectivity();
     state = state.copyWith(isloading: true);
+    await getUserLocation();
     if (connected) {
       if (state.userPosition == null || state.locationServiceIsNotEnabled) {
         final listOfCities = DummyData().cityNames;
@@ -95,14 +96,14 @@ class MapNotifier extends StateNotifier<MapState> {
                   "${state.userPosition?.longitude},${state.userPosition?.latitude}",
               marker:
                   "${state.userPosition?.longitude},${state.userPosition?.latitude},pm2rdm",
-              size: "350,150",
+              size: "330,150",
               zoom: 11,
               i: "map",
             )
           : GetYandexMapImageRequest(
               latlon: "$selectedCityLon,$selectedCityLat",
               marker: "$selectedCityLon,$selectedCityLat,pm2rdm",
-              size: "350,150",
+              size: "330,150",
               zoom: 12,
               i: "map",
             );

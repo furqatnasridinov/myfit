@@ -37,83 +37,93 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: 0.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomText(
-            text: "Выберите дату и удобное время",
-            fontWeight: FontWeight.w600,
-            fontSize: 16.sp,
-            color: Colors.black,
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: CustomText(
+              text: "Выберите дату и удобное время",
+              fontWeight: FontWeight.w600,
+              fontSize: 16.sp,
+              color: Colors.black,
+            ),
           ),
           10.verticalSpace,
-          Container(
-            //color: Colors.red.shade300,
-            height: 80.h,
-            padding: EdgeInsets.symmetric(vertical: 6.w),
-            width: double.maxFinite,
-            child: ListView.builder(
-              itemCount: widget.state.listOf15CalendarDaysFromNow.length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                final String currentDate =
-                    widget.state.listOf15CalendarDaysFromNow[index];
-                bool isAvailable =
-                    widget.state.availableFormattedDates.contains(currentDate);
-                final parts = currentDate.split(" ");
-                return GestureDetector(
-                    onTap: () async {
-                      isAvailable ? widget.event.selectADay(currentDate) : null;
-                      isAvailable
-                          ? widget.event
-                              .setSelectedOriginalDate(
-                              currentDate,
-                            )
-                              .then(
-                              (value) async {
-                                await Future.delayed(
-                                  const Duration(milliseconds: 100),
-                                );
-                              },
-                            ).whenComplete(
-                              () => widget.event.getSchedulesList(
-                                widget.state.selectedOriginalDate,
-                              ),
-                            )
-                          : null;
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.only(right: 9.w),
-                      child: SizedBox(
-                        width: 41.w,
-                        child: Card(
-                          shadowColor:
-                              const Color.fromRGBO(123, 163, 225, 0.73),
-                          elevation:
-                              widget.state.selectedFormattedDay == currentDate
-                                  ? 2.1
-                                  : 0,
-                          color:
-                              widget.state.selectedFormattedDay == currentDate
-                                  ? AppColors.blueColor
-                                  : Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.r),
-                            side: BorderSide(
-                                color: widget.state.selectedFormattedDay ==
-                                        currentDate
+          Padding(
+            padding: EdgeInsets.only(left: 16.w),
+            child: Container(
+              //color: Colors.green.shade300,
+              height: 75.h,
+              padding: EdgeInsets.symmetric(vertical: 4.w),
+              width: double.maxFinite,
+              child: ListView.builder(
+                itemCount: widget.state.listOf15CalendarDaysFromNow.length,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  final String currentDate =
+                      widget.state.listOf15CalendarDaysFromNow[index];
+                  bool isAvailable = widget.state.availableFormattedDates
+                      .contains(currentDate);
+                  final parts = currentDate.split(" ");
+                  return GestureDetector(
+                      onTap: () async {
+                        isAvailable
+                            ? widget.event.selectADay(currentDate)
+                            : null;
+                        isAvailable
+                            ? widget.event
+                                .setSelectedOriginalDate(
+                                currentDate,
+                              )
+                                .then(
+                                (value) async {
+                                  await Future.delayed(
+                                    const Duration(milliseconds: 100),
+                                  );
+                                },
+                              ).whenComplete(
+                                () => widget.event.getSchedulesList(
+                                  widget.state.selectedOriginalDate,
+                                ),
+                              )
+                            : null;
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 9.w),
+                        child: SizedBox(
+                          //color: Colors.red,
+                          width: 41.w,
+                          child: Card(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 1.w, vertical: 2.h),
+                            shadowColor:
+                                const Color.fromRGBO(123, 163, 225, 0.73),
+                            elevation:
+                                widget.state.selectedFormattedDay == currentDate
+                                    ? 2.1
+                                    : 0,
+                            color:
+                                widget.state.selectedFormattedDay == currentDate
                                     ? AppColors.blueColor
-                                    : isAvailable
-                                        ? AppColors.blueBorder
-                                        : Colors.transparent,
-                                width: 1.w),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              InterText(
-                                  text: parts[0],
+                                    : Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.r),
+                              side: BorderSide(
+                                  color: widget.state.selectedFormattedDay ==
+                                          currentDate
+                                      ? AppColors.blueColor
+                                      : isAvailable
+                                          ? AppColors.greyBorder
+                                          : Colors.transparent,
+                                  width: 1.w),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                InterText(
+                                  text: parts[0].toUpperCase(),
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w600,
                                   color: widget.state.selectedFormattedDay ==
@@ -122,58 +132,65 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                                       : isAvailable
                                           ? Colors.black
                                           : const Color.fromRGBO(
-                                              176, 176, 176, 1)),
-                              CustomText(
+                                              176, 176, 176, 1),
+                                ),
+                                3.verticalSpace,
+                                CustomText(
+                                    fontSize: 10.sp,
+                                    fontWeight: FontWeight.w500,
+                                    text: parts[1],
+                                    color: widget.state.selectedFormattedDay ==
+                                            currentDate
+                                        ? Colors.white
+                                        : isAvailable
+                                            ? Colors.black
+                                            : const Color.fromRGBO(
+                                                176, 176, 176, 1)),
+                                CustomText(
                                   fontSize: 10.sp,
                                   fontWeight: FontWeight.w500,
-                                  text: parts[1],
+                                  text: parts[2],
                                   color: widget.state.selectedFormattedDay ==
                                           currentDate
                                       ? Colors.white
                                       : isAvailable
                                           ? Colors.black
                                           : const Color.fromRGBO(
-                                              176, 176, 176, 1)),
-                              CustomText(
-                                fontSize: 10.sp,
-                                fontWeight: FontWeight.w500,
-                                text: parts[2],
-                                color: widget.state.selectedFormattedDay ==
-                                        currentDate
-                                    ? Colors.white
-                                    : isAvailable
-                                        ? Colors.black
-                                        : const Color.fromRGBO(
-                                            176,
-                                            176,
-                                            176,
-                                            1,
-                                          ),
-                              ),
-                            ],
+                                              176,
+                                              176,
+                                              176,
+                                              1,
+                                            ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ));
-              },
+                      ));
+                },
+              ),
             ),
           ),
-          10.verticalSpace,
+          16.verticalSpace,
 
           // подактивности (Блок с подактивностями скрывается,
           //если владелец заведения их не добавил.)
           widget.state.listOfSchedules.isEmpty &&
                   widget.state.selectedFormattedDay.isEmpty
-              ? CustomCard(
-                  width: double.maxFinite,
-                  child: CustomText(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                    text: "В ближайшее время в заведении нет доступных занятий",
-                    textAlign: TextAlign.center,
+              ? Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  child: CustomCard(
+                    width: double.maxFinite,
+                    child: CustomText(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      text:
+                          "В ближайшее время в заведении нет доступных занятий",
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 )
-              : Column(
+              : /* Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomText(
@@ -229,9 +246,9 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                       }),
                     ),
                   ],
-                ),
+                ), */
 
-          10.verticalSpace,
+              //10.verticalSpace,
           // список занятий заведения на выбранный день
           Consumer(
             builder: (contex, ref, child) {
@@ -287,85 +304,88 @@ Widget activityCard(
   int status,
   void Function()? enrollFunction,
 ) {
-  return CustomCard(
-    width: double.maxFinite,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // times
-            SizedBox(
-              child: Row(
-                children: [
-                  CustomText(
-                    text: startTime,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  2.horizontalSpace,
-                  const Text("-"),
-                  2.horizontalSpace,
-                  CustomText(
-                    text: finishTime,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ],
+  return Padding(
+    padding: EdgeInsets.only(bottom: 10.h, left: 16.w, right: 16.w),
+    child: CustomCard(
+      width: double.maxFinite,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // times
+              SizedBox(
+                child: Row(
+                  children: [
+                    CustomText(
+                      text: startTime,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    2.horizontalSpace,
+                    const Text("-"),
+                    2.horizontalSpace,
+                    CustomText(
+                      text: finishTime,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(
-              child: status == 1
-                  ? InkWell(
-                      onTap: enrollFunction,
-                      child: CustomText(
-                        text: "Записаться",
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.blueText,
-                      ),
-                    )
-                  : status == 2
-                      ? CustomText(
-                          text: "Ждём ответ от заведения",
+              SizedBox(
+                child: status == 1
+                    ? InkWell(
+                        onTap: enrollFunction,
+                        child: CustomText(
+                          text: "Записаться",
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
-                          color: AppColors.greyText,
-                        )
-                      : Row(
-                          children: [
-                            CustomText(
-                              text: "Вы записаны",
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black,
-                            ),
-                            5.horizontalSpace,
-                            Icon(
-                              Icons.done,
-                              color: Colors.black,
-                              size: 16.r,
-                            )
-                          ],
+                          color: AppColors.blueText,
                         ),
-            ),
-          ],
-        ),
-        5.verticalSpace,
-        InterText(
-          text: name,
-          fontSize: 13.sp,
-          fontWeight: FontWeight.w400,
-        ),
-        5.verticalSpace,
-        CustomText(
-          text: duration,
-          fontSize: 10.sp,
-          fontWeight: FontWeight.w500,
-          color: AppColors.greyText,
-        )
-      ],
+                      )
+                    : status == 2
+                        ? CustomText(
+                            text: "Ждём ответ от заведения",
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.greyText,
+                          )
+                        : Row(
+                            children: [
+                              CustomText(
+                                text: "Вы записаны",
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                              ),
+                              5.horizontalSpace,
+                              Icon(
+                                Icons.done,
+                                color: Colors.black,
+                                size: 16.r,
+                              )
+                            ],
+                          ),
+              ),
+            ],
+          ),
+          5.verticalSpace,
+          InterText(
+            text: name,
+            fontSize: 13.sp,
+            fontWeight: FontWeight.w400,
+          ),
+          5.verticalSpace,
+          CustomText(
+            text: duration,
+            fontSize: 10.sp,
+            fontWeight: FontWeight.w500,
+            color: AppColors.greyText,
+          )
+        ],
+      ),
     ),
   );
 }

@@ -70,10 +70,11 @@ class MainRepository implements MainRepositoryInterface {
       final response = await client.get(AppConstants.getGymsList);
       return ApiResult.success(data: response.data);
     } catch (e) {
-      return ApiResult.failure(
+      //throw e;
+       return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      );
+      ); 
     }
   }
 
@@ -113,11 +114,11 @@ class MainRepository implements MainRepositoryInterface {
       );
     } catch (e) {
       debugPrint("error ${e.toString()}");
-      throw e;
-      /* return ApiResult.failure(
+      //throw e;
+       return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      ); */
+      );
     }
   }
 }

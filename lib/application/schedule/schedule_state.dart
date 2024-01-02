@@ -1,4 +1,3 @@
-import 'package:activity/infrastructure/models/data/gym_with_tags.dart';
 import 'package:activity/infrastructure/models/data/schedule_and_gym.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
