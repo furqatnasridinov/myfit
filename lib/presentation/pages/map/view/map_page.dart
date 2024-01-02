@@ -2,6 +2,7 @@
 
 import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:auto_route/auto_route.dart';
@@ -15,8 +16,8 @@ import '../widget/widget.dart';
 
 @RoutePage()
 class MapScreen extends ConsumerStatefulWidget {
-  int? gymId;
-  MapScreen(this.gymId, {super.key});
+   final bool showOnlyKnown;
+  const MapScreen(this.showOnlyKnown,  {super.key});
 
   @override
   ConsumerState<MapScreen> createState() => _MapScreenState();
@@ -99,6 +100,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("KnownActivities >> ${LocalStorage.getKnownActivities()}");
     final state = ref.watch(mapProvider);
     final event = ref.read(mapProvider.notifier);
     return PopScope(
@@ -210,7 +212,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                           controller: yandexMapController!,
                         );
                         // ignore: use_build_context_synchronously
-                        await event.getGymsList(context, widget.gymId!);
+                        await event.getGymsList(context,widget.showOnlyKnown);
                         await event.getGetListOfGymsFromDiapozone();
                         await event.setFlexes();
                         await event.getAllMarkers();

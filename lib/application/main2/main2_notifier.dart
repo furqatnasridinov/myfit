@@ -4,6 +4,7 @@ import 'package:activity/infrastructure/models/data/schedule_and_gym.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
+import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -284,8 +285,17 @@ class Main2Notifier extends StateNotifier<Main2State> {
       final response = await _scheduleRepositoryInterface.getUserStatsMonth();
       response.when(
         success: (data) {
+          List<String> listToCollectActivityNames = [];
+
           // sorting list by its count
           final list = data.bodyData;
+          if (list != null) {
+            for (var element in list) {
+              listToCollectActivityNames.add(element.lessonType ?? "");
+            }
+          }
+          LocalStorage.setKnownActivities(listToCollectActivityNames);
+
           list?.sort(
             (a, b) => a.count!.compareTo(b.count!),
           );

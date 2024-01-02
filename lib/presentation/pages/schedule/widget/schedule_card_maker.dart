@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/ui_dropdown_menu.dart';
 import 'package:activity/presentation/pages/schedule/widget/schedule_item.dart';
@@ -62,51 +63,66 @@ class ScheduleCardMaker extends StatelessWidget {
       width: double.maxFinite,
       maxWidth: 255.w,
       customOffset: [-45.0.w, -40.0.h],
-      dropDownItemsList: [
-        {
-          'title': 'Найти что то новое',
-          'icon': SvgPicture.asset(
-            "assets/svg/search.svg",
-            colorFilter: const ColorFilter.mode(
-              Color.fromRGBO(62, 134, 245, 1),
-              BlendMode.srcIn,
-            ),
-            height: 18.h,
-            width: 18.w,
-          ),
-          'action': () => {
-                context.router.push(MapRoute(gymId: 0)),
+      dropDownItemsList: LocalStorage.getKnownActivities().isNotEmpty
+          ? [
+              {
+                'title': 'Найти что то новое',
+                'icon': SvgPicture.asset(
+                  "assets/svg/search.svg",
+                  colorFilter: const ColorFilter.mode(
+                    Color.fromRGBO(62, 134, 245, 1),
+                    BlendMode.srcIn,
+                  ),
+                  height: 18.h,
+                  width: 18.w,
+                ),
+                'action': () =>
+                    {context.router.push(MapRoute(showOnlyKnown: false))}
+              },
+              {
+                'title': 'Выбрать из уже знакомых занятий',
+                'icon': SvgPicture.asset(
+                  "assets/svg/copy.svg",
+                  colorFilter: const ColorFilter.mode(
+                    Color.fromRGBO(62, 134, 245, 1),
+                    BlendMode.srcIn,
+                  ),
+                  height: 18.h,
+                  width: 18.w,
+                ),
+                'action': () => {
+                      context.router.push(MapRoute(showOnlyKnown: true)),
+                    }
               }
-        },
-        {
-          'title': 'Выбрать из уже знакомых занятий',
-          'icon': SvgPicture.asset(
-            "assets/svg/copy.svg",
-            colorFilter: const ColorFilter.mode(
-              Color.fromRGBO(62, 134, 245, 1),
-              BlendMode.srcIn,
-            ),
-            height: 18.h,
-            width: 18.w,
-          ),
-          'action': () => {
-                context.router.push(ActivityRoute(gymId: 1)),
+            ]
+          : [
+              {
+                'title': 'Найти что то новое',
+                'icon': SvgPicture.asset(
+                  "assets/svg/search.svg",
+                  colorFilter: const ColorFilter.mode(
+                    Color.fromRGBO(62, 134, 245, 1),
+                    BlendMode.srcIn,
+                  ),
+                  height: 18.h,
+                  width: 18.w,
+                ),
+                'action': () =>
+                    {context.router.push(MapRoute(showOnlyKnown: false))}
               }
-        },
-      ],
+            ],
       onOpenedAction: () => {event.triggerPlusState()},
       onClosedAction: () => {event.removePlusState()},
       dropDownChild: Container(
         width: 40.w,
         height: 40.h,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.r),
-          border: Border.all(
-            width: 1.w,
-            color: AppColors.blueColor,
-          ),
-          color: AppColors.blueColor
-        ),
+            borderRadius: BorderRadius.circular(8.r),
+            border: Border.all(
+              width: 1.w,
+              color: AppColors.blueColor,
+            ),
+            color: AppColors.blueColor),
         //padding: EdgeInsets.all(11.r),
         child: Transform.rotate(
           angle: state.plusState == true ? (45 * pi / 180) : (0 * pi / 180),

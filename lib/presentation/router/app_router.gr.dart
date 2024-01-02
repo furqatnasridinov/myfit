@@ -65,7 +65,7 @@ abstract class $AppRouter extends _i14.RootStackRouter {
       return _i14.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: _i4.MapScreen(
-          args.gymId,
+          args.showOnlyKnown,
           key: args.key,
         ),
       );
@@ -201,13 +201,13 @@ class MainRoute extends _i14.PageRouteInfo<void> {
 /// [_i4.MapScreen]
 class MapRoute extends _i14.PageRouteInfo<MapRouteArgs> {
   MapRoute({
-    required int? gymId,
+    required bool showOnlyKnown,
     _i16.Key? key,
     List<_i14.PageRouteInfo>? children,
   }) : super(
           MapRoute.name,
           args: MapRouteArgs(
-            gymId: gymId,
+            showOnlyKnown: showOnlyKnown,
             key: key,
           ),
           initialChildren: children,
@@ -221,17 +221,17 @@ class MapRoute extends _i14.PageRouteInfo<MapRouteArgs> {
 
 class MapRouteArgs {
   const MapRouteArgs({
-    required this.gymId,
+    required this.showOnlyKnown,
     this.key,
   });
 
-  final int? gymId;
+  final bool showOnlyKnown;
 
   final _i16.Key? key;
 
   @override
   String toString() {
-    return 'MapRouteArgs{gymId: $gymId, key: $key}';
+    return 'MapRouteArgs{showOnlyKnown: $showOnlyKnown, key: $key}';
   }
 }
 

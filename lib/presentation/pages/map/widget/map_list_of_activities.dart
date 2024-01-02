@@ -61,8 +61,10 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                     ? Column(
                         children: [
                           EnableLocationPermission(
-                              event: widget.event, state: widget.state),
-                          //16.verticalSpace,
+                            event: widget.event,
+                            state: widget.state,
+                          ),
+                          
                           ListView.builder(
                             //controller: widget.activitiesListController,
                             physics: const NeverScrollableScrollPhysics(),

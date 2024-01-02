@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -116,8 +118,7 @@ class LocalStorage {
   // remove height
   static void removeHeight() => _preferences?.remove(AppConstants.keyHeight);
 
-
- // save avatar
+  // save avatar
   static Future<void> setAvatar(String? avatar) async {
     if (_preferences != null) {
       await _preferences?.setString(
@@ -133,7 +134,6 @@ class LocalStorage {
 
   // remove avatar
   static void removeAvatar() => _preferences?.remove(AppConstants.keyAvatar);
-
 
   // save user id
   static Future<void> setUserId(String? id) async {
@@ -194,4 +194,28 @@ class LocalStorage {
       return false;
     }
   }
+
+  // set List<String> ==> knownActivities
+  static Future<void> setKnownActivities(List<String> list) async {
+    String convertedToJson = jsonEncode(list);
+    if (_preferences != null) {
+      await _preferences?.setString(
+          AppConstants.keyKnownActivities, convertedToJson);
+    }
+  }
+
+  // get List<String> ==> knownActivities
+  static List<String> getKnownActivities() {
+    String? jsonString =
+        _preferences?.getString(AppConstants.keyKnownActivities);
+    if (jsonString != null) {
+      return List<String>.from(jsonDecode(jsonString));
+    } else {
+      return [];
+    }
+  }
+
+  // remove List<String> ==> knownActivities
+  static void removeKnownActivities() =>
+      _preferences?.remove(AppConstants.keyUserName);
 }

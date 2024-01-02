@@ -39,6 +39,7 @@ class AppConstants {
   static const String keyWeight = "key_weight";
   static const String keyHeight = "key_height";
   static const String keyAvatar = "key_avatar";
+  static const String keyKnownActivities = "key_activities";
 
   // long texts
   static const String confirmationText =

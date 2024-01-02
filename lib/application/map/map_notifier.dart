@@ -304,7 +304,10 @@ class MapNotifier extends StateNotifier<MapState> {
     );
   }
 
-  Future<void> getGymsList(BuildContext context, int gymId) async {
+  Future<void> getGymsList(
+    BuildContext context,
+    bool showOnlyKnown,
+  ) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
       state = state.copyWith(isloading: true);
@@ -314,21 +317,43 @@ class MapNotifier extends StateNotifier<MapState> {
         success: (data) {
           final gymsMapFromServer = data["object"] as Map<String, dynamic>;
           final listToCollectActivitiesWithGyms = <LessonTypeWithGymsInside>[];
-          gymsMapFromServer.forEach((key, value) {
-            final data = LessonTypeWithGymsInside(
-              false,
-              lessontype: key,
-              listOfGyms:
-                  (value as List).map((gym) => Gymdata.fromJson(gym)).toList(),
-            );
-            listToCollectActivitiesWithGyms.add(data);
-          });
+          if (showOnlyKnown) {
+            List<String> knownActivities = LocalStorage.getKnownActivities();
+            for (var element in knownActivities) {
+              gymsMapFromServer.forEach((key, value) {
+                if (element == key) {
+                  final data = LessonTypeWithGymsInside(
+                    false,
+                    lessontype: key,
+                    listOfGyms: (value as List)
+                        .map((gym) => Gymdata.fromJson(gym))
+                        .toList(),
+                  );
+                  listToCollectActivitiesWithGyms.add(data);
+                }
+              });
+            }
+          } else {
+            gymsMapFromServer.forEach((key, value) {
+              final data = LessonTypeWithGymsInside(
+                false,
+                lessontype: key,
+                listOfGyms: (value as List)
+                    .map((gym) => Gymdata.fromJson(gym))
+                    .toList(),
+              );
+              listToCollectActivitiesWithGyms.add(data);
+            });
+          }
+
           final withCalculatedDistances = // and sort
               calculateDistanceOfGyms(listToCollectActivitiesWithGyms);
           state = state.copyWith(
               activitiesWithGymsInsideAll: withCalculatedDistances);
         },
-        failure: (error, statusCode) {},
+        failure: (error, statusCode) {
+          AppHelpers.showErrorSnack(context, error.toString());
+        },
       );
       state = state.copyWith(isloading: false);
     } else {
@@ -432,7 +457,23 @@ class MapNotifier extends StateNotifier<MapState> {
     if (list.length > 4 && !state.isloading) {
       state = state.copyWith(topFlex: 6, bottomFlex: 8);
     }
-    if (list.length > 5 &&
+    if ((list.isNotEmpty && list.length <= 2) &&
+        (state.locationPermissionIsNOtGiven ||
+            state.locationServiceIsNotEnabled)) {
+      state = state.copyWith(
+        topFlex: 4,
+        bottomFlex: 6,
+      );
+    }
+    if ((list.length >= 3 && list.length <= 4) &&
+        (state.locationPermissionIsNOtGiven ||
+            state.locationServiceIsNotEnabled)) {
+      state = state.copyWith(
+        topFlex: 5,
+        bottomFlex: 6,
+      );
+    }
+    if (list.length >= 5 &&
         (state.locationPermissionIsNOtGiven ||
             state.locationServiceIsNotEnabled)) {
       state = state.copyWith(

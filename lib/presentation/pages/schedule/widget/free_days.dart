@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/application/schedule/schedule_state.dart';
+import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/components/ui_dropdown_menu.dart';
@@ -59,39 +60,55 @@ class FreeDays extends StatelessWidget {
     return UiDropDownMenu(
       width: double.maxFinite,
       maxWidth: 255.w,
-      customOffset:  [-45.0.w, -40.0.h],
-      dropDownItemsList: [
-        {
-          'title': 'Найти что то новое',
-          'icon': SvgPicture.asset(
-            "assets/svg/search.svg",
-            colorFilter: const ColorFilter.mode(
-              Color.fromRGBO(62, 134, 245, 1),
-              BlendMode.srcIn,
-            ),
-            height: 18.h,
-            width: 18.w,
-          ),
-          'action': () => {
-            context.router.push( MapRoute(gymId: 0))
-          }
-        },
-        {
-          'title': 'Выбрать из уже знакомых занятий',
-          'icon': SvgPicture.asset(
-            "assets/svg/copy.svg",
-            colorFilter: const ColorFilter.mode(
-              Color.fromRGBO(62, 134, 245, 1),
-              BlendMode.srcIn,
-            ),
-            height: 18.h,
-            width: 18.w,
-          ),
-          'action': () => {
-                context.router.push(ActivityRoute(gymId: 1)),
+      customOffset: [-45.0.w, -40.0.h],
+      dropDownItemsList: LocalStorage.getKnownActivities().isNotEmpty
+          ? [
+              {
+                'title': 'Найти что то новое',
+                'icon': SvgPicture.asset(
+                  "assets/svg/search.svg",
+                  colorFilter: const ColorFilter.mode(
+                    Color.fromRGBO(62, 134, 245, 1),
+                    BlendMode.srcIn,
+                  ),
+                  height: 18.h,
+                  width: 18.w,
+                ),
+                'action': () =>
+                    {context.router.push(MapRoute(showOnlyKnown: false))}
+              },
+              {
+                'title': 'Выбрать из уже знакомых занятий',
+                'icon': SvgPicture.asset(
+                  "assets/svg/copy.svg",
+                  colorFilter: const ColorFilter.mode(
+                    Color.fromRGBO(62, 134, 245, 1),
+                    BlendMode.srcIn,
+                  ),
+                  height: 18.h,
+                  width: 18.w,
+                ),
+                'action': () => {
+                      context.router.push(MapRoute(showOnlyKnown: true)),
+                    }
               }
-        },
-      ],
+            ]
+          : [
+              {
+                'title': 'Найти что то новое',
+                'icon': SvgPicture.asset(
+                  "assets/svg/search.svg",
+                  colorFilter: const ColorFilter.mode(
+                    Color.fromRGBO(62, 134, 245, 1),
+                    BlendMode.srcIn,
+                  ),
+                  height: 18.h,
+                  width: 18.w,
+                ),
+                'action': () =>
+                    {context.router.push(MapRoute(showOnlyKnown: false))}
+              }
+            ],
       onOpenedAction: () => {event.triggerPlusState()},
       onClosedAction: () => {event.removePlusState()},
       dropDownChild: Container(
