@@ -28,6 +28,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
               final item = UserSchedulesResponse(
                 calendarDate: key,
                 dateTime: DateTime.now(),
+                isPlusStateTriggered: false,
                 listOfSchedules: (value as List)
                     .map((e) => ListOfSchedules.fromJson(e))
                     .toList(),

@@ -242,8 +242,9 @@ class _MapScreenState extends ConsumerState<MapScreen>
                         }
                       },
                       logoAlignment: const MapAlignment(
-                          horizontal: HorizontalAlignment.left,
-                          vertical: VerticalAlignment.bottom),
+                        horizontal: HorizontalAlignment.left,
+                        vertical: VerticalAlignment.bottom,
+                      ),
                     ),
                   ),
                   Align(

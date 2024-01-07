@@ -10,7 +10,7 @@ class ScheduleState with _$ScheduleState {
     @Default(false) bool isloading,
     @Default({}) Map<String, dynamic> schedulesInMapForm,
     @Default([]) List<UserSchedulesResponse> listOfuserSchedules,
-    @Default(false) bool showTillWhen,
+    @Default(true) bool showTillWhen,
     @Default(false) bool plusState,
     @Default(false) bool isLocationButtonActivated,
     @Default(false) bool isFlashButtonActivated,

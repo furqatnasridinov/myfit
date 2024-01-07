@@ -37,7 +37,7 @@ class FirstTwoCards extends StatelessWidget {
               //15.verticalSpace,
               state.statsForMonth.isEmpty
                   ? CustomText(
-                      text: "Пока список активностей пуст",
+                      text: "Статистика пока недоступна",
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w400,
                     )

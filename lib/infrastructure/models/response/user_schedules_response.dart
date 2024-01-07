@@ -1,10 +1,11 @@
 class UserSchedulesResponse {
   String? calendarDate;
   DateTime? dateTime;
+  bool? isPlusStateTriggered;
   List<ListOfSchedules>? listOfSchedules;
 
   UserSchedulesResponse(
-      {this.calendarDate, this.dateTime, this.listOfSchedules});
+      {this.calendarDate, this.dateTime, this.isPlusStateTriggered, this.listOfSchedules});
 
   UserSchedulesResponse.fromJson(Map<String, dynamic> json) {
     calendarDate = json['calendarDate'];

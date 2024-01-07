@@ -50,12 +50,7 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
       appBar: ScheduleHeader(
         event: event,
       ),
-      body: /* state.isloading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : */
-          SafeArea(
+      body: SafeArea(
         bottom: false,
         child: CustomScrollView(
           controller: scrollController,
@@ -72,41 +67,73 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
                   EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 16.h),
               sliver: Consumer(builder: (context, ref, child) {
                 final state = ref.watch(scheduleProvider);
-                return SliverList.builder(
-                  itemCount: allDayOfMonth.length,
-                  itemBuilder: (context, index) {
-                    final date =
-                        allDayOfMonth[index]; // "2023-11-01" till "2023-11-15",
-                    final formattedDay = event.formatDay(date); //  1 Ноября
-                    final formattedDayOfWeek =
-                        event.determineWeekday(date); // Понедельник
-                    // Находим, есть ли расписание на этот день
-                    UserSchedulesResponse? scheduleForDay;
-                    for (var schedule in state.listOfuserSchedules) {
-                      if (schedule.calendarDate == date) {
-                        scheduleForDay = schedule;
-                        break;
+                if (!state.isloading) {
+                  return SliverList.builder(
+                    itemCount: allDayOfMonth.length,
+                    itemBuilder: (context, index) {
+                      final date = allDayOfMonth[index];
+                      final now = DateTime.now();
+                      final todayWith00Hours = DateTime(
+                        now.year,
+                        now.month,
+                        now.day,
+                      ); // today in this format => (2024-01-07 00:00:00)
+                      final scheduleDate = DateTime.parse(date);
+                      final formattedDay = event.formatDay(date);
+                      final formattedDayOfWeek = event.determineWeekday(date);
+
+                      // Проверка, является ли день текущим или будущим
+                      bool isTodayOrFuture =
+                          scheduleDate.isAfter(todayWith00Hours) ||
+                              scheduleDate.isAtSameMomentAs(todayWith00Hours);
+
+                      // Находим, есть ли расписание на этот день
+                      UserSchedulesResponse? scheduleForDay;
+                      for (var schedule in state.listOfuserSchedules) {
+                        if (schedule.calendarDate == date) {
+                          scheduleForDay = schedule;
+                          break;
+                        }
                       }
-                    }
-                    // Если расписание найдено, показываем itemListBuilder,
-                    // иначе зеленый контейнер
-                    if (scheduleForDay != null) {
-                      return itemListBuilder(
-                          context,
-                          formattedDayOfWeek,
-                          formattedDay,
-                          scheduleForDay.listOfSchedules ?? [],
-                          event);
-                    } else {
-                      return daysWithNoSchedule(
-                        context,
-                        formattedDayOfWeek,
-                        formattedDay,
-                        event,
-                      );
-                    }
-                  },
-                );
+
+                      // Показываем день только если он сегодня/будущий или если есть активности в прошлом
+                      if (isTodayOrFuture ||
+                          (scheduleForDay != null &&
+                              scheduleForDay.listOfSchedules!.isNotEmpty)) {
+                        // Если расписание найдено, показываем itemListBuilder,
+                        // иначе daysWithNoSchedule
+                        if (scheduleForDay != null) {
+                          return itemListBuilder(
+                            context,
+                            formattedDayOfWeek,
+                            formattedDay,
+                            date,
+                            scheduleForDay.listOfSchedules ?? [],
+                            event,
+                            todayWith00Hours,
+                            scheduleForDay.isPlusStateTriggered,
+                          );
+                        } else {
+                          return daysWithNoSchedule(
+                            context,
+                            formattedDayOfWeek,
+                            formattedDay,
+                            event,
+                            scheduleForDay?.isPlusStateTriggered ?? false,
+                          );
+                        }
+                      } else {
+                        // Не отображаем виджет для дней в прошлом без активностей
+                        return const SizedBox.shrink();
+                      }
+                    },
+                  );
+                } else {
+                  return const SliverToBoxAdapter(
+                      child: Center(
+                    child: CircularProgressIndicator(),
+                  ));
+                }
               }),
             ),
           ],
@@ -118,11 +145,16 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
 
 Widget itemListBuilder(
   BuildContext context,
-  String dayOfWeek,
-  String date,
+  String? dayOfWeek,
+  String? formattedDay,
+  String? notFormattedDay,
   List<ListOfSchedules> listOfuserSchedules,
   ScheduleNotifier event,
+  DateTime today,
+  bool? isPlusState,
 ) {
+  final DateTime scheduleDayInDateTime = DateTime.parse(notFormattedDay ?? "");
+  bool hidePlusButton = today.isAfter(scheduleDayInDateTime);
   return Container(
     //color: Colors.red,
     margin: EdgeInsets.only(bottom: 30.h),
@@ -133,11 +165,17 @@ Widget itemListBuilder(
         Row(
           children: [
             CustomText(
-              text: "$dayOfWeek, $date",
+              text: "$dayOfWeek, $formattedDay",
               fontWeight: FontWeight.w600,
             ),
             const Spacer(),
-            _plusButton(context, event),
+            hidePlusButton
+                ? const SizedBox()
+                : _plusButton(
+                    context,
+                    event,
+                    isPlusState,
+                  )
           ],
         ),
         10.verticalSpace,
@@ -169,8 +207,13 @@ Widget itemListBuilder(
   );
 }
 
-Widget daysWithNoSchedule(BuildContext context, String dayOfWeek, String date,
-    ScheduleNotifier event) {
+Widget daysWithNoSchedule(
+  BuildContext context,
+  String dayOfWeek,
+  String date,
+  ScheduleNotifier event,
+  bool isPlusState,
+) {
   return Container(
     //color: Colors.green,
     margin: EdgeInsets.only(bottom: 30.w),
@@ -193,7 +236,7 @@ Widget daysWithNoSchedule(BuildContext context, String dayOfWeek, String date,
               fontSize: 13.sp,
               fontWeight: FontWeight.w400,
             ),
-            _plusButton(context, event),
+            _plusButton(context, event, isPlusState),
           ],
         ),
       ],
@@ -201,84 +244,93 @@ Widget daysWithNoSchedule(BuildContext context, String dayOfWeek, String date,
   );
 }
 
-Widget _plusButton(BuildContext context, ScheduleNotifier event) {
-  return UiDropDownMenu(
-    width: double.maxFinite,
-    maxWidth: 255.w,
-    customOffset: [-45.0.w, -40.0.h],
-    dropDownItemsList: LocalStorage.getKnownActivities().isNotEmpty
-        ? [
-            {
-              'title': 'Найти что то новое',
-              'icon': SvgPicture.asset(
-                "assets/svg/search.svg",
-                colorFilter: const ColorFilter.mode(
-                  Color.fromRGBO(62, 134, 245, 1),
-                  BlendMode.srcIn,
+Widget _plusButton(
+  BuildContext context,
+  ScheduleNotifier event,
+  bool? isplusState,
+) {
+  return StatefulBuilder(builder: (context, setstate) {
+    return UiDropDownMenu(
+      width: double.maxFinite,
+      maxWidth: 255.w,
+      customOffset: [-45.0.w, -40.0.h],
+      dropDownItemsList: LocalStorage.getKnownActivities().isNotEmpty
+          ? [
+              {
+                'title': 'Найти что то новое',
+                'icon': SvgPicture.asset(
+                  "assets/svg/search.svg",
+                  colorFilter: const ColorFilter.mode(
+                    Color.fromRGBO(62, 134, 245, 1),
+                    BlendMode.srcIn,
+                  ),
+                  height: 18.h,
+                  width: 18.w,
                 ),
-                height: 18.h,
-                width: 18.w,
-              ),
-              'action': () =>
-                  {context.router.push(MapRoute(showOnlyKnown: false))}
-            },
-            {
-              'title': 'Выбрать из уже знакомых занятий',
-              'icon': SvgPicture.asset(
-                "assets/svg/copy.svg",
-                colorFilter: const ColorFilter.mode(
-                  Color.fromRGBO(62, 134, 245, 1),
-                  BlendMode.srcIn,
+                'action': () =>
+                    {context.router.push(MapRoute(showOnlyKnown: false))}
+              },
+              {
+                'title': 'Выбрать из уже знакомых занятий',
+                'icon': SvgPicture.asset(
+                  "assets/svg/copy.svg",
+                  colorFilter: const ColorFilter.mode(
+                    Color.fromRGBO(62, 134, 245, 1),
+                    BlendMode.srcIn,
+                  ),
+                  height: 18.h,
+                  width: 18.w,
                 ),
-                height: 18.h,
-                width: 18.w,
-              ),
-              'action': () => {
-                    context.router.push(MapRoute(showOnlyKnown: true)),
-                  }
-            }
-          ]
-        : [
-            {
-              'title': 'Найти что то новое',
-              'icon': SvgPicture.asset(
-                "assets/svg/search.svg",
-                colorFilter: const ColorFilter.mode(
-                  Color.fromRGBO(62, 134, 245, 1),
-                  BlendMode.srcIn,
+                'action': () => {
+                      context.router.push(MapRoute(showOnlyKnown: true)),
+                    }
+              }
+            ]
+          : [
+              {
+                'title': 'Найти что то новое',
+                'icon': SvgPicture.asset(
+                  "assets/svg/search.svg",
+                  colorFilter: const ColorFilter.mode(
+                    Color.fromRGBO(62, 134, 245, 1),
+                    BlendMode.srcIn,
+                  ),
+                  height: 18.h,
+                  width: 18.w,
                 ),
-                height: 18.h,
-                width: 18.w,
-              ),
-              'action': () =>
-                  {context.router.push(MapRoute(showOnlyKnown: false))}
-            }
-          ],
-    onOpenedAction: () => {event.triggerPlusState()},
-    onClosedAction: () => {event.removePlusState()},
-    dropDownChild: Container(
-      width: 40.w,
-      height: 40.h,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.r),
-          border: Border.all(
-            width: 1.w,
-            color: AppColors.blueColor,
-          ),
-          color: AppColors.blueColor),
-      child: Consumer(builder: (context, ref, child) {
-        final state = ref.watch(scheduleProvider);
-        return Transform.rotate(
-          angle: state.plusState == true ? (45 * pi / 180) : (0 * pi / 180),
+                'action': () =>
+                    {context.router.push(MapRoute(showOnlyKnown: false))}
+              }
+            ],
+      onOpenedAction: () => {
+        isplusState = true,
+        setstate(() {}),
+      },
+      onClosedAction: () => {
+        isplusState = false,
+        setstate(() {}),
+      },
+      dropDownChild: Container(
+        width: 40.w,
+        height: 40.h,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.r),
+            border: Border.all(
+              width: 1.w,
+              color: AppColors.blueColor,
+            ),
+            color: AppColors.blueColor),
+        child: Transform.rotate(
+          angle: isplusState == true ? (45 * pi / 180) : (0 * pi / 180),
           child: Icon(
             Icons.add,
             color: Colors.white,
             size: 18.r,
           ),
-        );
-      }),
-    ),
-  );
+        ),
+      ),
+    );
+  });
 }
 
 Widget listOfActivitiesEachItem(
@@ -410,32 +462,39 @@ Widget listOfActivitiesEachItem(
                           ),
                         ),
                       ),
+                      5.horizontalSpace,
                       // location
-                      SizedBox(
-                        width: 200.w,
-                        //color: Colors.red,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.location_on_outlined,
-                              color: AppColors.blueColor,
-                              size: 16.r,
-                            ),
-                            4.horizontalSpace,
-                            SizedBox(
-                              width: 160.w,
-                              //color: Colors.red,
-                              child: InterText(
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                text: name,
-                                color: AppColors.greyText,
-                                fontSize: 11.5.sp,
-                                fontWeight: FontWeight.w400,
+                      Flexible(
+                        child: SizedBox(
+                          //width: 200.w,
+                          //color: Colors.red,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            //mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Icon(
+                                Icons.location_on_outlined,
+                                color: AppColors.blueColor,
+                                size: 16.r,
                               ),
-                            )
-                          ],
+                              4.horizontalSpace,
+                              Flexible(
+                                child: SizedBox(
+                                  //width: 160.w,
+                                  //color: Colors.green,
+                                  child: InterText(
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    //text: "cmdkcmdkcmdkcmdkcmkdcmdmckmd,lcdl,cl,d,cd,lcdlc,,cl,dl,cdl,c",
+                                    text: name,
+                                    color: AppColors.greyText,
+                                    fontSize: 11.5.sp,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ],
