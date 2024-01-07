@@ -1,5 +1,3 @@
-import 'package:activity/application/schedule/schedule_notifier.dart';
-import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_text.dart';
@@ -12,10 +10,7 @@ import 'package:flutter_svg/svg.dart';
 
 // ignore: must_be_immutable
 class ScheduleTitle extends StatelessWidget {
-  final ScheduleState state;
-  final ScheduleNotifier event;
-  ScheduleTitle({super.key, required this.state, required this.event});
-
+  ScheduleTitle({super.key, });
   String chosenTimeNotificationState = '30 мин';
 
   @override

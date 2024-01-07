@@ -2,6 +2,7 @@
 
 import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/domain/interface/schedule.dart';
+import 'package:activity/infrastructure/models/response/user_schedules_response.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:flutter/material.dart';
@@ -14,20 +15,39 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
   final ScheduleRepositoryInterface _scheduleRepositoryInterface;
 
   Future<void> getUsersSchedules(BuildContext context) async {
-    state = state.copyWith(isloading: true);
     final connect = await AppConnectivity().connectivity();
     if (connect) {
+      state = state.copyWith(isloading: true);
       final response = await _scheduleRepositoryInterface.getUsersSchedules();
       response.when(
         success: (data) {
-          state = state.copyWith(schedulesInMapForm: data["object"]);
+          if (data.isNotEmpty) {
+            List<UserSchedulesResponse> listToCollect = [];
+            final Map<String, dynamic> dataObject = data["object"];
+            dataObject.forEach((key, value) {
+              final item = UserSchedulesResponse(
+                calendarDate: key,
+                dateTime: DateTime.now(),
+                listOfSchedules: (value as List)
+                    .map((e) => ListOfSchedules.fromJson(e))
+                    .toList(),
+              );
+              listToCollect.add(item);
+            });
+            state = state.copyWith(
+              listOfuserSchedules: listToCollect,
+              isloading: false,
+            );
+          }
         },
-        failure: (error, statusCode) {},
+        failure: (error, statusCode) {
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          state = state.copyWith(isloading: false);
+        },
       );
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
-    state = state.copyWith(isloading: false);
   }
 
   String formatDay(String day) {
@@ -154,7 +174,6 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     return formattedTime;
   }
 
-  
   void showTilWhen() {
     state = state.copyWith(showTillWhen: true);
   }
@@ -202,5 +221,23 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
+  }
+
+  DateTime getDateTime(String time) {
+    List<String> split1 = time.split("@");
+    List<String> split2 = split1[0].split("-");
+    List<String> split3 = split1[1].split(":");
+    final String year = split2[0];
+    final String month = split2[1];
+    final String day = split2[2];
+    final String hour = split3[0];
+    final String minute = split3[1];
+    return DateTime(
+      int.parse(year),
+      int.parse(month),
+      int.parse(day),
+      int.parse(hour),
+      int.parse(minute),
+    );
   }
 }

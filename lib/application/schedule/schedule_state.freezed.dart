@@ -19,6 +19,8 @@ mixin _$ScheduleState {
   bool get isloading => throw _privateConstructorUsedError;
   Map<String, dynamic> get schedulesInMapForm =>
       throw _privateConstructorUsedError;
+  List<UserSchedulesResponse> get listOfuserSchedules =>
+      throw _privateConstructorUsedError;
   bool get showTillWhen => throw _privateConstructorUsedError;
   bool get plusState => throw _privateConstructorUsedError;
   bool get isLocationButtonActivated => throw _privateConstructorUsedError;
@@ -42,6 +44,7 @@ abstract class $ScheduleStateCopyWith<$Res> {
   $Res call(
       {bool isloading,
       Map<String, dynamic> schedulesInMapForm,
+      List<UserSchedulesResponse> listOfuserSchedules,
       bool showTillWhen,
       bool plusState,
       bool isLocationButtonActivated,
@@ -66,6 +69,7 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
   $Res call({
     Object? isloading = null,
     Object? schedulesInMapForm = null,
+    Object? listOfuserSchedules = null,
     Object? showTillWhen = null,
     Object? plusState = null,
     Object? isLocationButtonActivated = null,
@@ -83,6 +87,10 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
           ? _value.schedulesInMapForm
           : schedulesInMapForm // ignore: cast_nullable_to_non_nullable
               as Map<String, dynamic>,
+      listOfuserSchedules: null == listOfuserSchedules
+          ? _value.listOfuserSchedules
+          : listOfuserSchedules // ignore: cast_nullable_to_non_nullable
+              as List<UserSchedulesResponse>,
       showTillWhen: null == showTillWhen
           ? _value.showTillWhen
           : showTillWhen // ignore: cast_nullable_to_non_nullable
@@ -126,6 +134,7 @@ abstract class _$$ScheduleStateImplCopyWith<$Res>
   $Res call(
       {bool isloading,
       Map<String, dynamic> schedulesInMapForm,
+      List<UserSchedulesResponse> listOfuserSchedules,
       bool showTillWhen,
       bool plusState,
       bool isLocationButtonActivated,
@@ -148,6 +157,7 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
   $Res call({
     Object? isloading = null,
     Object? schedulesInMapForm = null,
+    Object? listOfuserSchedules = null,
     Object? showTillWhen = null,
     Object? plusState = null,
     Object? isLocationButtonActivated = null,
@@ -165,6 +175,10 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
           ? _value._schedulesInMapForm
           : schedulesInMapForm // ignore: cast_nullable_to_non_nullable
               as Map<String, dynamic>,
+      listOfuserSchedules: null == listOfuserSchedules
+          ? _value._listOfuserSchedules
+          : listOfuserSchedules // ignore: cast_nullable_to_non_nullable
+              as List<UserSchedulesResponse>,
       showTillWhen: null == showTillWhen
           ? _value.showTillWhen
           : showTillWhen // ignore: cast_nullable_to_non_nullable
@@ -203,6 +217,7 @@ class _$ScheduleStateImpl extends _ScheduleState {
   const _$ScheduleStateImpl(
       {this.isloading = false,
       final Map<String, dynamic> schedulesInMapForm = const {},
+      final List<UserSchedulesResponse> listOfuserSchedules = const [],
       this.showTillWhen = false,
       this.plusState = false,
       this.isLocationButtonActivated = false,
@@ -211,6 +226,7 @@ class _$ScheduleStateImpl extends _ScheduleState {
       final List<ScheduleAndGym> schedulesFoundBySearching = const [],
       this.notificationTime = "30 мин"})
       : _schedulesInMapForm = schedulesInMapForm,
+        _listOfuserSchedules = listOfuserSchedules,
         _notesMapData = notesMapData,
         _schedulesFoundBySearching = schedulesFoundBySearching,
         super._();
@@ -226,6 +242,16 @@ class _$ScheduleStateImpl extends _ScheduleState {
       return _schedulesInMapForm;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableMapView(_schedulesInMapForm);
+  }
+
+  final List<UserSchedulesResponse> _listOfuserSchedules;
+  @override
+  @JsonKey()
+  List<UserSchedulesResponse> get listOfuserSchedules {
+    if (_listOfuserSchedules is EqualUnmodifiableListView)
+      return _listOfuserSchedules;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_listOfuserSchedules);
   }
 
   @override
@@ -265,7 +291,7 @@ class _$ScheduleStateImpl extends _ScheduleState {
 
   @override
   String toString() {
-    return 'ScheduleState(isloading: $isloading, schedulesInMapForm: $schedulesInMapForm, showTillWhen: $showTillWhen, plusState: $plusState, isLocationButtonActivated: $isLocationButtonActivated, isFlashButtonActivated: $isFlashButtonActivated, notesMapData: $notesMapData, schedulesFoundBySearching: $schedulesFoundBySearching, notificationTime: $notificationTime)';
+    return 'ScheduleState(isloading: $isloading, schedulesInMapForm: $schedulesInMapForm, listOfuserSchedules: $listOfuserSchedules, showTillWhen: $showTillWhen, plusState: $plusState, isLocationButtonActivated: $isLocationButtonActivated, isFlashButtonActivated: $isFlashButtonActivated, notesMapData: $notesMapData, schedulesFoundBySearching: $schedulesFoundBySearching, notificationTime: $notificationTime)';
   }
 
   @override
@@ -277,6 +303,8 @@ class _$ScheduleStateImpl extends _ScheduleState {
                 other.isloading == isloading) &&
             const DeepCollectionEquality()
                 .equals(other._schedulesInMapForm, _schedulesInMapForm) &&
+            const DeepCollectionEquality()
+                .equals(other._listOfuserSchedules, _listOfuserSchedules) &&
             (identical(other.showTillWhen, showTillWhen) ||
                 other.showTillWhen == showTillWhen) &&
             (identical(other.plusState, plusState) ||
@@ -299,6 +327,7 @@ class _$ScheduleStateImpl extends _ScheduleState {
       runtimeType,
       isloading,
       const DeepCollectionEquality().hash(_schedulesInMapForm),
+      const DeepCollectionEquality().hash(_listOfuserSchedules),
       showTillWhen,
       plusState,
       isLocationButtonActivated,
@@ -318,6 +347,7 @@ abstract class _ScheduleState extends ScheduleState {
   const factory _ScheduleState(
       {final bool isloading,
       final Map<String, dynamic> schedulesInMapForm,
+      final List<UserSchedulesResponse> listOfuserSchedules,
       final bool showTillWhen,
       final bool plusState,
       final bool isLocationButtonActivated,
@@ -331,6 +361,8 @@ abstract class _ScheduleState extends ScheduleState {
   bool get isloading;
   @override
   Map<String, dynamic> get schedulesInMapForm;
+  @override
+  List<UserSchedulesResponse> get listOfuserSchedules;
   @override
   bool get showTillWhen;
   @override
