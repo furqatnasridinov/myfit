@@ -16,8 +16,8 @@ import '../widget/widget.dart';
 
 @RoutePage()
 class MapScreen extends ConsumerStatefulWidget {
-   final bool showOnlyKnown;
-  const MapScreen(this.showOnlyKnown,  {super.key});
+  final bool showOnlyKnown;
+  const MapScreen(this.showOnlyKnown, {super.key});
 
   @override
   ConsumerState<MapScreen> createState() => _MapScreenState();
@@ -171,10 +171,10 @@ class _MapScreenState extends ConsumerState<MapScreen>
                                       .length >
                                   5 &&
                               (state.activitiesWithGymsInsideFromSelectedDiapozone
-                                              .length >
-                                          2 ||
-                                      state.locationPermissionIsNOtGiven) &&
-                                  !state.showMapOnly
+                                          .length >
+                                      2 ||
+                                  state.locationPermissionIsNOtGiven) &&
+                              !state.showMapOnly
                           ? const [
                               BoxShadow(
                                 color: Color.fromRGBO(0, 0, 0, 0.15),
@@ -212,7 +212,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                           controller: yandexMapController!,
                         );
                         // ignore: use_build_context_synchronously
-                        await event.getGymsList(context,widget.showOnlyKnown);
+                        await event.getGymsList(context, widget.showOnlyKnown);
                         await event.getGetListOfGymsFromDiapozone();
                         await event.setFlexes();
                         await event.getAllMarkers();
