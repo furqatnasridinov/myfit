@@ -123,6 +123,10 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
       response.when(
         success: (data) {
           if (data.operationResult == "OK") {
+            if (data.authResponseBody!.user!.firstName!.isNotEmpty) {
+              LocalStorage.setUserName(
+                  data.authResponseBody?.user?.firstName ?? "");
+            }
             LocalStorage.setUserId(
               data.authResponseBody?.user?.id.toString() ?? "0",
             )
@@ -131,7 +135,9 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
                 .then((value) => moveClientToThirdPage(context));
           }
         },
-        failure: (error, statusCode) {},
+        failure: (error, statusCode) {
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
+        },
       );
     } else {
       // ignore: use_build_context_synchronously
@@ -147,12 +153,11 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
     );
   }
 
-  
-  void enableFormNotValidated(){
+  void enableFormNotValidated() {
     state = state.copyWith(isFormNotValidated: true);
   }
 
-  void formValidated(){
+  void formValidated() {
     state = state.copyWith(isFormNotValidated: false);
   }
 }

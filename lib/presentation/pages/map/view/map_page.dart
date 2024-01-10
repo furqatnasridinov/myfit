@@ -202,11 +202,13 @@ class _MapScreenState extends ConsumerState<MapScreen>
                       onMapCreated: (controller) async {
                         debugPrint("onMapCreated called");
                         yandexMapController = controller;
-                        setState(() {});
-                        await event.getUserLocation();
-                        if (state.userPosition == null ||
-                            state.locationServiceIsNotEnabled) {
-                          await event.setLocationFromSelectedCity();
+                        //setState(() {});
+                        if (state.userPosition == null) {
+                          await event.getUserLocation();
+                          if (state.locationServiceIsNotEnabled ||
+                              state.locationPermissionIsNOtGiven) {
+                            await event.setLocationFromSelectedCity();
+                          }
                         }
                         event.setInitialCameraPosition(
                           controller: yandexMapController!,

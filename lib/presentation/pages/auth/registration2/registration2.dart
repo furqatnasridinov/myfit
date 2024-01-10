@@ -27,12 +27,13 @@ class Registration2Screen extends ConsumerStatefulWidget {
 }
 
 class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
-  late TextEditingController controller ;
+  late TextEditingController controller;
 
   final String predefinedCode = '1234';
   bool isCodeError = false;
   bool isPinCodeValidate = false;
   bool isChecking = false;
+
   Future<void> checkValidation(String code, String userCode) async {
     if (isCodeError) {
       setState(() {
@@ -92,8 +93,6 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
     controller = TextEditingController();
     startTimer();
   }
-
-  
 
   @override
   Widget build(BuildContext context) {

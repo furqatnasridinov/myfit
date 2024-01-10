@@ -23,7 +23,8 @@ class Registration3Screen extends StatefulWidget {
 
 class _Registration3ScreenState extends State<Registration3Screen> {
   TextEditingController controller = TextEditingController(text: "Москва");
-  TextEditingController nameController = TextEditingController();
+  TextEditingController nameController =
+      TextEditingController(text: LocalStorage.getUserName());
   FocusNode focusNode = FocusNode();
   FocusNode nameFocus = FocusNode();
   final formKey = GlobalKey<FormState>();
@@ -284,6 +285,8 @@ class _Registration3ScreenState extends State<Registration3Screen> {
                               fontWeight: FontWeight.w600,
                               onPressed: () {
                                 if (nameController.text.length > 2) {
+                                  // here need to add logic if
+                                  // namecontroller.text!=Localstorage.getname then LocalStorage.setUserName(nameController.text);
                                   LocalStorage.setUserName(nameController.text);
                                   LocalStorage.setSelectedCity(controller.text);
                                   context

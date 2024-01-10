@@ -216,7 +216,7 @@ class MapNotifier extends StateNotifier<MapState> {
             ),
           ),
         ),
-        animation: const MapAnimation(duration: 2),
+        animation: const MapAnimation(duration: 1),
       );
     }
   }

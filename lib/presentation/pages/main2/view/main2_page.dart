@@ -103,9 +103,10 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                     32.verticalSpace,
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child:/*  state.nearestLessonIsLoading
+                      child: /*  state.nearestLessonIsLoading
                           ? const NearestLessonShimmer()
-                          : */ state.nearestLesson == null
+                          : */
+                          state.nearestLesson == null
                               ? const PlaceholderComingActivity()
                               : ComingActivity(
                                   state: state,

@@ -24,7 +24,10 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
           await _activityRepositoryInterface.getInfoAboutGym(id: gymId);
       response.when(
         success: (data) {
-          state = state.copyWith(gym: data, isGymLoading: false);
+          state = state.copyWith(
+            gym: data,
+            isGymLoading: false,
+          );
         },
         failure: (error, statusCode) {
           state = state.copyWith(isGymLoading: false);
@@ -114,7 +117,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
-  Future<void> getDescribtionAndPeculiarities(String selectedActivity) async{
+  Future<void> getDescribtionAndPeculiarities(String selectedActivity) async {
     final mapData = state.infosForType;
     if (mapData.containsKey(selectedActivity)) {
       for (var element in mapData[selectedActivity]) {
@@ -448,9 +451,9 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
-  Future<void> launchTelegram() async {
-    const url = "https://t.me/furqatnasridinov";
-    final uri = Uri.parse(url);
+  Future<void> launchTelegram(String? url) async {
+    const placeholderUrl = "https://t.me/furqatnasridinov";
+    final uri = Uri.parse(url ?? placeholderUrl);
 
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri); // forceWebView is true now
@@ -458,6 +461,27 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       throw 'Could not launch $url';
     }
   }
+
+  Future<void> launchVk(String? url) async {
+    const placeholderUrl = "https://vk.com/furqatnasridinov";
+    final uri = Uri.parse(url ?? placeholderUrl);
+
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri); // forceWebView is true now
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  String getNameFromTgUrl(String url){
+    List<String>parts = url.split("t.me/");
+    String name = parts[1];
+    return name;
+  }
+  String getNameFromVkUrl(String url){
+     List<String>parts = url.split("vk.com/");
+     return parts[1];
+  } 
 
   String? convertToOriginalDate(String dateString) {
     final parts = dateString.split(' ');
@@ -544,8 +568,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       }
 
       String year = fullMonth == "01" ? "2024" : DateTime.now().year.toString();
-      final formattedDate =
-          "$year-$fullMonth-${parts[1].padLeft(2, '0')}";
+      final formattedDate = "$year-$fullMonth-${parts[1].padLeft(2, '0')}";
 
       return formattedDate;
     }
