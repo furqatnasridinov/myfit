@@ -121,17 +121,30 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
       final response = await _registerRepositoryInterface.codeConfirmation(
           phoneNumber, code);
       response.when(
-        success: (data) {
-          if (data.operationResult == "OK") {
-            LocalStorage.setUserId(
-              data.authResponseBody?.user?.id.toString() ?? "0",
-            )
-                .then((value) => LocalStorage.setToken(
-                    data.authResponseBody?.jwtToken ?? ""))
-                .then((value) => moveClientToThirdPage(context));
+        success: (data) async {
+          if (data.user?.firstName != "") {
+            await LocalStorage.setUserName(data.user?.firstName ?? "");
+            await LocalStorage.setUserLastName(data.user?.lastName ?? "");
+            await LocalStorage.setUserPatronomic(data.user?.patronymic ?? "");
           }
+          LocalStorage.setUserId(
+            data.user?.id.toString() ?? "0",
+          );
+          LocalStorage.setSelectedCity(data.user?.city?.name ?? "");
+          LocalStorage.setSelectedCityLat(data.user?.city?.latitude ?? "");
+          LocalStorage.setSelectedCityLon(data.user?.city?.longitude ?? "");
+          LocalStorage.setAge(data.user?.age.toString() ?? "");
+          LocalStorage.setAvatar(data.user?.backgroundPictureUrl ?? "");
+          LocalStorage.setHeight(data.user?.height.toString());
+          await LocalStorage.setGender(data.user?.gender ?? "");
+          await LocalStorage.setWeight(data.user?.weight.toString());
+          await LocalStorage.setToken(data.jwtToken ?? "");
+          // ignore: use_build_context_synchronously
+          moveClientToThirdPage(context);
         },
-        failure: (error, statusCode) {},
+        failure: (error, statusCode) {
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
+        },
       );
     } else {
       // ignore: use_build_context_synchronously
@@ -147,12 +160,11 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
     );
   }
 
-  
-  void enableFormNotValidated(){
+  void enableFormNotValidated() {
     state = state.copyWith(isFormNotValidated: true);
   }
 
-  void formValidated(){
+  void formValidated() {
     state = state.copyWith(isFormNotValidated: false);
   }
 }

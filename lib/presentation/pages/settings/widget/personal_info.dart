@@ -63,7 +63,7 @@ class _PersonalInfoState extends State<PersonalInfo> {
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
-      print("city ${widget.state.selectedCity?.name}");
+      print("city ${widget.state.selectedCity ?? ""}");
       print("phone ${widget.state.phoneNumber}");
       print("name ${widget.state.userName}");
       print(LocalStorage.getPhoneNumber());
@@ -161,11 +161,17 @@ class _PersonalInfoState extends State<PersonalInfo> {
               // bottom row
               Row(
                 children: [
-                  chipsLikeContainer(widget.state.age, "лет"),
+                  chipsLikeContainer(
+                      widget.state.age == "null" ? "0" : widget.state.age,
+                      "лет"),
                   20.horizontalSpace,
-                  chipsLikeContainer(widget.state.weight, "кг"),
+                  chipsLikeContainer(
+                      widget.state.weight == "null" ? "0" : widget.state.weight,
+                      "кг"),
                   20.horizontalSpace,
-                  chipsLikeContainer(widget.state.height, "см"),
+                  chipsLikeContainer(
+                      widget.state.height == "null" ? "0" : widget.state.height,
+                      "см"),
                 ],
               ),
             ],

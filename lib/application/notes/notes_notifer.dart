@@ -139,6 +139,7 @@ class NotesNotifier extends StateNotifier<NotesState> {
         },
         failure: (error, statusCode) {
           state = state.copyWith(isloading: false);
+          AppHelpers.showErrorSnack(context, "${error.toString()} statuscode $statusCode");
         },
       );
     } else {

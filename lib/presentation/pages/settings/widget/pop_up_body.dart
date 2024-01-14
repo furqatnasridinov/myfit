@@ -1,4 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:activity/application/settings/settings_notifier.dart';
+import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/application/settings/settings_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
@@ -7,11 +10,13 @@ import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/custom_textformfield.dart';
-import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+
+import '../../../../infrastructure/models/response/auth_response.dart';
 
 class PopupBody extends StatefulWidget {
   final SettingsNotifier event;
@@ -23,10 +28,10 @@ class PopupBody extends StatefulWidget {
 }
 
 class _PopupBodyState extends State<PopupBody> {
-  final listofaddresses = DummyData().cityNames;
   final layerlink = LayerLink();
   GlobalKey sizedBoxKey = GlobalKey();
   OverlayEntry? entry;
+  City? selectedCity;
   late TextEditingController cityController;
   late TextEditingController nameController;
   late TextEditingController ageController;
@@ -39,9 +44,15 @@ class _PopupBodyState extends State<PopupBody> {
     cityController =
         TextEditingController(text: LocalStorage.getSelectedCity());
     nameController = TextEditingController(text: LocalStorage.getUserName());
-    ageController = TextEditingController(text: LocalStorage.getAge());
-    weightController = TextEditingController(text: LocalStorage.getWeight());
-    heightController = TextEditingController(text: LocalStorage.getHeight());
+    ageController = TextEditingController(
+        text: LocalStorage.getAge() == "null" ? "" : LocalStorage.getAge());
+    weightController = TextEditingController(
+        text:
+            LocalStorage.getWeight() == "null" ? "" : LocalStorage.getWeight());
+    heightController = TextEditingController(
+        text:
+            LocalStorage.getHeight() == "null" ? "" : LocalStorage.getHeight());
+    widget.event.getListOfCities(context);
   }
 
   @override
@@ -52,6 +63,10 @@ class _PopupBodyState extends State<PopupBody> {
     ageController.dispose();
     weightController.dispose();
     heightController.dispose();
+  }
+
+  void setSelectedCity(City? city) {
+    selectedCity = city;
   }
 
   void showOverlay(BuildContext context) {
@@ -95,6 +110,34 @@ class _PopupBodyState extends State<PopupBody> {
                     child: MediaQuery.removePadding(
                       context: context,
                       removeTop: true,
+                      removeBottom: true,
+                      child: Consumer(builder: (context, ref, child) {
+                        final state = ref.watch(settingsProvider);
+
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: state.listOfCities.length,
+                          itemBuilder: (context, index) {
+                            final currentCity = state.listOfCities[index];
+                            return _listiles(
+                              currentCity.name ?? "",
+                              () {
+                                cityController.text = currentCity.name ?? "??";
+                                setSelectedCity(currentCity);
+                                setState(() {});
+                                hideOverlay();
+                                widget.event.cityTextFieldUnfocus();
+                              },
+                            );
+                          },
+                        );
+                      }),
+                    ),
+                  ),
+                  /* Expanded(
+                    child: MediaQuery.removePadding(
+                      context: context,
+                      removeTop: true,
                       child: ListView.builder(
                         shrinkWrap: true,
                         itemCount: listofaddresses.length,
@@ -103,8 +146,6 @@ class _PopupBodyState extends State<PopupBody> {
                           return _listiles(
                             currentCity.name ?? "",
                             () {
-                              //LocalStorage.setSelectedCity(currentCity);
-                              //event.setSelectedCity();
                               cityController.text = currentCity.name!;
                               setState(() {});
                               hideOverlay();
@@ -114,7 +155,7 @@ class _PopupBodyState extends State<PopupBody> {
                         },
                       ),
                     ),
-                  ),
+                  ), */
                 ]),
               ),
             ),
@@ -150,6 +191,7 @@ class _PopupBodyState extends State<PopupBody> {
         showOverlay(context);
       }
     });
+    debugPrint("path ${context.router.current.path}");
     return SingleChildScrollView(
       child: CustomCard(
         borderColor: Colors.transparent,
@@ -224,6 +266,7 @@ class _PopupBodyState extends State<PopupBody> {
                       width: 93.w,
                       height: 40.h,
                       child: CustomTextFormField(
+                        keyboardType: TextInputType.number,
                         controller: ageController,
                         maxLines: 1,
                         maxLength: 3,
@@ -247,6 +290,7 @@ class _PopupBodyState extends State<PopupBody> {
                       width: 93.w,
                       height: 40.h,
                       child: CustomTextFormField(
+                        keyboardType: TextInputType.number,
                         controller: weightController,
                         maxLines: 1,
                         maxLength: 3,
@@ -270,6 +314,7 @@ class _PopupBodyState extends State<PopupBody> {
                       width: 93.w,
                       height: 40.h,
                       child: CustomTextFormField(
+                        keyboardType: TextInputType.number,
                         controller: heightController,
                         maxLines: 1,
                         maxLength: 3,
@@ -361,35 +406,51 @@ class _PopupBodyState extends State<PopupBody> {
                 10.horizontalSpace,
                 Expanded(
                   child: CustomButton(
+                    showProgress: widget.state.isloading,
                     width: 130.w,
                     height: 40.h,
                     fontSize: 14.sp,
                     buttonColor: AppColors.blueColor,
                     borderColor: AppColors.blueBorder,
                     textColor: Colors.white,
-                    onPressed: () {
+                    onPressed: () async {
                       // check whether user added new data
                       if (LocalStorage.getUserName() !=
                           nameController.text.trim()) {
-                        LocalStorage.setUserName(nameController.text)
-                            .then((value) => widget.event.setName());
+                        await LocalStorage.setUserName(nameController.text);
+                        widget.event.setName();
+
+                        await widget.event
+                            .patchName(nameController.text.trim(), context);
                       }
                       if (LocalStorage.getSelectedCity() !=
                           cityController.text) {
-                        LocalStorage.setSelectedCity(cityController.text)
-                            .then((value) => widget.event.setSelectedCity());
+                        await LocalStorage.setSelectedCity(cityController.text);
+                        await LocalStorage.setSelectedCityLat(
+                            selectedCity?.latitude ?? "");
+                        await LocalStorage.setSelectedCityLon(
+                            selectedCity?.longitude ?? "");
+                        widget.event.setSelectedCity();
+
+                        await widget.event.patchCity(selectedCity, context);
                       }
                       if (LocalStorage.getAge() != ageController.text) {
-                        LocalStorage.setAge(ageController.text)
-                            .then((value) => widget.event.setAge());
+                        await LocalStorage.setAge(ageController.text);
+                        widget.event.setAge();
+                        await widget.event
+                            .patchAge(ageController.text, context);
                       }
                       if (LocalStorage.getWeight() != weightController.text) {
-                        LocalStorage.setWeight(weightController.text)
-                            .then((value) => widget.event.setWeight());
+                        await LocalStorage.setWeight(weightController.text);
+                        widget.event.setWeight();
+                        await widget.event
+                            .patchWeight(weightController.text, context);
                       }
                       if (LocalStorage.getHeight() != heightController.text) {
-                        LocalStorage.setHeight(heightController.text)
-                            .then((value) => widget.event.setHeight());
+                        await LocalStorage.setHeight(heightController.text);
+                        widget.event.setHeight();
+                        await widget.event
+                            .patchHeight(heightController.text, context);
                       }
                       context.popRoute();
                     },

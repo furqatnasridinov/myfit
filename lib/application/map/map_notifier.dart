@@ -7,7 +7,6 @@ import 'package:activity/infrastructure/models/request/get_yandex_map_image_requ
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
-import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:activity/presentation/pages/map/widget/pop_up_map.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
@@ -40,21 +39,8 @@ class MapNotifier extends StateNotifier<MapState> {
       } catch (e) {
         state = state.copyWith(locationServiceIsNotEnabled: true);
       }
-
-      // state = state.copyWith(isloading: false);
     }
   }
-
-  /* Future<void> checkLocationService() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (permission == LocationPermission.always ||
-        permission == LocationPermission.whileInUse) {
-      if (!serviceEnabled) {
-        state = state.copyWith(locationServiceIsNotEnabled: true);
-      }
-    }
-  } */
 
   Future<void> setUserPosition() async {
     state = state.copyWith(isloading: true);
@@ -87,35 +73,26 @@ class MapNotifier extends StateNotifier<MapState> {
   Future<void> getYandexMapImage(
     BuildContext context,
   ) async {
-    double? selectedCityLon;
-    double? selectedCityLat;
     final connected = await AppConnectivity().connectivity();
     state = state.copyWith(isloading: true);
+    await getUserLocation();
     if (connected) {
-      if (state.userPosition == null || state.locationServiceIsNotEnabled) {
-        final listOfCities = DummyData().cityNames;
-        for (var element in listOfCities) {
-          if (element.name == LocalStorage.getSelectedCity()) {
-            selectedCityLon = element.lon!;
-            selectedCityLat = element.lat!;
-          }
-        }
-      }
-
       final request = state.userPosition != null
           ? GetYandexMapImageRequest(
               latlon:
                   "${state.userPosition?.longitude},${state.userPosition?.latitude}",
               marker:
                   "${state.userPosition?.longitude},${state.userPosition?.latitude},pm2rdm",
-              size: "350,150",
+              size: "330,150",
               zoom: 11,
               i: "map",
             )
           : GetYandexMapImageRequest(
-              latlon: "$selectedCityLon,$selectedCityLat",
-              marker: "$selectedCityLon,$selectedCityLat,pm2rdm",
-              size: "350,150",
+              latlon:
+                  "${LocalStorage.getSelectedCityLon()},${LocalStorage.getSelectedCityLat()}",
+              marker:
+                  "${LocalStorage.getSelectedCityLon()},${LocalStorage.getSelectedCityLat()},pm2rdm",
+              size: "330,150",
               zoom: 12,
               i: "map",
             );
@@ -140,20 +117,9 @@ class MapNotifier extends StateNotifier<MapState> {
     BuildContext context,
     String markers,
   ) async {
-    double? selectedCityLon;
-    double? selectedCityLat;
     final connected = await AppConnectivity().connectivity();
     if (connected) {
       state = state.copyWith(isloading: true);
-      if (state.userPosition == null) {
-        final listOfCities = DummyData().cityNames;
-        for (var element in listOfCities) {
-          if (element.name == LocalStorage.getSelectedCity()) {
-            selectedCityLon = element.lon!;
-            selectedCityLat = element.lat!;
-          }
-        }
-      }
 
       final request = state.userPosition != null
           ? GetYandexMapImageRequest(
@@ -166,8 +132,10 @@ class MapNotifier extends StateNotifier<MapState> {
               i: "map",
             )
           : GetYandexMapImageRequest(
-              latlon: "$selectedCityLon,$selectedCityLat",
-              marker: "$selectedCityLon,$selectedCityLat,pm2rdm,$markers",
+              latlon:
+                  "${LocalStorage.getSelectedCityLon()},${LocalStorage.getSelectedCityLat()}",
+              marker:
+                  "${LocalStorage.getSelectedCityLon()},${LocalStorage.getSelectedCityLat()},pm2rdm,$markers",
               size: "300,150",
               zoom: 10,
               i: "map",
@@ -191,24 +159,19 @@ class MapNotifier extends StateNotifier<MapState> {
 
   Future<void> setLocationFromSelectedCity() async {
     // checking whether user position is null
-    final listOfCities = DummyData().cityNames;
-    for (var element in listOfCities) {
-      if (element.name == LocalStorage.getSelectedCity()) {
-        state = state.copyWith(
-            userPosition: Position(
-          longitude: element.lon ?? 0,
-          latitude: element.lat ?? 0,
-          timestamp: DateTime.now(),
-          accuracy: 5,
-          altitude: 5,
-          altitudeAccuracy: 0.5,
-          heading: 0.5,
-          headingAccuracy: 0,
-          speed: 0,
-          speedAccuracy: 0,
-        ));
-      }
-    }
+    state = state.copyWith(
+        userPosition: Position(
+      longitude: double.parse(LocalStorage.getSelectedCityLon()),
+      latitude: double.parse(LocalStorage.getSelectedCityLat()),
+      timestamp: DateTime.now(),
+      accuracy: 5,
+      altitude: 5,
+      altitudeAccuracy: 0.5,
+      heading: 0.5,
+      headingAccuracy: 0,
+      speed: 0,
+      speedAccuracy: 0,
+    ));
   }
 
   void setLocationServiceAsEnabled() {
@@ -228,7 +191,7 @@ class MapNotifier extends StateNotifier<MapState> {
             ),
           ),
         ),
-        animation: const MapAnimation(duration: 2),
+        animation: const MapAnimation(duration: 1),
       );
     }
   }
@@ -316,7 +279,10 @@ class MapNotifier extends StateNotifier<MapState> {
     );
   }
 
-  Future<void> getGymsList(BuildContext context, int gymId) async {
+  Future<void> getGymsList(
+    BuildContext context,
+    bool showOnlyKnown,
+  ) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
       state = state.copyWith(isloading: true);
@@ -326,21 +292,43 @@ class MapNotifier extends StateNotifier<MapState> {
         success: (data) {
           final gymsMapFromServer = data["object"] as Map<String, dynamic>;
           final listToCollectActivitiesWithGyms = <LessonTypeWithGymsInside>[];
-          gymsMapFromServer.forEach((key, value) {
-            final data = LessonTypeWithGymsInside(
-              false,
-              lessontype: key,
-              listOfGyms:
-                  (value as List).map((gym) => Gymdata.fromJson(gym)).toList(),
-            );
-            listToCollectActivitiesWithGyms.add(data);
-          });
+          if (showOnlyKnown) {
+            List<String> knownActivities = LocalStorage.getKnownActivities();
+            for (var element in knownActivities) {
+              gymsMapFromServer.forEach((key, value) {
+                if (element == key) {
+                  final data = LessonTypeWithGymsInside(
+                    false,
+                    lessontype: key,
+                    listOfGyms: (value as List)
+                        .map((gym) => Gymdata.fromJson(gym))
+                        .toList(),
+                  );
+                  listToCollectActivitiesWithGyms.add(data);
+                }
+              });
+            }
+          } else {
+            gymsMapFromServer.forEach((key, value) {
+              final data = LessonTypeWithGymsInside(
+                false,
+                lessontype: key,
+                listOfGyms: (value as List)
+                    .map((gym) => Gymdata.fromJson(gym))
+                    .toList(),
+              );
+              listToCollectActivitiesWithGyms.add(data);
+            });
+          }
+
           final withCalculatedDistances = // and sort
               calculateDistanceOfGyms(listToCollectActivitiesWithGyms);
           state = state.copyWith(
               activitiesWithGymsInsideAll: withCalculatedDistances);
         },
-        failure: (error, statusCode) {},
+        failure: (error, statusCode) {
+          AppHelpers.showErrorSnack(context, error.toString());
+        },
       );
       state = state.copyWith(isloading: false);
     } else {
@@ -444,7 +432,23 @@ class MapNotifier extends StateNotifier<MapState> {
     if (list.length > 4 && !state.isloading) {
       state = state.copyWith(topFlex: 6, bottomFlex: 8);
     }
-    if (list.length > 5 &&
+    if ((list.isNotEmpty && list.length <= 2) &&
+        (state.locationPermissionIsNOtGiven ||
+            state.locationServiceIsNotEnabled)) {
+      state = state.copyWith(
+        topFlex: 4,
+        bottomFlex: 6,
+      );
+    }
+    if ((list.length >= 3 && list.length <= 4) &&
+        (state.locationPermissionIsNOtGiven ||
+            state.locationServiceIsNotEnabled)) {
+      state = state.copyWith(
+        topFlex: 5,
+        bottomFlex: 6,
+      );
+    }
+    if (list.length >= 5 &&
         (state.locationPermissionIsNOtGiven ||
             state.locationServiceIsNotEnabled)) {
       state = state.copyWith(
@@ -541,6 +545,7 @@ class MapNotifier extends StateNotifier<MapState> {
               address: state.activeMarker?.address ?? "??",
               onTap: () {
                 entry!.remove();
+                showLocationButton();
                 context.router.push(
                   ActivityRoute(gymId: state.activeMarker?.id ?? 0),
                 );
@@ -655,6 +660,27 @@ class MapNotifier extends StateNotifier<MapState> {
       // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
+  }
+
+  void locationButtonFunction(YandexMapController? mapController) async {
+    if (state.locationPermissionIsNOtGiven) {
+      await Geolocator.requestPermission();
+    }
+    if (!state.locationPermissionIsNOtGiven &&
+        state.locationServiceIsNotEnabled) {
+      await Geolocator.openLocationSettings();
+    }
+    mapController?.moveCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: Point(
+            latitude: state.userPosition!.latitude,
+            longitude: state.userPosition!.longitude,
+          ),
+        ),
+      ),
+      animation: const MapAnimation(duration: 1),
+    );
   }
 
   void openSearchBar() {

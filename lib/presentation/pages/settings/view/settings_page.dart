@@ -27,7 +27,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(settingsProvider);
-    final event = ref.watch(settingsProvider.notifier);
+    final event = ref.read(settingsProvider.notifier);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar: const SettingsHeader(),
@@ -45,6 +45,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             32.verticalSpace,
             const MySubscribtion(),
             32.verticalSpace,
+            /* Two containers */
             PersonalInfo(
               event: event,
               state: state,

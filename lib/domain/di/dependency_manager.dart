@@ -3,10 +3,12 @@ import 'package:activity/domain/interface/activity.dart';
 import 'package:activity/domain/interface/main.dart';
 import 'package:activity/domain/interface/register.dart';
 import 'package:activity/domain/interface/schedule.dart';
+import 'package:activity/domain/interface/settings.dart';
 import 'package:activity/infrastructure/repository/activity_repository.dart';
 import 'package:activity/infrastructure/repository/main_repository.dart';
 import 'package:activity/infrastructure/repository/register_repository.dart';
 import 'package:activity/infrastructure/repository/schedule_repository.dart';
+import 'package:activity/infrastructure/repository/settings_respository.dart';
 import 'package:get_it/get_it.dart';
 
 final GetIt getIt = GetIt.instance;
@@ -17,9 +19,11 @@ Future<void> setUpDependencies() async {
   getIt.registerSingleton<MainRepositoryInterface>(MainRepository());
   getIt.registerSingleton<ScheduleRepositoryInterface>(ScheduleRepository());
   getIt.registerSingleton<RegisterRepositoryInterface>(RegisterRepository());
+  getIt.registerSingleton<SetttingsRepositoryInterface>(SettingsRepository());
 }
 
 final gymRepo = getIt.get<ActivityRepositoryInterface>();
 final mainRepo = getIt.get<MainRepositoryInterface>();
 final scheduleRepo  =getIt.get<ScheduleRepositoryInterface>();
 final registerRepo = getIt.get<RegisterRepositoryInterface>();
+final settingsRepo = getIt.get<SetttingsRepositoryInterface>();

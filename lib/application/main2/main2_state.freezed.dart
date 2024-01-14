@@ -16,7 +16,8 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$Main2State {
-  bool get isloading => throw _privateConstructorUsedError;
+  bool get nearestLessonIsLoading => throw _privateConstructorUsedError;
+  bool get statsMonthIsloading => throw _privateConstructorUsedError;
   bool get isSearchbarOpened => throw _privateConstructorUsedError;
   bool get showTillWhen => throw _privateConstructorUsedError;
   GetNearestLesson? get nearestLesson => throw _privateConstructorUsedError;
@@ -37,7 +38,8 @@ abstract class $Main2StateCopyWith<$Res> {
       _$Main2StateCopyWithImpl<$Res, Main2State>;
   @useResult
   $Res call(
-      {bool isloading,
+      {bool nearestLessonIsLoading,
+      bool statsMonthIsloading,
       bool isSearchbarOpened,
       bool showTillWhen,
       GetNearestLesson? nearestLesson,
@@ -59,7 +61,8 @@ class _$Main2StateCopyWithImpl<$Res, $Val extends Main2State>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? isloading = null,
+    Object? nearestLessonIsLoading = null,
+    Object? statsMonthIsloading = null,
     Object? isSearchbarOpened = null,
     Object? showTillWhen = null,
     Object? nearestLesson = freezed,
@@ -68,9 +71,13 @@ class _$Main2StateCopyWithImpl<$Res, $Val extends Main2State>
     Object? schedulesFoundBySearching = null,
   }) {
     return _then(_value.copyWith(
-      isloading: null == isloading
-          ? _value.isloading
-          : isloading // ignore: cast_nullable_to_non_nullable
+      nearestLessonIsLoading: null == nearestLessonIsLoading
+          ? _value.nearestLessonIsLoading
+          : nearestLessonIsLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      statsMonthIsloading: null == statsMonthIsloading
+          ? _value.statsMonthIsloading
+          : statsMonthIsloading // ignore: cast_nullable_to_non_nullable
               as bool,
       isSearchbarOpened: null == isSearchbarOpened
           ? _value.isSearchbarOpened
@@ -109,7 +116,8 @@ abstract class _$$Main2StateImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {bool isloading,
+      {bool nearestLessonIsLoading,
+      bool statsMonthIsloading,
       bool isSearchbarOpened,
       bool showTillWhen,
       GetNearestLesson? nearestLesson,
@@ -129,7 +137,8 @@ class __$$Main2StateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? isloading = null,
+    Object? nearestLessonIsLoading = null,
+    Object? statsMonthIsloading = null,
     Object? isSearchbarOpened = null,
     Object? showTillWhen = null,
     Object? nearestLesson = freezed,
@@ -138,9 +147,13 @@ class __$$Main2StateImplCopyWithImpl<$Res>
     Object? schedulesFoundBySearching = null,
   }) {
     return _then(_$Main2StateImpl(
-      isloading: null == isloading
-          ? _value.isloading
-          : isloading // ignore: cast_nullable_to_non_nullable
+      nearestLessonIsLoading: null == nearestLessonIsLoading
+          ? _value.nearestLessonIsLoading
+          : nearestLessonIsLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      statsMonthIsloading: null == statsMonthIsloading
+          ? _value.statsMonthIsloading
+          : statsMonthIsloading // ignore: cast_nullable_to_non_nullable
               as bool,
       isSearchbarOpened: null == isSearchbarOpened
           ? _value.isSearchbarOpened
@@ -174,7 +187,8 @@ class __$$Main2StateImplCopyWithImpl<$Res>
 
 class _$Main2StateImpl extends _Main2State {
   const _$Main2StateImpl(
-      {this.isloading = false,
+      {this.nearestLessonIsLoading = false,
+      this.statsMonthIsloading = false,
       this.isSearchbarOpened = false,
       this.showTillWhen = false,
       this.nearestLesson = null,
@@ -187,7 +201,10 @@ class _$Main2StateImpl extends _Main2State {
 
   @override
   @JsonKey()
-  final bool isloading;
+  final bool nearestLessonIsLoading;
+  @override
+  @JsonKey()
+  final bool statsMonthIsloading;
   @override
   @JsonKey()
   final bool isSearchbarOpened;
@@ -221,7 +238,7 @@ class _$Main2StateImpl extends _Main2State {
 
   @override
   String toString() {
-    return 'Main2State(isloading: $isloading, isSearchbarOpened: $isSearchbarOpened, showTillWhen: $showTillWhen, nearestLesson: $nearestLesson, whenActivityStarts: $whenActivityStarts, statsForMonth: $statsForMonth, schedulesFoundBySearching: $schedulesFoundBySearching)';
+    return 'Main2State(nearestLessonIsLoading: $nearestLessonIsLoading, statsMonthIsloading: $statsMonthIsloading, isSearchbarOpened: $isSearchbarOpened, showTillWhen: $showTillWhen, nearestLesson: $nearestLesson, whenActivityStarts: $whenActivityStarts, statsForMonth: $statsForMonth, schedulesFoundBySearching: $schedulesFoundBySearching)';
   }
 
   @override
@@ -229,8 +246,10 @@ class _$Main2StateImpl extends _Main2State {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$Main2StateImpl &&
-            (identical(other.isloading, isloading) ||
-                other.isloading == isloading) &&
+            (identical(other.nearestLessonIsLoading, nearestLessonIsLoading) ||
+                other.nearestLessonIsLoading == nearestLessonIsLoading) &&
+            (identical(other.statsMonthIsloading, statsMonthIsloading) ||
+                other.statsMonthIsloading == statsMonthIsloading) &&
             (identical(other.isSearchbarOpened, isSearchbarOpened) ||
                 other.isSearchbarOpened == isSearchbarOpened) &&
             (identical(other.showTillWhen, showTillWhen) ||
@@ -248,7 +267,8 @@ class _$Main2StateImpl extends _Main2State {
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      isloading,
+      nearestLessonIsLoading,
+      statsMonthIsloading,
       isSearchbarOpened,
       showTillWhen,
       nearestLesson,
@@ -265,7 +285,8 @@ class _$Main2StateImpl extends _Main2State {
 
 abstract class _Main2State extends Main2State {
   const factory _Main2State(
-      {final bool isloading,
+      {final bool nearestLessonIsLoading,
+      final bool statsMonthIsloading,
       final bool isSearchbarOpened,
       final bool showTillWhen,
       final GetNearestLesson? nearestLesson,
@@ -275,7 +296,9 @@ abstract class _Main2State extends Main2State {
   const _Main2State._() : super._();
 
   @override
-  bool get isloading;
+  bool get nearestLessonIsLoading;
+  @override
+  bool get statsMonthIsloading;
   @override
   bool get isSearchbarOpened;
   @override

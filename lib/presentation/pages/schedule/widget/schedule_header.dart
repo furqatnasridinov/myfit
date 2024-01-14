@@ -132,7 +132,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
                           onPressedAction: () {
                             textfieldFocusnode.unfocus();
                             setState(() {});
-                            context.router.push(MapRoute(gymId: 0));
+                            context.router.push(MapRoute(showOnlyKnown: false));
                           },
                           isFullWidth: true,
                         )
@@ -233,7 +233,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
       // leading
       leading: textfieldFocusnode.hasFocus
           ? null
-          : InkWell(
+          : GestureDetector(
               onTap: () {
                 context.popRoute();
               },

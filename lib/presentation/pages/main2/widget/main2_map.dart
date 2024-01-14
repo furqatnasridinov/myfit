@@ -17,7 +17,7 @@ class Main2Map extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.router.push(MapRoute(gymId: 0));
+        context.router.push(MapRoute(showOnlyKnown: false));
       },
       child: Container(
         height: 147.w,

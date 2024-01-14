@@ -14,6 +14,7 @@ class CustomButton extends StatelessWidget {
   double? height;
   double? fontSize;
   FontWeight? fontWeight;
+  bool showProgress;
   CustomButton({
     super.key,
     required this.onPressed,
@@ -25,6 +26,7 @@ class CustomButton extends StatelessWidget {
     this.fontWeight = FontWeight.w500,
     this.borderColor = AppColors.blueColor,
     this.buttonColor = AppColors.backgroundColor,
+    this.showProgress = false,
   });
 
   @override
@@ -51,12 +53,20 @@ class CustomButton extends StatelessWidget {
             },
           ),
         ),
-        child: CustomText(
-          color: textColor,
-          text: text,
-          fontSize: fontSize!,
-          fontWeight: fontWeight,
-        ),
+        child: showProgress
+            ? Padding(
+                padding: EdgeInsets.symmetric(vertical: 5.h),
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2.5.w,
+                ),
+              )
+            : CustomText(
+                color: textColor,
+                text: text,
+                fontSize: fontSize!,
+                fontWeight: fontWeight,
+              ),
       ),
     );
   }

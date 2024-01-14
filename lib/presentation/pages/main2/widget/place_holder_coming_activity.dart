@@ -34,7 +34,7 @@ class PlaceholderComingActivity extends StatelessWidget {
         fontSize: 16.sp,
         fontWeight: FontWeight.w600,
         onPressed: () {
-          context.router.push(MapRoute(gymId: 0));
+          context.router.push(MapRoute(showOnlyKnown: false));
         },
         text: "Найти себе занятие",
       ),

@@ -8,11 +8,11 @@ import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/inter_text.dart';
+import 'package:activity/presentation/pages/auth/registration/custom_painter.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:pinput/pinput.dart';
 
 @RoutePage()
@@ -27,12 +27,13 @@ class Registration2Screen extends ConsumerStatefulWidget {
 }
 
 class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
-  TextEditingController controller = TextEditingController();
+  late TextEditingController controller;
 
   final String predefinedCode = '1234';
   bool isCodeError = false;
   bool isPinCodeValidate = false;
   bool isChecking = false;
+
   Future<void> checkValidation(String code, String userCode) async {
     if (isCodeError) {
       setState(() {
@@ -82,12 +83,14 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
   @override
   void dispose() {
     _timer?.cancel();
+    controller.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
+    controller = TextEditingController();
     startTimer();
   }
 
@@ -276,15 +279,13 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                 ),
               ),
             ),
-            // waves
 
+            // waves
             Align(
               alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                child: SvgPicture.asset(
-                  "assets/svg/Vector 13.svg",
-                  width: width,
-                ),
+              child: CustomPaint(
+                size: Size(400, 160.w),
+                painter: Registration1CustomPainter(),
               ),
             ),
           ],

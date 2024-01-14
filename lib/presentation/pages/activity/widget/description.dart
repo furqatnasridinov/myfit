@@ -1,6 +1,8 @@
+import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Description extends StatelessWidget {
@@ -18,12 +20,14 @@ class Description extends StatelessWidget {
             fontSize: 16.sp,
             fontWeight: FontWeight.w600,
           ),
-          InterText(
-            text:
-                "Смешанные единоборства в нашем зале представляют собой смесь из разных видов единоборств. Освоить все виды могут не только лишь все, мало кто может это делать.",
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w400,
-          )
+          Consumer(builder: (context, ref, child) {
+            final state = ref.watch(activityProvider);
+            return InterText(
+              text: state.describtionAndPeculiarities?.typeDescription ?? "",
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w400,
+            );
+          }),
         ],
       ),
     );

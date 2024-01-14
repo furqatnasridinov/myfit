@@ -3,21 +3,20 @@
 import 'dart:typed_data';
 
 import 'package:activity/application/main/main_notifier.dart';
-import 'package:activity/application/map/map_state.dart';
+import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/pages/main2/widget/main2_map_placeholder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class MapInsideNearActivities extends StatelessWidget {
   final MainNotifier event;
-  final MapState mapState;
-  MapInsideNearActivities(
-      {super.key,
-      required this.event,
-      required this.mapState,
-      });
+  MapInsideNearActivities({
+    super.key,
+    required this.event,
+  });
   YandexMapController? yandexMapController;
 
   @override
@@ -46,26 +45,31 @@ class MapInsideNearActivities extends StatelessWidget {
           ),
         ],
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16.r),
-        child: mapState.isloading && mapState.mapScreenShot == null
-            ? const Main2MapPlaceHolder()
-            : Image.memory(
-                mapState.mapScreenShot ?? Uint8List(100),
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  // Your fallback widget here
-                  return SizedBox(
-                    height: 147.h,
-                    width: double.maxFinite,
-                    child: Center(
-                      child: CustomText(text: ""
-                          //"Unable to load screenshot from Yandex Static API",
-                          ),
-                    ),
-                  );
-                },
-              ),
+      child: Consumer(
+        builder: (context, ref, child) {
+          final mapState = ref.watch(mapProvider);
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(16.r),
+            child: mapState.isloading && mapState.mapScreenShot == null
+                ? const Main2MapPlaceHolder()
+                : Image.memory(
+                    mapState.mapScreenShot ?? Uint8List(100),
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      // Your fallback widget here
+                      return SizedBox(
+                        height: 147.h,
+                        width: double.maxFinite,
+                        child: Center(
+                          child: CustomText(text: ""
+                              //"Unable to load screenshot from Yandex Static API",
+                              ),
+                        ),
+                      );
+                    },
+                  ),
+          );
+        },
       ),
     );
 

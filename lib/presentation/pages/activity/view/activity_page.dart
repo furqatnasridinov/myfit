@@ -26,22 +26,41 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
         ref
             .read(activityProvider.notifier)
             .getGymInfo(
+              context,
               gymId: widget.gymId,
             )
             .then((value) {
           ref
               .read(activityProvider.notifier)
-              .getActivitiesList(gymId: widget.gymId)
+              .getInfoForType(context, id: widget.gymId);
+          ref
+              .read(activityProvider.notifier)
+              .getActivityTypes(context, gymId: widget.gymId)
               .then(
                 (value) => ref
                     .read(activityProvider.notifier)
                     .determineDefaultActivity()
                     .then(
-                      (value) =>
-                          ref.read(activityProvider.notifier).getGymPhotos(
-                                ref.watch(activityProvider).selectedActivity,
-                                widget.gymId,
-                              ),
+                      (value) => ref
+                          .read(activityProvider.notifier)
+                          .getGymPhotos(
+                            context,
+                            widget.gymId,
+                          )
+                          .then(
+                            (value) => ref
+                                .read(activityProvider.notifier)
+                                .getDescribtionAndPeculiarities(ref
+                                    .watch(activityProvider)
+                                    .selectedActivity!)
+                                .then(
+                                  (value) => ref
+                                      .read(activityProvider.notifier)
+                                      .getPhotosOfSelectedActivity(ref
+                                          .watch(activityProvider)
+                                          .selectedActivity!),
+                                ),
+                          ),
                     ),
               );
 
@@ -79,11 +98,12 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
     final state = ref.watch(activityProvider);
     if (kDebugMode) {
       print("gym >> ${state.gym?.name}");
-      print("chips >> ${state.activities?.length}");
+      print("chips >> ${state.activityTypes?.length}");
       print("selectedactivity >> ${state.selectedActivity}");
       print("list of original dates >> ${state.originalDates}");
       print("available formatted dates ${state.availableFormattedDates}");
       print("15 calendar days from now ${state.listOf15CalendarDaysFromNow}");
+      print("15 original days from now ${state.listOf15OriginalDaysFromNow}");
       print("selectedOriginalDate ${state.selectedOriginalDate}");
       print("selectedFormatted ${state.selectedFormattedDay}");
       print(
@@ -118,7 +138,6 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
                     32.verticalSpace,
                     TheOneWithPhotos(
                       event: event,
-                      state: state,
                     ),
                     32.verticalSpace,
                     Speciality(),

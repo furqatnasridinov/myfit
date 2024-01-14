@@ -5,6 +5,7 @@ import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/inter_text.dart';
+import 'package:activity/presentation/pages/auth/registration/custom_painter.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -23,10 +24,11 @@ class Registration1Screen extends ConsumerStatefulWidget {
 }
 
 class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
-  TextEditingController phoneController = TextEditingController();
+  late TextEditingController phoneController;
 
   @override
   void initState() {
+    phoneController = TextEditingController();
     super.initState();
     phoneController.addListener(() {
       String currentText = phoneController.text;
@@ -50,6 +52,12 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
     });
   }
 
+  @override
+  void dispose() {
+    phoneController.dispose();
+    super.dispose();
+  }
+
   String applyMask(String input, String mask) {
     // Implement your masking logic here
     String output = '';
@@ -71,12 +79,12 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    //final width = MediaQuery.of(context).size.width;
     final event = ref.read(registrationProvider.notifier);
     final state = ref.watch(registrationProvider);
-    debugPrint("phone number ${state.phoneNumber}");
+/*     debugPrint("phone number ${state.phoneNumber}");
     debugPrint("phone lenth ${state.phoneNumber.length}");
-    debugPrint("phone isvalid ${state.isValidPhone}");
+    debugPrint("phone isvalid ${state.isValidPhone}"); */
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: Stack(
@@ -212,10 +220,10 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                             insetPadding:
                                 EdgeInsets.symmetric(horizontal: 16.w),
                             child: CustomCard(
-                                height: 270.h,
                                 borderColor: Colors.transparent,
                                 width: double.maxFinite,
                                 child: Column(
+                                  mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     CustomText(
@@ -268,14 +276,13 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
               ),
             ),
           ),
+
           // waves
           Align(
             alignment: Alignment.bottomCenter,
-            child: SizedBox(
-              child: SvgPicture.asset(
-                "assets/svg/Vector 13.svg",
-                width: width,
-              ),
+            child: CustomPaint(
+              size: Size(400, 180.h),
+              painter: Registration1CustomPainter(),
             ),
           ),
         ],

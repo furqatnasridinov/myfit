@@ -1,33 +1,10 @@
 class AuthResponse {
-  String? operationResult;
-  AuthResponseBody? authResponseBody;
-
-  AuthResponse({this.operationResult, this.authResponseBody});
-
-  AuthResponse.fromJson(Map<String, dynamic> json) {
-    operationResult = json['operationResult'];
-    authResponseBody = json['object'] != null
-        ? AuthResponseBody.fromJson(json['object'])
-        : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['operationResult'] = operationResult;
-    if (authResponseBody != null) {
-      data['object'] = authResponseBody!.toJson();
-    }
-    return data;
-  }
-}
-
-class AuthResponseBody {
   User? user;
   String? jwtToken;
 
-  AuthResponseBody({this.user, this.jwtToken});
+  AuthResponse({this.user, this.jwtToken});
 
-  AuthResponseBody.fromJson(Map<String, dynamic> json) {
+  AuthResponse.fromJson(Map<String, dynamic> json) {
     user = json['user'] != null ? User.fromJson(json['user']) : null;
     jwtToken = json['jwtToken'];
   }
@@ -44,53 +21,128 @@ class AuthResponseBody {
 
 class User {
   int? id;
-  List<String>? roles;
   String? login;
-  bool? confirmed;
-  bool? errorConfirm;
   String? firstName;
   String? lastName;
   String? patronymic;
   String? gender;
-  bool? firstEntry;
+  String? backgroundPictureUrl;
+  City? city;
+  int? age;
+  int? weight;
+  int? height;
 
   User(
       {this.id,
-      this.roles,
       this.login,
-      this.confirmed,
-      this.errorConfirm,
       this.firstName,
       this.lastName,
       this.patronymic,
       this.gender,
-      this.firstEntry});
+      this.backgroundPictureUrl,
+      this.city,
+      this.age,
+      this.weight,
+      this.height});
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    roles = json['roles'].cast<String>();
     login = json['login'];
-    confirmed = json['confirmed'];
-    errorConfirm = json['errorConfirm'];
     firstName = json['firstName'];
     lastName = json['lastName'];
     patronymic = json['patronymic'];
     gender = json['gender'];
-    firstEntry = json['firstEntry'];
+    backgroundPictureUrl = json['backgroundPictureUrl'];
+    city = json['city'] != null ? City.fromJson(json['city']) : null;
+    age = json['age'];
+    weight = json['weight'];
+    height = json['height'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
-    data['roles'] = roles;
     data['login'] = login;
-    data['confirmed'] = confirmed;
-    data['errorConfirm'] = errorConfirm;
     data['firstName'] = firstName;
     data['lastName'] = lastName;
     data['patronymic'] = patronymic;
     data['gender'] = gender;
-    data['firstEntry'] = firstEntry;
+    data['backgroundPictureUrl'] = backgroundPictureUrl;
+    if (city != null) {
+      data['city'] = city!.toJson();
+    }
+    data['age'] = age;
+    data['weight'] = weight;
+    data['height'] = height;
+    return data;
+  }
+}
+
+class City {
+  int? id;
+  Country? country;
+  String? name;
+  String? regionName;
+  String? externalIdentifier;
+  String? latitude;
+  String? longitude;
+
+  City(
+      {this.id,
+      this.country,
+      this.name,
+      this.regionName,
+      this.externalIdentifier,
+      this.latitude,
+      this.longitude});
+
+  City.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    country =
+        json['country'] != null ? Country.fromJson(json['country']) : null;
+    name = json['name'];
+    regionName = json['regionName'];
+    externalIdentifier = json['externalIdentifier'];
+    latitude = json['latitude'];
+    longitude = json['longitude'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    if (country != null) {
+      data['country'] = country!.toJson();
+    }
+    data['name'] = name;
+    data['regionName'] = regionName;
+    data['externalIdentifier'] = externalIdentifier;
+    data['latitude'] = latitude;
+    data['longitude'] = longitude;
+    return data;
+  }
+}
+
+class Country {
+  int? id;
+  String? name;
+  String? externalIdentifier;
+  bool? showInApp;
+
+  Country({this.id, this.name, this.externalIdentifier, this.showInApp});
+
+  Country.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    externalIdentifier = json['externalIdentifier'];
+    showInApp = json['showInApp'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['externalIdentifier'] = externalIdentifier;
+    data['showInApp'] = showInApp;
     return data;
   }
 }

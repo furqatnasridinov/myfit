@@ -8,7 +8,8 @@ part 'main2_state.freezed.dart';
 @freezed
 class Main2State with _$Main2State {
   const factory Main2State({
-    @Default(false) bool isloading,
+    @Default(false) bool nearestLessonIsLoading,
+    @Default(false) bool statsMonthIsloading,
     @Default(false) bool isSearchbarOpened,
     @Default(false) bool showTillWhen,
     @Default(null) GetNearestLesson? nearestLesson,

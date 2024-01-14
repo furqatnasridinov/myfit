@@ -1,16 +1,16 @@
 import 'package:activity/application/activity/activity_notifier.dart';
-import 'package:activity/application/activity/activity_state.dart';
+import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TheOneWithPhotos extends StatelessWidget {
-  final ActivityState state;
   final ActivityNotifier event;
-  const TheOneWithPhotos({super.key, required this.state, required this.event});
+  const TheOneWithPhotos({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -38,47 +38,61 @@ class TheOneWithPhotos extends StatelessWidget {
                 width: 1.w,
               ),
             ),
-            child: ListView.builder(
-              itemExtent: 72,
-              scrollDirection: Axis.horizontal,
-              itemCount: state.photos?.length ?? 4,
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return Dialog(
-                          backgroundColor: Colors.black.withOpacity(0.5),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.r),
-                          ),
-                          child: SizedBox(
-                              //color: Colors.amber,
-                              height: 230.h,
-                              child: Image.asset(
-                                AppConstants.placeholderPhoto,
-                                fit: BoxFit.cover,
-                              )
-                              //Image.network(state.photos?[index]),
+            child: Consumer(
+              builder: (context, ref, child) {
+                final state = ref.watch(activityProvider);
+                return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: state.photosOfSelectedActivity.length,
+                  itemBuilder: (context, index) {
+                    final current = state.photosOfSelectedActivity[index];
+                    return InkWell(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return Dialog(
+                              backgroundColor: Colors.black.withOpacity(0.5),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.r),
                               ),
+                              child: SizedBox(
+                                //color: Colors.red,
+                                height: 330.h,
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                      "http://77.222.53.122/image/$current",
+                                  fit: BoxFit.cover,
+                                  errorWidget: (context, url, error) {
+                                    return Image.asset(
+                                        AppConstants.cristianBale);
+                                  },
+                                ),
+                              ),
+                            );
+                          },
                         );
                       },
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 10.w),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.r),
+                          child: SizedBox(
+                            //color: Colors.red,
+                            width: 47.w,
+                            height: 47.h,
+                            child: CachedNetworkImage(
+                              imageUrl: "http://77.222.53.122/image/$current",
+                              fit: BoxFit.cover,
+                              errorWidget: (context, url, error) {
+                                return Image.asset(AppConstants.cristianBale);
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
                     );
                   },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: SizedBox(
-                      width: 47.w,
-                      height: 47.h,
-                      child: CachedNetworkImage(
-                        imageUrl: state.photos?[index],
-                        errorWidget: (context, url, error) {
-                          return Image.asset(AppConstants.placeholderPhoto);
-                        },
-                      ),
-                    ),
-                  ),
                 );
               },
             ),

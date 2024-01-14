@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -66,6 +68,42 @@ class LocalStorage {
   static void removeSelectedCity() =>
       _preferences?.remove(AppConstants.keyCity);
 
+  // save city lat
+  static Future<void> setSelectedCityLat(String? lat) async {
+    if (_preferences != null) {
+      await _preferences?.setString(
+        AppConstants.keyCityLat,
+        lat ?? "??",
+      );
+    }
+  }
+
+  // get city lat
+  static String getSelectedCityLat() =>
+      _preferences?.getString(AppConstants.keyCityLat) ?? "";
+
+  // remove city lat
+  static void removeSelectedCityLat() =>
+      _preferences?.remove(AppConstants.keyCityLat);
+
+  // save city lon
+  static Future<void> setSelectedCityLon(String? lon) async {
+    if (_preferences != null) {
+      await _preferences?.setString(
+        AppConstants.keyCityLon,
+        lon ?? "??",
+      );
+    }
+  }
+
+  // get city lon
+  static String getSelectedCityLon() =>
+      _preferences?.getString(AppConstants.keyCityLon) ?? "";
+
+  // remove city lon
+  static void removeSelectedCityLon() =>
+      _preferences?.remove(AppConstants.keyCityLon);
+
   // save age
   static Future<void> setAge(String? age) async {
     if (_preferences != null) {
@@ -116,8 +154,7 @@ class LocalStorage {
   // remove height
   static void removeHeight() => _preferences?.remove(AppConstants.keyHeight);
 
-
- // save avatar
+  // save avatar
   static Future<void> setAvatar(String? avatar) async {
     if (_preferences != null) {
       await _preferences?.setString(
@@ -133,7 +170,6 @@ class LocalStorage {
 
   // remove avatar
   static void removeAvatar() => _preferences?.remove(AppConstants.keyAvatar);
-
 
   // save user id
   static Future<void> setUserId(String? id) async {
@@ -162,14 +198,14 @@ class LocalStorage {
     }
   }
 
-  // get user id
+  // get user token
   static String getToken() =>
       _preferences?.getString(AppConstants.keyToken) ?? "";
 
-  // remove user id
+  // remove user token
   static void removeToken() => _preferences?.remove(AppConstants.keyToken);
 
-  // save user id
+  // save user name
   static Future<void> setUserName(String? username) async {
     if (_preferences != null) {
       await _preferences?.setString(
@@ -179,12 +215,89 @@ class LocalStorage {
     }
   }
 
-  // get user id
+  // get user name
   static String getUserName() =>
       _preferences?.getString(AppConstants.keyUserName) ?? "";
 
-  // remove user id
+  // remove user name
   static void removeUserName() =>
+      _preferences?.remove(AppConstants.keyUserName);
+
+  // save user last name
+  static Future<void> setUserLastName(String? lastname) async {
+    if (_preferences != null) {
+      await _preferences?.setString(
+        AppConstants.keyUserLastName,
+        lastname ?? "??",
+      );
+    }
+  }
+
+  // get user last name
+  static String getUserLastName() =>
+      _preferences?.getString(AppConstants.keyUserLastName) ?? "";
+
+  // remove user last name
+  static void removeUserLastName() =>
+      _preferences?.remove(AppConstants.keyUserLastName);
+
+// save user patronomic
+  static Future<void> setUserPatronomic(String? patron) async {
+    if (_preferences != null) {
+      await _preferences?.setString(
+        AppConstants.keyUserPatronomic,
+        patron ?? "??",
+      );
+    }
+  }
+
+  // get user patronomic
+  static String getUserPatronomic() =>
+      _preferences?.getString(AppConstants.keyUserPatronomic) ?? "";
+
+  // remove user patronomic
+  static void removePatronomice() =>
+      _preferences?.remove(AppConstants.keyUserPatronomic);
+
+  // save user gender
+  static Future<void> setGender(String? gender) async {
+    if (_preferences != null) {
+      await _preferences?.setString(
+        AppConstants.keyGender,
+        gender ?? "??",
+      );
+    }
+  }
+
+  // get user gender
+  static String getGender() =>
+      _preferences?.getString(AppConstants.keyGender) ?? "";
+
+  // remove user gender
+  static void removeGender() => _preferences?.remove(AppConstants.keyGender);
+
+  // set List<String> ==> knownActivities
+  static Future<void> setKnownActivities(List<String> list) async {
+    String convertedToJson = jsonEncode(list);
+    if (_preferences != null) {
+      await _preferences?.setString(
+          AppConstants.keyKnownActivities, convertedToJson);
+    }
+  }
+
+  // get List<String> ==> knownActivities
+  static List<String> getKnownActivities() {
+    String? jsonString =
+        _preferences?.getString(AppConstants.keyKnownActivities);
+    if (jsonString != null) {
+      return List<String>.from(jsonDecode(jsonString));
+    } else {
+      return [];
+    }
+  }
+
+  // remove List<String> ==> knownActivities
+  static void removeKnownActivities() =>
       _preferences?.remove(AppConstants.keyUserName);
 
   static Future<bool> checkIfIsNotEmpty() async {
@@ -194,4 +307,7 @@ class LocalStorage {
       return false;
     }
   }
+
+  // log out
+  Future<void> logOut() async {}
 }

@@ -198,8 +198,9 @@ class _MainHeaderState extends State<Main2Header> {
                         child: Center(
                           child: SvgPicture.asset(
                             'assets/svg/calendar.svg',
-                            width: 24.w,
-                            height: 24.h,
+                            
+                            /* width: 24.w,
+                            height: 24.h, */
                           ),
                         ),
                       ),

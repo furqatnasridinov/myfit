@@ -1,5 +1,5 @@
-import 'package:activity/infrastructure/models/data/gym_with_tags.dart';
 import 'package:activity/infrastructure/models/data/schedule_and_gym.dart';
+import 'package:activity/infrastructure/models/response/user_schedules_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'schedule_state.freezed.dart';
@@ -9,7 +9,8 @@ class ScheduleState with _$ScheduleState {
   const factory ScheduleState({
     @Default(false) bool isloading,
     @Default({}) Map<String, dynamic> schedulesInMapForm,
-    @Default(false) bool showTillWhen,
+    @Default([]) List<UserSchedulesResponse> listOfuserSchedules,
+    @Default(true) bool showTillWhen,
     @Default(false) bool plusState,
     @Default(false) bool isLocationButtonActivated,
     @Default(false) bool isFlashButtonActivated,

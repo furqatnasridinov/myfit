@@ -37,7 +37,7 @@ class FirstTwoCards extends StatelessWidget {
               //15.verticalSpace,
               state.statsForMonth.isEmpty
                   ? CustomText(
-                      text: "В этом месяце у вас нету выполненных активностей",
+                      text: "Статистика пока недоступна",
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w400,
                     )
@@ -204,10 +204,12 @@ class FirstTwoCards extends StatelessWidget {
           ),
         ),
         10.horizontalSpace,
-        CustomText(
-          text: text,
-          fontSize: 10.sp,
-          fontWeight: FontWeight.w500,
+        Flexible(
+          child: CustomText(
+            text: text,
+            fontSize: 10.sp,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ],
     );

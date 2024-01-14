@@ -17,16 +17,26 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$ActivityState {
   bool get isloading => throw _privateConstructorUsedError;
+  bool get isGymLoading => throw _privateConstructorUsedError;
+  bool get isActivitiesListLoading => throw _privateConstructorUsedError;
+  bool get isPhotosLoading => throw _privateConstructorUsedError;
+  bool get isSchedulesLoading => throw _privateConstructorUsedError;
+  bool get infoForTypeLoading => throw _privateConstructorUsedError;
   GymResponse? get gym => throw _privateConstructorUsedError;
-  List<String>? get activities => throw _privateConstructorUsedError;
+  DescribtionAndPeculiarities? get describtionAndPeculiarities =>
+      throw _privateConstructorUsedError;
+  List<String>? get activityTypes => throw _privateConstructorUsedError;
+  Map<String, dynamic> get allPhotos => throw _privateConstructorUsedError;
   String? get selectedActivity => throw _privateConstructorUsedError;
-  List<dynamic>? get photos => throw _privateConstructorUsedError;
+  List<String> get photosOfSelectedActivity =>
+      throw _privateConstructorUsedError;
   List<String> get originalDates => throw _privateConstructorUsedError;
   Map<String, dynamic> get scheddules => throw _privateConstructorUsedError;
   List<String> get availableFormattedDates =>
       throw _privateConstructorUsedError;
   List<Activity> get listOfSchedules => throw _privateConstructorUsedError;
   String get defaultDate => throw _privateConstructorUsedError;
+  Map<String, dynamic> get infosForType => throw _privateConstructorUsedError;
   String get selectedOriginalDate => throw _privateConstructorUsedError;
   List<String> get listOf15CalendarDaysFromNow =>
       throw _privateConstructorUsedError;
@@ -47,15 +57,23 @@ abstract class $ActivityStateCopyWith<$Res> {
   @useResult
   $Res call(
       {bool isloading,
+      bool isGymLoading,
+      bool isActivitiesListLoading,
+      bool isPhotosLoading,
+      bool isSchedulesLoading,
+      bool infoForTypeLoading,
       GymResponse? gym,
-      List<String>? activities,
+      DescribtionAndPeculiarities? describtionAndPeculiarities,
+      List<String>? activityTypes,
+      Map<String, dynamic> allPhotos,
       String? selectedActivity,
-      List<dynamic>? photos,
+      List<String> photosOfSelectedActivity,
       List<String> originalDates,
       Map<String, dynamic> scheddules,
       List<String> availableFormattedDates,
       List<Activity> listOfSchedules,
       String defaultDate,
+      Map<String, dynamic> infosForType,
       String selectedOriginalDate,
       List<String> listOf15CalendarDaysFromNow,
       List<String> listOf15OriginalDaysFromNow,
@@ -76,15 +94,23 @@ class _$ActivityStateCopyWithImpl<$Res, $Val extends ActivityState>
   @override
   $Res call({
     Object? isloading = null,
+    Object? isGymLoading = null,
+    Object? isActivitiesListLoading = null,
+    Object? isPhotosLoading = null,
+    Object? isSchedulesLoading = null,
+    Object? infoForTypeLoading = null,
     Object? gym = freezed,
-    Object? activities = freezed,
+    Object? describtionAndPeculiarities = freezed,
+    Object? activityTypes = freezed,
+    Object? allPhotos = null,
     Object? selectedActivity = freezed,
-    Object? photos = freezed,
+    Object? photosOfSelectedActivity = null,
     Object? originalDates = null,
     Object? scheddules = null,
     Object? availableFormattedDates = null,
     Object? listOfSchedules = null,
     Object? defaultDate = null,
+    Object? infosForType = null,
     Object? selectedOriginalDate = null,
     Object? listOf15CalendarDaysFromNow = null,
     Object? listOf15OriginalDaysFromNow = null,
@@ -95,22 +121,50 @@ class _$ActivityStateCopyWithImpl<$Res, $Val extends ActivityState>
           ? _value.isloading
           : isloading // ignore: cast_nullable_to_non_nullable
               as bool,
+      isGymLoading: null == isGymLoading
+          ? _value.isGymLoading
+          : isGymLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isActivitiesListLoading: null == isActivitiesListLoading
+          ? _value.isActivitiesListLoading
+          : isActivitiesListLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isPhotosLoading: null == isPhotosLoading
+          ? _value.isPhotosLoading
+          : isPhotosLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isSchedulesLoading: null == isSchedulesLoading
+          ? _value.isSchedulesLoading
+          : isSchedulesLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      infoForTypeLoading: null == infoForTypeLoading
+          ? _value.infoForTypeLoading
+          : infoForTypeLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
       gym: freezed == gym
           ? _value.gym
           : gym // ignore: cast_nullable_to_non_nullable
               as GymResponse?,
-      activities: freezed == activities
-          ? _value.activities
-          : activities // ignore: cast_nullable_to_non_nullable
+      describtionAndPeculiarities: freezed == describtionAndPeculiarities
+          ? _value.describtionAndPeculiarities
+          : describtionAndPeculiarities // ignore: cast_nullable_to_non_nullable
+              as DescribtionAndPeculiarities?,
+      activityTypes: freezed == activityTypes
+          ? _value.activityTypes
+          : activityTypes // ignore: cast_nullable_to_non_nullable
               as List<String>?,
+      allPhotos: null == allPhotos
+          ? _value.allPhotos
+          : allPhotos // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>,
       selectedActivity: freezed == selectedActivity
           ? _value.selectedActivity
           : selectedActivity // ignore: cast_nullable_to_non_nullable
               as String?,
-      photos: freezed == photos
-          ? _value.photos
-          : photos // ignore: cast_nullable_to_non_nullable
-              as List<dynamic>?,
+      photosOfSelectedActivity: null == photosOfSelectedActivity
+          ? _value.photosOfSelectedActivity
+          : photosOfSelectedActivity // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       originalDates: null == originalDates
           ? _value.originalDates
           : originalDates // ignore: cast_nullable_to_non_nullable
@@ -131,6 +185,10 @@ class _$ActivityStateCopyWithImpl<$Res, $Val extends ActivityState>
           ? _value.defaultDate
           : defaultDate // ignore: cast_nullable_to_non_nullable
               as String,
+      infosForType: null == infosForType
+          ? _value.infosForType
+          : infosForType // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>,
       selectedOriginalDate: null == selectedOriginalDate
           ? _value.selectedOriginalDate
           : selectedOriginalDate // ignore: cast_nullable_to_non_nullable
@@ -161,15 +219,23 @@ abstract class _$$ActivityStateImplCopyWith<$Res>
   @useResult
   $Res call(
       {bool isloading,
+      bool isGymLoading,
+      bool isActivitiesListLoading,
+      bool isPhotosLoading,
+      bool isSchedulesLoading,
+      bool infoForTypeLoading,
       GymResponse? gym,
-      List<String>? activities,
+      DescribtionAndPeculiarities? describtionAndPeculiarities,
+      List<String>? activityTypes,
+      Map<String, dynamic> allPhotos,
       String? selectedActivity,
-      List<dynamic>? photos,
+      List<String> photosOfSelectedActivity,
       List<String> originalDates,
       Map<String, dynamic> scheddules,
       List<String> availableFormattedDates,
       List<Activity> listOfSchedules,
       String defaultDate,
+      Map<String, dynamic> infosForType,
       String selectedOriginalDate,
       List<String> listOf15CalendarDaysFromNow,
       List<String> listOf15OriginalDaysFromNow,
@@ -188,15 +254,23 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? isloading = null,
+    Object? isGymLoading = null,
+    Object? isActivitiesListLoading = null,
+    Object? isPhotosLoading = null,
+    Object? isSchedulesLoading = null,
+    Object? infoForTypeLoading = null,
     Object? gym = freezed,
-    Object? activities = freezed,
+    Object? describtionAndPeculiarities = freezed,
+    Object? activityTypes = freezed,
+    Object? allPhotos = null,
     Object? selectedActivity = freezed,
-    Object? photos = freezed,
+    Object? photosOfSelectedActivity = null,
     Object? originalDates = null,
     Object? scheddules = null,
     Object? availableFormattedDates = null,
     Object? listOfSchedules = null,
     Object? defaultDate = null,
+    Object? infosForType = null,
     Object? selectedOriginalDate = null,
     Object? listOf15CalendarDaysFromNow = null,
     Object? listOf15OriginalDaysFromNow = null,
@@ -207,22 +281,50 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
           ? _value.isloading
           : isloading // ignore: cast_nullable_to_non_nullable
               as bool,
+      isGymLoading: null == isGymLoading
+          ? _value.isGymLoading
+          : isGymLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isActivitiesListLoading: null == isActivitiesListLoading
+          ? _value.isActivitiesListLoading
+          : isActivitiesListLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isPhotosLoading: null == isPhotosLoading
+          ? _value.isPhotosLoading
+          : isPhotosLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isSchedulesLoading: null == isSchedulesLoading
+          ? _value.isSchedulesLoading
+          : isSchedulesLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      infoForTypeLoading: null == infoForTypeLoading
+          ? _value.infoForTypeLoading
+          : infoForTypeLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
       gym: freezed == gym
           ? _value.gym
           : gym // ignore: cast_nullable_to_non_nullable
               as GymResponse?,
-      activities: freezed == activities
-          ? _value._activities
-          : activities // ignore: cast_nullable_to_non_nullable
+      describtionAndPeculiarities: freezed == describtionAndPeculiarities
+          ? _value.describtionAndPeculiarities
+          : describtionAndPeculiarities // ignore: cast_nullable_to_non_nullable
+              as DescribtionAndPeculiarities?,
+      activityTypes: freezed == activityTypes
+          ? _value._activityTypes
+          : activityTypes // ignore: cast_nullable_to_non_nullable
               as List<String>?,
+      allPhotos: null == allPhotos
+          ? _value._allPhotos
+          : allPhotos // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>,
       selectedActivity: freezed == selectedActivity
           ? _value.selectedActivity
           : selectedActivity // ignore: cast_nullable_to_non_nullable
               as String?,
-      photos: freezed == photos
-          ? _value._photos
-          : photos // ignore: cast_nullable_to_non_nullable
-              as List<dynamic>?,
+      photosOfSelectedActivity: null == photosOfSelectedActivity
+          ? _value._photosOfSelectedActivity
+          : photosOfSelectedActivity // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       originalDates: null == originalDates
           ? _value._originalDates
           : originalDates // ignore: cast_nullable_to_non_nullable
@@ -243,6 +345,10 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
           ? _value.defaultDate
           : defaultDate // ignore: cast_nullable_to_non_nullable
               as String,
+      infosForType: null == infosForType
+          ? _value._infosForType
+          : infosForType // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>,
       selectedOriginalDate: null == selectedOriginalDate
           ? _value.selectedOriginalDate
           : selectedOriginalDate // ignore: cast_nullable_to_non_nullable
@@ -268,25 +374,35 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
 class _$ActivityStateImpl extends _ActivityState {
   const _$ActivityStateImpl(
       {this.isloading = false,
+      this.isGymLoading = false,
+      this.isActivitiesListLoading = false,
+      this.isPhotosLoading = false,
+      this.isSchedulesLoading = false,
+      this.infoForTypeLoading = false,
       this.gym = null,
-      final List<String>? activities = const [],
+      this.describtionAndPeculiarities = null,
+      final List<String>? activityTypes = const [],
+      final Map<String, dynamic> allPhotos = const {},
       this.selectedActivity = "",
-      final List<dynamic>? photos = const [],
+      final List<String> photosOfSelectedActivity = const [],
       final List<String> originalDates = const [],
       final Map<String, dynamic> scheddules = const {},
       final List<String> availableFormattedDates = const [],
       final List<Activity> listOfSchedules = const [],
       this.defaultDate = "",
+      final Map<String, dynamic> infosForType = const {},
       this.selectedOriginalDate = "",
       final List<String> listOf15CalendarDaysFromNow = const [],
       final List<String> listOf15OriginalDaysFromNow = const [],
       this.selectedFormattedDay = ""})
-      : _activities = activities,
-        _photos = photos,
+      : _activityTypes = activityTypes,
+        _allPhotos = allPhotos,
+        _photosOfSelectedActivity = photosOfSelectedActivity,
         _originalDates = originalDates,
         _scheddules = scheddules,
         _availableFormattedDates = availableFormattedDates,
         _listOfSchedules = listOfSchedules,
+        _infosForType = infosForType,
         _listOf15CalendarDaysFromNow = listOf15CalendarDaysFromNow,
         _listOf15OriginalDaysFromNow = listOf15OriginalDaysFromNow,
         super._();
@@ -296,30 +412,56 @@ class _$ActivityStateImpl extends _ActivityState {
   final bool isloading;
   @override
   @JsonKey()
-  final GymResponse? gym;
-  final List<String>? _activities;
+  final bool isGymLoading;
   @override
   @JsonKey()
-  List<String>? get activities {
-    final value = _activities;
+  final bool isActivitiesListLoading;
+  @override
+  @JsonKey()
+  final bool isPhotosLoading;
+  @override
+  @JsonKey()
+  final bool isSchedulesLoading;
+  @override
+  @JsonKey()
+  final bool infoForTypeLoading;
+  @override
+  @JsonKey()
+  final GymResponse? gym;
+  @override
+  @JsonKey()
+  final DescribtionAndPeculiarities? describtionAndPeculiarities;
+  final List<String>? _activityTypes;
+  @override
+  @JsonKey()
+  List<String>? get activityTypes {
+    final value = _activityTypes;
     if (value == null) return null;
-    if (_activities is EqualUnmodifiableListView) return _activities;
+    if (_activityTypes is EqualUnmodifiableListView) return _activityTypes;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(value);
+  }
+
+  final Map<String, dynamic> _allPhotos;
+  @override
+  @JsonKey()
+  Map<String, dynamic> get allPhotos {
+    if (_allPhotos is EqualUnmodifiableMapView) return _allPhotos;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_allPhotos);
   }
 
   @override
   @JsonKey()
   final String? selectedActivity;
-  final List<dynamic>? _photos;
+  final List<String> _photosOfSelectedActivity;
   @override
   @JsonKey()
-  List<dynamic>? get photos {
-    final value = _photos;
-    if (value == null) return null;
-    if (_photos is EqualUnmodifiableListView) return _photos;
+  List<String> get photosOfSelectedActivity {
+    if (_photosOfSelectedActivity is EqualUnmodifiableListView)
+      return _photosOfSelectedActivity;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
+    return EqualUnmodifiableListView(_photosOfSelectedActivity);
   }
 
   final List<String> _originalDates;
@@ -362,6 +504,15 @@ class _$ActivityStateImpl extends _ActivityState {
   @override
   @JsonKey()
   final String defaultDate;
+  final Map<String, dynamic> _infosForType;
+  @override
+  @JsonKey()
+  Map<String, dynamic> get infosForType {
+    if (_infosForType is EqualUnmodifiableMapView) return _infosForType;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_infosForType);
+  }
+
   @override
   @JsonKey()
   final String selectedOriginalDate;
@@ -391,7 +542,7 @@ class _$ActivityStateImpl extends _ActivityState {
 
   @override
   String toString() {
-    return 'ActivityState(isloading: $isloading, gym: $gym, activities: $activities, selectedActivity: $selectedActivity, photos: $photos, originalDates: $originalDates, scheddules: $scheddules, availableFormattedDates: $availableFormattedDates, listOfSchedules: $listOfSchedules, defaultDate: $defaultDate, selectedOriginalDate: $selectedOriginalDate, listOf15CalendarDaysFromNow: $listOf15CalendarDaysFromNow, listOf15OriginalDaysFromNow: $listOf15OriginalDaysFromNow, selectedFormattedDay: $selectedFormattedDay)';
+    return 'ActivityState(isloading: $isloading, isGymLoading: $isGymLoading, isActivitiesListLoading: $isActivitiesListLoading, isPhotosLoading: $isPhotosLoading, isSchedulesLoading: $isSchedulesLoading, infoForTypeLoading: $infoForTypeLoading, gym: $gym, describtionAndPeculiarities: $describtionAndPeculiarities, activityTypes: $activityTypes, allPhotos: $allPhotos, selectedActivity: $selectedActivity, photosOfSelectedActivity: $photosOfSelectedActivity, originalDates: $originalDates, scheddules: $scheddules, availableFormattedDates: $availableFormattedDates, listOfSchedules: $listOfSchedules, defaultDate: $defaultDate, infosForType: $infosForType, selectedOriginalDate: $selectedOriginalDate, listOf15CalendarDaysFromNow: $listOf15CalendarDaysFromNow, listOf15OriginalDaysFromNow: $listOf15OriginalDaysFromNow, selectedFormattedDay: $selectedFormattedDay)';
   }
 
   @override
@@ -401,12 +552,28 @@ class _$ActivityStateImpl extends _ActivityState {
             other is _$ActivityStateImpl &&
             (identical(other.isloading, isloading) ||
                 other.isloading == isloading) &&
+            (identical(other.isGymLoading, isGymLoading) ||
+                other.isGymLoading == isGymLoading) &&
+            (identical(other.isActivitiesListLoading, isActivitiesListLoading) ||
+                other.isActivitiesListLoading == isActivitiesListLoading) &&
+            (identical(other.isPhotosLoading, isPhotosLoading) ||
+                other.isPhotosLoading == isPhotosLoading) &&
+            (identical(other.isSchedulesLoading, isSchedulesLoading) ||
+                other.isSchedulesLoading == isSchedulesLoading) &&
+            (identical(other.infoForTypeLoading, infoForTypeLoading) ||
+                other.infoForTypeLoading == infoForTypeLoading) &&
             (identical(other.gym, gym) || other.gym == gym) &&
+            (identical(other.describtionAndPeculiarities, describtionAndPeculiarities) ||
+                other.describtionAndPeculiarities ==
+                    describtionAndPeculiarities) &&
             const DeepCollectionEquality()
-                .equals(other._activities, _activities) &&
+                .equals(other._activityTypes, _activityTypes) &&
+            const DeepCollectionEquality()
+                .equals(other._allPhotos, _allPhotos) &&
             (identical(other.selectedActivity, selectedActivity) ||
                 other.selectedActivity == selectedActivity) &&
-            const DeepCollectionEquality().equals(other._photos, _photos) &&
+            const DeepCollectionEquality().equals(
+                other._photosOfSelectedActivity, _photosOfSelectedActivity) &&
             const DeepCollectionEquality()
                 .equals(other._originalDates, _originalDates) &&
             const DeepCollectionEquality()
@@ -417,6 +584,8 @@ class _$ActivityStateImpl extends _ActivityState {
                 .equals(other._listOfSchedules, _listOfSchedules) &&
             (identical(other.defaultDate, defaultDate) ||
                 other.defaultDate == defaultDate) &&
+            const DeepCollectionEquality()
+                .equals(other._infosForType, _infosForType) &&
             (identical(other.selectedOriginalDate, selectedOriginalDate) ||
                 other.selectedOriginalDate == selectedOriginalDate) &&
             const DeepCollectionEquality().equals(
@@ -430,22 +599,31 @@ class _$ActivityStateImpl extends _ActivityState {
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      isloading,
-      gym,
-      const DeepCollectionEquality().hash(_activities),
-      selectedActivity,
-      const DeepCollectionEquality().hash(_photos),
-      const DeepCollectionEquality().hash(_originalDates),
-      const DeepCollectionEquality().hash(_scheddules),
-      const DeepCollectionEquality().hash(_availableFormattedDates),
-      const DeepCollectionEquality().hash(_listOfSchedules),
-      defaultDate,
-      selectedOriginalDate,
-      const DeepCollectionEquality().hash(_listOf15CalendarDaysFromNow),
-      const DeepCollectionEquality().hash(_listOf15OriginalDaysFromNow),
-      selectedFormattedDay);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        isloading,
+        isGymLoading,
+        isActivitiesListLoading,
+        isPhotosLoading,
+        isSchedulesLoading,
+        infoForTypeLoading,
+        gym,
+        describtionAndPeculiarities,
+        const DeepCollectionEquality().hash(_activityTypes),
+        const DeepCollectionEquality().hash(_allPhotos),
+        selectedActivity,
+        const DeepCollectionEquality().hash(_photosOfSelectedActivity),
+        const DeepCollectionEquality().hash(_originalDates),
+        const DeepCollectionEquality().hash(_scheddules),
+        const DeepCollectionEquality().hash(_availableFormattedDates),
+        const DeepCollectionEquality().hash(_listOfSchedules),
+        defaultDate,
+        const DeepCollectionEquality().hash(_infosForType),
+        selectedOriginalDate,
+        const DeepCollectionEquality().hash(_listOf15CalendarDaysFromNow),
+        const DeepCollectionEquality().hash(_listOf15OriginalDaysFromNow),
+        selectedFormattedDay
+      ]);
 
   @JsonKey(ignore: true)
   @override
@@ -457,15 +635,23 @@ class _$ActivityStateImpl extends _ActivityState {
 abstract class _ActivityState extends ActivityState {
   const factory _ActivityState(
       {final bool isloading,
+      final bool isGymLoading,
+      final bool isActivitiesListLoading,
+      final bool isPhotosLoading,
+      final bool isSchedulesLoading,
+      final bool infoForTypeLoading,
       final GymResponse? gym,
-      final List<String>? activities,
+      final DescribtionAndPeculiarities? describtionAndPeculiarities,
+      final List<String>? activityTypes,
+      final Map<String, dynamic> allPhotos,
       final String? selectedActivity,
-      final List<dynamic>? photos,
+      final List<String> photosOfSelectedActivity,
       final List<String> originalDates,
       final Map<String, dynamic> scheddules,
       final List<String> availableFormattedDates,
       final List<Activity> listOfSchedules,
       final String defaultDate,
+      final Map<String, dynamic> infosForType,
       final String selectedOriginalDate,
       final List<String> listOf15CalendarDaysFromNow,
       final List<String> listOf15OriginalDaysFromNow,
@@ -475,13 +661,27 @@ abstract class _ActivityState extends ActivityState {
   @override
   bool get isloading;
   @override
+  bool get isGymLoading;
+  @override
+  bool get isActivitiesListLoading;
+  @override
+  bool get isPhotosLoading;
+  @override
+  bool get isSchedulesLoading;
+  @override
+  bool get infoForTypeLoading;
+  @override
   GymResponse? get gym;
   @override
-  List<String>? get activities;
+  DescribtionAndPeculiarities? get describtionAndPeculiarities;
+  @override
+  List<String>? get activityTypes;
+  @override
+  Map<String, dynamic> get allPhotos;
   @override
   String? get selectedActivity;
   @override
-  List<dynamic>? get photos;
+  List<String> get photosOfSelectedActivity;
   @override
   List<String> get originalDates;
   @override
@@ -492,6 +692,8 @@ abstract class _ActivityState extends ActivityState {
   List<Activity> get listOfSchedules;
   @override
   String get defaultDate;
+  @override
+  Map<String, dynamic> get infosForType;
   @override
   String get selectedOriginalDate;
   @override

@@ -70,6 +70,7 @@ class MainRepository implements MainRepositoryInterface {
       final response = await client.get(AppConstants.getGymsList);
       return ApiResult.success(data: response.data);
     } catch (e) {
+      //throw e;
       return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
@@ -101,7 +102,6 @@ class MainRepository implements MainRepositoryInterface {
   Future<ApiResult> getYandexMapImage(
       {required GetYandexMapImageRequest request}) async {
     try {
-      
       final client = inject<HttpService>().clientDio();
       //final sendingData = request.toJson();
       final response = await client.get(
@@ -113,11 +113,11 @@ class MainRepository implements MainRepositoryInterface {
       );
     } catch (e) {
       debugPrint("error ${e.toString()}");
-      throw e;
-      /* return ApiResult.failure(
+      //throw e;
+      return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      ); */
+      );
     }
   }
 }

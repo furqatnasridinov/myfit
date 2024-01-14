@@ -42,14 +42,14 @@ class RegisterRepository implements RegisterRepositoryInterface {
         data: dataToSend,
       );
       return ApiResult.success(
-        data: AuthResponse.fromJson(response.data),
+        data: AuthResponse.fromJson(response.data["object"]),
       );
     } catch (e) {
       //throw e;
-       return ApiResult.failure(
+      return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      ); 
+      );
     }
   }
 }

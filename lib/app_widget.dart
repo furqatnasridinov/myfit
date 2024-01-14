@@ -10,7 +10,6 @@ class AppWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //AndroidYandexMap.useAndroidViewSurface = false;
 
     return FutureBuilder(
       future: Future.wait(
@@ -27,7 +26,6 @@ class AppWidget extends StatelessWidget {
             return MaterialApp.router(
               routerConfig: appRouter.config(),
               debugShowCheckedModeBanner: false,
-              //home: ActivityPage(id: 1),
             );
           },
         );

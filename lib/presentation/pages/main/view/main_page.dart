@@ -39,7 +39,6 @@ class _BlogScreen extends ConsumerState<MainScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(mainProvider);
     final event = ref.read(mainProvider.notifier);
-    final mapState = ref.watch(mapProvider);
     //debugPrint("///  ${state.latlongsYandexApi}");
     // mapEvent.removePopUp();
     return Scaffold(
@@ -84,7 +83,6 @@ class _BlogScreen extends ConsumerState<MainScreen> {
                     TheOneWithMap(
                       event: event,
                       state: state,
-                      mapState: mapState,
                     ),
                     32.verticalSpace,
                     const TheOneWithButton(),

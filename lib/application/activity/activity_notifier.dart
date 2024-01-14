@@ -3,7 +3,7 @@
 import 'package:activity/application/activity/activity_state.dart';
 import 'package:activity/domain/interface/activity.dart';
 import 'package:activity/infrastructure/models/data/activity.dart';
-import 'package:activity/infrastructure/models/request/get_gym_photos_request.dart';
+import 'package:activity/infrastructure/models/data/description_and_peculiarities.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:flutter/material.dart';
@@ -16,86 +16,128 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       : super(const ActivityState());
   final ActivityRepositoryInterface _activityRepositoryInterface;
 
-  Future<void> getInitData(BuildContext context, int gymId) async {
-    getGymInfo(gymId: gymId).then((value) {
-      getActivitiesList(gymId: gymId).then((value) {
-        determineDefaultActivity().then((value) {
-          getGymPhotos(state.selectedActivity, gymId).then((value) => {
-                getSchedulesDates(context, id: gymId).then((value) {
-                  getListOf15CalendarDatesFromToday().then((value) {
-                    determineDefaultOriginalDate().then((value) => {
-                          determineDefaultFormattedDate().then((value) {
-                            getSchedulesList(state.selectedOriginalDate);
-                          })
-                        });
-                  });
-                })
-              });
-        });
-      });
-    });
+  Future<void> getGymInfo(BuildContext context, {required int gymId}) async {
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      state = state.copyWith(isGymLoading: true);
+      final response =
+          await _activityRepositoryInterface.getInfoAboutGym(id: gymId);
+      response.when(
+        success: (data) {
+          state = state.copyWith(
+            gym: data,
+            isGymLoading: false,
+          );
+        },
+        failure: (error, statusCode) {
+          state = state.copyWith(isGymLoading: false);
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
   }
 
-  Future<void> getGymInfo({required int gymId}) async {
-    state = state.copyWith(isloading: true);
-    final response =
-        await _activityRepositoryInterface.getInfoAboutGym(id: gymId);
-    response.when(
-      success: (data) {
-        state = state.copyWith(gym: data);
-      },
-      failure: (error, statusCode) {
-        //print("getGymInfo notifier failure >> $error");
-      },
-    );
-    state = state.copyWith(isloading: false);
-  }
-
-  Future<void> getActivitiesList({required int gymId}) async {
+  Future<void> getActivityTypes(BuildContext context,
+      {required int gymId}) async {
     await Future.delayed(const Duration(milliseconds: 10));
-    state = state.copyWith(isloading: true);
-    final response =
-        await _activityRepositoryInterface.getActivities(gymId: gymId);
-    response.when(
-      success: (data) {
-        //print("notifier get activitis success");
-        //print("getActivitiesList notifier data[object] ${data["object"]}");
-        state = state.copyWith(activities: data.object);
-        state = state.copyWith(isloading: false);
-      },
-      failure: (error, statusCode) {
-        //print("notifier get activitis failure");
-
-        //print("getActivitiesList notifier failure>> $error");
-        state = state.copyWith(isloading: false);
-      },
-    );
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      state = state.copyWith(isActivitiesListLoading: true);
+      final response =
+          await _activityRepositoryInterface.getActivities(gymId: gymId);
+      response.when(
+        success: (data) {
+          state = state.copyWith(
+            activityTypes: data.object,
+            isActivitiesListLoading: false,
+          );
+        },
+        failure: (error, statusCode) {
+          state = state.copyWith(isActivitiesListLoading: false);
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
   }
 
   Future<void> determineDefaultActivity() async {
     //await Future.delayed(const Duration(seconds: 1));
-    if (state.activities!.isNotEmpty) {
-      state = state.copyWith(selectedActivity: state.activities?[0]);
+    if (state.activityTypes!.isNotEmpty) {
+      state = state.copyWith(selectedActivity: state.activityTypes?[0]);
     }
   }
 
-  Future<void> getGymPhotos(String? lessonType, int gymId) async {
-    final request = GetGymPhotosRequest(lessonType: lessonType);
-    final response = await _activityRepositoryInterface.getGymPhotos(
-      request: request,
-      gymId: gymId,
-    );
-    response.when(
-      success: (data) {
-        final list = data.object;
-        for (var i = 0; i < list!.length; i++) {
-          List<String> photoUrls = [];
-          photoUrls.add(list[i].pictureUrl!);
-          state = state.copyWith(photos: photoUrls);
-        }
-      },
-      failure: (error, statusCode) {},
-    );
+  Future<void> getGymPhotos(BuildContext context, int gymId) async {
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      state = state.copyWith(isPhotosLoading: true);
+      final response = await _activityRepositoryInterface.getGymPhotos(
+        gymId: gymId,
+      );
+      response.when(
+        success: (data) {
+          if (data["object"] != null) {
+            state = state.copyWith(
+              allPhotos: data["object"],
+              isPhotosLoading: false,
+            );
+          }
+        },
+        failure: (error, statusCode) {
+          state = state.copyWith(isPhotosLoading: false);
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> getInfoForType(BuildContext context, {required int id}) async {
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      final response =
+          await _activityRepositoryInterface.getInfoForType(id: id);
+      response.when(
+        success: (data) {
+          if (data["object"] != null) {
+            state = state.copyWith(infosForType: data["object"]);
+          }
+        },
+        failure: (error, statusCode) {
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> getDescribtionAndPeculiarities(String selectedActivity) async {
+    final mapData = state.infosForType;
+    if (mapData.containsKey(selectedActivity)) {
+      for (var element in mapData[selectedActivity]) {
+        final data = DescribtionAndPeculiarities(
+            typeDescription: element["typeDescription"],
+            peculiarities: element["peculiarities"]);
+        state = state.copyWith(describtionAndPeculiarities: data);
+      }
+    }
+  }
+
+  void getPhotosOfSelectedActivity(String selectedActivity) {
+    final mapData = state.allPhotos;
+    List<String> photos = [];
+    if (mapData.containsKey(selectedActivity)) {
+      for (var element in mapData[selectedActivity]) {
+        photos.add(element);
+      }
+    }
+    state = state.copyWith(photosOfSelectedActivity: photos);
   }
 
   Future<void> determineDefaultOriginalDate() async {
@@ -231,7 +273,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     return '$month $day';
   }
 
-  void setSingleSelectedActivity(String? value) {
+  Future<void> setSingleSelectedActivity(String? value) async {
     if (value == state.selectedActivity) {
       return;
     } else {
@@ -245,6 +287,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   }) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
+      state = state.copyWith(isSchedulesLoading: true);
       final response = await _activityRepositoryInterface.getSchedules(id: id);
       response.when(
         success: (data) {
@@ -323,13 +366,15 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
             }).toList();
           }
 
-          state = state.copyWith(availableFormattedDates: formattedDates());
+          state = state.copyWith(
+              availableFormattedDates: formattedDates(),
+              isSchedulesLoading: false);
         },
         failure: (error, statusCode) {
-          //print("(notifier failure)");
+          state = state.copyWith(isSchedulesLoading: false);
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
         },
       );
-      // ignore: duplicate_ignore
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
@@ -406,16 +451,37 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
- Future<void> launchTelegram() async {
-  const url = "https://t.me/furqatnasridinov";
-  final uri = Uri.parse(url);
+  Future<void> launchTelegram(String? url) async {
+    const placeholderUrl = "https://t.me/furqatnasridinov";
+    final uri = Uri.parse(url ?? placeholderUrl);
 
-  if (await canLaunchUrl(uri)) {
-    await launchUrl(uri); // forceWebView is true now
-  } else {
-    throw 'Could not launch $url';
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri); // forceWebView is true now
+    } else {
+      throw 'Could not launch $url';
+    }
   }
-}
+
+  Future<void> launchVk(String? url) async {
+    const placeholderUrl = "https://vk.com/furqatnasridinov";
+    final uri = Uri.parse(url ?? placeholderUrl);
+
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri); // forceWebView is true now
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  String getNameFromTgUrl(String url){
+    List<String>parts = url.split("t.me/");
+    String name = parts[1];
+    return name;
+  }
+  String getNameFromVkUrl(String url){
+     List<String>parts = url.split("vk.com/");
+     return parts[1];
+  } 
 
   String? convertToOriginalDate(String dateString) {
     final parts = dateString.split(' ');
@@ -500,8 +566,9 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       if (fullMonth == null || fullDayOfWeek == null) {
         return null;
       }
-      final formattedDate =
-          "${DateTime.now().year}-$fullMonth-${parts[1].padLeft(2, '0')}";
+
+      String year = fullMonth == "01" ? "2024" : DateTime.now().year.toString();
+      final formattedDate = "$year-$fullMonth-${parts[1].padLeft(2, '0')}";
 
       return formattedDate;
     }

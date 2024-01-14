@@ -2,6 +2,7 @@
 
 import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:auto_route/auto_route.dart';
@@ -15,8 +16,8 @@ import '../widget/widget.dart';
 
 @RoutePage()
 class MapScreen extends ConsumerStatefulWidget {
-  int? gymId;
-  MapScreen(this.gymId, {super.key});
+  final bool showOnlyKnown;
+  const MapScreen(this.showOnlyKnown, {super.key});
 
   @override
   ConsumerState<MapScreen> createState() => _MapScreenState();
@@ -99,6 +100,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("KnownActivities >> ${LocalStorage.getKnownActivities()}");
     final state = ref.watch(mapProvider);
     final event = ref.read(mapProvider.notifier);
     return PopScope(
@@ -200,17 +202,19 @@ class _MapScreenState extends ConsumerState<MapScreen>
                       onMapCreated: (controller) async {
                         debugPrint("onMapCreated called");
                         yandexMapController = controller;
-                        setState(() {});
-                        await event.getUserLocation();
-                        if (state.userPosition == null ||
-                            state.locationServiceIsNotEnabled) {
-                          await event.setLocationFromSelectedCity();
+                        //setState(() {});
+                        if (state.userPosition == null) {
+                          await event.getUserLocation();
+                          if (state.locationServiceIsNotEnabled ||
+                              state.locationPermissionIsNOtGiven) {
+                            await event.setLocationFromSelectedCity();
+                          }
                         }
                         event.setInitialCameraPosition(
                           controller: yandexMapController!,
                         );
                         // ignore: use_build_context_synchronously
-                        await event.getGymsList(context, widget.gymId!);
+                        await event.getGymsList(context, widget.showOnlyKnown);
                         await event.getGetListOfGymsFromDiapozone();
                         await event.setFlexes();
                         await event.getAllMarkers();
@@ -240,8 +244,9 @@ class _MapScreenState extends ConsumerState<MapScreen>
                         }
                       },
                       logoAlignment: const MapAlignment(
-                          horizontal: HorizontalAlignment.left,
-                          vertical: VerticalAlignment.bottom),
+                        horizontal: HorizontalAlignment.left,
+                        vertical: VerticalAlignment.bottom,
+                      ),
                     ),
                   ),
                   Align(
@@ -291,57 +296,29 @@ class _MapScreenState extends ConsumerState<MapScreen>
                       ),
                     ),
                   ),
-                  state.locationPermissionIsNOtGiven
-                      ? const SizedBox()
-                      : Positioned(
-                          right: -5.w,
-                          bottom: state.isLocationIconHidden ? 140.h : 0.h,
-                          /* alignment: state.isLocationIconHidden
-                              ? Alignment.bottomRight
-                              : Alignment.bottomRight, */
-                          child: Padding(
-                            padding: EdgeInsets.only(right: 21.w, bottom: 21.h),
-                            child: InkWell(
-                              onTap: () async {
-                                if (!state.locationPermissionIsNOtGiven &&
-                                    await yandexMapController
-                                            ?.getCameraPosition() !=
-                                        CameraPosition(
-                                          target: Point(
-                                              latitude:
-                                                  state.userPosition!.latitude,
-                                              longitude: state
-                                                  .userPosition!.longitude),
-                                        )) {
-                                  yandexMapController?.moveCamera(
-                                    CameraUpdate.newCameraPosition(
-                                      CameraPosition(
-                                        target: Point(
-                                          latitude:
-                                              state.userPosition!.latitude,
-                                          longitude:
-                                              state.userPosition!.longitude,
-                                        ),
-                                      ),
-                                    ),
-                                    animation: const MapAnimation(duration: 1),
-                                  );
-                                }
-                              },
-                              child: CustomCard(
-                                height: 40.h,
-                                width: 40.w,
-                                radius: 8.r,
-                                paddingAll: 8.r,
-                                child: SvgPicture.asset(
-                                  "assets/svg/location_icon.svg",
-                                  fit: BoxFit.scaleDown,
-                                  //height: 24.h,
-                                ),
-                              ),
-                            ),
+                  Positioned(
+                    right: 0.w,
+                    bottom: state.isLocationIconHidden ? 145.h : 10.h,
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 10.w, bottom: 10.h),
+                      child: InkWell(
+                        onTap: () {
+                          event.locationButtonFunction(yandexMapController);
+                        },
+                        child: CustomCard(
+                          height: 40.h,
+                          width: 40.w,
+                          radius: 8.r,
+                          paddingAll: 8.r,
+                          child: SvgPicture.asset(
+                            "assets/svg/location_icon.svg",
+                            fit: BoxFit.scaleDown,
+                            //height: 24.h,
                           ),
                         ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
