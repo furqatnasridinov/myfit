@@ -4,6 +4,7 @@ import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/inter_text.dart';
+import 'package:activity/presentation/pages/auth/registration/custom_painter.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +17,11 @@ class RegistrationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    //final width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
+        bottom: false,
         child: Stack(
           children: [
             // Logo and Text
@@ -165,11 +167,9 @@ class RegistrationScreen extends StatelessWidget {
             // waves
             Align(
               alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                child: SvgPicture.asset(
-                  "assets/svg/Vector 13.svg",
-                  width: width,
-                ),
+              child: CustomPaint(
+                size: Size(400, 200.h),
+                painter: Registration1CustomPainter(),
               ),
             ),
           ],

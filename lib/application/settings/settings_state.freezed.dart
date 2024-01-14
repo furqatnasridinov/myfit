@@ -17,9 +17,11 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$SettingsState {
   bool get isloading => throw _privateConstructorUsedError;
+  bool get isCitiesLoading => throw _privateConstructorUsedError;
   bool get cityTextFieldHasFocus => throw _privateConstructorUsedError;
   String get phoneNumber => throw _privateConstructorUsedError;
-  CityToSelect? get selectedCity => throw _privateConstructorUsedError;
+  String? get selectedCity => throw _privateConstructorUsedError;
+  List<City> get listOfCities => throw _privateConstructorUsedError;
   String get userName => throw _privateConstructorUsedError;
   String get age => throw _privateConstructorUsedError;
   String get weight => throw _privateConstructorUsedError;
@@ -40,9 +42,11 @@ abstract class $SettingsStateCopyWith<$Res> {
   @useResult
   $Res call(
       {bool isloading,
+      bool isCitiesLoading,
       bool cityTextFieldHasFocus,
       String phoneNumber,
-      CityToSelect? selectedCity,
+      String? selectedCity,
+      List<City> listOfCities,
       String userName,
       String age,
       String weight,
@@ -65,9 +69,11 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
   @override
   $Res call({
     Object? isloading = null,
+    Object? isCitiesLoading = null,
     Object? cityTextFieldHasFocus = null,
     Object? phoneNumber = null,
     Object? selectedCity = freezed,
+    Object? listOfCities = null,
     Object? userName = null,
     Object? age = null,
     Object? weight = null,
@@ -80,6 +86,10 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.isloading
           : isloading // ignore: cast_nullable_to_non_nullable
               as bool,
+      isCitiesLoading: null == isCitiesLoading
+          ? _value.isCitiesLoading
+          : isCitiesLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
       cityTextFieldHasFocus: null == cityTextFieldHasFocus
           ? _value.cityTextFieldHasFocus
           : cityTextFieldHasFocus // ignore: cast_nullable_to_non_nullable
@@ -91,7 +101,11 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
       selectedCity: freezed == selectedCity
           ? _value.selectedCity
           : selectedCity // ignore: cast_nullable_to_non_nullable
-              as CityToSelect?,
+              as String?,
+      listOfCities: null == listOfCities
+          ? _value.listOfCities
+          : listOfCities // ignore: cast_nullable_to_non_nullable
+              as List<City>,
       userName: null == userName
           ? _value.userName
           : userName // ignore: cast_nullable_to_non_nullable
@@ -130,9 +144,11 @@ abstract class _$$SettingsStateImplCopyWith<$Res>
   @useResult
   $Res call(
       {bool isloading,
+      bool isCitiesLoading,
       bool cityTextFieldHasFocus,
       String phoneNumber,
-      CityToSelect? selectedCity,
+      String? selectedCity,
+      List<City> listOfCities,
       String userName,
       String age,
       String weight,
@@ -153,9 +169,11 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? isloading = null,
+    Object? isCitiesLoading = null,
     Object? cityTextFieldHasFocus = null,
     Object? phoneNumber = null,
     Object? selectedCity = freezed,
+    Object? listOfCities = null,
     Object? userName = null,
     Object? age = null,
     Object? weight = null,
@@ -168,6 +186,10 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value.isloading
           : isloading // ignore: cast_nullable_to_non_nullable
               as bool,
+      isCitiesLoading: null == isCitiesLoading
+          ? _value.isCitiesLoading
+          : isCitiesLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
       cityTextFieldHasFocus: null == cityTextFieldHasFocus
           ? _value.cityTextFieldHasFocus
           : cityTextFieldHasFocus // ignore: cast_nullable_to_non_nullable
@@ -179,7 +201,11 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
       selectedCity: freezed == selectedCity
           ? _value.selectedCity
           : selectedCity // ignore: cast_nullable_to_non_nullable
-              as CityToSelect?,
+              as String?,
+      listOfCities: null == listOfCities
+          ? _value._listOfCities
+          : listOfCities // ignore: cast_nullable_to_non_nullable
+              as List<City>,
       userName: null == userName
           ? _value.userName
           : userName // ignore: cast_nullable_to_non_nullable
@@ -213,20 +239,26 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
 class _$SettingsStateImpl extends _SettingsState {
   const _$SettingsStateImpl(
       {this.isloading = false,
+      this.isCitiesLoading = false,
       this.cityTextFieldHasFocus = false,
       this.phoneNumber = "",
       this.selectedCity = null,
+      final List<City> listOfCities = const [],
       this.userName = "",
       this.age = "",
       this.weight = "",
       this.height = "",
       this.isPhoneEditModeEnabled = false,
       this.isEmailEditModeEnabled = false})
-      : super._();
+      : _listOfCities = listOfCities,
+        super._();
 
   @override
   @JsonKey()
   final bool isloading;
+  @override
+  @JsonKey()
+  final bool isCitiesLoading;
   @override
   @JsonKey()
   final bool cityTextFieldHasFocus;
@@ -235,7 +267,16 @@ class _$SettingsStateImpl extends _SettingsState {
   final String phoneNumber;
   @override
   @JsonKey()
-  final CityToSelect? selectedCity;
+  final String? selectedCity;
+  final List<City> _listOfCities;
+  @override
+  @JsonKey()
+  List<City> get listOfCities {
+    if (_listOfCities is EqualUnmodifiableListView) return _listOfCities;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_listOfCities);
+  }
+
   @override
   @JsonKey()
   final String userName;
@@ -257,7 +298,7 @@ class _$SettingsStateImpl extends _SettingsState {
 
   @override
   String toString() {
-    return 'SettingsState(isloading: $isloading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, userName: $userName, age: $age, weight: $weight, height: $height, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled)';
+    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, userName: $userName, age: $age, weight: $weight, height: $height, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled)';
   }
 
   @override
@@ -267,12 +308,16 @@ class _$SettingsStateImpl extends _SettingsState {
             other is _$SettingsStateImpl &&
             (identical(other.isloading, isloading) ||
                 other.isloading == isloading) &&
+            (identical(other.isCitiesLoading, isCitiesLoading) ||
+                other.isCitiesLoading == isCitiesLoading) &&
             (identical(other.cityTextFieldHasFocus, cityTextFieldHasFocus) ||
                 other.cityTextFieldHasFocus == cityTextFieldHasFocus) &&
             (identical(other.phoneNumber, phoneNumber) ||
                 other.phoneNumber == phoneNumber) &&
             (identical(other.selectedCity, selectedCity) ||
                 other.selectedCity == selectedCity) &&
+            const DeepCollectionEquality()
+                .equals(other._listOfCities, _listOfCities) &&
             (identical(other.userName, userName) ||
                 other.userName == userName) &&
             (identical(other.age, age) || other.age == age) &&
@@ -288,9 +333,11 @@ class _$SettingsStateImpl extends _SettingsState {
   int get hashCode => Object.hash(
       runtimeType,
       isloading,
+      isCitiesLoading,
       cityTextFieldHasFocus,
       phoneNumber,
       selectedCity,
+      const DeepCollectionEquality().hash(_listOfCities),
       userName,
       age,
       weight,
@@ -308,9 +355,11 @@ class _$SettingsStateImpl extends _SettingsState {
 abstract class _SettingsState extends SettingsState {
   const factory _SettingsState(
       {final bool isloading,
+      final bool isCitiesLoading,
       final bool cityTextFieldHasFocus,
       final String phoneNumber,
-      final CityToSelect? selectedCity,
+      final String? selectedCity,
+      final List<City> listOfCities,
       final String userName,
       final String age,
       final String weight,
@@ -322,11 +371,15 @@ abstract class _SettingsState extends SettingsState {
   @override
   bool get isloading;
   @override
+  bool get isCitiesLoading;
+  @override
   bool get cityTextFieldHasFocus;
   @override
   String get phoneNumber;
   @override
-  CityToSelect? get selectedCity;
+  String? get selectedCity;
+  @override
+  List<City> get listOfCities;
   @override
   String get userName;
   @override

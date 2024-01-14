@@ -12,6 +12,9 @@ class AppConstants {
   static const String getNearestLesson = "api/user/lessons/nearest";
   static const String getUserStatsMonth = "api/user/stat/month";
   static const String addNote = "api/schedule/addNote";
+  static const String getCities = "api/main/city";
+  static const String patchUser = "api/user/";
+  
   static const String sendPhoneNumber = "api/user/loginCode";
   static const String sendCodeConfirmation = "api/user/loginCodeConfirmation";
   //static const String getInfoForType = "api/gym/3/infoForType";
@@ -34,7 +37,12 @@ class AppConstants {
   static const String keyUserId = "key_user_id";
   static const String keyToken = "key_token";
   static const String keyUserName = "key_username";
+  static const String keyUserLastName = "key_user_lastname";
+  static const String keyUserPatronomic = "key_user_patronomic";
+  static const String keyGender = "key_gender";
   static const String keyCity = "key_city";
+  static const String keyCityLat = "key_city_lat";
+  static const String keyCityLon = "key_city_lon";
   static const String keyAge = "key_age";
   static const String keyWeight = "key_weight";
   static const String keyHeight = "key_height";

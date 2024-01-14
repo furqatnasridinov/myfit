@@ -57,6 +57,7 @@ class CustomTextFormField extends StatelessWidget {
       onTapOutside: onTapOutside,
       controller: controller,
       cursorColor: AppColors.greyText,
+      
       onChanged: onChanged,
       style: GoogleFonts.inter(
         fontSize: 14.sp,

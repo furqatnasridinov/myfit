@@ -1,9 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/custom_textfield.dart';
-import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -12,26 +14,35 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../infrastructure/models/response/auth_response.dart';
 
 @RoutePage()
-class Registration3Screen extends StatefulWidget {
+class Registration3Screen extends ConsumerStatefulWidget {
   const Registration3Screen({super.key});
 
   @override
-  State<Registration3Screen> createState() => _Registration3ScreenState();
+  ConsumerState<Registration3Screen> createState() =>
+      _Registration3ScreenState();
 }
 
-class _Registration3ScreenState extends State<Registration3Screen> {
-  TextEditingController controller = TextEditingController(text: "Москва");
+class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
+  TextEditingController cityController = TextEditingController(
+      text: LocalStorage.getSelectedCity().isEmpty
+          ? "Выберите город"
+          : LocalStorage.getSelectedCity());
   TextEditingController nameController =
       TextEditingController(text: LocalStorage.getUserName());
   FocusNode focusNode = FocusNode();
   FocusNode nameFocus = FocusNode();
   final formKey = GlobalKey<FormState>();
   final layerlink = LayerLink();
-  final listofaddresses = DummyData().cityNames;
   bool isFormNotValidated = false;
   OverlayEntry? entry;
+  City? selectedCity;
+
+  void setSelectedCity(City city) {
+    selectedCity = city;
+  }
 
   void showOverlay() {
     final overlay = Overlay.of(context);
@@ -64,21 +75,27 @@ class _Registration3ScreenState extends State<Registration3Screen> {
                     child: MediaQuery.removePadding(
                       context: context,
                       removeTop: true,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: listofaddresses.length,
-                        itemBuilder: (context, index) {
-                          final currentCity = listofaddresses[index];
-                          return _listiles(
-                            currentCity.name ?? "??",
-                            () {
-                              controller.text = currentCity.name ?? "??";
-                              focusNode.unfocus();
-                              setState(() {});
-                            },
-                          );
-                        },
-                      ),
+                      removeBottom: true,
+                      child: Consumer(builder: (context, ref, child) {
+                        final state = ref.watch(settingsProvider);
+
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: state.listOfCities.length,
+                          itemBuilder: (context, index) {
+                            final currentCity = state.listOfCities[index];
+                            return _listiles(
+                              currentCity.name ?? "",
+                              () {
+                                cityController.text = currentCity.name ?? "??";
+                                focusNode.unfocus();
+                                setSelectedCity(currentCity);
+                                setState(() {});
+                              },
+                            );
+                          },
+                        );
+                      }),
                     ),
                   ),
                 ]),
@@ -100,6 +117,7 @@ class _Registration3ScreenState extends State<Registration3Screen> {
   @override
   void initState() {
     super.initState();
+    ref.read(settingsProvider.notifier).getListOfCities(context);
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
         showOverlay();
@@ -112,6 +130,7 @@ class _Registration3ScreenState extends State<Registration3Screen> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final event = ref.read(settingsProvider.notifier);
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -199,7 +218,7 @@ class _Registration3ScreenState extends State<Registration3Screen> {
                         child: CompositedTransformTarget(
                           link: layerlink,
                           child: TextField(
-                            style: GoogleFonts.inter(
+                            style: GoogleFonts.raleway(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w400,
                               color: Colors.black,
@@ -214,7 +233,7 @@ class _Registration3ScreenState extends State<Registration3Screen> {
                             },
                             readOnly: true,
                             focusNode: focusNode,
-                            controller: controller,
+                            controller: cityController,
                             decoration: InputDecoration(
                               suffixIcon: Icon(
                                 focusNode.hasFocus
@@ -274,31 +293,37 @@ class _Registration3ScreenState extends State<Registration3Screen> {
                             ),
                           ],
                         ),
-                        child: Consumer(
-                          builder: (context, ref, child) {
-                            /* final settingsEvent =
-                                ref.read(settingsProvider.notifier); */
-                            return CustomButton(
-                              buttonColor: AppColors.blueColor,
-                              textColor: Colors.white,
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
-                              onPressed: () {
-                                if (nameController.text.length > 2) {
-                                  // here need to add logic if
-                                  // namecontroller.text!=Localstorage.getname then LocalStorage.setUserName(nameController.text);
-                                  LocalStorage.setUserName(nameController.text);
-                                  LocalStorage.setSelectedCity(controller.text);
-                                  context
-                                      .replaceRoute(const Registration4Route());
-                                } else {
-                                  isFormNotValidated = true;
-                                  setState(() {});
-                                }
-                              },
-                              text: "Продолжить",
-                            );
+                        child: CustomButton(
+                          buttonColor: AppColors.blueColor,
+                          textColor: Colors.white,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                          onPressed: () async {
+                            if (nameController.text.length > 2) {
+                              if (nameController.text !=
+                                  LocalStorage.getUserName()) {
+                                // if user changed name
+                                await LocalStorage.setUserName(
+                                    nameController.text);
+                                event.patchName(nameController.text, context);
+                              }
+                              if (cityController.text !=
+                                  LocalStorage.getSelectedCity()) {
+                                await LocalStorage.setSelectedCity(
+                                    cityController.text);
+                                await LocalStorage.setSelectedCityLat(
+                                    selectedCity?.latitude ?? "");
+                                await LocalStorage.setSelectedCityLon(
+                                    selectedCity?.longitude ?? "");
+                                event.patchCity(selectedCity, context);
+                              }
+                              context.replaceRoute(const Registration4Route());
+                            } else {
+                              isFormNotValidated = true;
+                              setState(() {});
+                            }
                           },
+                          text: "Продолжить",
                         ),
                       ),
                     ],

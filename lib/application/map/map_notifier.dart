@@ -7,7 +7,6 @@ import 'package:activity/infrastructure/models/request/get_yandex_map_image_requ
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
-import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:activity/presentation/pages/map/widget/pop_up_map.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
@@ -74,22 +73,10 @@ class MapNotifier extends StateNotifier<MapState> {
   Future<void> getYandexMapImage(
     BuildContext context,
   ) async {
-    double? selectedCityLon;
-    double? selectedCityLat;
     final connected = await AppConnectivity().connectivity();
     state = state.copyWith(isloading: true);
     await getUserLocation();
     if (connected) {
-      if (state.userPosition == null || state.locationServiceIsNotEnabled) {
-        final listOfCities = DummyData().cityNames;
-        for (var element in listOfCities) {
-          if (element.name == LocalStorage.getSelectedCity()) {
-            selectedCityLon = element.lon!;
-            selectedCityLat = element.lat!;
-          }
-        }
-      }
-
       final request = state.userPosition != null
           ? GetYandexMapImageRequest(
               latlon:
@@ -101,8 +88,10 @@ class MapNotifier extends StateNotifier<MapState> {
               i: "map",
             )
           : GetYandexMapImageRequest(
-              latlon: "$selectedCityLon,$selectedCityLat",
-              marker: "$selectedCityLon,$selectedCityLat,pm2rdm",
+              latlon:
+                  "${LocalStorage.getSelectedCityLon()},${LocalStorage.getSelectedCityLat()}",
+              marker:
+                  "${LocalStorage.getSelectedCityLon()},${LocalStorage.getSelectedCityLat()},pm2rdm",
               size: "330,150",
               zoom: 12,
               i: "map",
@@ -128,20 +117,9 @@ class MapNotifier extends StateNotifier<MapState> {
     BuildContext context,
     String markers,
   ) async {
-    double? selectedCityLon;
-    double? selectedCityLat;
     final connected = await AppConnectivity().connectivity();
     if (connected) {
       state = state.copyWith(isloading: true);
-      if (state.userPosition == null) {
-        final listOfCities = DummyData().cityNames;
-        for (var element in listOfCities) {
-          if (element.name == LocalStorage.getSelectedCity()) {
-            selectedCityLon = element.lon!;
-            selectedCityLat = element.lat!;
-          }
-        }
-      }
 
       final request = state.userPosition != null
           ? GetYandexMapImageRequest(
@@ -154,8 +132,10 @@ class MapNotifier extends StateNotifier<MapState> {
               i: "map",
             )
           : GetYandexMapImageRequest(
-              latlon: "$selectedCityLon,$selectedCityLat",
-              marker: "$selectedCityLon,$selectedCityLat,pm2rdm,$markers",
+              latlon:
+                  "${LocalStorage.getSelectedCityLon()},${LocalStorage.getSelectedCityLat()}",
+              marker:
+                  "${LocalStorage.getSelectedCityLon()},${LocalStorage.getSelectedCityLat()},pm2rdm,$markers",
               size: "300,150",
               zoom: 10,
               i: "map",
@@ -179,24 +159,19 @@ class MapNotifier extends StateNotifier<MapState> {
 
   Future<void> setLocationFromSelectedCity() async {
     // checking whether user position is null
-    final listOfCities = DummyData().cityNames;
-    for (var element in listOfCities) {
-      if (element.name == LocalStorage.getSelectedCity()) {
-        state = state.copyWith(
-            userPosition: Position(
-          longitude: element.lon ?? 0,
-          latitude: element.lat ?? 0,
-          timestamp: DateTime.now(),
-          accuracy: 5,
-          altitude: 5,
-          altitudeAccuracy: 0.5,
-          heading: 0.5,
-          headingAccuracy: 0,
-          speed: 0,
-          speedAccuracy: 0,
-        ));
-      }
-    }
+    state = state.copyWith(
+        userPosition: Position(
+      longitude: double.parse(LocalStorage.getSelectedCityLon()),
+      latitude: double.parse(LocalStorage.getSelectedCityLat()),
+      timestamp: DateTime.now(),
+      accuracy: 5,
+      altitude: 5,
+      altitudeAccuracy: 0.5,
+      heading: 0.5,
+      headingAccuracy: 0,
+      speed: 0,
+      speedAccuracy: 0,
+    ));
   }
 
   void setLocationServiceAsEnabled() {
