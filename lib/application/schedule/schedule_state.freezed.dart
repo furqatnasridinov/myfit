@@ -23,6 +23,7 @@ mixin _$ScheduleState {
       throw _privateConstructorUsedError;
   bool get showTillWhen => throw _privateConstructorUsedError;
   bool get plusState => throw _privateConstructorUsedError;
+  List<String> get daysFromLastWeek => throw _privateConstructorUsedError;
   bool get isLocationButtonActivated => throw _privateConstructorUsedError;
   bool get isFlashButtonActivated => throw _privateConstructorUsedError;
   Map<String, dynamic> get notesMapData => throw _privateConstructorUsedError;
@@ -47,6 +48,7 @@ abstract class $ScheduleStateCopyWith<$Res> {
       List<UserSchedulesResponse> listOfuserSchedules,
       bool showTillWhen,
       bool plusState,
+      List<String> daysFromLastWeek,
       bool isLocationButtonActivated,
       bool isFlashButtonActivated,
       Map<String, dynamic> notesMapData,
@@ -72,6 +74,7 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
     Object? listOfuserSchedules = null,
     Object? showTillWhen = null,
     Object? plusState = null,
+    Object? daysFromLastWeek = null,
     Object? isLocationButtonActivated = null,
     Object? isFlashButtonActivated = null,
     Object? notesMapData = null,
@@ -99,6 +102,10 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
           ? _value.plusState
           : plusState // ignore: cast_nullable_to_non_nullable
               as bool,
+      daysFromLastWeek: null == daysFromLastWeek
+          ? _value.daysFromLastWeek
+          : daysFromLastWeek // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       isLocationButtonActivated: null == isLocationButtonActivated
           ? _value.isLocationButtonActivated
           : isLocationButtonActivated // ignore: cast_nullable_to_non_nullable
@@ -137,6 +144,7 @@ abstract class _$$ScheduleStateImplCopyWith<$Res>
       List<UserSchedulesResponse> listOfuserSchedules,
       bool showTillWhen,
       bool plusState,
+      List<String> daysFromLastWeek,
       bool isLocationButtonActivated,
       bool isFlashButtonActivated,
       Map<String, dynamic> notesMapData,
@@ -160,6 +168,7 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
     Object? listOfuserSchedules = null,
     Object? showTillWhen = null,
     Object? plusState = null,
+    Object? daysFromLastWeek = null,
     Object? isLocationButtonActivated = null,
     Object? isFlashButtonActivated = null,
     Object? notesMapData = null,
@@ -187,6 +196,10 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
           ? _value.plusState
           : plusState // ignore: cast_nullable_to_non_nullable
               as bool,
+      daysFromLastWeek: null == daysFromLastWeek
+          ? _value._daysFromLastWeek
+          : daysFromLastWeek // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       isLocationButtonActivated: null == isLocationButtonActivated
           ? _value.isLocationButtonActivated
           : isLocationButtonActivated // ignore: cast_nullable_to_non_nullable
@@ -220,6 +233,7 @@ class _$ScheduleStateImpl extends _ScheduleState {
       final List<UserSchedulesResponse> listOfuserSchedules = const [],
       this.showTillWhen = true,
       this.plusState = false,
+      final List<String> daysFromLastWeek = const [],
       this.isLocationButtonActivated = false,
       this.isFlashButtonActivated = false,
       final Map<String, dynamic> notesMapData = const {},
@@ -227,6 +241,7 @@ class _$ScheduleStateImpl extends _ScheduleState {
       this.notificationTime = "30 мин"})
       : _schedulesInMapForm = schedulesInMapForm,
         _listOfuserSchedules = listOfuserSchedules,
+        _daysFromLastWeek = daysFromLastWeek,
         _notesMapData = notesMapData,
         _schedulesFoundBySearching = schedulesFoundBySearching,
         super._();
@@ -260,6 +275,16 @@ class _$ScheduleStateImpl extends _ScheduleState {
   @override
   @JsonKey()
   final bool plusState;
+  final List<String> _daysFromLastWeek;
+  @override
+  @JsonKey()
+  List<String> get daysFromLastWeek {
+    if (_daysFromLastWeek is EqualUnmodifiableListView)
+      return _daysFromLastWeek;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_daysFromLastWeek);
+  }
+
   @override
   @JsonKey()
   final bool isLocationButtonActivated;
@@ -291,7 +316,7 @@ class _$ScheduleStateImpl extends _ScheduleState {
 
   @override
   String toString() {
-    return 'ScheduleState(isloading: $isloading, schedulesInMapForm: $schedulesInMapForm, listOfuserSchedules: $listOfuserSchedules, showTillWhen: $showTillWhen, plusState: $plusState, isLocationButtonActivated: $isLocationButtonActivated, isFlashButtonActivated: $isFlashButtonActivated, notesMapData: $notesMapData, schedulesFoundBySearching: $schedulesFoundBySearching, notificationTime: $notificationTime)';
+    return 'ScheduleState(isloading: $isloading, schedulesInMapForm: $schedulesInMapForm, listOfuserSchedules: $listOfuserSchedules, showTillWhen: $showTillWhen, plusState: $plusState, daysFromLastWeek: $daysFromLastWeek, isLocationButtonActivated: $isLocationButtonActivated, isFlashButtonActivated: $isFlashButtonActivated, notesMapData: $notesMapData, schedulesFoundBySearching: $schedulesFoundBySearching, notificationTime: $notificationTime)';
   }
 
   @override
@@ -309,6 +334,8 @@ class _$ScheduleStateImpl extends _ScheduleState {
                 other.showTillWhen == showTillWhen) &&
             (identical(other.plusState, plusState) ||
                 other.plusState == plusState) &&
+            const DeepCollectionEquality()
+                .equals(other._daysFromLastWeek, _daysFromLastWeek) &&
             (identical(other.isLocationButtonActivated,
                     isLocationButtonActivated) ||
                 other.isLocationButtonActivated == isLocationButtonActivated) &&
@@ -330,6 +357,7 @@ class _$ScheduleStateImpl extends _ScheduleState {
       const DeepCollectionEquality().hash(_listOfuserSchedules),
       showTillWhen,
       plusState,
+      const DeepCollectionEquality().hash(_daysFromLastWeek),
       isLocationButtonActivated,
       isFlashButtonActivated,
       const DeepCollectionEquality().hash(_notesMapData),
@@ -350,6 +378,7 @@ abstract class _ScheduleState extends ScheduleState {
       final List<UserSchedulesResponse> listOfuserSchedules,
       final bool showTillWhen,
       final bool plusState,
+      final List<String> daysFromLastWeek,
       final bool isLocationButtonActivated,
       final bool isFlashButtonActivated,
       final Map<String, dynamic> notesMapData,
@@ -367,6 +396,8 @@ abstract class _ScheduleState extends ScheduleState {
   bool get showTillWhen;
   @override
   bool get plusState;
+  @override
+  List<String> get daysFromLastWeek;
   @override
   bool get isLocationButtonActivated;
   @override

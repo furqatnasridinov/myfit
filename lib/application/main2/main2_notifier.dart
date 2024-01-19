@@ -166,12 +166,18 @@ class Main2Notifier extends StateNotifier<Main2State> {
   void determineWhenActivityStarts(String startTime) {
     // startTime 2023-11-11@13:15
     List<String> parts = startTime.split("@");
-    String formatted = "${parts[0]} ${parts[1]}:00";
-    DateTime startingTimeInDTFormat = DateTime.parse(formatted);
+    String formatted = "${parts[0]} ${parts[1]}:00"; //"2023-11-11 13:15:00"
+    DateTime startingTimeInDTFormat =
+        DateTime.parse(formatted); //DateTime (2023-11-11 13:15:00.000)
     DateTime now = DateTime.now();
-    Duration resultOnDuration = startingTimeInDTFormat.difference(now);
-    String formattedDifference = formatDuration(resultOnDuration);
-    state = state.copyWith(whenActivityStarts: formattedDifference);
+    if (startingTimeInDTFormat.isAfter(now)) {
+      Duration resultOnDuration = startingTimeInDTFormat.difference(now);
+      String formattedDifference = formatDuration(resultOnDuration);
+      state = state.copyWith(whenActivityStarts: formattedDifference);
+    } else {
+      print("Activity is already happened");
+      state = state.copyWith(nearestLesson: null);
+    }
   }
 
   String formatDuration(Duration duration) {

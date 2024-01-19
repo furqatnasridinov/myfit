@@ -74,9 +74,9 @@ class MapNotifier extends StateNotifier<MapState> {
     BuildContext context,
   ) async {
     final connected = await AppConnectivity().connectivity();
-    state = state.copyWith(isloading: true);
-    await getUserLocation();
+    //await getUserLocation();
     if (connected) {
+      state = state.copyWith(isloading: true);
       final request = state.userPosition != null
           ? GetYandexMapImageRequest(
               latlon:
@@ -101,12 +101,14 @@ class MapNotifier extends StateNotifier<MapState> {
       response.when(
         success: (data) {
           if (data != null) {
-            state = state.copyWith(mapScreenShot: data);
+            state = state.copyWith(mapScreenShot: data, isloading: false);
           }
         },
-        failure: (error, statusCode) {},
+        failure: (error, statusCode) {
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          state = state.copyWith(isloading: false);
+        },
       );
-      state = state.copyWith(isloading: false);
     } else {
       // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
@@ -148,7 +150,9 @@ class MapNotifier extends StateNotifier<MapState> {
             state = state.copyWith(mapScreenShot: data);
           }
         },
-        failure: (error, statusCode) {},
+        failure: (error, statusCode) {
+          AppHelpers.showSnack(context, "$error $statusCode");
+        },
       );
       state = state.copyWith(isloading: false);
     } else {
@@ -158,7 +162,6 @@ class MapNotifier extends StateNotifier<MapState> {
   }
 
   Future<void> setLocationFromSelectedCity() async {
-    // checking whether user position is null
     state = state.copyWith(
         userPosition: Position(
       longitude: double.parse(LocalStorage.getSelectedCityLon()),

@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/application/settings/settings_notifier.dart';
 import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/application/settings/settings_state.dart';
@@ -226,25 +227,36 @@ class _PopupBodyState extends State<PopupBody> {
               key: sizedBoxKey,
               height: 40.h,
               child: CompositedTransformTarget(
-                link: layerlink,
-                child: CustomTextFormField(
-                  contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
-                  hasFocus: widget.state.cityTextFieldHasFocus,
-                  onTap: () {
-                    if (!widget.state.cityTextFieldHasFocus) {
-                      widget.event.cityTextFieldRequestFocus();
-                    }
-                  },
-                  suffixIcon: SvgPicture.asset(
-                    !widget.state.cityTextFieldHasFocus
-                        ? "assets/svg/arrow_down.svg"
-                        : "assets/svg/arrow_up.svg",
-                    fit: BoxFit.none,
-                  ),
-                  readOnly: true,
-                  controller: cityController,
-                ),
-              ),
+                  link: layerlink,
+                  child: widget.state.isCitiesLoading
+                      ? CustomTextFormField(
+                          contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
+                          suffixIcon: SvgPicture.asset(
+                            !widget.state.cityTextFieldHasFocus
+                                ? "assets/svg/arrow_down.svg"
+                                : "assets/svg/arrow_up.svg",
+                            fit: BoxFit.none,
+                          ),
+                          readOnly: true,
+                          initialValue: "Загружаем город",
+                        )
+                      : CustomTextFormField(
+                          contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
+                          hasFocus: widget.state.cityTextFieldHasFocus,
+                          onTap: () {
+                            if (!widget.state.cityTextFieldHasFocus) {
+                              widget.event.cityTextFieldRequestFocus();
+                            }
+                          },
+                          suffixIcon: SvgPicture.asset(
+                            !widget.state.cityTextFieldHasFocus
+                                ? "assets/svg/arrow_down.svg"
+                                : "assets/svg/arrow_up.svg",
+                            fit: BoxFit.none,
+                          ),
+                          readOnly: true,
+                          controller: cityController,
+                        )),
             ),
             16.verticalSpace,
 
@@ -405,56 +417,64 @@ class _PopupBodyState extends State<PopupBody> {
                 ),
                 10.horizontalSpace,
                 Expanded(
-                  child: CustomButton(
-                    showProgress: widget.state.isloading,
-                    width: 130.w,
-                    height: 40.h,
-                    fontSize: 14.sp,
-                    buttonColor: AppColors.blueColor,
-                    borderColor: AppColors.blueBorder,
-                    textColor: Colors.white,
-                    onPressed: () async {
-                      // check whether user added new data
-                      if (LocalStorage.getUserName() !=
-                          nameController.text.trim()) {
-                        await LocalStorage.setUserName(nameController.text);
-                        widget.event.setName();
-
-                        await widget.event
-                            .patchName(nameController.text.trim(), context);
-                      }
-                      if (LocalStorage.getSelectedCity() !=
-                          cityController.text) {
-                        await LocalStorage.setSelectedCity(cityController.text);
-                        await LocalStorage.setSelectedCityLat(
-                            selectedCity?.latitude ?? "");
-                        await LocalStorage.setSelectedCityLon(
-                            selectedCity?.longitude ?? "");
-                        widget.event.setSelectedCity();
-
-                        await widget.event.patchCity(selectedCity, context);
-                      }
-                      if (LocalStorage.getAge() != ageController.text) {
-                        await LocalStorage.setAge(ageController.text);
-                        widget.event.setAge();
-                        await widget.event
-                            .patchAge(ageController.text, context);
-                      }
-                      if (LocalStorage.getWeight() != weightController.text) {
-                        await LocalStorage.setWeight(weightController.text);
-                        widget.event.setWeight();
-                        await widget.event
-                            .patchWeight(weightController.text, context);
-                      }
-                      if (LocalStorage.getHeight() != heightController.text) {
-                        await LocalStorage.setHeight(heightController.text);
-                        widget.event.setHeight();
-                        await widget.event
-                            .patchHeight(heightController.text, context);
-                      }
-                      context.popRoute();
+                  child: Consumer(
+                    builder: (context, ref, child) {
+                      final mapEvent = ref.watch(mapProvider.notifier);
+                      return CustomButton(
+                        showProgress: widget.state.isloading,
+                        width: 130.w,
+                        height: 40.h,
+                        fontSize: 14.sp,
+                        buttonColor: AppColors.blueColor,
+                        borderColor: AppColors.blueBorder,
+                        textColor: Colors.white,
+                        onPressed: () async {
+                          // check whether user added new data
+                          if (LocalStorage.getUserName() !=
+                              nameController.text.trim()) {
+                            await LocalStorage.setUserName(nameController.text);
+                            widget.event.setName();
+                            await widget.event
+                                .patchName(nameController.text.trim(), context);
+                          }
+                          if (LocalStorage.getSelectedCity() !=
+                              cityController.text) {
+                            await LocalStorage.setSelectedCity(
+                                cityController.text);
+                            await LocalStorage.setSelectedCityLat(
+                                selectedCity?.latitude ?? "");
+                            await LocalStorage.setSelectedCityLon(
+                                selectedCity?.longitude ?? "");
+                            widget.event.setSelectedCity();
+                            await widget.event.patchCity(selectedCity, context);
+                            await mapEvent.setLocationFromSelectedCity();
+                            await mapEvent.getYandexMapImage(context);
+                          }
+                          if (LocalStorage.getAge() != ageController.text) {
+                            await LocalStorage.setAge(ageController.text);
+                            widget.event.setAge();
+                            await widget.event
+                                .patchAge(ageController.text, context);
+                          }
+                          if (LocalStorage.getWeight() !=
+                              weightController.text) {
+                            await LocalStorage.setWeight(weightController.text);
+                            widget.event.setWeight();
+                            await widget.event
+                                .patchWeight(weightController.text, context);
+                          }
+                          if (LocalStorage.getHeight() !=
+                              heightController.text) {
+                            await LocalStorage.setHeight(heightController.text);
+                            widget.event.setHeight();
+                            await widget.event
+                                .patchHeight(heightController.text, context);
+                          }
+                          context.popRoute();
+                        },
+                        text: "Сохранить",
+                      );
                     },
-                    text: "Сохранить",
                   ),
                 ),
               ],
