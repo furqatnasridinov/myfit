@@ -28,7 +28,7 @@ class Registration3Screen extends ConsumerStatefulWidget {
 class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
   TextEditingController cityController = TextEditingController(
       text: LocalStorage.getSelectedCity().isEmpty
-          ? "Выберите город"
+          ? ""
           : LocalStorage.getSelectedCity());
   TextEditingController nameController =
       TextEditingController(text: LocalStorage.getUserName());
@@ -36,7 +36,8 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
   FocusNode nameFocus = FocusNode();
   final formKey = GlobalKey<FormState>();
   final layerlink = LayerLink();
-  bool isFormNotValidated = false;
+  bool isNameNotGiven = false;
+  bool isCityNotSelected = false;
   OverlayEntry? entry;
   City? selectedCity;
 
@@ -155,7 +156,7 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                         height: 40.h,
                         width: double.maxFinite,
                         child: CustomTextField(
-                          isError: isFormNotValidated,
+                          isError: isNameNotGiven,
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(
                               RegExp(r'[a-zA-Zа-яА-Я]'),
@@ -193,7 +194,7 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                           hintText: "Ваше имя",
                         ),
                       ),
-                      isFormNotValidated
+                      isNameNotGiven
                           ? Padding(
                               padding: EdgeInsets.only(top: 5.h),
                               child: CustomText(
@@ -217,7 +218,7 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                         width: double.maxFinite,
                         child: CompositedTransformTarget(
                           link: layerlink,
-                          child: TextField(
+                          child: CustomTextField(
                             style: GoogleFonts.raleway(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w400,
@@ -231,44 +232,35 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                                 focusNode.unfocus();
                               }
                             },
+                            isError: isCityNotSelected,
                             readOnly: true,
                             focusNode: focusNode,
                             controller: cityController,
-                            decoration: InputDecoration(
-                              suffixIcon: Icon(
-                                focusNode.hasFocus
-                                    ? Icons.keyboard_arrow_up
-                                    : Icons.keyboard_arrow_down,
-                                size: 23.r,
-                              ),
-                              contentPadding:
-                                  EdgeInsets.zero.copyWith(left: 10.w),
-                              hintStyle: GoogleFonts.inter(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w400,
-                              ),
-                              fillColor: Colors.white,
-                              filled: true,
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.r),
-                                borderSide: BorderSide(
-                                  color: focusNode.hasFocus
-                                      ? AppColors.blueColor
-                                      : AppColors.greyBorder,
-                                  width: 1.w,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.r),
-                                borderSide: BorderSide(
-                                  color: AppColors.greyBorder,
-                                  width: 1.w,
-                                ),
-                              ),
+                            hintText: LocalStorage.getSelectedCity().isEmpty
+                                ? "Выберите город"
+                                : "",
+                            suffixIcon: Icon(
+                              focusNode.hasFocus
+                                  ? Icons.keyboard_arrow_up
+                                  : Icons.keyboard_arrow_down,
+                              size: 23.r,
                             ),
+                            contentPadding:
+                                EdgeInsets.zero.copyWith(left: 10.w),
                           ),
                         ),
                       ),
+                      isCityNotSelected
+                          ? Padding(
+                              padding: EdgeInsets.only(top: 5.h),
+                              child: CustomText(
+                                text: "Выберите город",
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.red,
+                              ),
+                            )
+                          : const SizedBox.shrink(),
                       32.verticalSpace,
 
                       // button
@@ -299,7 +291,8 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
                           onPressed: () async {
-                            if (nameController.text.length > 2) {
+                            if (nameController.text.length > 2 &&
+                                cityController.text.isNotEmpty) {
                               if (nameController.text !=
                                   LocalStorage.getUserName()) {
                                 // if user changed name
@@ -319,8 +312,14 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                               }
                               context.replaceRoute(const Registration4Route());
                             } else {
-                              isFormNotValidated = true;
-                              setState(() {});
+                              if (nameController.text.length < 2) {
+                                isNameNotGiven = true;
+                                setState(() {});
+                              }
+                              if (cityController.text.isEmpty) {
+                                isCityNotSelected = true;
+                                setState(() {});
+                              }
                             }
                           },
                           text: "Продолжить",
