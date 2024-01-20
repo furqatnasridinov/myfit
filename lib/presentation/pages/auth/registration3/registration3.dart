@@ -2,10 +2,14 @@
 
 import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/custom_textfield.dart';
+import 'package:activity/presentation/pages/auth/registration3/widget/bottom_wave.dart';
+import 'package:activity/presentation/pages/auth/registration3/widget/medium_wave.dart';
+import 'package:activity/presentation/pages/auth/registration3/widget/top_wave.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -118,7 +122,7 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
   @override
   void initState() {
     super.initState();
-    ref.read(settingsProvider.notifier).getListOfCities(context);
+    //ref.read(settingsProvider.notifier).getListOfCities(context);
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
         showOverlay();
@@ -130,168 +134,200 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
     final event = ref.read(settingsProvider.notifier);
     return Scaffold(
       body: SafeArea(
+        bottom: false,
         child: Stack(
           children: [
             // main body
-            Form(
-              key: formKey,
-              child: Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomText(
-                        text: "Как к вам обращаться",
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    69.verticalSpace,
+                    SizedBox(
+                      width: double.maxFinite,
+                      child: Hero(
+                        tag: AppConstants.registration3Hero,
+                        flightShuttleBuilder: (flightContext, animation,
+                            flightDirection, fromHeroContext, toHeroContext) {
+                          switch (flightDirection) {
+                            case HeroFlightDirection.push:
+                              return Material(
+                                color: Colors.transparent,
+                                child: ScaleTransition(
+                                  scale: animation.drive(
+                                    Tween<double>(begin: 0.0, end: 1.0).chain(
+                                      CurveTween(
+                                        curve: Curves.fastOutSlowIn,
+                                      ),
+                                    ),
+                                  ),
+                                  child: toHeroContext.widget,
+                                ),
+                              );
+                            case HeroFlightDirection.pop:
+                              return toHeroContext.widget;
+                          }
+                        },
+                        transitionOnUserGestures: true,
+                        child: SvgPicture.asset(
+                          "assets/svg/registration3.svg",
+                          fit: BoxFit.fill,
+                        ),
                       ),
-                      5.verticalSpace,
-                      SizedBox(
-                        height: 40.h,
-                        width: double.maxFinite,
-                        child: CustomTextField(
-                          isError: isNameNotGiven,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                              RegExp(r'[a-zA-Zа-яА-Я]'),
-                            ),
-                          ],
-                          counterStyle: const TextStyle(
-                            height: double.minPositive,
+                    ),
+                    48.verticalSpace,
+                    CustomText(
+                      text: "Как к вам обращаться",
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    5.verticalSpace,
+                    SizedBox(
+                      height: 40.h,
+                      width: double.maxFinite,
+                      child: CustomTextField(
+                        isError: isNameNotGiven,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                            RegExp(r'[a-zA-Zа-яА-Я]'),
                           ),
-                          counterText: "",
-                          maxLength: 16,
+                        ],
+                        counterStyle: const TextStyle(
+                          height: double.minPositive,
+                        ),
+                        counterText: "",
+                        maxLength: 16,
+                        style: GoogleFonts.raleway(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black,
+                        ),
+                        controller: nameController,
+                        focusNode: nameFocus,
+                        onTapOutside: (onTapOutside) {
+                          if (nameFocus.hasFocus) {
+                            nameFocus.unfocus();
+                          }
+                        },
+                        onTap: () {
+                          if (!nameFocus.hasFocus) {
+                            nameFocus.requestFocus();
+                          }
+                        },
+                        onEditingComplete: () {
+                          if (!nameFocus.hasFocus) {
+                            nameFocus.requestFocus();
+                          }
+                        },
+                        maxLines: 1,
+                        contentPadding: EdgeInsets.zero.copyWith(left: 10.w),
+                        hintText: "Ваше имя",
+                      ),
+                    ),
+                    isNameNotGiven
+                        ? Padding(
+                            padding: EdgeInsets.only(top: 5.h),
+                            child: CustomText(
+                              text: "Имя должна содержать хотя бы 3 буквы",
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.red,
+                            ),
+                          )
+                        : const SizedBox(),
+
+                    32.verticalSpace,
+                    CustomText(
+                      text: "В каком городе искать активности",
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    5.verticalSpace,
+                    SizedBox(
+                      height: 40.h,
+                      width: double.maxFinite,
+                      child: CompositedTransformTarget(
+                        link: layerlink,
+                        child: CustomTextField(
                           style: GoogleFonts.raleway(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w400,
                             color: Colors.black,
                           ),
-                          controller: nameController,
-                          focusNode: nameFocus,
-                          onTapOutside: (onTapOutside) {
-                            if (nameFocus.hasFocus) {
-                              nameFocus.unfocus();
-                            }
-                          },
                           onTap: () {
-                            if (!nameFocus.hasFocus) {
-                              nameFocus.requestFocus();
+                            if (!focusNode.hasFocus) {
+                              focusNode.requestFocus();
+                              setState(() {});
+                            } else {
+                              focusNode.unfocus();
                             }
                           },
-                          onEditingComplete: () {
-                            if (!nameFocus.hasFocus) {
-                              nameFocus.requestFocus();
-                            }
-                          },
-                          maxLines: 1,
-                          contentPadding: EdgeInsets.zero.copyWith(left: 10.w),
-                          hintText: "Ваше имя",
-                        ),
-                      ),
-                      isNameNotGiven
-                          ? Padding(
-                              padding: EdgeInsets.only(top: 5.h),
-                              child: CustomText(
-                                text: "Имя должна содержать хотя бы 3 буквы",
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.red,
-                              ),
-                            )
-                          : const SizedBox(),
-
-                      32.verticalSpace,
-                      CustomText(
-                        text: "В каком городе искать активности",
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      5.verticalSpace,
-                      SizedBox(
-                        height: 40.h,
-                        width: double.maxFinite,
-                        child: CompositedTransformTarget(
-                          link: layerlink,
-                          child: CustomTextField(
-                            style: GoogleFonts.raleway(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                            ),
-                            onTap: () {
-                              if (!focusNode.hasFocus) {
-                                focusNode.requestFocus();
-                                setState(() {});
-                              } else {
-                                focusNode.unfocus();
-                              }
-                            },
-                            isError: isCityNotSelected,
-                            readOnly: true,
-                            focusNode: focusNode,
-                            controller: cityController,
-                            hintText: LocalStorage.getSelectedCity().isEmpty
-                                ? "Выберите город"
-                                : "",
-                            suffixIcon: Icon(
-                              focusNode.hasFocus
-                                  ? Icons.keyboard_arrow_up
-                                  : Icons.keyboard_arrow_down,
-                              size: 23.r,
-                            ),
-                            contentPadding:
-                                EdgeInsets.zero.copyWith(left: 10.w),
+                          isError: isCityNotSelected,
+                          readOnly: true,
+                          focusNode: focusNode,
+                          controller: cityController,
+                          hintText: LocalStorage.getSelectedCity().isEmpty
+                              ? "Выберите город"
+                              : "",
+                          suffixIcon: Icon(
+                            focusNode.hasFocus
+                                ? Icons.keyboard_arrow_up
+                                : Icons.keyboard_arrow_down,
+                            size: 23.r,
                           ),
+                          contentPadding: EdgeInsets.zero.copyWith(left: 10.w),
                         ),
                       ),
-                      isCityNotSelected
-                          ? Padding(
-                              padding: EdgeInsets.only(top: 5.h),
-                              child: CustomText(
-                                text: "Выберите город",
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.red,
-                              ),
-                            )
-                          : const SizedBox.shrink(),
-                      32.verticalSpace,
+                    ),
+                    isCityNotSelected
+                        ? Padding(
+                            padding: EdgeInsets.only(top: 5.h),
+                            child: CustomText(
+                              text: "Выберите город",
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.red,
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                    32.verticalSpace,
 
-                      // button
-                      Container(
-                        margin: focusNode.hasFocus
-                            ? EdgeInsets.symmetric(horizontal: 3.w)
-                            : EdgeInsets.zero,
-                        height: 56.h,
-                        decoration: const BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color.fromRGBO(0, 0, 0, 0.15),
-                              offset: Offset(0, 2),
-                              blurRadius: 5,
-                              spreadRadius: 0,
-                            ),
-                            BoxShadow(
-                              color: Color.fromRGBO(109, 150, 212, 1),
-                              offset: Offset(0, 15),
-                              blurRadius: 18,
-                              spreadRadius: -15,
-                            ),
-                          ],
-                        ),
-                        child: CustomButton(
-                          buttonColor: AppColors.blueColor,
-                          textColor: Colors.white,
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                          onPressed: () async {
-                            if (nameController.text.length > 2 &&
+                    // button
+                    Container(
+                      margin: focusNode.hasFocus
+                          ? EdgeInsets.symmetric(horizontal: 3.w)
+                          : EdgeInsets.zero,
+                      height: 56.h,
+                      decoration: const BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color.fromRGBO(0, 0, 0, 0.15),
+                            offset: Offset(0, 2),
+                            blurRadius: 5,
+                            spreadRadius: 0,
+                          ),
+                          BoxShadow(
+                            color: Color.fromRGBO(109, 150, 212, 1),
+                            offset: Offset(0, 15),
+                            blurRadius: 18,
+                            spreadRadius: -15,
+                          ),
+                        ],
+                      ),
+                      child: CustomButton(
+                        buttonColor: AppColors.blueColor,
+                        textColor: Colors.white,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        onPressed: () async {
+                          context.router.push(const Registration4Route());
+
+                          /* if (nameController.text.length > 2 &&
                                 cityController.text.isNotEmpty) {
                               if (nameController.text !=
                                   LocalStorage.getUserName()) {
@@ -320,25 +356,164 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                                 isCityNotSelected = true;
                                 setState(() {});
                               }
-                            }
-                          },
-                          text: "Продолжить",
-                        ),
+                            } */
+                        },
+                        text: "Продолжить",
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
+
             // waves
             Align(
               alignment: Alignment.bottomCenter,
               child: nameFocus.hasFocus
                   ? const SizedBox()
-                  : SizedBox(
+                  : CustomPaint(
+                      size: Size(400, 180.w),
+                      painter: TopWave(),
+                    ),
+            ),
+
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: nameFocus.hasFocus
+                  ? const SizedBox()
+                  : CustomPaint(
+                      size: Size(400, 160.w),
+                      painter: MediumWave(),
+                    ),
+            ),
+
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: nameFocus.hasFocus
+                  ? const SizedBox()
+                  : CustomPaint(
+                      size: Size(400, 70.w),
+                      painter: BottomWave(),
+                    ),
+            ),
+
+            // Icons
+
+            Positioned(
+              bottom: 28.h,
+              left: 40.w,
+              child: nameFocus.hasFocus
+                  ? const SizedBox()
+                  : Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      padding: EdgeInsets.all(3.r),
                       child: SvgPicture.asset(
-                        "assets/svg/Vector 13.svg",
-                        width: width,
+                        "assets/svg/boxing.svg",
+                      ),
+                    ),
+            ),
+
+            Positioned(
+              bottom: 40.h,
+              left: 120.w,
+              child: nameFocus.hasFocus
+                  ? const SizedBox()
+                  : Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      padding: EdgeInsets.all(3.r),
+                      child: SvgPicture.asset(
+                        "assets/svg/yoga.svg",
+                      ),
+                    ),
+            ),
+
+            Positioned(
+              bottom: 135.h,
+              right: 40.w,
+              child: nameFocus.hasFocus
+                  ? const SizedBox()
+                  : Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      padding: EdgeInsets.all(3.r),
+                      child: SvgPicture.asset(
+                        "assets/svg/cardio.svg",
+                      ),
+                    ),
+            ),
+
+            Positioned(
+              bottom: 60.h,
+              right: 20.w,
+              child: nameFocus.hasFocus
+                  ? const SizedBox()
+                  : Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      padding: EdgeInsets.all(3.r),
+                      child: SvgPicture.asset(
+                        "assets/svg/meditation.svg",
+                      ),
+                    ),
+            ),
+
+            Positioned(
+              bottom: 25.h,
+              right: 90.w,
+              child: nameFocus.hasFocus
+                  ? const SizedBox()
+                  : Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      padding: EdgeInsets.all(3.r),
+                      child: SvgPicture.asset(
+                        "assets/svg/gym.svg",
+                      ),
+                    ),
+            ),
+
+            Positioned(
+              bottom: 55.h,
+              right: 140.w,
+              child: nameFocus.hasFocus
+                  ? const SizedBox()
+                  : Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      padding: EdgeInsets.all(3.r),
+                      child: SvgPicture.asset(
+                        "assets/svg/pool.svg",
+                      ),
+                    ),
+            ),
+
+            Positioned(
+              bottom: 95.h,
+              left: 10.w,
+              child: nameFocus.hasFocus
+                  ? const SizedBox()
+                  : Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      padding: EdgeInsets.all(3.r),
+                      child: SvgPicture.asset(
+                        "assets/svg/popa.svg",
                       ),
                     ),
             ),
