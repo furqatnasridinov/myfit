@@ -31,8 +31,7 @@ class RegistrationScreen extends StatelessWidget {
                 children: [
                   SvgPicture.asset(
                     "assets/svg/myfit_text.svg",
-                    width: 239.w,
-                    height: 66.h,
+                    //height: 66.h,
                   ),
                   5.verticalSpace,
                   CustomText(

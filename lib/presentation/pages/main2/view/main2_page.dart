@@ -57,9 +57,6 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
       event.cleanSearchList();
     }
     print("token ${LocalStorage.getToken()}");
-    print(
-      "alo ${state.whenActivityStarts}",
-    );
     //LocalStorage.removeToken();
     return PopScope(
       //canPop: false,
