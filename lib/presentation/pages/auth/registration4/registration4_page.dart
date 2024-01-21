@@ -19,7 +19,7 @@ class Registration4Screen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //wait3SecondsThenMove(context);
+    wait3SecondsThenMove(context);
     return Scaffold(
       backgroundColor: Colors.white,
       body: Hero(

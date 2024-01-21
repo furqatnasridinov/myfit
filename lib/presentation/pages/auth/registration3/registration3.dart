@@ -2,7 +2,6 @@
 
 import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_text.dart';
@@ -45,6 +44,8 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
   OverlayEntry? entry;
   City? selectedCity;
   bool isAllFieldsSumbitted = false;
+  bool showReplayButton = false;
+  bool topGapRemoved = false;
 
   void setSelectedCity(City city) {
     selectedCity = city;
@@ -133,21 +134,13 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
     });
   }
 
-  Future<void> wait3SecondsThenMove(BuildContext context) async {
-    await Future.delayed(const Duration(seconds: 3))
-        .then((value) => context.router.replaceAll([
-              const Main2Route(),
-            ]));
-  }
-
   @override
   Widget build(BuildContext context) {
     final event = ref.read(settingsProvider.notifier);
     final height = MediaQuery.of(context).size.height;
-    if (isAllFieldsSumbitted) {
-      wait3SecondsThenMove(context);
-    }
+
     return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
       body: Stack(
         children: [
           // main body
@@ -158,41 +151,51 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  isAllFieldsSumbitted ? 0.verticalSpace : 89.verticalSpace,
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 500),
-                    height: isAllFieldsSumbitted ? height : 132.h,
+                  topGapRemoved ? 0.verticalSpace : 89.verticalSpace,
+                  Ink(
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16.r),
-                        color: Colors.white,
-                        border: Border.all(color: AppColors.greyBorder)),
-                    width: double.maxFinite,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                       isAllFieldsSumbitted ? CustomText(
-                         text: "Добро пожаловать в команду",
-                         fontSize: 16.sp,
-                         fontWeight: FontWeight.w500,
-                       ) : const SizedBox.shrink(),
-                        isAllFieldsSumbitted
-                            ? 25.verticalSpace
-                            : 0.verticalSpace,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(
-                              "assets/svg/MY.svg",
-                              width: isAllFieldsSumbitted ? 120.w : null,
-                            ),
-                            5.horizontalSpace,
-                            SvgPicture.asset(
-                              "assets/svg/FIT.svg",
-                              width: isAllFieldsSumbitted ? 120.w : null,
-                            ),
-                          ],
-                        ),
-                      ],
+                      borderRadius: BorderRadius.circular(16.r),
+                      color: Colors.white,
+                      border: Border.all(
+                        color: isAllFieldsSumbitted
+                            ? Colors.transparent
+                            : AppColors.greyBorder,
+                      ),
+                    ),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeIn,
+                      height: isAllFieldsSumbitted ? height : 132.h,
+                      width: double.maxFinite,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          isAllFieldsSumbitted
+                              ? CustomText(
+                                  text: "Добро пожаловать в команду",
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500,
+                                )
+                              : const SizedBox.shrink(),
+                          isAllFieldsSumbitted
+                              ? 25.verticalSpace
+                              : 0.verticalSpace,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                "assets/svg/MY.svg",
+                                width: isAllFieldsSumbitted ? 120.w : null,
+                              ),
+                              5.horizontalSpace,
+                              SvgPicture.asset(
+                                "assets/svg/FIT.svg",
+                                width: isAllFieldsSumbitted ? 120.w : null,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   // creating separate column to hide its content when showing animation
@@ -371,6 +374,10 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                                     }
                                     isAllFieldsSumbitted = true;
                                     setState(() {});
+                                    await Future.delayed(
+                                        const Duration(milliseconds: 400));
+                                    context.router
+                                        .push(const Registration4Route());
                                   } else {
                                     if (nameController.text.length < 2) {
                                       isNameNotGiven = true;
