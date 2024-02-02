@@ -428,16 +428,19 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
-  String getNameFromTgUrl(String url) {
-    List<String> parts = url.split("t.me/");
-    String name = parts[1];
-    return name;
+ /*  String getNameFromTgUrl(String url) {
+    if (url.isNotEmpty) {
+      List<String> parts = url.split("t.me/");
+      String name = parts[1];
+      return name;
+    }
+    return "";
   }
 
   String getNameFromVkUrl(String url) {
     List<String> parts = url.split("vk.com/");
     return parts[1];
-  }
+  } */
 
   String? convertToOriginalDate(String dateString) {
     final parts = dateString.split(' ');

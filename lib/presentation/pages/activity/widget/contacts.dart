@@ -51,14 +51,17 @@ class Contacts extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (state.gym?.telegram != null)
-                    telegram(() {
-                      event.launchTelegram(state.gym?.telegram ?? "");
-                    }, event.getNameFromTgUrl(state.gym?.telegram ?? "")),
+                  if (state.gym?.telegram != null && state.gym?.telegram != "")
+                    telegram(
+                      () {
+                        event.launchTelegram(state.gym?.telegram ?? "");
+                      },
+                      state.gym?.telegram ?? "",
+                    ),
                   if (state.gym?.telegram == null && state.gym?.vk != null)
                     vk(() {
                       event.launchVk(state.gym?.vk ?? "");
-                    }, event.getNameFromVkUrl(state.gym?.vk ?? ""))
+                    }, state.gym?.vk ?? "")
                 ],
               ),
               32.verticalSpace,
@@ -92,10 +95,12 @@ Widget telegram(void Function()? onTap, String? text) {
         children: [
           SvgPicture.asset("assets/svg/tg.svg"),
           10.horizontalSpace,
-          CustomText(
-            text: text ?? "",
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w400,
+          Flexible(
+            child: CustomText(
+              text: text ?? "",
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w400,
+            ),
           ),
         ],
       ),
