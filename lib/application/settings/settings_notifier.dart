@@ -1,10 +1,13 @@
 import 'package:activity/application/settings/settings_state.dart';
 import 'package:activity/domain/interface/settings.dart';
+import 'package:activity/infrastructure/local_notifications/notification_service.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:timezone/timezone.dart';
 
 import '../../infrastructure/models/response/auth_response.dart';
 
@@ -232,6 +235,31 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     } else {
       // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  void showDefaultNotification() async {
+    PermissionStatus permissionStatus = await Permission.notification.request();
+    if (permissionStatus.isGranted) {
+      NotificationService().showDefaultNotification(
+        "Myfit App",
+        "Шерзоди пачак",
+      );
+    } else {
+      //await Permission.notification.request();
+    }
+  }
+
+  void showScheduledNotification({required DateTime time}) async {
+    PermissionStatus permissionStatus = await Permission.notification.request();
+    if (permissionStatus.isGranted) {
+      NotificationService().showScheduledNotification(
+        title: "Myfit App",
+        body: "Скоро начнется ваше занятие ",
+        dateTime: time,
+      );
+    } else {
+      //AppHelpers.showSnack(context, "Разрешение не дано!");
     }
   }
 

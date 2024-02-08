@@ -59,4 +59,11 @@ class AppConstants {
 
   // hero animations tags
   static const String registration3Hero = "registration_3_hero";
+
+  // notification
+
+  static const int scheduledNotificationId = 1308;
+  static const String scheduledNotificationChannelId = "tmpScheduledChanelId";
+  static const String scheduledNotificationChannelName =
+      "tmpScheduledChanelName";
 }

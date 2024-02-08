@@ -428,7 +428,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
- /*  String getNameFromTgUrl(String url) {
+  /*  String getNameFromTgUrl(String url) {
     if (url.isNotEmpty) {
       List<String> parts = url.split("t.me/");
       String name = parts[1];
@@ -709,4 +709,16 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
+  String getLinkToCompressedPhoto(String fileName) {
+  int lastDotIndex = fileName.lastIndexOf('.');
+  if (lastDotIndex == -1) {
+    // Если точка в имени файла не найдена, возвращаем исходное имя
+    return fileName;
+  }
+  String nameWithoutExtension = fileName.substring(0, lastDotIndex);
+  String extension = fileName.substring(lastDotIndex);
+  return "${nameWithoutExtension}_icon$extension";
 }
+}
+
+

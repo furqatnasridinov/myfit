@@ -72,7 +72,8 @@ class _TheOneWithImageState extends State<TheOneWithImage> {
             ),
           ),
           child: CachedNetworkImage(
-            imageUrl: widget.state.gym?.mainPictureUrl ?? "",
+            imageUrl:
+                "http://77.222.53.122/image/${widget.state.gym?.mainPictureUrl}",
             errorWidget: (context, url, error) {
               return Image.asset(
                 "assets/images/avatar.png",
