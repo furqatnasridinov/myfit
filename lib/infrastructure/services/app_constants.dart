@@ -14,7 +14,7 @@ class AppConstants {
   static const String addNote = "api/schedule/addNote";
   static const String getCities = "api/main/city";
   static const String patchUser = "api/user/";
-  
+
   static const String sendPhoneNumber = "api/user/loginCode";
   static const String sendCodeConfirmation = "api/user/loginCodeConfirmation";
   //static const String getInfoForType = "api/gym/3/infoForType";
@@ -48,6 +48,9 @@ class AppConstants {
   static const String keyHeight = "key_height";
   static const String keyAvatar = "key_avatar";
   static const String keyKnownActivities = "key_activities";
+  static const String keyIsNotificationDisabled =
+      "key_is_notification_disabled";
+  static const String keyNotificationTime = "key_notification_time";
 
   // long texts
   static const String confirmationText =
@@ -56,4 +59,14 @@ class AppConstants {
       "к MyFIT (временно или навсегда). Будет не круто, поэтому используй приложение с умом и по правилам.  Третье правило: всякое бывает. Мы живём в непредсказуемом мире. Если случится какая-нибудь безумная хрень (войны, землетрясения, наводнения, порабощение человечества искусственным интеллектом… ну ладно, про интеллект я загнул, надеюсь), ни ты, ни компания не будете нести ответственности за невыполнение обязательств. Да, в жизни бывает всякая фигня. Мы постарались сделать соглашение максимально простым с юридической точки зрения, а также добавили пояснения нормальным человеческим языком (сами знаем, многим юридическим документам этого очень не хватает).";
   static const String warningText =
       "Если вы пропускаете регистрацию по номеру телефона - то при следующем входе система может вас не узнать, все данные удалятся а оплаченный период будет утерян.";
+
+  // hero animations tags
+  static const String registration3Hero = "registration_3_hero";
+
+  // notification
+
+  static const int scheduledNotificationId = 1308;
+  static const String scheduledNotificationChannelId = "tmpScheduledChanelId";
+  static const String scheduledNotificationChannelName =
+      "tmpScheduledChanelName";
 }

@@ -12,6 +12,7 @@ class ScheduleState with _$ScheduleState {
     @Default([]) List<UserSchedulesResponse> listOfuserSchedules,
     @Default(true) bool showTillWhen,
     @Default(false) bool plusState,
+    @Default([]) List<String> daysFromLastWeek,
     @Default(false) bool isLocationButtonActivated,
     @Default(false) bool isFlashButtonActivated,
     @Default({}) Map<String, dynamic> notesMapData,

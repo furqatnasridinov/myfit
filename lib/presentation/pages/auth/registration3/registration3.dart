@@ -6,6 +6,9 @@ import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/custom_textfield.dart';
+import 'package:activity/presentation/pages/auth/registration3/widget/bottom_wave.dart';
+import 'package:activity/presentation/pages/auth/registration3/widget/medium_wave.dart';
+import 'package:activity/presentation/pages/auth/registration3/widget/top_wave.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +31,7 @@ class Registration3Screen extends ConsumerStatefulWidget {
 class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
   TextEditingController cityController = TextEditingController(
       text: LocalStorage.getSelectedCity().isEmpty
-          ? "Выберите город"
+          ? ""
           : LocalStorage.getSelectedCity());
   TextEditingController nameController =
       TextEditingController(text: LocalStorage.getUserName());
@@ -36,9 +39,13 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
   FocusNode nameFocus = FocusNode();
   final formKey = GlobalKey<FormState>();
   final layerlink = LayerLink();
-  bool isFormNotValidated = false;
+  bool isNameNotGiven = false;
+  bool isCityNotSelected = false;
   OverlayEntry? entry;
   City? selectedCity;
+  bool isAllFieldsSumbitted = false;
+  bool showReplayButton = false;
+  bool topGapRemoved = false;
 
   void setSelectedCity(City city) {
     selectedCity = city;
@@ -129,222 +136,440 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
     final event = ref.read(settingsProvider.notifier);
+    final height = MediaQuery.of(context).size.height;
+
     return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            // main body
-            Form(
-              key: formKey,
-              child: Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomText(
-                        text: "Как к вам обращаться",
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      5.verticalSpace,
-                      SizedBox(
-                        height: 40.h,
-                        width: double.maxFinite,
-                        child: CustomTextField(
-                          isError: isFormNotValidated,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                              RegExp(r'[a-zA-Zа-яА-Я]'),
-                            ),
-                          ],
-                          counterStyle: const TextStyle(
-                            height: double.minPositive,
-                          ),
-                          counterText: "",
-                          maxLength: 16,
-                          style: GoogleFonts.raleway(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
-                          ),
-                          controller: nameController,
-                          focusNode: nameFocus,
-                          onTapOutside: (onTapOutside) {
-                            if (nameFocus.hasFocus) {
-                              nameFocus.unfocus();
-                            }
-                          },
-                          onTap: () {
-                            if (!nameFocus.hasFocus) {
-                              nameFocus.requestFocus();
-                            }
-                          },
-                          onEditingComplete: () {
-                            if (!nameFocus.hasFocus) {
-                              nameFocus.requestFocus();
-                            }
-                          },
-                          maxLines: 1,
-                          contentPadding: EdgeInsets.zero.copyWith(left: 10.w),
-                          hintText: "Ваше имя",
-                        ),
-                      ),
-                      isFormNotValidated
-                          ? Padding(
-                              padding: EdgeInsets.only(top: 5.h),
-                              child: CustomText(
-                                text: "Имя должна содержать хотя бы 3 буквы",
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.red,
-                              ),
-                            )
-                          : const SizedBox(),
-
-                      32.verticalSpace,
-                      CustomText(
-                        text: "В каком городе искать активности",
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      5.verticalSpace,
-                      SizedBox(
-                        height: 40.h,
-                        width: double.maxFinite,
-                        child: CompositedTransformTarget(
-                          link: layerlink,
-                          child: TextField(
-                            style: GoogleFonts.raleway(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                            ),
-                            onTap: () {
-                              if (!focusNode.hasFocus) {
-                                focusNode.requestFocus();
-                                setState(() {});
-                              } else {
-                                focusNode.unfocus();
-                              }
-                            },
-                            readOnly: true,
-                            focusNode: focusNode,
-                            controller: cityController,
-                            decoration: InputDecoration(
-                              suffixIcon: Icon(
-                                focusNode.hasFocus
-                                    ? Icons.keyboard_arrow_up
-                                    : Icons.keyboard_arrow_down,
-                                size: 23.r,
-                              ),
-                              contentPadding:
-                                  EdgeInsets.zero.copyWith(left: 10.w),
-                              hintStyle: GoogleFonts.inter(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w400,
-                              ),
-                              fillColor: Colors.white,
-                              filled: true,
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.r),
-                                borderSide: BorderSide(
-                                  color: focusNode.hasFocus
-                                      ? AppColors.blueColor
-                                      : AppColors.greyBorder,
-                                  width: 1.w,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.r),
-                                borderSide: BorderSide(
-                                  color: AppColors.greyBorder,
-                                  width: 1.w,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      32.verticalSpace,
-
-                      // button
-                      Container(
-                        margin: focusNode.hasFocus
-                            ? EdgeInsets.symmetric(horizontal: 3.w)
-                            : EdgeInsets.zero,
-                        height: 56.h,
-                        decoration: const BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color.fromRGBO(0, 0, 0, 0.15),
-                              offset: Offset(0, 2),
-                              blurRadius: 5,
-                              spreadRadius: 0,
-                            ),
-                            BoxShadow(
-                              color: Color.fromRGBO(109, 150, 212, 1),
-                              offset: Offset(0, 15),
-                              blurRadius: 18,
-                              spreadRadius: -15,
-                            ),
-                          ],
-                        ),
-                        child: CustomButton(
-                          buttonColor: AppColors.blueColor,
-                          textColor: Colors.white,
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                          onPressed: () async {
-                            if (nameController.text.length > 2) {
-                              if (nameController.text !=
-                                  LocalStorage.getUserName()) {
-                                // if user changed name
-                                await LocalStorage.setUserName(
-                                    nameController.text);
-                                event.patchName(nameController.text, context);
-                              }
-                              if (cityController.text !=
-                                  LocalStorage.getSelectedCity()) {
-                                await LocalStorage.setSelectedCity(
-                                    cityController.text);
-                                await LocalStorage.setSelectedCityLat(
-                                    selectedCity?.latitude ?? "");
-                                await LocalStorage.setSelectedCityLon(
-                                    selectedCity?.longitude ?? "");
-                                event.patchCity(selectedCity, context);
-                              }
-                              context.replaceRoute(const Registration4Route());
-                            } else {
-                              isFormNotValidated = true;
-                              setState(() {});
-                            }
-                          },
-                          text: "Продолжить",
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            // waves
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: nameFocus.hasFocus
-                  ? const SizedBox()
-                  : SizedBox(
-                      child: SvgPicture.asset(
-                        "assets/svg/Vector 13.svg",
-                        width: width,
+      backgroundColor: AppColors.backgroundColor,
+      body: Stack(
+        children: [
+          // main body
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: isAllFieldsSumbitted ? 0 : 16.w),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  topGapRemoved ? 0.verticalSpace : 89.verticalSpace,
+                  Ink(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16.r),
+                      color: Colors.white,
+                      border: Border.all(
+                        color: isAllFieldsSumbitted
+                            ? Colors.transparent
+                            : AppColors.greyBorder,
                       ),
                     ),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeIn,
+                      height: isAllFieldsSumbitted ? height : 132.h,
+                      width: double.maxFinite,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          isAllFieldsSumbitted
+                              ? CustomText(
+                                  text: "Добро пожаловать в команду",
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500,
+                                )
+                              : const SizedBox.shrink(),
+                          isAllFieldsSumbitted
+                              ? 25.verticalSpace
+                              : 0.verticalSpace,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                "assets/svg/MY.svg",
+                                width: isAllFieldsSumbitted ? 120.w : null,
+                              ),
+                              5.horizontalSpace,
+                              SvgPicture.asset(
+                                "assets/svg/FIT.svg",
+                                width: isAllFieldsSumbitted ? 120.w : null,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  // creating separate column to hide its content when showing animation
+                  !isAllFieldsSumbitted
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            48.verticalSpace,
+                            CustomText(
+                              text: "Как к вам обращаться",
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            5.verticalSpace,
+                            SizedBox(
+                              height: 40.h,
+                              width: double.maxFinite,
+                              child: CustomTextField(
+                                isError: isNameNotGiven,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'[a-zA-Zа-яА-Я]'),
+                                  ),
+                                ],
+                                counterStyle: const TextStyle(
+                                  height: double.minPositive,
+                                ),
+                                counterText: "",
+                                maxLength: 16,
+                                style: GoogleFonts.raleway(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.black,
+                                ),
+                                controller: nameController,
+                                focusNode: nameFocus,
+                                onTapOutside: (onTapOutside) {
+                                  if (nameFocus.hasFocus) {
+                                    nameFocus.unfocus();
+                                  }
+                                },
+                                onTap: () {
+                                  if (!nameFocus.hasFocus) {
+                                    nameFocus.requestFocus();
+                                  }
+                                },
+                                onEditingComplete: () {
+                                  if (!nameFocus.hasFocus) {
+                                    nameFocus.requestFocus();
+                                  }
+                                },
+                                maxLines: 1,
+                                contentPadding:
+                                    EdgeInsets.zero.copyWith(left: 10.w),
+                                hintText: "Ваше имя",
+                              ),
+                            ),
+                            isNameNotGiven
+                                ? Padding(
+                                    padding: EdgeInsets.only(top: 5.h),
+                                    child: CustomText(
+                                      text:
+                                          "Имя должна содержать хотя бы 3 буквы",
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.red,
+                                    ),
+                                  )
+                                : const SizedBox(),
+
+                            32.verticalSpace,
+                            CustomText(
+                              text: "В каком городе искать активности",
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            5.verticalSpace,
+                            SizedBox(
+                              height: 40.h,
+                              width: double.maxFinite,
+                              child: CompositedTransformTarget(
+                                link: layerlink,
+                                child: CustomTextField(
+                                  style: GoogleFonts.raleway(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black,
+                                  ),
+                                  onTap: () {
+                                    if (!focusNode.hasFocus) {
+                                      focusNode.requestFocus();
+                                      setState(() {});
+                                    } else {
+                                      focusNode.unfocus();
+                                    }
+                                  },
+                                  isError: isCityNotSelected,
+                                  readOnly: true,
+                                  focusNode: focusNode,
+                                  controller: cityController,
+                                  hintText:
+                                      LocalStorage.getSelectedCity().isEmpty
+                                          ? "Выберите город"
+                                          : "",
+                                  suffixIcon: Icon(
+                                    focusNode.hasFocus
+                                        ? Icons.keyboard_arrow_up
+                                        : Icons.keyboard_arrow_down,
+                                    size: 23.r,
+                                  ),
+                                  contentPadding:
+                                      EdgeInsets.zero.copyWith(left: 10.w),
+                                ),
+                              ),
+                            ),
+                            isCityNotSelected
+                                ? Padding(
+                                    padding: EdgeInsets.only(top: 5.h),
+                                    child: CustomText(
+                                      text: "Выберите город",
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.red,
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
+                            32.verticalSpace,
+
+                            // button
+                            Container(
+                              margin: focusNode.hasFocus
+                                  ? EdgeInsets.symmetric(horizontal: 3.w)
+                                  : EdgeInsets.zero,
+                              height: 56.h,
+                              decoration: const BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color.fromRGBO(0, 0, 0, 0.15),
+                                    offset: Offset(0, 2),
+                                    blurRadius: 5,
+                                    spreadRadius: 0,
+                                  ),
+                                  BoxShadow(
+                                    color: Color.fromRGBO(109, 150, 212, 1),
+                                    offset: Offset(0, 15),
+                                    blurRadius: 18,
+                                    spreadRadius: -15,
+                                  ),
+                                ],
+                              ),
+                              child: CustomButton(
+                                buttonColor: AppColors.blueColor,
+                                textColor: Colors.white,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                                onPressed: () async {
+                                  if (nameController.text.length > 2 &&
+                                      cityController.text.isNotEmpty) {
+                                    if (nameController.text !=
+                                        LocalStorage.getUserName()) {
+                                      // if user changed name
+                                      await LocalStorage.setUserName(
+                                          nameController.text);
+                                      event.patchName(
+                                          nameController.text, context);
+                                    }
+                                    if (cityController.text !=
+                                        LocalStorage.getSelectedCity()) {
+                                      await LocalStorage.setSelectedCity(
+                                          cityController.text);
+                                      await LocalStorage.setSelectedCityLat(
+                                          selectedCity?.latitude ?? "");
+                                      await LocalStorage.setSelectedCityLon(
+                                          selectedCity?.longitude ?? "");
+                                      event.patchCity(selectedCity, context);
+                                    }
+                                    isAllFieldsSumbitted = true;
+                                    setState(() {});
+                                    await Future.delayed(
+                                        const Duration(milliseconds: 400));
+                                    context.router
+                                        .push(const Registration4Route());
+                                  } else {
+                                    if (nameController.text.length < 2) {
+                                      isNameNotGiven = true;
+                                      setState(() {});
+                                    }
+                                    if (cityController.text.isEmpty) {
+                                      isCityNotSelected = true;
+                                      setState(() {});
+                                    }
+                                  }
+                                },
+                                text: "Продолжить",
+                              ),
+                            ),
+                          ],
+                        )
+                      : const SizedBox.shrink()
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+
+          // waves
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: nameFocus.hasFocus
+                ? const SizedBox()
+                : AnimatedOpacity(
+                    opacity: isAllFieldsSumbitted ? 0 : 1,
+                    duration: const Duration(milliseconds: 300),
+                    child: CustomPaint(
+                      size: Size(400, 180.w),
+                      painter: TopWave(),
+                    ),
+                  ),
+          ),
+
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: nameFocus.hasFocus
+                ? const SizedBox()
+                : AnimatedOpacity(
+                    opacity: isAllFieldsSumbitted ? 0 : 1,
+                    duration: const Duration(milliseconds: 300),
+                    child: CustomPaint(
+                      size: Size(350, 160.w),
+                      painter: MediumWave(),
+                    ),
+                  ),
+          ),
+
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: nameFocus.hasFocus
+                ? const SizedBox()
+                : AnimatedOpacity(
+                    opacity: isAllFieldsSumbitted ? 0 : 1,
+                    duration: const Duration(milliseconds: 300),
+                    child: CustomPaint(
+                      size: Size(400, 70.w),
+                      painter: BottomWave(),
+                    ),
+                  ),
+          ),
+
+          // Icons
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            bottom: 28.h,
+            left: isAllFieldsSumbitted ? -30 : 40.w,
+            child: nameFocus.hasFocus
+                ? const SizedBox()
+                : Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    padding: EdgeInsets.all(3.r),
+                    child: SvgPicture.asset(
+                      "assets/svg/boxing.svg",
+                    ),
+                  ),
+          ),
+
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            bottom: 40.h,
+            left: isAllFieldsSumbitted ? -30 : 120.w,
+            child: nameFocus.hasFocus
+                ? const SizedBox()
+                : Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    padding: EdgeInsets.all(3.r),
+                    child: SvgPicture.asset(
+                      "assets/svg/yoga.svg",
+                    ),
+                  ),
+          ),
+
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            bottom: 135.h,
+            right: isAllFieldsSumbitted ? -30 : 40.w,
+            child: nameFocus.hasFocus
+                ? const SizedBox()
+                : Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    padding: EdgeInsets.all(3.r),
+                    child: SvgPicture.asset(
+                      "assets/svg/cardio.svg",
+                    ),
+                  ),
+          ),
+
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            bottom: 60.h,
+            right: isAllFieldsSumbitted ? -30 : 20.w,
+            child: nameFocus.hasFocus
+                ? const SizedBox()
+                : Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    padding: EdgeInsets.all(3.r),
+                    child: SvgPicture.asset(
+                      "assets/svg/meditation.svg",
+                    ),
+                  ),
+          ),
+
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            bottom: 25.h,
+            right: isAllFieldsSumbitted ? -30 : 90.w,
+            child: nameFocus.hasFocus
+                ? const SizedBox()
+                : Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    padding: EdgeInsets.all(3.r),
+                    child: SvgPicture.asset(
+                      "assets/svg/gym.svg",
+                    ),
+                  ),
+          ),
+
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            bottom: 55.h,
+            right: isAllFieldsSumbitted ? -30 : 140.w,
+            child: nameFocus.hasFocus
+                ? const SizedBox()
+                : Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    padding: EdgeInsets.all(3.r),
+                    child: SvgPicture.asset(
+                      "assets/svg/pool.svg",
+                    ),
+                  ),
+          ),
+
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            bottom: 95.h,
+            left: isAllFieldsSumbitted ? -30 : 10.w,
+            child: nameFocus.hasFocus
+                ? const SizedBox()
+                : Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    padding: EdgeInsets.all(3.r),
+                    child: SvgPicture.asset(
+                      "assets/svg/popa.svg",
+                    ),
+                  ),
+          ),
+        ],
       ),
     );
   }

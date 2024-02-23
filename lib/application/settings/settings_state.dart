@@ -18,6 +18,8 @@ class SettingsState with _$SettingsState {
     @Default("") String height,
     @Default(false) bool isPhoneEditModeEnabled,
     @Default(false) bool isEmailEditModeEnabled,
+    @Default("30") String reminderTime,
+    @Default(false) bool isReminderDisabled,
   }) = _SettingsState;
   const SettingsState._();
 }

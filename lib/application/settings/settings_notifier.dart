@@ -1,10 +1,13 @@
 import 'package:activity/application/settings/settings_state.dart';
 import 'package:activity/domain/interface/settings.dart';
+import 'package:activity/infrastructure/local_notifications/notification_service.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:timezone/timezone.dart';
 
 import '../../infrastructure/models/response/auth_response.dart';
 
@@ -20,6 +23,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     setAge();
     setWeight();
     setHeight();
+    setNotificationTime(LocalStorage.getReminderTime());
+    getReminderDisabledOrEnabled();
   }
 
   void cityTextFieldRequestFocus() {
@@ -235,6 +240,54 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     }
   }
 
+  void showDefaultNotification() async {
+    PermissionStatus permissionStatus = await Permission.notification.request();
+    if (permissionStatus.isGranted) {
+      NotificationService().showDefaultNotification(
+        "Myfit App",
+        "Шерзоди пачак",
+      );
+    } else {
+      //await Permission.notification.request();
+    }
+  }
+
+  void showScheduledNotification({required DateTime time}) async {
+    if (!state.isReminderDisabled) {
+      PermissionStatus permissionStatus =
+          await Permission.notification.request();
+      if (permissionStatus.isGranted) {
+        final userReminder = state.reminderTime == ""
+            ? LocalStorage.getReminderTime()
+            : state.reminderTime;
+        final duration = getDurationFromReminderTime(userReminder);
+        final scheduledTime =
+            time.subtract(duration ?? const Duration(minutes: 30));
+        NotificationService().showScheduledNotification(
+          title: "Myfit App",
+          body: "Скоро начнется ваше занятие ",
+          dateTime: scheduledTime,
+        );
+      } else {
+        //AppHelpers.showSnack(context, "Разрешение не дано!");
+      }
+    }
+  }
+
+  Duration? getDurationFromReminderTime(String time) {
+    if (time == "30") {
+      return const Duration(minutes: 30);
+    }
+    if (time == "1") {
+      return const Duration(hours: 1);
+    }
+    if (time == "2") {
+      return const Duration(hours: 2);
+    } else {
+      return null;
+    }
+  }
+
   void setPhone() {
     state = state.copyWith(phoneNumber: LocalStorage.getPhoneNumber());
   }
@@ -269,5 +322,31 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
 
   void closeEditingEmail() {
     state = state.copyWith(isEmailEditModeEnabled: false);
+  }
+
+  void setNotificationTime(String time) {
+    if (state.isReminderDisabled) {
+      enableReminder();
+    }
+    state = state.copyWith(reminderTime: time);
+    LocalStorage.setReminderTime(time);
+  }
+
+  void disableReminder() {
+    state = state.copyWith(isReminderDisabled: true);
+    LocalStorage.setReminderDisabled(true);
+  }
+
+  void enableReminder() {
+    state = state.copyWith(isReminderDisabled: false);
+    LocalStorage.setReminderDisabled(false);
+  }
+
+  void getReminderDisabledOrEnabled() {
+    if (LocalStorage.isReminderDisabled()) {
+      state = state.copyWith(isReminderDisabled: true);
+    } else {
+      state = state.copyWith(isReminderDisabled: false);
+    }
   }
 }

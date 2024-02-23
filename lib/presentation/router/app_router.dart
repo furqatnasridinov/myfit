@@ -26,21 +26,12 @@ class AppRouter extends $AppRouter {
           page: NotesRoute.page,
           path: "/notes",
         ),
-        AutoRoute(
-          page: Main2Route.page,
-          path: "/main2"
-        ),
+        AutoRoute(page: Main2Route.page, path: "/main2"),
         CustomRoute(
             page: MapRoute.page,
             transitionsBuilder: TransitionsBuilders.slideLeft,
-            path: "/map"
-            
-            ),
-        AutoRoute(
-          page: RegistrationRoute.page,
-          path: "/registration"
-          
-        ),
+            path: "/map"),
+        AutoRoute(page: RegistrationRoute.page, path: "/registration"),
         AutoRoute(
           page: Registration1Route.page,
           path: "/registration1",
@@ -52,17 +43,15 @@ class AppRouter extends $AppRouter {
         AutoRoute(
           page: Registration3Route.page,
           path: "/registration3",
-         
         ),
-        AutoRoute(
+        CustomRoute(
           page: Registration4Route.page,
           path: "/registration4",
-         
+          durationInMilliseconds: 600,
         ),
         AutoRoute(
           page: SettingsRoute.page,
-          path: "/settings"
-          
+          path: "/settings",
         )
       ];
 }

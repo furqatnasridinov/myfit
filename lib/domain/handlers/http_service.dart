@@ -10,9 +10,9 @@ class HttpService {
     dio.options.baseUrl = AppConstants.baseUrl;
     dio.options.headers['Content-Type'] = "application/json";
     dio.options.headers["Authorization"] = "Bearer ${LocalStorage.getToken()}";
-    dio.options.sendTimeout = const Duration(seconds: 60);
-    dio.options.connectTimeout = const Duration(seconds: 60);
-    dio.options.receiveTimeout = const Duration(seconds: 60);
+    dio.options.sendTimeout = const Duration(seconds: 30);
+    dio.options.connectTimeout = const Duration(seconds: 30);
+    dio.options.receiveTimeout = const Duration(seconds: 30);
 
     (dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () =>
         HttpClient()

@@ -46,6 +46,9 @@ class TheOneWithPhotos extends StatelessWidget {
                   itemCount: state.photosOfSelectedActivity.length,
                   itemBuilder: (context, index) {
                     final current = state.photosOfSelectedActivity[index];
+                    String linkToCompressedPhoto =
+                        event.getLinkToCompressedPhoto(current);
+
                     return InkWell(
                       onTap: () {
                         showDialog(
@@ -82,7 +85,8 @@ class TheOneWithPhotos extends StatelessWidget {
                             width: 47.w,
                             height: 47.h,
                             child: CachedNetworkImage(
-                              imageUrl: "http://77.222.53.122/image/$current",
+                              imageUrl:
+                                  "http://77.222.53.122/image/$linkToCompressedPhoto",
                               fit: BoxFit.cover,
                               errorWidget: (context, url, error) {
                                 return Image.asset(AppConstants.cristianBale);

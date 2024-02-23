@@ -2,12 +2,12 @@ import 'dart:math';
 import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/application/schedule/schedule_state.dart';
+import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/models/response/user_schedules_response.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/components/ui_dropdown_menu.dart';
 import 'package:activity/presentation/pages/schedule/widget/widget.dart';
@@ -29,14 +29,19 @@ class ScheduleScreen extends ConsumerStatefulWidget {
 }
 
 class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
-  final List<String> allDayOfMonth = DummyData().days30;
   TextEditingController controller = TextEditingController();
   ScrollController scrollController = ScrollController();
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref.read(scheduleProvider.notifier).getUsersSchedules(context);
+      ref.read(scheduleProvider.notifier)
+        ..getUsersSchedules(context)
+        ..getDatesFromLastWeek();
+      // getting reminders from local storage to state
+      ref.read(settingsProvider.notifier)
+        ..setNotificationTime(LocalStorage.getReminderTime())
+        ..getReminderDisabledOrEnabled();
     });
   }
 
@@ -56,7 +61,7 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
           slivers: [
             SliverPadding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
-              sliver: SliverToBoxAdapter(
+              sliver: const SliverToBoxAdapter(
                 child: ScheduleTitle(),
               ),
             ),
@@ -66,11 +71,11 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
                   EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 16.h),
               sliver: Consumer(builder: (context, ref, child) {
                 final state = ref.watch(scheduleProvider);
-                if (!state.isloading) {
+                if (!state.isloading && state.daysFromLastWeek.isNotEmpty) {
                   return SliverList.builder(
-                    itemCount: allDayOfMonth.length,
+                    itemCount: state.daysFromLastWeek.length,
                     itemBuilder: (context, index) {
-                      final date = allDayOfMonth[index];
+                      final date = state.daysFromLastWeek[index];
                       final now = DateTime.now();
                       final todayWith00Hours = DateTime(
                         now.year,
@@ -129,9 +134,11 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
                   );
                 } else {
                   return const SliverToBoxAdapter(
-                      child: Center(
-                    child: CircularProgressIndicator(),
-                  ));
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [CircularProgressIndicator()],
+                    ),
+                  );
                 }
               }),
             ),

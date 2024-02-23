@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:activity/application/main2/main2_provider.dart';
 import 'package:activity/application/map/map_provider.dart';
+import 'package:activity/infrastructure/local_notifications/notification_service.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_text.dart';
@@ -40,6 +41,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
       ref.read(main2Provider.notifier)
         ..getNearestLesson(context)
         ..getUserStatsMonth(context);
+      NotificationService().showActiveNotification();
     });
   }
 
@@ -56,7 +58,8 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     if (controller.text.isEmpty && state.schedulesFoundBySearching.isNotEmpty) {
       event.cleanSearchList();
     }
-    //print("token ${LocalStorage.getToken()}");
+
+    debugPrint("token ${LocalStorage.getToken()}");
     //LocalStorage.removeToken();
     return PopScope(
       //canPop: false,
@@ -107,7 +110,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                           ? const NearestLessonShimmer()
                           : */
                           state.nearestLesson == null
-                              ? const PlaceholderComingActivity()
+                              ? const PlaceholderComingActivity() //button "Найти себе занятие"
                               : ComingActivity(
                                   state: state,
                                   event: event,

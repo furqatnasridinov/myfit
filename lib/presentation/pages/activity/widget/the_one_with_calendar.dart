@@ -249,44 +249,46 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                 ), */
 
               //10.verticalSpace,
-          // список занятий заведения на выбранный день
-          Consumer(
-            builder: (contex, ref, child) {
-              final main2Event = ref.read(main2Provider.notifier);
-              final scheduleevent = ref.read(scheduleProvider.notifier);
-              return ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: widget.state.listOfSchedules.length,
-                itemBuilder: (context, index) {
-                  final currentSchedule = widget.state.listOfSchedules[index];
-                  return activityCard(
-                    currentSchedule.id,
-                    currentSchedule.startingTime ?? "??",
-                    currentSchedule.finishingTime ?? "??",
-                    currentSchedule.duration ?? "??",
-                    currentSchedule.name ?? "??",
-                    currentSchedule.status ?? 0,
-                    () async {
-                      widget.event.enrollToGym(
-                        context,
-                        currentSchedule.id,
-                      );
-                      currentSchedule.status = 2;
-                      setState(() {});
-                      await Future.delayed(const Duration(seconds: 2));
-                      currentSchedule.status = 3;
-                      setState(() {});
-                      // ignore: use_build_context_synchronously
-                      main2Event.getNearestLesson(context);
-                      // ignore: use_build_context_synchronously
-                      scheduleevent.getUsersSchedules(context);
-                    },
-                  );
-                },
-              );
-            },
-          ),
+
+              // список занятий заведения на выбранный день
+              Consumer(
+                  builder: (contex, ref, child) {
+                    final main2Event = ref.read(main2Provider.notifier);
+                    final scheduleevent = ref.read(scheduleProvider.notifier);
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: widget.state.listOfSchedules.length,
+                      itemBuilder: (context, index) {
+                        final currentSchedule =
+                            widget.state.listOfSchedules[index];
+                        return activityCard(
+                          currentSchedule.id,
+                          currentSchedule.startingTime ?? "??",
+                          currentSchedule.finishingTime ?? "??",
+                          currentSchedule.duration ?? "??",
+                          currentSchedule.name ?? "??",
+                          currentSchedule.status ?? 0,
+                          () async {
+                            widget.event.enrollToGym(
+                              context,
+                              currentSchedule.id,
+                            );
+                            currentSchedule.status = 2;
+                            setState(() {});
+                            await Future.delayed(const Duration(seconds: 2));
+                            currentSchedule.status = 3;
+                            setState(() {});
+                            // ignore: use_build_context_synchronously
+                            main2Event.getNearestLesson(context);
+                            // ignore: use_build_context_synchronously
+                            scheduleevent.getUsersSchedules(context);
+                          },
+                        );
+                      },
+                    );
+                  },
+                ),
 
           15.verticalSpace,
         ],

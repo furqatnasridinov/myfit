@@ -228,51 +228,6 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     return '$dayOfWeek $day $month';
   }
 
-  String formatOriginalToCalendarFullNames(String inputDate) {
-    DateTime date = DateTime.parse(inputDate);
-    String day = DateFormat('d').format(date);
-    String month = DateFormat('MMM').format(date);
-    switch (month) {
-      case 'Jan':
-        month = 'Январь';
-        break;
-      case 'Feb':
-        month = 'Февраль';
-        break;
-      case 'Mar':
-        month = 'Март';
-        break;
-      case 'Apr':
-        month = 'Апрель';
-        break;
-      case 'May':
-        month = 'Май';
-        break;
-      case 'Jun':
-        month = 'Июнь';
-        break;
-      case 'Jul':
-        month = 'Июль';
-        break;
-      case 'Aug':
-        month = 'Август';
-        break;
-      case 'Sep':
-        month = 'Сентябрь';
-        break;
-      case 'Oct':
-        month = 'Октябрь';
-        break;
-      case 'Nov':
-        month = 'Ноябрь';
-        break;
-      case 'Dec':
-        month = 'Декабрь';
-        break;
-    }
-    return '$month $day';
-  }
-
   Future<void> setSingleSelectedActivity(String? value) async {
     if (value == state.selectedActivity) {
       return;
@@ -473,15 +428,19 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
-  String getNameFromTgUrl(String url){
-    List<String>parts = url.split("t.me/");
-    String name = parts[1];
-    return name;
+  /*  String getNameFromTgUrl(String url) {
+    if (url.isNotEmpty) {
+      List<String> parts = url.split("t.me/");
+      String name = parts[1];
+      return name;
+    }
+    return "";
   }
-  String getNameFromVkUrl(String url){
-     List<String>parts = url.split("vk.com/");
-     return parts[1];
-  } 
+
+  String getNameFromVkUrl(String url) {
+    List<String> parts = url.split("vk.com/");
+    return parts[1];
+  } */
 
   String? convertToOriginalDate(String dateString) {
     final parts = dateString.split(' ');
@@ -583,6 +542,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
 
   Future<void> getListOf15CalendarDatesFromToday() async {
     List<String> dates = [];
+    //DateTime currentDate = DateTime.parse("2023-12-26");
     DateTime currentDate = DateTime.now();
     for (int i = 0; i < 15; i++) {
       String dayOfWeek = DateFormat('EEE').format(currentDate);
@@ -657,6 +617,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
 
   Future<void> getListOf15OriginalDatesFromToday() async {
     List<String> dates = [];
+    //DateTime currentDate = DateTime.parse("2023-12-26");
     DateTime currentDate = DateTime.now();
     for (int i = 0; i < 15; i++) {
       String month = DateFormat("MMM").format(currentDate);
@@ -748,4 +709,16 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
+  String getLinkToCompressedPhoto(String fileName) {
+  int lastDotIndex = fileName.lastIndexOf('.');
+  if (lastDotIndex == -1) {
+    // Если точка в имени файла не найдена, возвращаем исходное имя
+    return fileName;
+  }
+  String nameWithoutExtension = fileName.substring(0, lastDotIndex);
+  String extension = fileName.substring(lastDotIndex);
+  return "${nameWithoutExtension}_icon$extension";
 }
+}
+
+

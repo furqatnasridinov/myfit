@@ -276,6 +276,38 @@ class LocalStorage {
   // remove user gender
   static void removeGender() => _preferences?.remove(AppConstants.keyGender);
 
+  // save notification disabled
+  static Future<void> setReminderDisabled(bool? notif) async {
+    if (_preferences != null) {
+      await _preferences?.setBool(
+        AppConstants.keyIsNotificationDisabled,
+        notif ?? false,
+      );
+    }
+  }
+
+  // get notification disabled
+  static bool isReminderDisabled() =>
+      _preferences?.getBool(AppConstants.keyIsNotificationDisabled) ?? false;
+
+  // save notification time
+  static Future<void> setReminderTime(String? time) async {
+    if (_preferences != null) {
+      await _preferences?.setString(
+        AppConstants.keyNotificationTime,
+        time ?? "??",
+      );
+    }
+  }
+
+  // get notification time
+  static String getReminderTime() =>
+      _preferences?.getString(AppConstants.keyNotificationTime) ?? "";
+
+  // remove  notification time
+  static void removeReminderTime() =>
+      _preferences?.remove(AppConstants.keyNotificationTime);
+
   // set List<String> ==> knownActivities
   static Future<void> setKnownActivities(List<String> list) async {
     String convertedToJson = jsonEncode(list);

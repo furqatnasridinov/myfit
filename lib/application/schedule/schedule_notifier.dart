@@ -123,7 +123,6 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
         break;
       default:
     }
-
     return "$daysplitted $month ";
   }
 
@@ -173,6 +172,25 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     int newMinutes = totalMinutes % 60;
     String formattedTime = '$newHours:${newMinutes.toString().padLeft(2, '0')}';
     return formattedTime;
+  }
+
+  void getDatesFromLastWeek() {
+    var listToCollect = <String>[];
+    DateTime now = DateTime.now();
+
+    // Изменяем начальную точку времени на прошлую неделю
+    now = now.subtract(const Duration(days: 7));
+
+    for (var i = 0; i < 14; i++) {
+      String year = now.year.toString();
+      String month = now.month <= 9 ? "0${now.month}" : now.month.toString();
+      String day = now.day <= 9 ? "0${now.day}" : now.day.toString();
+      String oneDay = "$year-$month-$day";
+      listToCollect.add(oneDay);
+      now = now.add(const Duration(days: 1));
+    }
+
+    state = state.copyWith(daysFromLastWeek: listToCollect);
   }
 
   void showTilWhen() {
