@@ -40,7 +40,7 @@ class PlaceholderComingActivity extends ConsumerWidget {
         onPressed: () {
           // event.showDefaultNotification();
           /* event.showScheduledNotification(
-            time: DateTime.parse("2024-02-06 10:18:00"),
+            time: DateTime.parse("2024-02-13 10:00:00"),
           ); */
           //NotificationService().cancelNotification();
           context.router.push(MapRoute(showOnlyKnown: false));

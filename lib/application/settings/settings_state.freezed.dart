@@ -28,6 +28,8 @@ mixin _$SettingsState {
   String get height => throw _privateConstructorUsedError;
   bool get isPhoneEditModeEnabled => throw _privateConstructorUsedError;
   bool get isEmailEditModeEnabled => throw _privateConstructorUsedError;
+  String get reminderTime => throw _privateConstructorUsedError;
+  bool get isReminderDisabled => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $SettingsStateCopyWith<SettingsState> get copyWith =>
@@ -52,7 +54,9 @@ abstract class $SettingsStateCopyWith<$Res> {
       String weight,
       String height,
       bool isPhoneEditModeEnabled,
-      bool isEmailEditModeEnabled});
+      bool isEmailEditModeEnabled,
+      String reminderTime,
+      bool isReminderDisabled});
 }
 
 /// @nodoc
@@ -80,6 +84,8 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     Object? height = null,
     Object? isPhoneEditModeEnabled = null,
     Object? isEmailEditModeEnabled = null,
+    Object? reminderTime = null,
+    Object? isReminderDisabled = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -130,6 +136,14 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.isEmailEditModeEnabled
           : isEmailEditModeEnabled // ignore: cast_nullable_to_non_nullable
               as bool,
+      reminderTime: null == reminderTime
+          ? _value.reminderTime
+          : reminderTime // ignore: cast_nullable_to_non_nullable
+              as String,
+      isReminderDisabled: null == isReminderDisabled
+          ? _value.isReminderDisabled
+          : isReminderDisabled // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -154,7 +168,9 @@ abstract class _$$SettingsStateImplCopyWith<$Res>
       String weight,
       String height,
       bool isPhoneEditModeEnabled,
-      bool isEmailEditModeEnabled});
+      bool isEmailEditModeEnabled,
+      String reminderTime,
+      bool isReminderDisabled});
 }
 
 /// @nodoc
@@ -180,6 +196,8 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     Object? height = null,
     Object? isPhoneEditModeEnabled = null,
     Object? isEmailEditModeEnabled = null,
+    Object? reminderTime = null,
+    Object? isReminderDisabled = null,
   }) {
     return _then(_$SettingsStateImpl(
       isloading: null == isloading
@@ -230,6 +248,14 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value.isEmailEditModeEnabled
           : isEmailEditModeEnabled // ignore: cast_nullable_to_non_nullable
               as bool,
+      reminderTime: null == reminderTime
+          ? _value.reminderTime
+          : reminderTime // ignore: cast_nullable_to_non_nullable
+              as String,
+      isReminderDisabled: null == isReminderDisabled
+          ? _value.isReminderDisabled
+          : isReminderDisabled // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -249,7 +275,9 @@ class _$SettingsStateImpl extends _SettingsState {
       this.weight = "",
       this.height = "",
       this.isPhoneEditModeEnabled = false,
-      this.isEmailEditModeEnabled = false})
+      this.isEmailEditModeEnabled = false,
+      this.reminderTime = "",
+      this.isReminderDisabled = false})
       : _listOfCities = listOfCities,
         super._();
 
@@ -295,10 +323,16 @@ class _$SettingsStateImpl extends _SettingsState {
   @override
   @JsonKey()
   final bool isEmailEditModeEnabled;
+  @override
+  @JsonKey()
+  final String reminderTime;
+  @override
+  @JsonKey()
+  final bool isReminderDisabled;
 
   @override
   String toString() {
-    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, userName: $userName, age: $age, weight: $weight, height: $height, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled)';
+    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, userName: $userName, age: $age, weight: $weight, height: $height, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, isReminderDisabled: $isReminderDisabled)';
   }
 
   @override
@@ -326,7 +360,11 @@ class _$SettingsStateImpl extends _SettingsState {
             (identical(other.isPhoneEditModeEnabled, isPhoneEditModeEnabled) ||
                 other.isPhoneEditModeEnabled == isPhoneEditModeEnabled) &&
             (identical(other.isEmailEditModeEnabled, isEmailEditModeEnabled) ||
-                other.isEmailEditModeEnabled == isEmailEditModeEnabled));
+                other.isEmailEditModeEnabled == isEmailEditModeEnabled) &&
+            (identical(other.reminderTime, reminderTime) ||
+                other.reminderTime == reminderTime) &&
+            (identical(other.isReminderDisabled, isReminderDisabled) ||
+                other.isReminderDisabled == isReminderDisabled));
   }
 
   @override
@@ -343,7 +381,9 @@ class _$SettingsStateImpl extends _SettingsState {
       weight,
       height,
       isPhoneEditModeEnabled,
-      isEmailEditModeEnabled);
+      isEmailEditModeEnabled,
+      reminderTime,
+      isReminderDisabled);
 
   @JsonKey(ignore: true)
   @override
@@ -365,7 +405,9 @@ abstract class _SettingsState extends SettingsState {
       final String weight,
       final String height,
       final bool isPhoneEditModeEnabled,
-      final bool isEmailEditModeEnabled}) = _$SettingsStateImpl;
+      final bool isEmailEditModeEnabled,
+      final String reminderTime,
+      final bool isReminderDisabled}) = _$SettingsStateImpl;
   const _SettingsState._() : super._();
 
   @override
@@ -392,6 +434,10 @@ abstract class _SettingsState extends SettingsState {
   bool get isPhoneEditModeEnabled;
   @override
   bool get isEmailEditModeEnabled;
+  @override
+  String get reminderTime;
+  @override
+  bool get isReminderDisabled;
   @override
   @JsonKey(ignore: true)
   _$$SettingsStateImplCopyWith<_$SettingsStateImpl> get copyWith =>

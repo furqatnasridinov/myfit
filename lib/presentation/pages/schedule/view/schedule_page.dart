@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/application/schedule/schedule_state.dart';
+import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/models/response/user_schedules_response.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
@@ -34,8 +35,13 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref.read(scheduleProvider.notifier).getUsersSchedules(context);
-      ref.read(scheduleProvider.notifier).getDatesFromLastWeek();
+      ref.read(scheduleProvider.notifier)
+        ..getUsersSchedules(context)
+        ..getDatesFromLastWeek();
+      // getting reminders from local storage to state
+      ref.read(settingsProvider.notifier)
+        ..setNotificationTime(LocalStorage.getReminderTime())
+        ..getReminderDisabledOrEnabled();
     });
   }
 
@@ -55,7 +61,7 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
           slivers: [
             SliverPadding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
-              sliver: SliverToBoxAdapter(
+              sliver: const SliverToBoxAdapter(
                 child: ScheduleTitle(),
               ),
             ),
