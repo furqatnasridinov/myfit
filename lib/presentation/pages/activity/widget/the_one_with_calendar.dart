@@ -64,31 +64,17 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                 itemBuilder: (context, index) {
                   final String currentDate =
                       widget.state.listOf15CalendarDaysFromNow[index];
-                  bool isAvailable = widget.state.availableFormattedDates
+                  bool isAvailable = widget.state.daysInWhichWeHaveLessons
                       .contains(currentDate);
+                  bool isSelected =
+                      widget.state.selectedCalendarDay == currentDate;
                   final parts = currentDate.split(" ");
                   return GestureDetector(
                       onTap: () async {
-                        isAvailable
-                            ? widget.event.selectADay(currentDate)
-                            : null;
-                        isAvailable
-                            ? widget.event
-                                .setSelectedOriginalDate(
-                                currentDate,
-                              )
-                                .then(
-                                (value) async {
-                                  await Future.delayed(
-                                    const Duration(milliseconds: 100),
-                                  );
-                                },
-                              ).whenComplete(
-                                () => widget.event.getSchedulesList(
-                                  widget.state.selectedOriginalDate,
-                                ),
-                              )
-                            : null;
+                        await widget.event.setSelectedCalendarDay(currentDate);
+                        widget.event.getLessonsToShowAfterSelectingADay(
+                          currentDate,
+                        );
                       },
                       child: Padding(
                         padding: EdgeInsets.only(right: 9.w),
@@ -100,19 +86,13 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                                 horizontal: 1.w, vertical: 2.h),
                             shadowColor:
                                 const Color.fromRGBO(123, 163, 225, 0.73),
-                            elevation:
-                                widget.state.selectedFormattedDay == currentDate
-                                    ? 2.1
-                                    : 0,
+                            elevation: isSelected ? 2.1 : 0,
                             color:
-                                widget.state.selectedFormattedDay == currentDate
-                                    ? AppColors.blueColor
-                                    : Colors.white,
+                                isSelected ? AppColors.blueColor : Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.r),
                               side: BorderSide(
-                                  color: widget.state.selectedFormattedDay ==
-                                          currentDate
+                                  color: isSelected
                                       ? AppColors.blueColor
                                       : isAvailable
                                           ? AppColors.greyBorder
@@ -126,8 +106,7 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                                   text: parts[0].toUpperCase(),
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w600,
-                                  color: widget.state.selectedFormattedDay ==
-                                          currentDate
+                                  color: isSelected
                                       ? Colors.white
                                       : isAvailable
                                           ? Colors.black
@@ -139,8 +118,7 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                                     fontSize: 10.sp,
                                     fontWeight: FontWeight.w500,
                                     text: parts[1],
-                                    color: widget.state.selectedFormattedDay ==
-                                            currentDate
+                                    color: isSelected
                                         ? Colors.white
                                         : isAvailable
                                             ? Colors.black
@@ -150,8 +128,7 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                                   fontSize: 10.sp,
                                   fontWeight: FontWeight.w500,
                                   text: parts[2],
-                                  color: widget.state.selectedFormattedDay ==
-                                          currentDate
+                                  color: isSelected
                                       ? Colors.white
                                       : isAvailable
                                           ? Colors.black
@@ -173,24 +150,8 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
           ),
           16.verticalSpace,
 
-          // подактивности (Блок с подактивностями скрывается,
-          //если владелец заведения их не добавил.)
-          widget.state.listOfSchedules.isEmpty &&
-                  widget.state.selectedFormattedDay.isEmpty
-              ? Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: CustomCard(
-                    width: double.maxFinite,
-                    child: CustomText(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                      text:
-                          "В ближайшее время в заведении нет доступных занятий",
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                )
-              : /* Column(
+          // подактивности 
+              /* Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomText(
@@ -246,49 +207,66 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                       }),
                     ),
                   ],
-                ), */
+                ),  */
 
-              //10.verticalSpace,
+          //10.verticalSpace,
 
-              // список занятий заведения на выбранный день
-              Consumer(
-                  builder: (contex, ref, child) {
-                    final main2Event = ref.read(main2Provider.notifier);
-                    final scheduleevent = ref.read(scheduleProvider.notifier);
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: widget.state.listOfSchedules.length,
-                      itemBuilder: (context, index) {
-                        final currentSchedule =
-                            widget.state.listOfSchedules[index];
-                        return activityCard(
-                          currentSchedule.id,
-                          currentSchedule.startingTime ?? "??",
-                          currentSchedule.finishingTime ?? "??",
-                          currentSchedule.duration ?? "??",
-                          currentSchedule.name ?? "??",
-                          currentSchedule.status ?? 0,
-                          () async {
-                            widget.event.enrollToGym(
-                              context,
-                              currentSchedule.id,
-                            );
-                            currentSchedule.status = 2;
-                            setState(() {});
-                            await Future.delayed(const Duration(seconds: 2));
-                            currentSchedule.status = 3;
-                            setState(() {});
-                            // ignore: use_build_context_synchronously
-                            main2Event.getNearestLesson(context);
-                            // ignore: use_build_context_synchronously
-                            scheduleevent.getUsersSchedules(context);
-                          },
+          // список занятий заведения на выбранный день
+          Consumer(
+            builder: (contex, ref, child) {
+              final main2Event = ref.read(main2Provider.notifier);
+              final scheduleevent = ref.read(scheduleProvider.notifier);
+              if (widget.state.lessonsToShowAfterSelectingADay.isEmpty) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  child: CustomCard(
+                    width: double.maxFinite,
+                    child: CustomText(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      text:
+                          "В ближайшее время в заведении нет доступных занятий",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              } else {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount:
+                      widget.state.lessonsToShowAfterSelectingADay.length,
+                  itemBuilder: (context, index) {
+                    final currentSchedule =
+                        widget.state.lessonsToShowAfterSelectingADay[index];
+                    return activityCard(
+                      currentSchedule.id ?? 0,
+                      currentSchedule.startTime ?? "??",
+                      currentSchedule.endTime ?? "??",
+                      currentSchedule.duration ?? "??",
+                      currentSchedule.description ?? "??",
+                      currentSchedule.status ?? 0,
+                      () async {
+                        widget.event.enrollToGym(
+                          context,
+                          currentSchedule.id ?? 0,
                         );
+                        currentSchedule.status = 2;
+                        setState(() {});
+                        await Future.delayed(const Duration(seconds: 2));
+                        currentSchedule.status = 3;
+                        setState(() {});
+                        // ignore: use_build_context_synchronously
+                        main2Event.getNearestLesson(context);
+                        // ignore: use_build_context_synchronously
+                        scheduleevent.getUsersSchedules(context);
                       },
                     );
                   },
-                ),
+                );
+              }
+            },
+          ),
 
           15.verticalSpace,
         ],

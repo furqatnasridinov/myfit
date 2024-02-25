@@ -2,7 +2,6 @@ import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 

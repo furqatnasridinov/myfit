@@ -175,7 +175,6 @@ class Main2Notifier extends StateNotifier<Main2State> {
       String formattedDifference = formatDuration(resultOnDuration);
       state = state.copyWith(whenActivityStarts: formattedDifference);
     } else {
-      print("Activity is already happened");
       state = state.copyWith(nearestLesson: null);
     }
   }

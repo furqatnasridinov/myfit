@@ -29,7 +29,7 @@ class TheOneWithAdvantages extends StatelessWidget {
           ? const SizedBox()
           : Stack(
               children: [
-                Container(
+                SizedBox(
                   width: double.maxFinite,
                   child: CarouselSlider.builder(
                     carouselController: carouselController,

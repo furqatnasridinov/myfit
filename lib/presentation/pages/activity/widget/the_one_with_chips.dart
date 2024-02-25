@@ -18,15 +18,6 @@ class TheOneWithChips extends StatelessWidget {
   });
 
   @override
-/*   void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      //widget.event.determineDefaultActivity();
-      widget.event.getGymPhotos(widget.state.selectedActivity);
-    });
-  } */
-
-  @override
   Widget build(BuildContext context) {
     return state.activityTypes!.isEmpty
         ? const SizedBox()
@@ -43,68 +34,44 @@ class TheOneWithChips extends StatelessWidget {
                 ),
                 10.verticalSpace,
                 Wrap(
+                  runSpacing: 5.h,
                   spacing: 5.w,
-                  runSpacing: -5.h,
-                  children: List.generate(
-                    state.activityTypes!.length,
-                    (index) {
-                      final activity = state.activityTypes![index];
-                      final isSelected = activity == state.selectedActivity;
-                      return InkWell(
-                        onTap: () {
-                          //widget.event.getGymPhotos(activity,widget.gymId);
-                        },
-                        child: ChoiceChip(
-                          padding: EdgeInsets.zero,
-                          showCheckmark: false,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6.r),
-                            side: const BorderSide(color: AppColors.blueColor),
-                          ),
-                          labelPadding: EdgeInsets.symmetric(
-                            vertical: 0.h,
-                            horizontal: 16.w,
-                          ),
-                          selectedColor: const Color.fromRGBO(119, 170, 249, 1),
-                          backgroundColor: Colors.white,
-                          selected: isSelected,
-                          onSelected: (selected) async {
-                            if (selected) {
-                              event
-                                ..setSingleSelectedActivity(activity)
-                                ..getDescribtionAndPeculiarities(activity)
-                                ..getPhotosOfSelectedActivity(activity)
-                                ..getAllLessons(context, id: gymId)
-                                    .then((value) async {
-                                  await Future.delayed(
-                                    const Duration(milliseconds: 100),
-                                  );
-                                }).then(
-                                  (value) => event
-                                      .determineDefaultOriginalDate()
-                                      .then((value) =>
-                                          event.determineDefaultFormattedDate())
-                                      .then((value) async {
-                                    await Future.delayed(
-                                        const Duration(milliseconds: 100));
-                                  }).then(
-                                    (value) => event.getSchedulesList(
-                                      state.selectedOriginalDate,
-                                    ),
-                                  ),
-                                );
-                            }
-                          },
-                          label: CustomText(
-                            text: activity,
-                            color: isSelected ? Colors.white : Colors.black,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
+                  children:
+                      List.generate(state.activityTypes?.length ?? 0, (index) {
+                    final current = state.activityTypes?[index];
+                    bool isActive = current == state.selectedActivity;
+                    return InkWell(
+                      onTap: () async {
+                        await event.removeSelectedCalendarDay();
+                        event
+                          ..setSingleSelectedActivity(current)
+                          ..getDescribtionAndPeculiarities(current ?? "")
+                          ..getPhotosOfSelectedActivity(current ?? "")
+                          ..getLessonsOfSelectedActivity(current ?? "");
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 5.h,
                         ),
-                      );
-                    },
-                  ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6.r),
+                          border: Border.all(
+                            color: isActive
+                                ? Colors.transparent
+                                : AppColors.blueBorder,
+                          ),
+                          color: isActive ? AppColors.blueColor : Colors.white,
+                        ),
+                        child: CustomText(
+                          text: current ?? "",
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w400,
+                          color: isActive ? Colors.white : Colors.black,
+                        ),
+                      ),
+                    );
+                  }),
                 ),
               ],
             ),

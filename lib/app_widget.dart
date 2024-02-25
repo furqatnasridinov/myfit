@@ -1,5 +1,4 @@
 import 'package:activity/domain/di/dependency_manager.dart';
-import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

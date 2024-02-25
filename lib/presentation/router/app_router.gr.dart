@@ -32,8 +32,7 @@ import 'package:activity/presentation/pages/settings/view/settings_page.dart'
     as _i13;
 import 'package:activity/presentation/pages/splash/splash_screen.dart' as _i14;
 import 'package:auto_route/auto_route.dart' as _i15;
-import 'package:flutter/foundation.dart' as _i16;
-import 'package:flutter/material.dart' as _i17;
+import 'package:flutter/material.dart' as _i16;
 
 abstract class $AppRouter extends _i15.RootStackRouter {
   $AppRouter({super.navigatorKey});
@@ -210,7 +209,7 @@ class MainRoute extends _i15.PageRouteInfo<void> {
 class MapRoute extends _i15.PageRouteInfo<MapRouteArgs> {
   MapRoute({
     required bool showOnlyKnown,
-    _i17.Key? key,
+    _i16.Key? key,
     List<_i15.PageRouteInfo>? children,
   }) : super(
           MapRoute.name,
@@ -235,7 +234,7 @@ class MapRouteArgs {
 
   final bool showOnlyKnown;
 
-  final _i17.Key? key;
+  final _i16.Key? key;
 
   @override
   String toString() {
@@ -247,7 +246,7 @@ class MapRouteArgs {
 /// [_i5.NotesScreen]
 class NotesRoute extends _i15.PageRouteInfo<NotesRouteArgs> {
   NotesRoute({
-    _i17.Key? key,
+    _i16.Key? key,
     required String gymName,
     List<_i15.PageRouteInfo>? children,
   }) : super(
@@ -271,7 +270,7 @@ class NotesRouteArgs {
     required this.gymName,
   });
 
-  final _i17.Key? key;
+  final _i16.Key? key;
 
   final String gymName;
 

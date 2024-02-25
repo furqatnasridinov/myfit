@@ -7,7 +7,6 @@ import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:timezone/timezone.dart';
 
 import '../../infrastructure/models/response/auth_response.dart';
 
