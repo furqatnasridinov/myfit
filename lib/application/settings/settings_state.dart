@@ -20,6 +20,7 @@ class SettingsState with _$SettingsState {
     @Default(false) bool isEmailEditModeEnabled,
     @Default("30") String reminderTime,
     @Default(false) bool isReminderDisabled,
+    @Default("") String? qrcodeValue,
   }) = _SettingsState;
   const SettingsState._();
 }

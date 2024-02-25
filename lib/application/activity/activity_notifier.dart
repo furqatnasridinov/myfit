@@ -1,9 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'package:activity/application/activity/activity_state.dart';
 import 'package:activity/domain/interface/activity.dart';
-import 'package:activity/infrastructure/models/data/activity.dart';
 import 'package:activity/infrastructure/models/data/description_and_peculiarities.dart';
+import 'package:activity/infrastructure/models/data/lesson.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:flutter/material.dart';
@@ -49,10 +48,14 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
           await _activityRepositoryInterface.getActivities(gymId: gymId);
       response.when(
         success: (data) {
-          state = state.copyWith(
-            activityTypes: data.object,
-            isActivitiesListLoading: false,
-          );
+          if (data.object!.isNotEmpty) {
+            state = state.copyWith(
+              activityTypes: data.object,
+              isActivitiesListLoading: false,
+              selectedActivity:
+                  data.object![0], // first item as selected activity by default
+            );
+          }
         },
         failure: (error, statusCode) {
           state = state.copyWith(isActivitiesListLoading: false);
@@ -64,14 +67,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
-  Future<void> determineDefaultActivity() async {
-    //await Future.delayed(const Duration(seconds: 1));
-    if (state.activityTypes!.isNotEmpty) {
-      state = state.copyWith(selectedActivity: state.activityTypes?[0]);
-    }
-  }
-
-  Future<void> getGymPhotos(BuildContext context, int gymId) async {
+  Future<void> getAllPhotos(BuildContext context, int gymId) async {
     final connected = await AppConnectivity().connectivity();
     if (connected) {
       state = state.copyWith(isPhotosLoading: true);
@@ -140,92 +136,78 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     state = state.copyWith(photosOfSelectedActivity: photos);
   }
 
-  Future<void> determineDefaultOriginalDate() async {
-    final all15OriginalDays = state.listOf15OriginalDaysFromNow;
-    final availableOriginalDays = state.originalDates;
-    final list = <String>[];
-    for (var element in availableOriginalDays) {
-      if (all15OriginalDays.contains(element)) {
-        list.add(element);
-      }
-    }
-
-    state = state.copyWith(selectedOriginalDate: list.first);
-  }
-
-  Future<void> determineDefaultFormattedDate() async {
-    final original = state.selectedOriginalDate;
-    final formatted = formatOriginalToCalendar(original);
-    state = state.copyWith(selectedFormattedDay: formatted);
-  }
-
   String formatOriginalToCalendar(String inputDate) {
-    DateTime date = DateTime.parse(inputDate);
-    String day = DateFormat('d').format(date);
-    String month = DateFormat('MMM').format(date);
-    switch (month) {
-      case 'Jan':
-        month = 'Янв';
-        break;
-      case 'Feb':
-        month = 'Фев';
-        break;
-      case 'Mar':
-        month = 'Мар';
-        break;
-      case 'Apr':
-        month = 'Апр';
-        break;
-      case 'May':
-        month = 'Май';
-        break;
-      case 'Jun':
-        month = 'Июн';
-        break;
-      case 'Jul':
-        month = 'Июль';
-        break;
-      case 'Aug':
-        month = 'Авг';
-        break;
-      case 'Sep':
-        month = 'Сен';
-        break;
-      case 'Oct':
-        month = 'Окт';
-        break;
-      case 'Nov':
-        month = 'Ноя';
-        break;
-      case 'Dec':
-        month = 'Дек';
-        break;
+    try {
+      final List<String> parts = inputDate.split("@");
+      DateTime date = DateTime.parse(parts[0]);
+      String day = DateFormat('d').format(date);
+      String month = DateFormat('MMM').format(date);
+      switch (month) {
+        case 'Jan':
+          month = 'Янв';
+          break;
+        case 'Feb':
+          month = 'Фев';
+          break;
+        case 'Mar':
+          month = 'Мар';
+          break;
+        case 'Apr':
+          month = 'Апр';
+          break;
+        case 'May':
+          month = 'Май';
+          break;
+        case 'Jun':
+          month = 'Июн';
+          break;
+        case 'Jul':
+          month = 'Июль';
+          break;
+        case 'Aug':
+          month = 'Авг';
+          break;
+        case 'Sep':
+          month = 'Сен';
+          break;
+        case 'Oct':
+          month = 'Окт';
+          break;
+        case 'Nov':
+          month = 'Ноя';
+          break;
+        case 'Dec':
+          month = 'Дек';
+          break;
+      }
+      String dayOfWeek = DateFormat.E().format(date);
+      switch (dayOfWeek) {
+        case "Mon":
+          dayOfWeek = "Пн";
+          break;
+        case "Tue":
+          dayOfWeek = "Вт";
+          break;
+        case "Wed":
+          dayOfWeek = "Ср";
+          break;
+        case "Thu":
+          dayOfWeek = "Чт";
+          break;
+        case "Fri":
+          dayOfWeek = "Пт";
+          break;
+        case "Sat":
+          dayOfWeek = "Сб";
+          break;
+        case "Sun":
+          dayOfWeek = "Вс";
+          break;
+      } // Get the day of the week
+      return '$dayOfWeek $day $month';
+    } catch (e) {
+      return "error";
     }
-    String dayOfWeek = DateFormat.E().format(date);
-    switch (dayOfWeek) {
-      case "Mon":
-        dayOfWeek = "Пн";
-        break;
-      case "Tue":
-        dayOfWeek = "Вт";
-        break;
-      case "Wed":
-        dayOfWeek = "Ср";
-        break;
-      case "Thu":
-        dayOfWeek = "Чт";
-        break;
-      case "Fri":
-        dayOfWeek = "Пт";
-        break;
-      case "Sat":
-        dayOfWeek = "Сб";
-        break;
-      case "Sun":
-        dayOfWeek = "Вс";
-        break;
-    } // Get the day of the week
-    return '$dayOfWeek $day $month';
   }
 
   Future<void> setSingleSelectedActivity(String? value) async {
@@ -236,7 +218,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
-  Future<void> getSchedulesDates(
+  Future<void> getAllLessons(
     BuildContext context, {
     required int id,
   }) async {
@@ -246,84 +228,12 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       final response = await _activityRepositoryInterface.getSchedules(id: id);
       response.when(
         success: (data) {
-          state = state.copyWith(scheddules: data);
-          List<String> originalDates = data.keys.toList();
-          state = state.copyWith(originalDates: originalDates);
-          //print("originalDates $originalDates");
-          List<String> formattedDates() {
-            return originalDates.map((date) {
-              DateTime dateTime = DateTime.parse(date);
-              String day = DateFormat('d').format(dateTime);
-              String month = DateFormat('MMM').format(dateTime);
-              switch (month) {
-                case 'Jan':
-                  month = 'Янв';
-                  break;
-                case 'Feb':
-                  month = 'Фев';
-                  break;
-                case 'Mar':
-                  month = 'Мар';
-                  break;
-                case 'Apr':
-                  month = 'Апр';
-                  break;
-                case 'May':
-                  month = 'Май';
-                  break;
-                case 'Jun':
-                  month = 'Июн';
-                  break;
-                case 'Jul':
-                  month = 'Июль';
-                  break;
-                case 'Aug':
-                  month = 'Авг';
-                  break;
-                case 'Sep':
-                  month = 'Сен';
-                  break;
-                case 'Oct':
-                  month = 'Окт';
-                  break;
-                case 'Nov':
-                  month = 'Ноя';
-                  break;
-                case 'Dec':
-                  month = 'Дек';
-                  break;
-              }
-              String dayOfWeek = DateFormat.E().format(dateTime);
-              switch (dayOfWeek) {
-                case "Mon":
-                  dayOfWeek = "Пн";
-                  break;
-                case "Tue":
-                  dayOfWeek = "Вт";
-                  break;
-                case "Wed":
-                  dayOfWeek = "Ср";
-                  break;
-                case "Thu":
-                  dayOfWeek = "Чт";
-                  break;
-                case "Fri":
-                  dayOfWeek = "Пт";
-                  break;
-                case "Sat":
-                  dayOfWeek = "Сб";
-                  break;
-                case "Sun":
-                  dayOfWeek = "Вс";
-                  break;
-              } // Get the day of the week
-              return '$dayOfWeek $day $month';
-            }).toList();
+          if (data.isNotEmpty) {
+            state = state.copyWith(
+              allLessons: data,
+              isSchedulesLoading: false,
+            );
           }
-
-          state = state.copyWith(
-              availableFormattedDates: formattedDates(),
-              isSchedulesLoading: false);
         },
         failure: (error, statusCode) {
           state = state.copyWith(isSchedulesLoading: false);
@@ -335,23 +245,69 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
-  getSchedulesList(String data) {
-    final Map<String, dynamic> mapData = state.scheddules;
-    List<Activity> activities = [];
-    if (mapData.containsKey(data)) {
-      for (var element in mapData[data]) {
-        final activity = Activity(
-          element["id"],
-          returnOnlyTime(element["date"]),
-          getEndingTime(returnOnlyTime(element["date"]), element["duration"]),
-          formatDuration(element["duration"]),
-          element["description"],
-        );
-        activities.add(activity);
-      }
-      //print("Найден ключ: $data");
-      state = state.copyWith(listOfSchedules: activities);
+  void getLessonsOfSelectedActivity(String selectedActivity) {
+    final Map<String, dynamic> allLessons = state.allLessons;
+    final String selectedActivity =
+        state.selectedActivity ?? "no activity selected";
+    final List<Lesson> listToCollectLessons = [];
+    final List<String> listToColllectDays = [];
+    final List<String> keys = allLessons.keys.toList();
+    for (var key in keys) {
+      allLessons[key].forEach((el) {
+        if (el["lessonType"] == selectedActivity) {
+          final lesson = Lesson(
+            id: el["id"],
+            date: el["date"],
+            calendarDate: formatOriginalToCalendar(el["date"]),
+            startTime: returnOnlyTime(el["date"]),
+            endTime: getEndingTime(returnOnlyTime(el["date"]), el["duration"]),
+            description: el["description"],
+            duration: formatDuration(el["duration"]),
+            lessonType: el["lessonType"],
+            owner: el["owner"] != null ? Owner.fromJson(el["owner"]) : null,
+            repeat: el["repeat"].cast<int>(),
+            canSignUp: el["canSignUp"],
+          );
+          listToCollectLessons.add(lesson);
+          if (!listToColllectDays.contains(lesson.calendarDate)) {
+            listToColllectDays.add(lesson.calendarDate ?? "");
+          }
+        }
+      });
     }
+
+    for (var element in listToColllectDays) {
+      if (state.listOf15CalendarDaysFromNow.contains(element)) {
+        state = state.copyWith(selectedCalendarDay: element);
+        break;
+      }
+    }
+
+    state = state.copyWith(
+      lessonsOfSelectedActivity: listToCollectLessons,
+      daysInWhichWeHaveLessons: listToColllectDays,
+    );
+    getLessonsToShowAfterSelectingADay(state.selectedCalendarDay ?? "");
+  }
+
+  Future<void> setSelectedCalendarDay(String calendarDate) async {
+    state = state.copyWith(selectedCalendarDay: calendarDate);
+  }
+
+  void getLessonsToShowAfterSelectingADay(String selectedDay) {
+    final List<Lesson> lessons = state.lessonsOfSelectedActivity;
+    final List<Lesson> listToCollectLessons = [];
+    for (var lesson in lessons) {
+      if (lesson.calendarDate == selectedDay) {
+        listToCollectLessons.add(lesson);
+      }
+    }
+    state =
+        state.copyWith(lessonsToShowAfterSelectingADay: listToCollectLessons);
+  }
+
+  Future<void> removeSelectedCalendarDay() async {
+    state = state.copyWith(selectedCalendarDay: "");
   }
 
   String formatDuration(String time) {
@@ -391,10 +347,11 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       minutesText = '$minutes минут';
     }
 
-    return '${hoursText.isNotEmpty ? "$hoursText " : ""}$minutesText';
+    return '${hoursText.isNotEmpty ? "$hoursText " : ""} ${minutesText != "0 минут" ? minutesText : ""}';
   }
 
   String returnOnlyTime(String text) {
+    //text = "2024-02-15@11:00";
     final parts = text.split("@");
     return parts[1];
   }
@@ -428,121 +385,9 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
-  /*  String getNameFromTgUrl(String url) {
-    if (url.isNotEmpty) {
-      List<String> parts = url.split("t.me/");
-      String name = parts[1];
-      return name;
-    }
-    return "";
-  }
-
-  String getNameFromVkUrl(String url) {
-    List<String> parts = url.split("vk.com/");
-    return parts[1];
-  } */
-
-  String? convertToOriginalDate(String dateString) {
-    final parts = dateString.split(' ');
-
-    if (parts.length != 3) {
-      return null;
-    }
-    final monthMapping = {
-      'Янв': '01',
-      'Фев': '02',
-      'Мар': '03',
-      'Апр': '04',
-      'Май': '05',
-      'Июн': '06',
-      'Июль': '07',
-      'Авг': '08',
-      'Сен': '09',
-      'Окт': '10',
-      'Ноя': '11',
-      'Дек': '12',
-    };
-
-    final dayOfWeekMapping = {
-      'Пн': 'Monday',
-      'Вт': 'Tuesday',
-      'Ср': 'Wednesday',
-      'Чт': 'Thursday',
-      'Пт': 'Friday',
-      'Сб': 'Saturday',
-      'Вс': 'Sunday',
-    };
-
-    final fullMonth = monthMapping[parts[2]];
-    final fullDayOfWeek = dayOfWeekMapping[parts[0]];
-
-    if (fullMonth == null || fullDayOfWeek == null) {
-      return null;
-    }
-    final formattedDate =
-        "${DateTime.now().year}-$fullMonth-${parts[1].padLeft(2, '0')}";
-
-    return formattedDate;
-  }
-
-  Future<void> setSelectedOriginalDate(String calendarDate) async {
-    // Маппинг для месяцев и дней недели
-    final monthMapping = {
-      'Янв': '01',
-      'Фев': '02',
-      'Мар': '03',
-      'Апр': '04',
-      'Май': '05',
-      'Июн': '06',
-      'Июль': '07',
-      'Авг': '08',
-      'Сен': '09',
-      'Окт': '10',
-      'Ноя': '11',
-      'Дек': '12',
-    };
-
-    final dayOfWeekMapping = {
-      'Пн': 'Monday',
-      'Вт': 'Tuesday',
-      'Ср': 'Wednesday',
-      'Чт': 'Thursday',
-      'Пт': 'Friday',
-      'Сб': 'Saturday',
-      'Вс': 'Sunday',
-    };
-
-    String? convertToOriginalDate(String dateString) {
-      final parts = dateString.split(' ');
-
-      if (parts.length != 3) {
-        return null;
-      }
-
-      final fullMonth = monthMapping[parts[2]];
-      final fullDayOfWeek = dayOfWeekMapping[parts[0]];
-
-      if (fullMonth == null || fullDayOfWeek == null) {
-        return null;
-      }
-
-      String year = fullMonth == "01" ? "2024" : DateTime.now().year.toString();
-      final formattedDate = "$year-$fullMonth-${parts[1].padLeft(2, '0')}";
-
-      return formattedDate;
-    }
-
-    state = state.copyWith(
-        selectedOriginalDate: convertToOriginalDate(calendarDate)!);
-  }
-
-  void removeOriginalSelectedDate() {
-    state = state.copyWith(selectedOriginalDate: "");
-  }
 
   Future<void> getListOf15CalendarDatesFromToday() async {
     List<String> dates = [];
-    //DateTime currentDate = DateTime.parse("2023-12-26");
     DateTime currentDate = DateTime.now();
     for (int i = 0; i < 15; i++) {
       String dayOfWeek = DateFormat('EEE').format(currentDate);
@@ -613,61 +458,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       currentDate = currentDate.add(const Duration(days: 1));
     }
     state = state.copyWith(listOf15CalendarDaysFromNow: dates);
-  }
-
-  Future<void> getListOf15OriginalDatesFromToday() async {
-    List<String> dates = [];
-    //DateTime currentDate = DateTime.parse("2023-12-26");
-    DateTime currentDate = DateTime.now();
-    for (int i = 0; i < 15; i++) {
-      String month = DateFormat("MMM").format(currentDate);
-      switch (month) {
-        case 'Jan':
-          month = '01';
-          break;
-        case 'Feb':
-          month = '02';
-          break;
-        case 'Mar':
-          month = '03';
-          break;
-        case 'Apr':
-          month = '04';
-          break;
-        case 'May':
-          month = '05';
-          break;
-        case 'Jun':
-          month = '06';
-          break;
-        case 'Jul':
-          month = '07';
-          break;
-        case 'Aug':
-          month = '08';
-          break;
-        case 'Sep':
-          month = '09';
-          break;
-        case 'Oct':
-          month = '10';
-          break;
-        case 'Nov':
-          month = '11';
-          break;
-        case 'Dec':
-          month = '12';
-          break;
-      }
-      String formattedDate = "${currentDate.year}-$month-${currentDate.day}";
-      dates.add(formattedDate);
-      currentDate = currentDate.add(const Duration(days: 1));
-    }
-    state = state.copyWith(listOf15OriginalDaysFromNow: dates);
-  }
-
-  void selectADay(String day) {
-    state = state.copyWith(selectedFormattedDay: day);
+    // [ 'Пн 26 Дек', 'Вт 27 Дек' ...]
   }
 
   String getEndingTime(String startingTime, String duration) {
@@ -690,7 +481,12 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     );
     final String hour = newTime.hour.toString();
     final String minute = newTime.minute.toString();
-    return "$hour:$minute";
+    // добавить нули в начало, если минуты < 10
+    if (newTime.minute < 10) {
+      return "$hour:0$minute";
+    } else {
+      return "$hour:$minute";
+    }
   }
 
   Future<void> enrollToGym(BuildContext context, int id) async {
@@ -709,16 +505,15 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
+
   String getLinkToCompressedPhoto(String fileName) {
-  int lastDotIndex = fileName.lastIndexOf('.');
-  if (lastDotIndex == -1) {
-    // Если точка в имени файла не найдена, возвращаем исходное имя
-    return fileName;
+    int lastDotIndex = fileName.lastIndexOf('.');
+    if (lastDotIndex == -1) {
+      // Если точка в имени файла не найдена, возвращаем исходное имя
+      return fileName;
+    }
+    String nameWithoutExtension = fileName.substring(0, lastDotIndex);
+    String extension = fileName.substring(lastDotIndex);
+    return "${nameWithoutExtension}_icon$extension";
   }
-  String nameWithoutExtension = fileName.substring(0, lastDotIndex);
-  String extension = fileName.substring(lastDotIndex);
-  return "${nameWithoutExtension}_icon$extension";
 }
-}
-
-

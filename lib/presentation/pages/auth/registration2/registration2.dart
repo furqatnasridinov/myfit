@@ -97,7 +97,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
   @override
   Widget build(BuildContext context) {
     final event = ref.read(registrationProvider.notifier);
-    final width = MediaQuery.of(context).size.width;
+    //final width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
