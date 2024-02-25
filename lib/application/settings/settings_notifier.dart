@@ -274,6 +274,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     }
   }
 
+  void setQrCodeValue(String value) {
+    state = state.copyWith(qrcodeValue: value);
+  }
+
   Duration? getDurationFromReminderTime(String time) {
     if (time == "30") {
       return const Duration(minutes: 30);

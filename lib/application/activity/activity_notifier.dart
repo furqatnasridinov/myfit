@@ -49,10 +49,14 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
           await _activityRepositoryInterface.getActivities(gymId: gymId);
       response.when(
         success: (data) {
-          state = state.copyWith(
-            activityTypes: data.object,
-            isActivitiesListLoading: false,
-          );
+          if (data.object!.isNotEmpty) {
+            state = state.copyWith(
+              activityTypes: data.object,
+              isActivitiesListLoading: false,
+              selectedActivity:
+                  data.object![0], // first item as selected activity by default
+            );
+          }
         },
         failure: (error, statusCode) {
           state = state.copyWith(isActivitiesListLoading: false);
@@ -61,13 +65,6 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       );
     } else {
       AppHelpers.showCheckTopSnackBar(context);
-    }
-  }
-
-  Future<void> determineDefaultActivity() async {
-    //await Future.delayed(const Duration(seconds: 1));
-    if (state.activityTypes!.isNotEmpty) {
-      state = state.copyWith(selectedActivity: state.activityTypes?[0]);
     }
   }
 
@@ -236,7 +233,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
-  Future<void> getSchedulesDates(
+  Future<void> getAllLessons(
     BuildContext context, {
     required int id,
   }) async {
@@ -542,7 +539,6 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
 
   Future<void> getListOf15CalendarDatesFromToday() async {
     List<String> dates = [];
-    //DateTime currentDate = DateTime.parse("2023-12-26");
     DateTime currentDate = DateTime.now();
     for (int i = 0; i < 15; i++) {
       String dayOfWeek = DateFormat('EEE').format(currentDate);
@@ -613,11 +609,11 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       currentDate = currentDate.add(const Duration(days: 1));
     }
     state = state.copyWith(listOf15CalendarDaysFromNow: dates);
+    // [ 'Пн 26 Дек', 'Вт 27 Дек' ...]
   }
 
   Future<void> getListOf15OriginalDatesFromToday() async {
     List<String> dates = [];
-    //DateTime currentDate = DateTime.parse("2023-12-26");
     DateTime currentDate = DateTime.now();
     for (int i = 0; i < 15; i++) {
       String month = DateFormat("MMM").format(currentDate);
@@ -664,6 +660,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       currentDate = currentDate.add(const Duration(days: 1));
     }
     state = state.copyWith(listOf15OriginalDaysFromNow: dates);
+    // [ '2023-12-26', '2023-12-27' ...]
   }
 
   void selectADay(String day) {
@@ -709,16 +706,15 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
+
   String getLinkToCompressedPhoto(String fileName) {
-  int lastDotIndex = fileName.lastIndexOf('.');
-  if (lastDotIndex == -1) {
-    // Если точка в имени файла не найдена, возвращаем исходное имя
-    return fileName;
+    int lastDotIndex = fileName.lastIndexOf('.');
+    if (lastDotIndex == -1) {
+      // Если точка в имени файла не найдена, возвращаем исходное имя
+      return fileName;
+    }
+    String nameWithoutExtension = fileName.substring(0, lastDotIndex);
+    String extension = fileName.substring(lastDotIndex);
+    return "${nameWithoutExtension}_icon$extension";
   }
-  String nameWithoutExtension = fileName.substring(0, lastDotIndex);
-  String extension = fileName.substring(lastDotIndex);
-  return "${nameWithoutExtension}_icon$extension";
 }
-}
-
-

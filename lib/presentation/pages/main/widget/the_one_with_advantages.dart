@@ -22,77 +22,16 @@ class TheOneWithAdvantages extends StatelessWidget {
 
   double opacityValue = 1;
 
-  /* late AnimationController _animationController;
-i   nt activePageIndex = 0;
-  late Animation<double> _nextPage;
-
-  int _currentPage = 0;
-
-  PageController _pageController = PageController(initialPage: 0);
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: 2),
-    );
-    _nextPage = Tween(begin: 0.0, end: 1.0).animate(_animationController);
-    //Add listener to AnimationController for know when end the count and change to the next page
-    _animationController.addListener(() {
-      if (_animationController.status == AnimationStatus.completed) {
-        _animationController.repeat();
-        final int page = widget.state.comments!.bodyData!.length;
-        if (_currentPage < page) {
-          _currentPage++;
-          _pageController.animateToPage(
-            _currentPage,
-            duration: const Duration(milliseconds: 800),
-            curve: Curves.easeInSine,
-          );
-        } else {
-          _currentPage = 0;
-        }
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  } */
   @override
   Widget build(BuildContext context) {
     return CustomCard(
-      height: 140.h,
-      width: double.maxFinite,
       child: state.advantages == null
           ? const SizedBox()
           : Stack(
               children: [
-                SizedBox(
+                Container(
                   width: double.maxFinite,
-                  //color: Colors.black26,
-                  child:
-                      /* PageView.builder(
-                    controller: _pageController,
-                    itemCount: widget.state.advantages?.bodyData?.length,
-                    onPageChanged: (value) {
-                      widget.event.setStep(value + 1);
-                    },
-                    itemBuilder: (context, index) {
-                      final currentAdvantage =
-                          widget.state.advantages?.bodyData?[index];
-                      return scrollableTexts(
-                        currentAdvantage?.heading ?? "",
-                        currentAdvantage?.description ?? "",
-                        opacityValue,
-                      );
-                    },
-                  ), */
-
-                      CarouselSlider.builder(
+                  child: CarouselSlider.builder(
                     carouselController: carouselController,
                     itemCount: state.advantages?.bodyData?.length,
                     itemBuilder: (context, index, realIndex) {
@@ -136,7 +75,9 @@ i   nt activePageIndex = 0;
                                 fontSize: 18.sp,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black,
-                                fontFeatures: const [FontFeature.liningFigures()],
+                                fontFeatures: const [
+                                  FontFeature.liningFigures()
+                                ],
                               ),
                             ),
                             TextSpan(

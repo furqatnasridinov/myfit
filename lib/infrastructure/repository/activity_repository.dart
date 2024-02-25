@@ -30,7 +30,6 @@ class ActivityRepository implements ActivityRepositoryInterface {
     try {
       final client = inject<HttpService>().clientDio();
       final response = await client.get("api/gym/$gymId/types");
-      //print("respotitory response data ${response.data}");
       return ApiResult.success(
         data: GetGymActivitiesResponse.fromJson(response.data),
       );
@@ -50,17 +49,16 @@ class ActivityRepository implements ActivityRepositoryInterface {
       final response = await client.get(
         "api/gym/$gymId/photo",
       );
-      //print("request.toJson ${request.toJson()}");
-      //print("repository response ${response.data["object"]}");
+
       return ApiResult.success(
         data: response.data,
       );
     } catch (e) {
       //throw e;
-       return ApiResult.failure(
+      return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      ); 
+      );
     }
   }
 
@@ -70,10 +68,8 @@ class ActivityRepository implements ActivityRepositoryInterface {
     try {
       final client = inject<HttpService>().clientDio();
       final response = await client.get("api/gym/$id/schedule");
-      //print("schedules respository data >>> ${response.data['object']}");
       return ApiResult.success(
         data: response.data["object"],
-        //data: GetGymSchedulesResponse.fromJson(response.data),
       );
     } catch (e) {
       return ApiResult.failure(

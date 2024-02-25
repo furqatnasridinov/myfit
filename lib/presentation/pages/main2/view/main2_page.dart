@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:activity/application/main2/main2_provider.dart';
 import 'package:activity/application/map/map_provider.dart';
-import 'package:activity/infrastructure/local_notifications/notification_service.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_text.dart';
@@ -41,7 +40,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
       ref.read(main2Provider.notifier)
         ..getNearestLesson(context)
         ..getUserStatsMonth(context);
-      NotificationService().showActiveNotification();
+      //NotificationService().showActiveNotification();
     });
   }
 

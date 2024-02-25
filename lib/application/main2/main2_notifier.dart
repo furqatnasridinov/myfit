@@ -260,11 +260,20 @@ class Main2Notifier extends StateNotifier<Main2State> {
       response.when(
         success: (data) {
           if (data.bodyData != null) {
-            determineWhenActivityStarts(data.bodyData!.date!);
-            state = state.copyWith(
-              nearestLesson: data,
-              nearestLessonIsLoading: false,
-            );
+            final startTime = data.bodyData?.date?.replaceAll('@', 'T');
+            DateTime startingTimeInDTFormat = DateTime.parse(startTime ?? "");
+            if (startingTimeInDTFormat.isAfter(DateTime.now())) {
+              determineWhenActivityStarts(data.bodyData!.date!);
+              state = state.copyWith(
+                nearestLesson: data,
+                nearestLessonIsLoading: false,
+              );
+            } else {
+              state = state.copyWith(
+                nearestLesson: null,
+                nearestLessonIsLoading: false,
+              );
+            }
           }
           if (data.bodyData == null) {
             state = state.copyWith(

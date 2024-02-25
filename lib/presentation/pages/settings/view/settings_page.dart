@@ -38,7 +38,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           children: [
             20.verticalSpace,
             CustomText(
-              text: "Настройки",
+              text: state.qrcodeValue!.isEmpty ? "Настройки" : state.qrcodeValue ?? "",
               fontSize: 20.sp,
               fontWeight: FontWeight.w600,
             ),

@@ -70,29 +70,29 @@ class TheOneWithChips extends StatelessWidget {
                           selected: isSelected,
                           onSelected: (selected) async {
                             if (selected) {
-                              event.setSingleSelectedActivity(activity);
-                              event.getDescribtionAndPeculiarities(activity);
-                              event.getPhotosOfSelectedActivity(activity);
                               event
-                                  .getSchedulesDates(context, id: gymId)
-                                  .then((value) async {
-                                await Future.delayed(
-                                  const Duration(milliseconds: 100),
-                                );
-                              }).then(
-                                (value) => event
-                                    .determineDefaultOriginalDate()
-                                    .then((value) =>
-                                        event.determineDefaultFormattedDate())
+                                ..setSingleSelectedActivity(activity)
+                                ..getDescribtionAndPeculiarities(activity)
+                                ..getPhotosOfSelectedActivity(activity)
+                                ..getAllLessons(context, id: gymId)
                                     .then((value) async {
                                   await Future.delayed(
-                                      const Duration(milliseconds: 100));
+                                    const Duration(milliseconds: 100),
+                                  );
                                 }).then(
-                                  (value) => event.getSchedulesList(
-                                    state.selectedOriginalDate,
+                                  (value) => event
+                                      .determineDefaultOriginalDate()
+                                      .then((value) =>
+                                          event.determineDefaultFormattedDate())
+                                      .then((value) async {
+                                    await Future.delayed(
+                                        const Duration(milliseconds: 100));
+                                  }).then(
+                                    (value) => event.getSchedulesList(
+                                      state.selectedOriginalDate,
+                                    ),
                                   ),
-                                ),
-                              );
+                                );
                             }
                           },
                           label: CustomText(

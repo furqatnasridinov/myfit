@@ -23,71 +23,41 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
         // get info `bout gym
-        ref
-            .read(activityProvider.notifier)
-            .getGymInfo(
-              context,
-              gymId: widget.gymId,
-            )
-            .then((value) {
-          ref
-              .read(activityProvider.notifier)
-              .getInfoForType(context, id: widget.gymId);
-          ref
-              .read(activityProvider.notifier)
-              .getActivityTypes(context, gymId: widget.gymId)
-              .then(
-                (value) => ref
-                    .read(activityProvider.notifier)
-                    .determineDefaultActivity()
-                    .then(
-                      (value) => ref
-                          .read(activityProvider.notifier)
-                          .getGymPhotos(
-                            context,
-                            widget.gymId,
-                          )
-                          .then(
-                            (value) => ref
-                                .read(activityProvider.notifier)
-                                .getDescribtionAndPeculiarities(ref
-                                    .watch(activityProvider)
-                                    .selectedActivity!)
-                                .then(
-                                  (value) => ref
-                                      .read(activityProvider.notifier)
-                                      .getPhotosOfSelectedActivity(ref
-                                          .watch(activityProvider)
-                                          .selectedActivity!),
-                                ),
-                          ),
-                    ),
-              );
-
-          ref
-              .read(activityProvider.notifier)
-              .getSchedulesDates(context, id: widget.gymId)
-              .then((value) => ref
-                  .read(activityProvider.notifier)
-                  .getListOf15CalendarDatesFromToday())
-              .then(
-                (value) => ref
-                    .read(activityProvider.notifier)
-                    .getListOf15OriginalDatesFromToday(),
-              )
-              .then((value) => ref
-                  .read(activityProvider.notifier)
-                  .determineDefaultOriginalDate())
-              .then(
-                (value) => ref
-                    .read(activityProvider.notifier)
-                    .determineDefaultFormattedDate(),
-              )
-              .then(
-                (value) => ref.read(activityProvider.notifier).getSchedulesList(
-                    ref.watch(activityProvider).selectedOriginalDate),
-              );
-        });
+        ref.read(activityProvider.notifier)
+          ..getGymInfo(context, gymId: widget.gymId)
+          ..getActivityTypes(context, gymId: widget.gymId)
+          ..getInfoForType(context, id: widget.gymId)
+          ..getAllLessons(context, id: widget.gymId)
+          ..getGymPhotos(context, widget.gymId) //
+              .then((value) {
+            ref.read(activityProvider.notifier)
+              ..getPhotosOfSelectedActivity(
+                  ref.watch(activityProvider).selectedActivity!)
+              ..getDescribtionAndPeculiarities(
+                      ref.watch(activityProvider).selectedActivity!)
+                  .then((value) => ref
+                      .read(activityProvider.notifier)
+                      .getListOf15CalendarDatesFromToday())
+                  .then(
+                    (value) => ref
+                        .read(activityProvider.notifier)
+                        .getListOf15OriginalDatesFromToday(),
+                  )
+                  .then((value) => ref
+                      .read(activityProvider.notifier)
+                      .determineDefaultOriginalDate())
+                  .then(
+                    (value) => ref
+                        .read(activityProvider.notifier)
+                        .determineDefaultFormattedDate(),
+                  )
+                  .then(
+                    (value) => ref
+                        .read(activityProvider.notifier)
+                        .getSchedulesList(
+                            ref.watch(activityProvider).selectedOriginalDate),
+                  );
+          });
       },
     );
   }

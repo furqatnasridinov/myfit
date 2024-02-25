@@ -234,8 +234,12 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     if (connect) {
       final response = await _scheduleRepositoryInterface.cancelActivity(id);
       response.when(
-        success: (data) {},
-        failure: (error, statusCode) {},
+        success: (data) {
+          //AppHelpers.showSnack(context, "Запись отменена");
+        },
+        failure: (error, statusCode) {
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
+        },
       );
     } else {
       AppHelpers.showCheckTopSnackBar(context);
