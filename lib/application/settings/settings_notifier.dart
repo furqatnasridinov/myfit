@@ -18,6 +18,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   void setUserInfos() {
     setPhone();
     setName();
+    setLastname();
     setSelectedCity();
     setAge();
     setWeight();
@@ -76,6 +77,30 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     if (connected) {
       state = state.copyWith(isloading: true);
       final request = {"firstName": name};
+      final response = await _settingsRepositoryInterface.patchUser(
+        request: request,
+      );
+      response.when(
+        success: (data) {
+          // no need to return we are saving locally
+          state = state.copyWith(isloading: false);
+        },
+        failure: (error, statuscode) {
+          AppHelpers.showErrorSnack(context, "$error $statuscode");
+          state = state.copyWith(isloading: false);
+        },
+      );
+    } else {
+      // ignore: use_build_context_synchronously
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> patchLastname(String? lastName, BuildContext context) async {
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      state = state.copyWith(isloading: true);
+      final request = {"lastName": lastName};
       final response = await _settingsRepositoryInterface.patchUser(
         request: request,
       );
@@ -297,6 +322,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
 
   void setName() {
     state = state.copyWith(userName: LocalStorage.getUserName());
+  }
+
+  void setLastname() {
+    state = state.copyWith(userLastName: LocalStorage.getUserLastName());
   }
 
   void setAge() {

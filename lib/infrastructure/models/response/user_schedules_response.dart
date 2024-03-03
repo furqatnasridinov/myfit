@@ -5,7 +5,10 @@ class UserSchedulesResponse {
   List<ListOfSchedules>? listOfSchedules;
 
   UserSchedulesResponse(
-      {this.calendarDate, this.dateTime, this.isPlusStateTriggered, this.listOfSchedules});
+      {this.calendarDate,
+      this.dateTime,
+      this.isPlusStateTriggered,
+      this.listOfSchedules});
 
   UserSchedulesResponse.fromJson(Map<String, dynamic> json) {
     calendarDate = json['calendarDate'];
@@ -26,6 +29,9 @@ class ListOfSchedules {
   String? duration;
   Gym? gym;
   List<Tag>? tag;
+  String? lessonType;
+  bool? canSignUp;
+  String? lessonState;
 
   ListOfSchedules(
       {this.id,
@@ -33,20 +39,26 @@ class ListOfSchedules {
       this.description,
       this.duration,
       this.gym,
-      this.tag});
+      this.tag,
+      this.lessonType,
+      this.canSignUp,
+      this.lessonState});
 
   ListOfSchedules.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     date = json['date'];
     description = json['description'];
     duration = json['duration'];
-    gym = json['gym'] != null ?  Gym.fromJson(json['gym']) : null;
+    gym = json['gym'] != null ? Gym.fromJson(json['gym']) : null;
     if (json['tag'] != null) {
       tag = <Tag>[];
       json['tag'].forEach((v) {
         tag!.add(Tag.fromJson(v));
       });
     }
+    lessonType = json['lessonType'] ?? "";
+    canSignUp = json['canSignUp'] ?? "";
+    lessonState = json['lessonState'] ?? "";
   }
 }
 

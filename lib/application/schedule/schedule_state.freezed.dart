@@ -30,6 +30,9 @@ mixin _$ScheduleState {
   List<ScheduleAndGym> get schedulesFoundBySearching =>
       throw _privateConstructorUsedError;
   String get notificationTime => throw _privateConstructorUsedError;
+  bool get completedSchedulesShown => throw _privateConstructorUsedError;
+  List<CompletedSchedule> get completedSchedules =>
+      throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ScheduleStateCopyWith<ScheduleState> get copyWith =>
@@ -53,7 +56,9 @@ abstract class $ScheduleStateCopyWith<$Res> {
       bool isFlashButtonActivated,
       Map<String, dynamic> notesMapData,
       List<ScheduleAndGym> schedulesFoundBySearching,
-      String notificationTime});
+      String notificationTime,
+      bool completedSchedulesShown,
+      List<CompletedSchedule> completedSchedules});
 }
 
 /// @nodoc
@@ -80,6 +85,8 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
     Object? notesMapData = null,
     Object? schedulesFoundBySearching = null,
     Object? notificationTime = null,
+    Object? completedSchedulesShown = null,
+    Object? completedSchedules = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -126,6 +133,14 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
           ? _value.notificationTime
           : notificationTime // ignore: cast_nullable_to_non_nullable
               as String,
+      completedSchedulesShown: null == completedSchedulesShown
+          ? _value.completedSchedulesShown
+          : completedSchedulesShown // ignore: cast_nullable_to_non_nullable
+              as bool,
+      completedSchedules: null == completedSchedules
+          ? _value.completedSchedules
+          : completedSchedules // ignore: cast_nullable_to_non_nullable
+              as List<CompletedSchedule>,
     ) as $Val);
   }
 }
@@ -149,7 +164,9 @@ abstract class _$$ScheduleStateImplCopyWith<$Res>
       bool isFlashButtonActivated,
       Map<String, dynamic> notesMapData,
       List<ScheduleAndGym> schedulesFoundBySearching,
-      String notificationTime});
+      String notificationTime,
+      bool completedSchedulesShown,
+      List<CompletedSchedule> completedSchedules});
 }
 
 /// @nodoc
@@ -174,6 +191,8 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
     Object? notesMapData = null,
     Object? schedulesFoundBySearching = null,
     Object? notificationTime = null,
+    Object? completedSchedulesShown = null,
+    Object? completedSchedules = null,
   }) {
     return _then(_$ScheduleStateImpl(
       isloading: null == isloading
@@ -220,6 +239,14 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
           ? _value.notificationTime
           : notificationTime // ignore: cast_nullable_to_non_nullable
               as String,
+      completedSchedulesShown: null == completedSchedulesShown
+          ? _value.completedSchedulesShown
+          : completedSchedulesShown // ignore: cast_nullable_to_non_nullable
+              as bool,
+      completedSchedules: null == completedSchedules
+          ? _value._completedSchedules
+          : completedSchedules // ignore: cast_nullable_to_non_nullable
+              as List<CompletedSchedule>,
     ));
   }
 }
@@ -238,12 +265,15 @@ class _$ScheduleStateImpl extends _ScheduleState {
       this.isFlashButtonActivated = false,
       final Map<String, dynamic> notesMapData = const {},
       final List<ScheduleAndGym> schedulesFoundBySearching = const [],
-      this.notificationTime = "30 мин"})
+      this.notificationTime = "30 мин",
+      this.completedSchedulesShown = false,
+      final List<CompletedSchedule> completedSchedules = const []})
       : _schedulesInMapForm = schedulesInMapForm,
         _listOfuserSchedules = listOfuserSchedules,
         _daysFromLastWeek = daysFromLastWeek,
         _notesMapData = notesMapData,
         _schedulesFoundBySearching = schedulesFoundBySearching,
+        _completedSchedules = completedSchedules,
         super._();
 
   @override
@@ -313,10 +343,22 @@ class _$ScheduleStateImpl extends _ScheduleState {
   @override
   @JsonKey()
   final String notificationTime;
+  @override
+  @JsonKey()
+  final bool completedSchedulesShown;
+  final List<CompletedSchedule> _completedSchedules;
+  @override
+  @JsonKey()
+  List<CompletedSchedule> get completedSchedules {
+    if (_completedSchedules is EqualUnmodifiableListView)
+      return _completedSchedules;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_completedSchedules);
+  }
 
   @override
   String toString() {
-    return 'ScheduleState(isloading: $isloading, schedulesInMapForm: $schedulesInMapForm, listOfuserSchedules: $listOfuserSchedules, showTillWhen: $showTillWhen, plusState: $plusState, daysFromLastWeek: $daysFromLastWeek, isLocationButtonActivated: $isLocationButtonActivated, isFlashButtonActivated: $isFlashButtonActivated, notesMapData: $notesMapData, schedulesFoundBySearching: $schedulesFoundBySearching, notificationTime: $notificationTime)';
+    return 'ScheduleState(isloading: $isloading, schedulesInMapForm: $schedulesInMapForm, listOfuserSchedules: $listOfuserSchedules, showTillWhen: $showTillWhen, plusState: $plusState, daysFromLastWeek: $daysFromLastWeek, isLocationButtonActivated: $isLocationButtonActivated, isFlashButtonActivated: $isFlashButtonActivated, notesMapData: $notesMapData, schedulesFoundBySearching: $schedulesFoundBySearching, notificationTime: $notificationTime, completedSchedulesShown: $completedSchedulesShown, completedSchedules: $completedSchedules)';
   }
 
   @override
@@ -346,7 +388,12 @@ class _$ScheduleStateImpl extends _ScheduleState {
             const DeepCollectionEquality().equals(
                 other._schedulesFoundBySearching, _schedulesFoundBySearching) &&
             (identical(other.notificationTime, notificationTime) ||
-                other.notificationTime == notificationTime));
+                other.notificationTime == notificationTime) &&
+            (identical(
+                    other.completedSchedulesShown, completedSchedulesShown) ||
+                other.completedSchedulesShown == completedSchedulesShown) &&
+            const DeepCollectionEquality()
+                .equals(other._completedSchedules, _completedSchedules));
   }
 
   @override
@@ -362,7 +409,9 @@ class _$ScheduleStateImpl extends _ScheduleState {
       isFlashButtonActivated,
       const DeepCollectionEquality().hash(_notesMapData),
       const DeepCollectionEquality().hash(_schedulesFoundBySearching),
-      notificationTime);
+      notificationTime,
+      completedSchedulesShown,
+      const DeepCollectionEquality().hash(_completedSchedules));
 
   @JsonKey(ignore: true)
   @override
@@ -383,7 +432,9 @@ abstract class _ScheduleState extends ScheduleState {
       final bool isFlashButtonActivated,
       final Map<String, dynamic> notesMapData,
       final List<ScheduleAndGym> schedulesFoundBySearching,
-      final String notificationTime}) = _$ScheduleStateImpl;
+      final String notificationTime,
+      final bool completedSchedulesShown,
+      final List<CompletedSchedule> completedSchedules}) = _$ScheduleStateImpl;
   const _ScheduleState._() : super._();
 
   @override
@@ -408,6 +459,10 @@ abstract class _ScheduleState extends ScheduleState {
   List<ScheduleAndGym> get schedulesFoundBySearching;
   @override
   String get notificationTime;
+  @override
+  bool get completedSchedulesShown;
+  @override
+  List<CompletedSchedule> get completedSchedules;
   @override
   @JsonKey(ignore: true)
   _$$ScheduleStateImplCopyWith<_$ScheduleStateImpl> get copyWith =>

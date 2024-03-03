@@ -2,6 +2,8 @@ import 'package:activity/infrastructure/models/data/schedule_and_gym.dart';
 import 'package:activity/infrastructure/models/response/user_schedules_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../infrastructure/models/data/completed_schedule.dart';
+
 part 'schedule_state.freezed.dart';
 
 @freezed
@@ -18,6 +20,8 @@ class ScheduleState with _$ScheduleState {
     @Default({}) Map<String, dynamic> notesMapData,
     @Default([]) List<ScheduleAndGym> schedulesFoundBySearching,
     @Default("30 мин") String notificationTime,
+    @Default(false) bool completedSchedulesShown,
+    @Default([]) List<CompletedSchedule> completedSchedules,
   }) = _ScheduleState;
   const ScheduleState._();
 }

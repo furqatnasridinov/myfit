@@ -3,6 +3,7 @@ import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/application/settings/settings_provider.dart';
+import 'package:activity/infrastructure/models/request/rate_request..dart';
 import 'package:activity/infrastructure/models/response/user_schedules_response.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
@@ -31,13 +32,23 @@ class ScheduleScreen extends ConsumerStatefulWidget {
 class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
   TextEditingController controller = TextEditingController();
   ScrollController scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(scheduleProvider.notifier)
         ..getUsersSchedules(context)
-        ..getDatesFromLastWeek();
+        ..getTwoWeekDays()
+        ..getCompletedSchedules(context);
+      /* ..makeARate(
+          context,
+          request: RateRequest(
+            grade: 5,
+            lessonUser: LessonUser(id: 100),
+            message: "Good",
+          ),
+        ); */
       // getting reminders from local storage to state
       ref.read(settingsProvider.notifier)
         ..setNotificationTime(LocalStorage.getReminderTime())
@@ -59,12 +70,23 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
         child: CustomScrollView(
           controller: scrollController,
           slivers: [
+            // Ваше расписание
             SliverPadding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               sliver: const SliverToBoxAdapter(
                 child: ScheduleTitle(),
               ),
             ),
+
+            // Прошедшие занятия
+            SliverPadding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 16.h),
+              sliver: const SliverToBoxAdapter(
+                child: CompletedSchedules(),
+              ),
+            ),
+
             // body builder
             SliverPadding(
               padding:
@@ -108,15 +130,14 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
                         // иначе daysWithNoSchedule
                         if (scheduleForDay != null) {
                           return itemListBuilder(
-                            context,
-                            formattedDayOfWeek,
-                            formattedDay,
-                            date,
-                            scheduleForDay.listOfSchedules ?? [],
-                            event,
-                            todayWith00Hours,
-                            scheduleForDay.isPlusStateTriggered,
-                          );
+                              context,
+                              formattedDayOfWeek,
+                              formattedDay,
+                              date,
+                              scheduleForDay.listOfSchedules ?? [],
+                              event,
+                              todayWith00Hours,
+                              scheduleForDay.isPlusStateTriggered);
                         } else {
                           return daysWithNoSchedule(
                             context,
@@ -407,7 +428,7 @@ Widget listOfActivitiesEachItem(
                       // describtion
                       SizedBox(
                         width: 220.w,
-                        child: CustomText(
+                        child: InterText(
                           text: description,
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w400,

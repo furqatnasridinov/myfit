@@ -267,6 +267,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
             owner: el["owner"] != null ? Owner.fromJson(el["owner"]) : null,
             repeat: el["repeat"].cast<int>(),
             canSignUp: el["canSignUp"],
+            lessonState: el["lessonState"],
           );
           listToCollectLessons.add(lesson);
           if (!listToColllectDays.contains(lesson.calendarDate)) {
@@ -384,7 +385,6 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       throw 'Could not launch $url';
     }
   }
-
 
   Future<void> getListOf15CalendarDatesFromToday() async {
     List<String> dates = [];

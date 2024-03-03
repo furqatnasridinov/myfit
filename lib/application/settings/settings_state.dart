@@ -13,6 +13,7 @@ class SettingsState with _$SettingsState {
     @Default(null) String? selectedCity,
     @Default([]) List<City> listOfCities,
     @Default("") String userName,
+    @Default("") String userLastName,
     @Default("") String age,
     @Default("") String weight,
     @Default("") String height,
