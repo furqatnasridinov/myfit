@@ -25,6 +25,7 @@ mixin _$Main2State {
   List<UserStats> get statsForMonth => throw _privateConstructorUsedError;
   List<ScheduleAndGym> get schedulesFoundBySearching =>
       throw _privateConstructorUsedError;
+  bool get isActivityStartingIn15Minutes => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $Main2StateCopyWith<Main2State> get copyWith =>
@@ -45,7 +46,8 @@ abstract class $Main2StateCopyWith<$Res> {
       GetNearestLesson? nearestLesson,
       String whenActivityStarts,
       List<UserStats> statsForMonth,
-      List<ScheduleAndGym> schedulesFoundBySearching});
+      List<ScheduleAndGym> schedulesFoundBySearching,
+      bool isActivityStartingIn15Minutes});
 }
 
 /// @nodoc
@@ -69,6 +71,7 @@ class _$Main2StateCopyWithImpl<$Res, $Val extends Main2State>
     Object? whenActivityStarts = null,
     Object? statsForMonth = null,
     Object? schedulesFoundBySearching = null,
+    Object? isActivityStartingIn15Minutes = null,
   }) {
     return _then(_value.copyWith(
       nearestLessonIsLoading: null == nearestLessonIsLoading
@@ -103,6 +106,10 @@ class _$Main2StateCopyWithImpl<$Res, $Val extends Main2State>
           ? _value.schedulesFoundBySearching
           : schedulesFoundBySearching // ignore: cast_nullable_to_non_nullable
               as List<ScheduleAndGym>,
+      isActivityStartingIn15Minutes: null == isActivityStartingIn15Minutes
+          ? _value.isActivityStartingIn15Minutes
+          : isActivityStartingIn15Minutes // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -123,7 +130,8 @@ abstract class _$$Main2StateImplCopyWith<$Res>
       GetNearestLesson? nearestLesson,
       String whenActivityStarts,
       List<UserStats> statsForMonth,
-      List<ScheduleAndGym> schedulesFoundBySearching});
+      List<ScheduleAndGym> schedulesFoundBySearching,
+      bool isActivityStartingIn15Minutes});
 }
 
 /// @nodoc
@@ -145,6 +153,7 @@ class __$$Main2StateImplCopyWithImpl<$Res>
     Object? whenActivityStarts = null,
     Object? statsForMonth = null,
     Object? schedulesFoundBySearching = null,
+    Object? isActivityStartingIn15Minutes = null,
   }) {
     return _then(_$Main2StateImpl(
       nearestLessonIsLoading: null == nearestLessonIsLoading
@@ -179,6 +188,10 @@ class __$$Main2StateImplCopyWithImpl<$Res>
           ? _value._schedulesFoundBySearching
           : schedulesFoundBySearching // ignore: cast_nullable_to_non_nullable
               as List<ScheduleAndGym>,
+      isActivityStartingIn15Minutes: null == isActivityStartingIn15Minutes
+          ? _value.isActivityStartingIn15Minutes
+          : isActivityStartingIn15Minutes // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -194,7 +207,8 @@ class _$Main2StateImpl extends _Main2State {
       this.nearestLesson = null,
       this.whenActivityStarts = "",
       final List<UserStats> statsForMonth = const [],
-      final List<ScheduleAndGym> schedulesFoundBySearching = const []})
+      final List<ScheduleAndGym> schedulesFoundBySearching = const [],
+      this.isActivityStartingIn15Minutes = false})
       : _statsForMonth = statsForMonth,
         _schedulesFoundBySearching = schedulesFoundBySearching,
         super._();
@@ -237,8 +251,12 @@ class _$Main2StateImpl extends _Main2State {
   }
 
   @override
+  @JsonKey()
+  final bool isActivityStartingIn15Minutes;
+
+  @override
   String toString() {
-    return 'Main2State(nearestLessonIsLoading: $nearestLessonIsLoading, statsMonthIsloading: $statsMonthIsloading, isSearchbarOpened: $isSearchbarOpened, showTillWhen: $showTillWhen, nearestLesson: $nearestLesson, whenActivityStarts: $whenActivityStarts, statsForMonth: $statsForMonth, schedulesFoundBySearching: $schedulesFoundBySearching)';
+    return 'Main2State(nearestLessonIsLoading: $nearestLessonIsLoading, statsMonthIsloading: $statsMonthIsloading, isSearchbarOpened: $isSearchbarOpened, showTillWhen: $showTillWhen, nearestLesson: $nearestLesson, whenActivityStarts: $whenActivityStarts, statsForMonth: $statsForMonth, schedulesFoundBySearching: $schedulesFoundBySearching, isActivityStartingIn15Minutes: $isActivityStartingIn15Minutes)';
   }
 
   @override
@@ -261,7 +279,11 @@ class _$Main2StateImpl extends _Main2State {
             const DeepCollectionEquality()
                 .equals(other._statsForMonth, _statsForMonth) &&
             const DeepCollectionEquality().equals(
-                other._schedulesFoundBySearching, _schedulesFoundBySearching));
+                other._schedulesFoundBySearching, _schedulesFoundBySearching) &&
+            (identical(other.isActivityStartingIn15Minutes,
+                    isActivityStartingIn15Minutes) ||
+                other.isActivityStartingIn15Minutes ==
+                    isActivityStartingIn15Minutes));
   }
 
   @override
@@ -274,7 +296,8 @@ class _$Main2StateImpl extends _Main2State {
       nearestLesson,
       whenActivityStarts,
       const DeepCollectionEquality().hash(_statsForMonth),
-      const DeepCollectionEquality().hash(_schedulesFoundBySearching));
+      const DeepCollectionEquality().hash(_schedulesFoundBySearching),
+      isActivityStartingIn15Minutes);
 
   @JsonKey(ignore: true)
   @override
@@ -292,7 +315,8 @@ abstract class _Main2State extends Main2State {
       final GetNearestLesson? nearestLesson,
       final String whenActivityStarts,
       final List<UserStats> statsForMonth,
-      final List<ScheduleAndGym> schedulesFoundBySearching}) = _$Main2StateImpl;
+      final List<ScheduleAndGym> schedulesFoundBySearching,
+      final bool isActivityStartingIn15Minutes}) = _$Main2StateImpl;
   const _Main2State._() : super._();
 
   @override
@@ -311,6 +335,8 @@ abstract class _Main2State extends Main2State {
   List<UserStats> get statsForMonth;
   @override
   List<ScheduleAndGym> get schedulesFoundBySearching;
+  @override
+  bool get isActivityStartingIn15Minutes;
   @override
   @JsonKey(ignore: true)
   _$$Main2StateImplCopyWith<_$Main2StateImpl> get copyWith =>

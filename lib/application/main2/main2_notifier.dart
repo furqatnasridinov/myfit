@@ -170,6 +170,11 @@ class Main2Notifier extends StateNotifier<Main2State> {
     DateTime startingTimeInDTFormat =
         DateTime.parse(formatted); //DateTime (2023-11-11 13:15:00.000)
     DateTime now = DateTime.now();
+    final fifteenMinutesBeforeStart =
+        startingTimeInDTFormat.subtract(const Duration(minutes: 15));
+    if (now.isAfter(fifteenMinutesBeforeStart)) {
+      state = state.copyWith(isActivityStartingIn15Minutes: true);
+    }
     if (startingTimeInDTFormat.isAfter(now)) {
       Duration resultOnDuration = startingTimeInDTFormat.difference(now);
       String formattedDifference = formatDuration(resultOnDuration);

@@ -12,7 +12,7 @@ class AppConstants {
   static const String getUserSchedules = "api/schedule/user";
   static const String getNearestLesson = "api/user/lessons/nearest";
   static const String getUserStatsMonth = "api/user/stat/month";
-  static const String makeRate = "api/schedule/user/addComment";
+  static const String makeRate = "api/schedule/addComment";
   static const String deleteRate = "api/schedule/user/delComment";
   static const String addNote = "api/schedule/addNote";
   static const String getCities = "api/main/city";

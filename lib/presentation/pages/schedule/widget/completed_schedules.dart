@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
@@ -116,7 +118,7 @@ Widget listOfActivitiesEachItem(
         Row(
           children: [
             GestureDetector(
-              onTap: () {
+              onTap: () async {
                 if (grade == 0) {
                   //  show dialog to make a rate
                   showDialog(
@@ -134,8 +136,8 @@ Widget listOfActivitiesEachItem(
                       });
                 } else {
                   // delete rate
-                  event.deleteRate(context, id: id);
-                  // get new uodated list ??
+                  await event.deleteRate(context, id: id);
+                  event.getCompletedSchedules(context);
                 }
               },
               child: SvgPicture.asset(

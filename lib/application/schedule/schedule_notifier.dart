@@ -3,7 +3,7 @@
 import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/domain/interface/schedule.dart';
 import 'package:activity/infrastructure/models/data/completed_schedule.dart';
-import 'package:activity/infrastructure/models/request/rate_request..dart';
+import 'package:activity/infrastructure/models/request/rate_request.dart';
 import 'package:activity/infrastructure/models/response/user_schedules_response.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';

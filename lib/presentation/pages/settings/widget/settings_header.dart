@@ -322,7 +322,7 @@ class _MainHeaderState extends State<SettingsHeader> {
                           width: 24.w,
                           height: 24.h,
                         ),
-                        onTap: () => context.pushRoute(const QrCodeRoute()),
+                        //onTap: () => context.pushRoute(const QrCodeRoute()),
                       ),
                     ),
                     const Spacer(),

@@ -1,5 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:activity/application/schedule/schedule_provider.dart';
-import 'package:activity/infrastructure/models/request/rate_request..dart';
+import 'package:activity/infrastructure/models/request/rate_request.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_button.dart';
@@ -196,6 +198,8 @@ class _RateDialogState extends State<RateDialog> {
                         );
                         await event.makeARate(context, request: request);
                         // get updated list of schedule
+                        event.getCompletedSchedules(context);
+                        context.router.pop();
                       },
                       height: 40.h,
                       buttonColor: AppColors.blueColor,

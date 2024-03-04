@@ -1,6 +1,6 @@
 import 'package:activity/domain/handlers/api_result.dart';
 import 'package:activity/infrastructure/models/request/add_note_request.dart';
-import 'package:activity/infrastructure/models/request/rate_request..dart';
+import 'package:activity/infrastructure/models/request/rate_request.dart';
 import 'package:activity/infrastructure/models/response/add_note_response.dart';
 import 'package:activity/infrastructure/models/response/cancel_response.dart';
 import 'package:activity/infrastructure/models/response/get_nearest_lesson_response.dart';
