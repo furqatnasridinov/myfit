@@ -35,6 +35,7 @@ class _PopupBodyState extends State<PopupBody> {
   City? selectedCity;
   late TextEditingController cityController;
   late TextEditingController nameController;
+  late TextEditingController lastNameController;
   late TextEditingController ageController;
   late TextEditingController weightController;
   late TextEditingController heightController;
@@ -45,6 +46,10 @@ class _PopupBodyState extends State<PopupBody> {
     cityController =
         TextEditingController(text: LocalStorage.getSelectedCity());
     nameController = TextEditingController(text: LocalStorage.getUserName());
+    lastNameController = TextEditingController(
+        text: LocalStorage.getUserLastName() == "null"
+            ? ""
+            : LocalStorage.getUserLastName());
     ageController = TextEditingController(
         text: LocalStorage.getAge() == "null" ? "" : LocalStorage.getAge());
     weightController = TextEditingController(
@@ -61,6 +66,7 @@ class _PopupBodyState extends State<PopupBody> {
     super.dispose();
     cityController.dispose();
     nameController.dispose();
+    lastNameController.dispose();
     ageController.dispose();
     weightController.dispose();
     heightController.dispose();
@@ -201,19 +207,58 @@ class _PopupBodyState extends State<PopupBody> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomText(
-              text: "Ваше имя",
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w500,
+            Row(
+              children: [
+                // Имя
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomText(
+                        text: "Ваше имя",
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      5.verticalSpace,
+                      SizedBox(
+                        height: 40.h,
+                        child: CustomTextFormField(
+                          contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
+                          controller: nameController,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                10.horizontalSpace,
+
+                // Фамилия
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomText(
+                        text: "Фамилия",
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      5.verticalSpace,
+                      SizedBox(
+                        height: 40.h,
+                        child: CustomTextFormField(
+                          contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
+                          controller: lastNameController,
+                          hintText: LocalStorage.getUserLastName().isEmpty
+                              ? "Фамилия"
+                              : "",
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            5.verticalSpace,
-            SizedBox(
-              height: 40.h,
-              child: CustomTextFormField(
-                contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
-                controller: nameController,
-              ),
-            ),
+
             16.verticalSpace,
             CustomText(
               text: "В каком городе искать активности",
@@ -437,6 +482,15 @@ class _PopupBodyState extends State<PopupBody> {
                             await widget.event
                                 .patchName(nameController.text.trim(), context);
                           }
+
+                          if (LocalStorage.getUserLastName() !=
+                              lastNameController.text.trim()) {
+                            await LocalStorage.setUserLastName(lastNameController.text);
+                            widget.event.setLastname();
+                            await widget.event
+                                .patchLastname(lastNameController.text.trim(), context);
+                          }
+
                           if (LocalStorage.getSelectedCity() !=
                               cityController.text) {
                             await LocalStorage.setSelectedCity(

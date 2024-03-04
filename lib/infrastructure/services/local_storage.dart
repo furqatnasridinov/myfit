@@ -341,5 +341,11 @@ class LocalStorage {
   }
 
   // log out
-  Future<void> logOut() async {}
+  Future<void> logOut() async {
+    removeToken();
+    removeUserId();
+    removeUserName();
+    removeUserLastName();
+    // ...
+  }
 }

@@ -23,6 +23,7 @@ class CustomTextFormField extends StatelessWidget {
   Widget? suffixIcon;
   void Function()? onTap;
   void Function(String)? onChanged;
+  void Function()? onEditingComplete;
   CustomTextFormField({
     Key? key,
     this.hintText,
@@ -41,6 +42,7 @@ class CustomTextFormField extends StatelessWidget {
     this.keyboardType,
     this.initialValue,
     this.controller,
+    this.onEditingComplete,
   }) : super(key: key);
 
   @override
@@ -57,7 +59,7 @@ class CustomTextFormField extends StatelessWidget {
       onTapOutside: onTapOutside,
       controller: controller,
       cursorColor: AppColors.greyText,
-      
+      onEditingComplete: onEditingComplete,
       onChanged: onChanged,
       style: GoogleFonts.inter(
         fontSize: 14.sp,

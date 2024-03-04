@@ -1,3 +1,5 @@
+import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/infrastructure/services/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -83,5 +85,47 @@ class AppHelpers {
         break;
     }
     return path;
+  }
+
+  String getStatusText(String? status) {
+    switch (status) {
+      case "OPEN":
+        return "Записаться";
+      case "WAITING":
+        return "Ждём ответ от заведения";
+      case "CONFIRMED":
+        return "Вы записаны";
+      case "CANCELED_GYM":
+        return "Отменено заведением";
+      case "CANCELED_USER":
+        return "Отменено вами";
+      case "PROGRESS":
+        return "В процессе...";
+      case "COMPLETED":
+        return "Завершено";
+      default:
+        return status ?? "";
+    }
+  }
+
+  Color getStatusTextColor(String? status) {
+    switch (status) {
+      case "OPEN":
+        return AppColors.blueText;
+      case "WAITING":
+        return AppColors.blueText;
+      case "CONFIRMED":
+        return Colors.black;
+      case "CANCELED_GYM":
+        return Colors.red;
+      case "CANCELED_USER":
+        return Colors.red;
+      case "PROGRESS":
+        return Colors.green;
+      case "COMPLETED":
+        return Colors.green;
+      default:
+        return Colors.black;
+    }
   }
 }

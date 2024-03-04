@@ -8,12 +8,15 @@ class AppConstants {
   static const String getGymsList = "api/gym/gymActiveList";
   static const String searchGym = "api/gym/search";
   static const String getSchedulesSearch = "api/schedule/search";
+  static const String getCompletedSchedules = "api/schedule/user/last";
   static const String getUserSchedules = "api/schedule/user";
   static const String getNearestLesson = "api/user/lessons/nearest";
   static const String getUserStatsMonth = "api/user/stat/month";
+  static const String makeRate = "api/schedule/addComment";
+  static const String deleteRate = "api/schedule/user/delComment";
   static const String addNote = "api/schedule/addNote";
   static const String getCities = "api/main/city";
-  static const String patchUser = "api/user/";
+  static const String patchUser = "api/user/true";
 
   static const String sendPhoneNumber = "api/user/loginCode";
   static const String sendCodeConfirmation = "api/user/loginCodeConfirmation";

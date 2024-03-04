@@ -86,7 +86,7 @@ class CustomTextField extends StatelessWidget {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
-            color: focusNode!.hasFocus
+            color: hasFocus
                 ? AppColors.blueColor
                 : isError
                     ? Colors.red
@@ -97,7 +97,7 @@ class CustomTextField extends StatelessWidget {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
-            color: focusNode!.hasFocus
+            color: hasFocus
                 ? AppColors.blueColor
                 : isError
                     ? Colors.red

@@ -54,11 +54,12 @@ class Speciality extends StatelessWidget {
           Consumer(builder: (context, ref, child) {
             final state = ref.watch(activityProvider);
             return ListView.builder(
-              itemCount: 1,//list.length,
+              itemCount: 1, //list.length,
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemBuilder: (context, index) {
-                return eachList(state.describtionAndPeculiarities?.peculiarities ?? "");
+                return eachList(
+                    state.describtionAndPeculiarities?.peculiarities ?? "");
               },
             );
           }),
@@ -69,23 +70,10 @@ class Speciality extends StatelessWidget {
 }
 
 Widget eachList(String text) {
-  return Row(
-    children: [
-      Container(
-        width: 5.w,
-        height: 5.h,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.black,
-        ),
-      ),
-      10.horizontalSpace,
-      InterText(
-        text: text,
-        fontSize: 13.sp,
-        fontWeight: FontWeight.w400,
-      )
-    ],
+  return InterText(
+    text: text,
+    fontSize: 13.sp,
+    fontWeight: FontWeight.w400,
   );
 }
 

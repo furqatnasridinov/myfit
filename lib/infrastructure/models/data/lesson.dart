@@ -10,21 +10,22 @@ class Lesson {
   Owner? owner;
   List<int>? repeat;
   bool? canSignUp;
-  int? status;
+  String? lessonState;
 
-  Lesson(
-      {this.id,
-      this.date,
-      this.calendarDate,
-      this.startTime,
-      this.endTime,
-      this.description,
-      this.duration,
-      this.lessonType,
-      this.owner,
-      this.repeat,
-      this.canSignUp,
-      this.status = 1});
+  Lesson({
+    this.id,
+    this.date,
+    this.calendarDate,
+    this.startTime,
+    this.endTime,
+    this.description,
+    this.duration,
+    this.lessonType,
+    this.owner,
+    this.repeat,
+    this.canSignUp,
+    this.lessonState,
+  });
 
   Lesson.fromJson(Map<String, dynamic> json) {
     id = json['id'];

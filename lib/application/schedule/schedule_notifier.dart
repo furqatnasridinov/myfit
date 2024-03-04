@@ -2,6 +2,8 @@
 
 import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/domain/interface/schedule.dart';
+import 'package:activity/infrastructure/models/data/completed_schedule.dart';
+import 'package:activity/infrastructure/models/request/rate_request.dart';
 import 'package:activity/infrastructure/models/response/user_schedules_response.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
@@ -49,6 +51,81 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
+  }
+
+  Future<void> makeARate(BuildContext context,
+      {required RateRequest request}) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response =
+          await _scheduleRepositoryInterface.makeRate(request: request);
+      response.when(
+        success: (data) {
+          print(data);
+        },
+        failure: (error, statusCode) {
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> deleteRate(BuildContext context, {required int id}) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response = await _scheduleRepositoryInterface.deleteRate(id: id);
+      response.when(success: (data) {
+        debugPrint(data.toString());
+      }, failure: (error, statusCode) {
+        AppHelpers.showErrorSnack(context, "$error $statusCode");
+      });
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> getCompletedSchedules(BuildContext context) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response =
+          await _scheduleRepositoryInterface.getCompletedSchedules();
+      response.when(success: (data) {
+        if (data["object"].length > 0) {
+          final List<CompletedSchedule> listToCollect = [];
+          final List<dynamic> dataObject = data["object"];
+          for (var element in dataObject) {
+            final item = CompletedSchedule(
+              id: element["id"],
+              gymName: element["gymName"],
+              describtion: element["description"],
+              time: formatTime(element["date"]),
+              grade: element["grade"],
+            );
+            listToCollect.add(item);
+          }
+          state = state.copyWith(completedSchedules: listToCollect);
+        }
+      }, failure: (error, statusCode) {
+        AppHelpers.showErrorSnack(context, "$error $statusCode");
+      });
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  String formatTime(String time) {
+    // from "2023-12-24@16:15" to 26.08.24 17:00
+    List<String> split1 = time.split("@");
+    List<String> split2 = split1[0].split("-");
+    List<String> split3 = split1[1].split(":");
+    final String year = split2[0].substring(2);
+    final String month = split2[1];
+    final String day = split2[2];
+    final String hour = split3[0];
+    final String minute = split3[1];
+    return "$day.$month.$year $hour:$minute";
   }
 
   String formatDay(String day) {
@@ -174,12 +251,9 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     return formattedTime;
   }
 
-  void getDatesFromLastWeek() {
+  void getTwoWeekDays() {
     var listToCollect = <String>[];
     DateTime now = DateTime.now();
-
-    // Изменяем начальную точку времени на прошлую неделю
-    now = now.subtract(const Duration(days: 7));
 
     for (var i = 0; i < 14; i++) {
       String year = now.year.toString();
@@ -227,6 +301,14 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
 
   void changeNotificationTime(String newTime) {
     state = state.copyWith(notificationTime: newTime);
+  }
+
+  void showCompletedSchedules() {
+    state = state.copyWith(completedSchedulesShown: true);
+  }
+
+  void hideCompletedSchedules() {
+    state = state.copyWith(completedSchedulesShown: false);
   }
 
   Future<void> cancelActivity(int id, BuildContext context) async {

@@ -4,6 +4,7 @@ import 'package:activity/domain/handlers/http_service.dart';
 import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/schedule.dart';
 import 'package:activity/infrastructure/models/request/add_note_request.dart';
+import 'package:activity/infrastructure/models/request/rate_request.dart';
 import 'package:activity/infrastructure/models/response/add_note_response.dart';
 import 'package:activity/infrastructure/models/response/cancel_response.dart';
 import 'package:activity/infrastructure/models/response/get_nearest_lesson_response.dart';
@@ -100,10 +101,10 @@ class ScheduleRepository implements ScheduleRepositoryInterface {
       );
     } catch (e) {
       //throw e;
-       return ApiResult.failure(
+      return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
-      ); 
+      );
     }
   }
 
@@ -144,6 +145,69 @@ class ScheduleRepository implements ScheduleRepositoryInterface {
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
       );
+    }
+  }
+
+  @override
+  Future<ApiResult<Map<String, dynamic>>> getCompletedSchedules() async {
+    try {
+      final client = inject<HttpService>().clientDio();
+      final sendingData = {"state": "COMPLETED"};
+      final response = await client.get(AppConstants.getCompletedSchedules,
+          //data: sendingData,
+          queryParameters: sendingData);
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      //throw e;
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      );
+    }
+  }
+
+  @override
+  Future<ApiResult<Map<String, dynamic>>> makeRate(
+      {required RateRequest request}) async {
+    try {
+      final client = inject<HttpService>().clientDio();
+      final sendingData = request.toJson();
+      final response = await client.post(
+        AppConstants.makeRate,
+        data: sendingData,
+      );
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      throw e;
+      /* return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      ); */
+    }
+  }
+
+  @override
+  Future<ApiResult<Map<String, dynamic>>> deleteRate({required int id}) async {
+    try {
+      final client = inject<HttpService>().clientDio();
+      final sendingData = {"commentId": id};
+      final response = await client.delete(
+        AppConstants.deleteRate,
+        queryParameters: sendingData,
+      );
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      throw e;
+      /* return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      ); */
     }
   }
 }

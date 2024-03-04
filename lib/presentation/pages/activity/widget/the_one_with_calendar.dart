@@ -1,9 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:activity/application/activity/activity_notifier.dart';
+import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/application/activity/activity_state.dart';
 import 'package:activity/application/main2/main2_provider.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/infrastructure/models/data/chips_model.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/inter_text.dart';
@@ -71,10 +75,13 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                   final parts = currentDate.split(" ");
                   return GestureDetector(
                       onTap: () async {
-                        await widget.event.setSelectedCalendarDay(currentDate);
-                        widget.event.getLessonsToShowAfterSelectingADay(
-                          currentDate,
-                        );
+                        if (isAvailable) {
+                          await widget.event
+                              .setSelectedCalendarDay(currentDate);
+                          widget.event.getLessonsToShowAfterSelectingADay(
+                            currentDate,
+                          );
+                        }
                       },
                       child: Padding(
                         padding: EdgeInsets.only(right: 9.w),
@@ -150,8 +157,8 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
           ),
           16.verticalSpace,
 
-          // подактивности 
-              /* Column(
+          // подактивности
+          /* Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomText(
@@ -215,7 +222,8 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
           Consumer(
             builder: (contex, ref, child) {
               final main2Event = ref.read(main2Provider.notifier);
-              final scheduleevent = ref.read(scheduleProvider.notifier);
+              //final scheduleevent = ref.read(scheduleProvider.notifier);
+              //final activityEvent = ref.read(activityProvider.notifier);
               if (widget.state.lessonsToShowAfterSelectingADay.isEmpty) {
                 return Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -245,21 +253,21 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                       currentSchedule.endTime ?? "??",
                       currentSchedule.duration ?? "??",
                       currentSchedule.description ?? "??",
-                      currentSchedule.status ?? 0,
+                      currentSchedule.lessonState ?? "",
                       () async {
-                        widget.event.enrollToGym(
+                        await widget.event.enrollToGym(
                           context,
                           currentSchedule.id ?? 0,
                         );
-                        currentSchedule.status = 2;
+                        // временно до вебсокетов
+                        currentSchedule.lessonState = "WAITING";
                         setState(() {});
-                        await Future.delayed(const Duration(seconds: 2));
-                        currentSchedule.status = 3;
-                        setState(() {});
-                        // ignore: use_build_context_synchronously
+
+                        // get the updated list of lessons
+                        // activityEvent.getAllLessons(context, id: gymId);
+                        // get the nearest lesson to show in main page after popping
                         main2Event.getNearestLesson(context);
-                        // ignore: use_build_context_synchronously
-                        scheduleevent.getUsersSchedules(context);
+                        //scheduleevent.getUsersSchedules(context);
                       },
                     );
                   },
@@ -281,7 +289,7 @@ Widget activityCard(
   String finishTime,
   String duration,
   String name,
-  int status,
+  String? status,
   void Function()? enrollFunction,
 ) {
   return Padding(
@@ -314,40 +322,17 @@ Widget activityCard(
                   ],
                 ),
               ),
+              // get status text
               SizedBox(
-                child: status == 1
-                    ? InkWell(
-                        onTap: enrollFunction,
-                        child: CustomText(
-                          text: "Записаться",
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.blueText,
-                        ),
-                      )
-                    : status == 2
-                        ? CustomText(
-                            text: "Ждём ответ от заведения",
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.greyText,
-                          )
-                        : Row(
-                            children: [
-                              CustomText(
-                                text: "Вы записаны",
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                              5.horizontalSpace,
-                              Icon(
-                                Icons.done,
-                                color: Colors.black,
-                                size: 16.r,
-                              )
-                            ],
-                          ),
+                child: InkWell(
+                  onTap: status == "OPEN" ? enrollFunction : null,
+                  child: CustomText(
+                    text: AppHelpers().getStatusText(status),
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                    color: AppHelpers().getStatusTextColor(status),
+                  ),
+                ),
               ),
             ],
           ),
