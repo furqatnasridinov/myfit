@@ -57,5 +57,9 @@ class AppRouter extends $AppRouter {
           page: QrCodeRoute.page,
           path: "/qr_code",
         ),
+        AutoRoute(
+          page: PhotoViewRoute.page,
+          path: "/photo_view",
+        ),
       ];
 }

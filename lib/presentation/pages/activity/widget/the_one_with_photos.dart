@@ -3,12 +3,12 @@ import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/components.dart';
+import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
 
 class TheOneWithPhotos extends StatelessWidget {
   final ActivityNotifier event;
@@ -43,41 +43,19 @@ class TheOneWithPhotos extends StatelessWidget {
             child: Consumer(
               builder: (context, ref, child) {
                 final state = ref.watch(activityProvider);
-                return 
-                ListView.builder(
+                return ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: state.photosOfSelectedActivity.length,
                   itemBuilder: (context, index) {
                     final current = state.photosOfSelectedActivity[index];
                     String linkToCompressedPhoto =
                         event.getLinkToCompressedPhoto(current);
-
                     return InkWell(
                       onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return Dialog(
-                              backgroundColor: Colors.black.withOpacity(0.5),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.r),
-                              ),
-                              child: SizedBox(
-                                //color: Colors.red,
-                                height: 330.h,
-                                child: CachedNetworkImage(
-                                  imageUrl:
-                                      "http://77.222.53.122/image/$current",
-                                  fit: BoxFit.cover,
-                                  errorWidget: (context, url, error) {
-                                    return Image.asset(
-                                        AppConstants.cristianBale);
-                                  },
-                                ),
-                              ),
-                            );
-                          },
-                        );
+                        context.router.push(PhotoViewRoute(
+                          index: index,
+                          photos: state.photosOfSelectedActivity,
+                        ));
                       },
                       child: Padding(
                         padding: EdgeInsets.only(right: 10.w),
