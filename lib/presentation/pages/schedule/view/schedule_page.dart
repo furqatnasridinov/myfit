@@ -77,10 +77,17 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
 
                   // Прошедшие занятия
                   SliverPadding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w)
-                        .copyWith(top: 16.h),
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
                     sliver: const SliverToBoxAdapter(
                       child: CompletedSchedules(),
+                    ),
+                  ),
+
+                  // В ожидании подтверждения
+                  SliverPadding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    sliver: const SliverToBoxAdapter(
+                      child: PendingSchedules(),
                     ),
                   ),
 
@@ -90,77 +97,67 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
                         .copyWith(top: 16.h),
                     sliver: Consumer(builder: (context, ref, child) {
                       final state = ref.watch(scheduleProvider);
-                      if (!state.isloading &&
-                          state.daysFromLastWeek.isNotEmpty) {
-                        return SliverList.builder(
-                          itemCount: state.daysFromLastWeek.length,
-                          itemBuilder: (context, index) {
-                            final date = state.daysFromLastWeek[index];
-                            final now = DateTime.now();
-                            final todayWith00Hours = DateTime(
-                              now.year,
-                              now.month,
-                              now.day,
-                            ); // today in this format => (2024-01-07 00:00:00)
-                            final scheduleDate = DateTime.parse(date);
-                            final formattedDay = event.formatDay(date);
-                            final formattedDayOfWeek =
-                                event.determineWeekday(date);
 
-                            // Проверка, является ли день текущим или будущим
-                            bool isTodayOrFuture = scheduleDate
-                                    .isAfter(todayWith00Hours) ||
-                                scheduleDate.isAtSameMomentAs(todayWith00Hours);
+                      return SliverList.builder(
+                        itemCount: state.daysFromLastWeek.length,
+                        itemBuilder: (context, index) {
+                          final date = state.daysFromLastWeek[index];
+                          final now = DateTime.now();
+                          final todayWith00Hours = DateTime(
+                            now.year,
+                            now.month,
+                            now.day,
+                          ); // today in this format => (2024-01-07 00:00:00)
+                          final scheduleDate = DateTime.parse(date);
+                          final formattedDay = event.formatDay(date);
+                          final formattedDayOfWeek =
+                              event.determineWeekday(date);
 
-                            // Находим, есть ли расписание на этот день
-                            UserSchedulesResponse? scheduleForDay;
-                            for (var schedule in state.listOfuserSchedules) {
-                              if (schedule.calendarDate == date) {
-                                scheduleForDay = schedule;
-                                break;
-                              }
+                          // Проверка, является ли день текущим или будущим
+                          bool isTodayOrFuture = scheduleDate
+                                  .isAfter(todayWith00Hours) ||
+                              scheduleDate.isAtSameMomentAs(todayWith00Hours);
+
+                          // Находим, есть ли расписание на этот день
+                          UserSchedulesResponse? scheduleForDay;
+                          for (var schedule in state.listOfuserSchedules) {
+                            if (schedule.calendarDate == date) {
+                              scheduleForDay = schedule;
+                              break;
                             }
+                          }
 
-                            // Показываем день только если он сегодня/будущий или если есть активности в прошлом
-                            if (isTodayOrFuture ||
-                                (scheduleForDay != null &&
-                                    scheduleForDay
-                                        .listOfSchedules!.isNotEmpty)) {
-                              // Если расписание найдено, показываем itemListBuilder,
-                              // иначе daysWithNoSchedule
-                              if (scheduleForDay != null) {
-                                return itemListBuilder(
-                                    context,
-                                    formattedDayOfWeek,
-                                    formattedDay,
-                                    date,
-                                    scheduleForDay.listOfSchedules ?? [],
-                                    event,
-                                    todayWith00Hours,
-                                    scheduleForDay.isPlusStateTriggered);
-                              } else {
-                                return daysWithNoSchedule(
+                          // Показываем день только если он сегодня/будущий или если есть активности в прошлом
+                          if (isTodayOrFuture ||
+                              (scheduleForDay != null &&
+                                  scheduleForDay.listOfSchedules!.isNotEmpty)) {
+                            // Если расписание найдено, показываем itemListBuilder,
+                            // иначе daysWithNoSchedule
+                            if (scheduleForDay != null) {
+                              return itemListBuilder(
                                   context,
                                   formattedDayOfWeek,
                                   formattedDay,
+                                  date,
+                                  scheduleForDay.listOfSchedules ?? [],
                                   event,
-                                  scheduleForDay?.isPlusStateTriggered ?? false,
-                                );
-                              }
+                                  todayWith00Hours,
+                                  scheduleForDay.isPlusStateTriggered);
                             } else {
-                              // Не отображаем виджет для дней в прошлом без активностей
-                              return const SizedBox.shrink();
+                              return daysWithNoSchedule(
+                                context,
+                                formattedDayOfWeek,
+                                formattedDay,
+                                event,
+                                scheduleForDay?.isPlusStateTriggered ?? false,
+                              );
                             }
-                          },
-                        );
-                      } else {
-                        return const SliverToBoxAdapter(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [CircularProgressIndicator()],
-                          ),
-                        );
-                      }
+                          } else {
+                            // Не отображаем виджет для дней в прошлом без активностей
+                            return const SizedBox.shrink();
+                          }
+                        },
+                      );
                     }),
                   ),
                 ],
@@ -447,9 +444,7 @@ Widget listOfActivitiesEachItem(
                             gymName: name,
                           ),
                         ),
-                        event: event,
                         id: id,
-                        startingTimeInDateTime: timeFromServerCastedToDateTime,
                       ),
                     ],
                   ),

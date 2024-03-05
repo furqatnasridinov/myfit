@@ -12,6 +12,7 @@ class ScheduleState with _$ScheduleState {
     @Default(false) bool isloading,
     @Default({}) Map<String, dynamic> schedulesInMapForm,
     @Default([]) List<UserSchedulesResponse> listOfuserSchedules,
+    @Default([]) List<CompletedSchedule> waitingSchedules,
     @Default(true) bool showTillWhen,
     @Default(false) bool plusState,
     @Default([]) List<String> daysFromLastWeek,
@@ -21,6 +22,7 @@ class ScheduleState with _$ScheduleState {
     @Default([]) List<ScheduleAndGym> schedulesFoundBySearching,
     @Default("30 мин") String notificationTime,
     @Default(false) bool completedSchedulesShown,
+    @Default(false) bool pendingSchedulesShown,
     @Default([]) List<CompletedSchedule> completedSchedules,
   }) = _ScheduleState;
   const ScheduleState._();

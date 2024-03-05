@@ -15,7 +15,9 @@ import 'package:flutter_svg/svg.dart';
 
 class RateDialog extends StatefulWidget {
   final int id;
-  const RateDialog({super.key, required this.id});
+  final String gymName;
+  final String describtion;
+  const RateDialog({super.key, required this.id, required this.gymName, required this.describtion});
 
   @override
   State<RateDialog> createState() => _RateDialogState();
@@ -59,7 +61,7 @@ class _RateDialogState extends State<RateDialog> {
                 SvgPicture.asset("assets/svg/location_filled.svg"),
                 10.horizontalSpace,
                 CustomText(
-                  text: "Welness Centre",
+                  text: widget.gymName,
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
                 ),
@@ -73,8 +75,7 @@ class _RateDialogState extends State<RateDialog> {
                 10.horizontalSpace,
                 Flexible(
                   child: CustomText(
-                    text:
-                        "Маникюр на стадии зарождения вселенной, прильнул к груди матери, сидящей перед бездной вселенского безразличия и океаном мирского бытия",
+                    text: widget.describtion,
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
                   ),

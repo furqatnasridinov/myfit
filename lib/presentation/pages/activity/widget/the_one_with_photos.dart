@@ -7,6 +7,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 class TheOneWithPhotos extends StatelessWidget {
   final ActivityNotifier event;
@@ -41,7 +43,8 @@ class TheOneWithPhotos extends StatelessWidget {
             child: Consumer(
               builder: (context, ref, child) {
                 final state = ref.watch(activityProvider);
-                return ListView.builder(
+                return 
+                ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: state.photosOfSelectedActivity.length,
                   itemBuilder: (context, index) {

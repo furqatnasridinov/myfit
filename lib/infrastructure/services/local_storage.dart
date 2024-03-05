@@ -346,6 +346,9 @@ class LocalStorage {
     removeUserId();
     removeUserName();
     removeUserLastName();
+    removeSelectedCity();
+    removeSelectedCityLat();
+    removeSelectedCityLon();
     // ...
   }
 }

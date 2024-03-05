@@ -1,5 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/domain/interface/schedule.dart';
 import 'package:activity/infrastructure/models/data/completed_schedule.dart';
@@ -25,20 +24,56 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
         success: (data) {
           if (data.isNotEmpty) {
             List<UserSchedulesResponse> listToCollect = [];
+            List<CompletedSchedule> waitingListToCollect = [];
             final Map<String, dynamic> dataObject = data["object"];
             dataObject.forEach((key, value) {
-              final item = UserSchedulesResponse(
-                calendarDate: key,
-                dateTime: DateTime.now(),
-                isPlusStateTriggered: false,
-                listOfSchedules: (value as List)
-                    .map((e) => ListOfSchedules.fromJson(e))
-                    .toList(),
-              );
-              listToCollect.add(item);
+              final allSchedules = (value as List)
+                  .map((e) => ListOfSchedules.fromJson(e))
+                  .toList();
+
+              final completedAndConfirmedSchedules = allSchedules
+                  .where((schedule) =>
+                      schedule.lessonState == "COMPLETED" ||
+                      schedule.lessonState == "CONFIRMED")
+                  .toList();
+
+              final waitingSchedules = allSchedules
+                  .where((schedule) => schedule.lessonState == "WAITING")
+                  .toList();
+
+              if (completedAndConfirmedSchedules.isNotEmpty) {
+                final item = UserSchedulesResponse(
+                  calendarDate: key,
+                  dateTime: DateTime.now(),
+                  isPlusStateTriggered: false,
+                  listOfSchedules: completedAndConfirmedSchedules,
+                );
+                listToCollect.add(item);
+              }
+
+              if (waitingSchedules.isNotEmpty) {
+                final item = UserSchedulesResponse(
+                  calendarDate: key,
+                  dateTime: DateTime.now(),
+                  isPlusStateTriggered: false,
+                  listOfSchedules: waitingSchedules,
+                );
+                item.listOfSchedules?.forEach((el) {
+                  final lesson = CompletedSchedule(
+                    id: el.id ?? 0,
+                    gymName: el.gym?.name ?? '',
+                    describtion: el.description ?? '',
+                    time: formatTime(el.date ?? ""),
+                    grade: 0,
+                    gymId: el.gym?.id ?? 0,
+                  );
+                  waitingListToCollect.add(lesson);
+                });
+              }
             });
             state = state.copyWith(
               listOfuserSchedules: listToCollect,
+              waitingSchedules: waitingListToCollect,
               isloading: false,
             );
           }
@@ -102,6 +137,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
               describtion: element["description"],
               time: formatTime(element["date"]),
               grade: element["grade"],
+              gymId: element["gymId"],
             );
             listToCollect.add(item);
           }
@@ -311,13 +347,21 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     state = state.copyWith(completedSchedulesShown: false);
   }
 
+  void showPendingSchedules() {
+    state = state.copyWith(pendingSchedulesShown: true);
+  }
+
+  void hidePendingSchedules() {
+    state = state.copyWith(pendingSchedulesShown: false);
+  }
+
   Future<void> cancelActivity(int id, BuildContext context) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
       final response = await _scheduleRepositoryInterface.cancelActivity(id);
       response.when(
         success: (data) {
-          //AppHelpers.showSnack(context, "Запись отменена");
+          AppHelpers.showSnack(context, "Запись отменена");
         },
         failure: (error, statusCode) {
           AppHelpers.showErrorSnack(context, "$error $statusCode");

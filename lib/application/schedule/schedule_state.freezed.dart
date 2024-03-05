@@ -21,6 +21,8 @@ mixin _$ScheduleState {
       throw _privateConstructorUsedError;
   List<UserSchedulesResponse> get listOfuserSchedules =>
       throw _privateConstructorUsedError;
+  List<CompletedSchedule> get waitingSchedules =>
+      throw _privateConstructorUsedError;
   bool get showTillWhen => throw _privateConstructorUsedError;
   bool get plusState => throw _privateConstructorUsedError;
   List<String> get daysFromLastWeek => throw _privateConstructorUsedError;
@@ -31,6 +33,7 @@ mixin _$ScheduleState {
       throw _privateConstructorUsedError;
   String get notificationTime => throw _privateConstructorUsedError;
   bool get completedSchedulesShown => throw _privateConstructorUsedError;
+  bool get pendingSchedulesShown => throw _privateConstructorUsedError;
   List<CompletedSchedule> get completedSchedules =>
       throw _privateConstructorUsedError;
 
@@ -49,6 +52,7 @@ abstract class $ScheduleStateCopyWith<$Res> {
       {bool isloading,
       Map<String, dynamic> schedulesInMapForm,
       List<UserSchedulesResponse> listOfuserSchedules,
+      List<CompletedSchedule> waitingSchedules,
       bool showTillWhen,
       bool plusState,
       List<String> daysFromLastWeek,
@@ -58,6 +62,7 @@ abstract class $ScheduleStateCopyWith<$Res> {
       List<ScheduleAndGym> schedulesFoundBySearching,
       String notificationTime,
       bool completedSchedulesShown,
+      bool pendingSchedulesShown,
       List<CompletedSchedule> completedSchedules});
 }
 
@@ -77,6 +82,7 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
     Object? isloading = null,
     Object? schedulesInMapForm = null,
     Object? listOfuserSchedules = null,
+    Object? waitingSchedules = null,
     Object? showTillWhen = null,
     Object? plusState = null,
     Object? daysFromLastWeek = null,
@@ -86,6 +92,7 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
     Object? schedulesFoundBySearching = null,
     Object? notificationTime = null,
     Object? completedSchedulesShown = null,
+    Object? pendingSchedulesShown = null,
     Object? completedSchedules = null,
   }) {
     return _then(_value.copyWith(
@@ -101,6 +108,10 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
           ? _value.listOfuserSchedules
           : listOfuserSchedules // ignore: cast_nullable_to_non_nullable
               as List<UserSchedulesResponse>,
+      waitingSchedules: null == waitingSchedules
+          ? _value.waitingSchedules
+          : waitingSchedules // ignore: cast_nullable_to_non_nullable
+              as List<CompletedSchedule>,
       showTillWhen: null == showTillWhen
           ? _value.showTillWhen
           : showTillWhen // ignore: cast_nullable_to_non_nullable
@@ -137,6 +148,10 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
           ? _value.completedSchedulesShown
           : completedSchedulesShown // ignore: cast_nullable_to_non_nullable
               as bool,
+      pendingSchedulesShown: null == pendingSchedulesShown
+          ? _value.pendingSchedulesShown
+          : pendingSchedulesShown // ignore: cast_nullable_to_non_nullable
+              as bool,
       completedSchedules: null == completedSchedules
           ? _value.completedSchedules
           : completedSchedules // ignore: cast_nullable_to_non_nullable
@@ -157,6 +172,7 @@ abstract class _$$ScheduleStateImplCopyWith<$Res>
       {bool isloading,
       Map<String, dynamic> schedulesInMapForm,
       List<UserSchedulesResponse> listOfuserSchedules,
+      List<CompletedSchedule> waitingSchedules,
       bool showTillWhen,
       bool plusState,
       List<String> daysFromLastWeek,
@@ -166,6 +182,7 @@ abstract class _$$ScheduleStateImplCopyWith<$Res>
       List<ScheduleAndGym> schedulesFoundBySearching,
       String notificationTime,
       bool completedSchedulesShown,
+      bool pendingSchedulesShown,
       List<CompletedSchedule> completedSchedules});
 }
 
@@ -183,6 +200,7 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
     Object? isloading = null,
     Object? schedulesInMapForm = null,
     Object? listOfuserSchedules = null,
+    Object? waitingSchedules = null,
     Object? showTillWhen = null,
     Object? plusState = null,
     Object? daysFromLastWeek = null,
@@ -192,6 +210,7 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
     Object? schedulesFoundBySearching = null,
     Object? notificationTime = null,
     Object? completedSchedulesShown = null,
+    Object? pendingSchedulesShown = null,
     Object? completedSchedules = null,
   }) {
     return _then(_$ScheduleStateImpl(
@@ -207,6 +226,10 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
           ? _value._listOfuserSchedules
           : listOfuserSchedules // ignore: cast_nullable_to_non_nullable
               as List<UserSchedulesResponse>,
+      waitingSchedules: null == waitingSchedules
+          ? _value._waitingSchedules
+          : waitingSchedules // ignore: cast_nullable_to_non_nullable
+              as List<CompletedSchedule>,
       showTillWhen: null == showTillWhen
           ? _value.showTillWhen
           : showTillWhen // ignore: cast_nullable_to_non_nullable
@@ -243,6 +266,10 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
           ? _value.completedSchedulesShown
           : completedSchedulesShown // ignore: cast_nullable_to_non_nullable
               as bool,
+      pendingSchedulesShown: null == pendingSchedulesShown
+          ? _value.pendingSchedulesShown
+          : pendingSchedulesShown // ignore: cast_nullable_to_non_nullable
+              as bool,
       completedSchedules: null == completedSchedules
           ? _value._completedSchedules
           : completedSchedules // ignore: cast_nullable_to_non_nullable
@@ -258,6 +285,7 @@ class _$ScheduleStateImpl extends _ScheduleState {
       {this.isloading = false,
       final Map<String, dynamic> schedulesInMapForm = const {},
       final List<UserSchedulesResponse> listOfuserSchedules = const [],
+      final List<CompletedSchedule> waitingSchedules = const [],
       this.showTillWhen = true,
       this.plusState = false,
       final List<String> daysFromLastWeek = const [],
@@ -267,9 +295,11 @@ class _$ScheduleStateImpl extends _ScheduleState {
       final List<ScheduleAndGym> schedulesFoundBySearching = const [],
       this.notificationTime = "30 мин",
       this.completedSchedulesShown = false,
+      this.pendingSchedulesShown = false,
       final List<CompletedSchedule> completedSchedules = const []})
       : _schedulesInMapForm = schedulesInMapForm,
         _listOfuserSchedules = listOfuserSchedules,
+        _waitingSchedules = waitingSchedules,
         _daysFromLastWeek = daysFromLastWeek,
         _notesMapData = notesMapData,
         _schedulesFoundBySearching = schedulesFoundBySearching,
@@ -297,6 +327,16 @@ class _$ScheduleStateImpl extends _ScheduleState {
       return _listOfuserSchedules;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_listOfuserSchedules);
+  }
+
+  final List<CompletedSchedule> _waitingSchedules;
+  @override
+  @JsonKey()
+  List<CompletedSchedule> get waitingSchedules {
+    if (_waitingSchedules is EqualUnmodifiableListView)
+      return _waitingSchedules;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_waitingSchedules);
   }
 
   @override
@@ -346,6 +386,9 @@ class _$ScheduleStateImpl extends _ScheduleState {
   @override
   @JsonKey()
   final bool completedSchedulesShown;
+  @override
+  @JsonKey()
+  final bool pendingSchedulesShown;
   final List<CompletedSchedule> _completedSchedules;
   @override
   @JsonKey()
@@ -358,7 +401,7 @@ class _$ScheduleStateImpl extends _ScheduleState {
 
   @override
   String toString() {
-    return 'ScheduleState(isloading: $isloading, schedulesInMapForm: $schedulesInMapForm, listOfuserSchedules: $listOfuserSchedules, showTillWhen: $showTillWhen, plusState: $plusState, daysFromLastWeek: $daysFromLastWeek, isLocationButtonActivated: $isLocationButtonActivated, isFlashButtonActivated: $isFlashButtonActivated, notesMapData: $notesMapData, schedulesFoundBySearching: $schedulesFoundBySearching, notificationTime: $notificationTime, completedSchedulesShown: $completedSchedulesShown, completedSchedules: $completedSchedules)';
+    return 'ScheduleState(isloading: $isloading, schedulesInMapForm: $schedulesInMapForm, listOfuserSchedules: $listOfuserSchedules, waitingSchedules: $waitingSchedules, showTillWhen: $showTillWhen, plusState: $plusState, daysFromLastWeek: $daysFromLastWeek, isLocationButtonActivated: $isLocationButtonActivated, isFlashButtonActivated: $isFlashButtonActivated, notesMapData: $notesMapData, schedulesFoundBySearching: $schedulesFoundBySearching, notificationTime: $notificationTime, completedSchedulesShown: $completedSchedulesShown, pendingSchedulesShown: $pendingSchedulesShown, completedSchedules: $completedSchedules)';
   }
 
   @override
@@ -372,6 +415,8 @@ class _$ScheduleStateImpl extends _ScheduleState {
                 .equals(other._schedulesInMapForm, _schedulesInMapForm) &&
             const DeepCollectionEquality()
                 .equals(other._listOfuserSchedules, _listOfuserSchedules) &&
+            const DeepCollectionEquality()
+                .equals(other._waitingSchedules, _waitingSchedules) &&
             (identical(other.showTillWhen, showTillWhen) ||
                 other.showTillWhen == showTillWhen) &&
             (identical(other.plusState, plusState) ||
@@ -392,6 +437,8 @@ class _$ScheduleStateImpl extends _ScheduleState {
             (identical(
                     other.completedSchedulesShown, completedSchedulesShown) ||
                 other.completedSchedulesShown == completedSchedulesShown) &&
+            (identical(other.pendingSchedulesShown, pendingSchedulesShown) ||
+                other.pendingSchedulesShown == pendingSchedulesShown) &&
             const DeepCollectionEquality()
                 .equals(other._completedSchedules, _completedSchedules));
   }
@@ -402,6 +449,7 @@ class _$ScheduleStateImpl extends _ScheduleState {
       isloading,
       const DeepCollectionEquality().hash(_schedulesInMapForm),
       const DeepCollectionEquality().hash(_listOfuserSchedules),
+      const DeepCollectionEquality().hash(_waitingSchedules),
       showTillWhen,
       plusState,
       const DeepCollectionEquality().hash(_daysFromLastWeek),
@@ -411,6 +459,7 @@ class _$ScheduleStateImpl extends _ScheduleState {
       const DeepCollectionEquality().hash(_schedulesFoundBySearching),
       notificationTime,
       completedSchedulesShown,
+      pendingSchedulesShown,
       const DeepCollectionEquality().hash(_completedSchedules));
 
   @JsonKey(ignore: true)
@@ -425,6 +474,7 @@ abstract class _ScheduleState extends ScheduleState {
       {final bool isloading,
       final Map<String, dynamic> schedulesInMapForm,
       final List<UserSchedulesResponse> listOfuserSchedules,
+      final List<CompletedSchedule> waitingSchedules,
       final bool showTillWhen,
       final bool plusState,
       final List<String> daysFromLastWeek,
@@ -434,6 +484,7 @@ abstract class _ScheduleState extends ScheduleState {
       final List<ScheduleAndGym> schedulesFoundBySearching,
       final String notificationTime,
       final bool completedSchedulesShown,
+      final bool pendingSchedulesShown,
       final List<CompletedSchedule> completedSchedules}) = _$ScheduleStateImpl;
   const _ScheduleState._() : super._();
 
@@ -443,6 +494,8 @@ abstract class _ScheduleState extends ScheduleState {
   Map<String, dynamic> get schedulesInMapForm;
   @override
   List<UserSchedulesResponse> get listOfuserSchedules;
+  @override
+  List<CompletedSchedule> get waitingSchedules;
   @override
   bool get showTillWhen;
   @override
@@ -461,6 +514,8 @@ abstract class _ScheduleState extends ScheduleState {
   String get notificationTime;
   @override
   bool get completedSchedulesShown;
+  @override
+  bool get pendingSchedulesShown;
   @override
   List<CompletedSchedule> get completedSchedules;
   @override
