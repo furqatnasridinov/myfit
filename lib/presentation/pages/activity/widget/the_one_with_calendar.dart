@@ -1,10 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'package:activity/application/activity/activity_notifier.dart';
-import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/application/activity/activity_state.dart';
 import 'package:activity/application/main2/main2_provider.dart';
-import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/infrastructure/models/data/chips_model.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';

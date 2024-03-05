@@ -6,7 +6,6 @@ import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/pages/main2/widget/main2_header.dart';
 import 'package:activity/presentation/pages/main2/widget/widget.dart';
-import 'package:activity/presentation/pages/schedule/widget/bottom_scan_container.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

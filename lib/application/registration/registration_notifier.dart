@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:ui';
 
 import 'package:activity/application/registration/registration_state.dart';
@@ -109,7 +111,6 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
         },
       );
     } else {
-      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
@@ -122,41 +123,41 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
           phoneNumber, code);
       response.when(
         success: (data) async {
-          if (data.user?.firstName != "") {
+          PageRouteInfo<dynamic> nextRoute = data.user?.firstName == null
+              ? const Registration3Route()
+              : const Main2Route();
+          await LocalStorage.setToken(data.jwtToken ?? "");
+          if (data.user?.firstName != null) {
             await LocalStorage.setUserName(data.user?.firstName ?? "");
             await LocalStorage.setUserLastName(data.user?.lastName ?? "");
             await LocalStorage.setUserPatronomic(data.user?.patronymic ?? "");
+            LocalStorage.setUserId(
+              data.user?.id.toString() ?? "0",
+            );
+            LocalStorage.setSelectedCity(data.user?.city?.name ?? "");
+            LocalStorage.setSelectedCityLat(data.user?.city?.latitude ?? "");
+            LocalStorage.setSelectedCityLon(data.user?.city?.longitude ?? "");
+            LocalStorage.setAge(data.user?.age.toString() ?? "");
+            LocalStorage.setAvatar(data.user?.backgroundPictureUrl ?? "");
+            LocalStorage.setHeight(data.user?.height.toString());
+            await LocalStorage.setGender(data.user?.gender ?? "");
+            await LocalStorage.setWeight(data.user?.weight.toString());
           }
-          LocalStorage.setUserId(
-            data.user?.id.toString() ?? "0",
-          );
-          LocalStorage.setSelectedCity(data.user?.city?.name ?? "");
-          LocalStorage.setSelectedCityLat(data.user?.city?.latitude ?? "");
-          LocalStorage.setSelectedCityLon(data.user?.city?.longitude ?? "");
-          LocalStorage.setAge(data.user?.age.toString() ?? "");
-          LocalStorage.setAvatar(data.user?.backgroundPictureUrl ?? "");
-          LocalStorage.setHeight(data.user?.height.toString());
-          await LocalStorage.setGender(data.user?.gender ?? "");
-          await LocalStorage.setWeight(data.user?.weight.toString());
-          await LocalStorage.setToken(data.jwtToken ?? "");
-          // ignore: use_build_context_synchronously
-          moveClientToThirdPage(context);
+          moveClientToNextPage(context, nextRoute);
         },
         failure: (error, statusCode) {
           AppHelpers.showErrorSnack(context, "$error $statusCode");
         },
       );
     } else {
-      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
 
-  Future<void> moveClientToThirdPage(BuildContext context) async {
+  Future<void> moveClientToNextPage(
+      BuildContext context, PageRouteInfo<dynamic> nextRoute) async {
     await Future.delayed(const Duration(milliseconds: 1500)).then(
-      (value) => context.replaceRoute(
-        const Registration3Route(),
-      ),
+      (value) => context.replaceRoute(nextRoute),
     );
   }
 

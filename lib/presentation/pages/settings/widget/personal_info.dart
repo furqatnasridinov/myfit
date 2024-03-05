@@ -1,7 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'dart:ui';
-import 'package:activity/application/registration/registration_provider.dart';
 import 'package:activity/application/settings/settings_notifier.dart';
 import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/application/settings/settings_state.dart';
@@ -13,7 +11,6 @@ import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/custom_textformfield.dart';
 import 'package:activity/presentation/components/edit_button.dart';
-import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/pages/settings/widget/widget.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
@@ -21,7 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pinput/pinput.dart';
 
 class PersonalInfo extends StatefulWidget {
   final SettingsNotifier event;

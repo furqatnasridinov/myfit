@@ -7,7 +7,6 @@ import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/components/ui_dropdown_menu.dart';
-import 'package:activity/presentation/pages/schedule/widget/drop_down_menu_inside_card.dart';
 import 'package:activity/presentation/pages/schedule/widget/rate_dialog.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';

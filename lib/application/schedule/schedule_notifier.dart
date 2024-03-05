@@ -96,7 +96,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
           await _scheduleRepositoryInterface.makeRate(request: request);
       response.when(
         success: (data) {
-          print(data);
+          debugPrint(data.toString());
         },
         failure: (error, statusCode) {
           AppHelpers.showErrorSnack(context, "$error $statusCode");
