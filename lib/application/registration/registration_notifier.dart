@@ -98,11 +98,9 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
       response.when(
         success: (data) {
           if (data["operationResult"] == "OK") {
-            // save phone number to local storage
-            LocalStorage.setPhoneNumber(phoneNumber)
-                .then((value) => context.router.push(
-                      const Registration2Route(),
-                    ));
+            context.router.push(
+              const Registration2Route(),
+            );
           }
         },
         failure: (error, statusCode) {
@@ -128,20 +126,21 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
               : const Main2Route();
           await LocalStorage.setToken(data.jwtToken ?? "");
           if (data.user?.firstName != null) {
-            await LocalStorage.setUserName(data.user?.firstName ?? "");
-            await LocalStorage.setUserLastName(data.user?.lastName ?? "");
-            await LocalStorage.setUserPatronomic(data.user?.patronymic ?? "");
-            LocalStorage.setUserId(
-              data.user?.id.toString() ?? "0",
-            );
-            LocalStorage.setSelectedCity(data.user?.city?.name ?? "");
-            LocalStorage.setSelectedCityLat(data.user?.city?.latitude ?? "");
-            LocalStorage.setSelectedCityLon(data.user?.city?.longitude ?? "");
-            LocalStorage.setAge(data.user?.age.toString() ?? "");
-            LocalStorage.setAvatar(data.user?.backgroundPictureUrl ?? "");
-            LocalStorage.setHeight(data.user?.height.toString());
-            await LocalStorage.setGender(data.user?.gender ?? "");
-            await LocalStorage.setWeight(data.user?.weight.toString());
+            await Future.wait([
+              LocalStorage.setUserName(data.user?.firstName ?? ""),
+              LocalStorage.setUserLastName(data.user?.lastName ?? ""),
+              LocalStorage.setUserPatronomic(data.user?.patronymic ?? ""),
+              LocalStorage.setPhoneNumber(data.user?.login ?? ""),
+              LocalStorage.setUserId(data.user?.id.toString() ?? "0"),
+              LocalStorage.setSelectedCity(data.user?.city?.name ?? ""),
+              LocalStorage.setSelectedCityLat(data.user?.city?.latitude ?? ""),
+              LocalStorage.setSelectedCityLon(data.user?.city?.longitude ?? ""),
+              LocalStorage.setAge(data.user?.age.toString() ?? ""),
+              LocalStorage.setAvatar(data.user?.backgroundPictureUrl ?? ""),
+              LocalStorage.setHeight(data.user?.height.toString()),
+              LocalStorage.setGender(data.user?.gender ?? ""),
+              LocalStorage.setWeight(data.user?.weight.toString()),
+            ]);
           }
           moveClientToNextPage(context, nextRoute);
         },
