@@ -95,7 +95,17 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
     if (connect) {
       final response =
           await _registerRepositoryInterface.sendPhoneNumber(phoneNumber);
-      response.when(
+
+      debugPrint(response.toString());
+      if (response["operationResult"] == "OK") {
+        context.router.push(
+          const Registration2Route(),
+        );
+      } else {
+        AppHelpers.showErrorSnack(context, response["operationInfo"]);
+      }
+
+      /* response.when(
         success: (data) {
           if (data["operationResult"] == "OK") {
             context.router.push(
@@ -107,7 +117,7 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
           AppHelpers.showSnack(
               context, "${error.toString()} ${"statuscode $statusCode"}");
         },
-      );
+      ); */
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
