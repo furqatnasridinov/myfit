@@ -20,7 +20,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref.read(settingsProvider.notifier).setUserInfos();
+      //ref.read(settingsProvider.notifier).setUserInfos();
     });
   }
 
@@ -28,6 +28,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(settingsProvider);
     final event = ref.read(settingsProvider.notifier);
+    debugPrint("image ${state.avatar}");
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar: const SettingsHeader(),
@@ -38,7 +39,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           children: [
             20.verticalSpace,
             CustomText(
-              text: state.qrcodeValue!.isEmpty ? "Настройки" : state.qrcodeValue ?? "",
+              text: state.qrcodeValue!.isEmpty
+                  ? "Настройки"
+                  : state.qrcodeValue ?? "",
               fontSize: 20.sp,
               fontWeight: FontWeight.w600,
             ),

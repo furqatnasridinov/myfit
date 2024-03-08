@@ -12,7 +12,7 @@ class AppHelpers {
       Overlay.of(context),
       const CustomSnackBar.error(
         //backgroundColor: AppColors.yellowbuttonColor,
-        message: "Check your internet connection and try again",
+        message: "Проверьте интернет соединение",
       ),
     );
   }
@@ -98,6 +98,7 @@ class AppHelpers {
         return "Отменено заведением";
       case "CANCELED_USER":
         return "Отменено вами";
+       // return "Записаться";
       case "PROGRESS":
         return "В процессе...";
       case "COMPLETED":
@@ -118,6 +119,7 @@ class AppHelpers {
       case "CANCELED_GYM":
         return Colors.red;
       case "CANCELED_USER":
+      //return AppColors.blueText;
         return Colors.red;
       case "PROGRESS":
         return Colors.green;

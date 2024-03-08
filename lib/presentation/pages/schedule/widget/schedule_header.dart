@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/application/schedule/schedule_notifier.dart';
+import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/custom_text.dart';
@@ -347,33 +348,28 @@ class _MainHeaderState extends State<ScheduleHeader> {
       actions: [
         textfieldFocusnode.hasFocus
             ? const SizedBox()
-            : Container(
-                margin: EdgeInsets.only(right: 15.w),
-                child: SizedOverflowBox(
-                  size: Size(40.w, 40.h),
-                  child: CircleAvatar(
+            : Padding(
+                padding: EdgeInsets.only(right: 15.w),
+                child: Consumer(builder: (context, ref, child) {
+                  final settingsState = ref.watch(settingsProvider);
+                  return CircleAvatar(
                     radius: 20.r,
-                    backgroundColor: const Color.fromRGBO(119, 170, 249, 1),
-                    child: Padding(
-                      padding: EdgeInsets.all(2.r),
-                      child: ClipOval(
-                        child: ClipOval(
-                            child: Image.asset(
-                          AppConstants.cristianBale,
-                          fit: BoxFit.cover,
-                        )
-                            /* CachedNetworkImage(
-                                imageUrl: AppConstants.owlNetworkImage,
-                                fit: BoxFit.cover,
-                                errorWidget: (context, url, error) {
-                                  return const SizedBox();
-                                },
-                              ), */
-                            ),
-                      ),
-                    ),
-                  ),
-                ),
+                    backgroundColor: AppColors.blueColor,
+                    child: settingsState.avatar.isEmpty
+                        ? CircleAvatar(
+                            radius: 28.r,
+                            backgroundImage:
+                                const AssetImage(AppConstants.cristianBale))
+                        : CircleAvatar(
+                            radius: 18.r,
+                            backgroundImage: NetworkImage(
+                                "http://77.222.53.122/image/${settingsState.avatar}"),
+                            onBackgroundImageError: (exception, stackTrace) {
+                              debugPrint(exception.toString());
+                            },
+                          ),
+                  );
+                }),
               ),
       ],
     );

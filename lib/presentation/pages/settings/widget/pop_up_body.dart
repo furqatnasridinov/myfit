@@ -12,6 +12,7 @@ import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/custom_textformfield.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -47,17 +48,17 @@ class _PopupBodyState extends State<PopupBody> {
         TextEditingController(text: LocalStorage.getSelectedCity());
     nameController = TextEditingController(text: LocalStorage.getUserName());
     lastNameController = TextEditingController(
-        text: LocalStorage.getUserLastName() == "null"
+        text: LocalStorage.getUserLastName().isEmpty
             ? ""
             : LocalStorage.getUserLastName());
     ageController = TextEditingController(
-        text: LocalStorage.getAge() == "null" ? "" : LocalStorage.getAge());
+        text: LocalStorage.getAge().isEmpty ? "" : LocalStorage.getAge());
     weightController = TextEditingController(
         text:
-            LocalStorage.getWeight() == "null" ? "" : LocalStorage.getWeight());
+            LocalStorage.getWeight().isEmpty ? "" : LocalStorage.getWeight());
     heightController = TextEditingController(
         text:
-            LocalStorage.getHeight() == "null" ? "" : LocalStorage.getHeight());
+            LocalStorage.getHeight().isEmpty ? "" : LocalStorage.getHeight());
     widget.event.getListOfCities(context);
   }
 
@@ -392,56 +393,96 @@ class _PopupBodyState extends State<PopupBody> {
             ),
             5.verticalSpace,
             SizedBox(
-              height: 80.h,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CircleAvatar(
-                    radius: 40.r,
-                    backgroundColor: AppColors.fadedBlueBorder,
-                    child: Padding(
-                      padding: EdgeInsets.all(3.r),
-                      child: ClipOval(
-                          child: Image.asset(
-                        AppConstants.cristianBale,
-                        fit: BoxFit.cover,
-                      )
-                          /* CachedNetworkImage(
-                                imageUrl: AppConstants.owlNetworkImage,
-                                fit: BoxFit.cover,
-                                errorWidget: (context, url, error) {
-                                  return const SizedBox();
-                                },
-                              ), */
+              height: widget.state.avatar.isEmpty ? null : 80.h,
+              child: widget.state.avatar.isEmpty
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () async {
+                            await widget.event.pickImageFromGallery(context);
+                          },
+                          child: CircleAvatar(
+                            radius: 40.r,
+                            backgroundColor: AppColors.backgroundColor,
+                            child: const Center(
+                              child: Icon(
+                                Icons.add,
+                                color: AppColors.blueBorder,
+                              ),
+                            ),
                           ),
+                        ),
+                        10.verticalSpace,
+                        CustomButton(
+                          borderColor: AppColors.fadedBlueBorder,
+                          buttonColor: AppColors.backgroundColor,
+                          fontSize: 14.sp,
+                          onPressed: () async {
+                            await widget.event.pickImageFromGallery(context);
+                          },
+                          text: "Добавить фотографию",
+                        )
+                      ],
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CircleAvatar(
+                          radius: 40.r,
+                          backgroundColor: AppColors.backgroundColor,
+                          child: CircleAvatar(
+                            radius: 38.r,
+                            backgroundImage: NetworkImage(
+                                "http://77.222.53.122/image/${widget.state.avatar}"),
+                            onBackgroundImageError: (exception, stackTrace) {
+                              debugPrint(exception.toString());
+                            },
+                          ),
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: CustomButton(
+                                width: 190.w,
+                                fontSize: 14.sp,
+                                borderColor: AppColors.fadedBlueBorder,
+                                onPressed: () async {
+                                  await widget.event
+                                      .pickImageFromGallery(context);
+                                },
+                                text: "Заменить",
+                              ),
+                            ),
+                            5.verticalSpace,
+                            Expanded(
+                              child: CustomButton(
+                                width: 190.w,
+                                fontSize: 14.sp,
+                                borderColor: AppColors.fadedBlueBorder,
+                                onPressed: () async {
+                                  if (widget.state.avatar.isEmpty) {
+                                    return;
+                                  } else {
+                                    showConfirmationDialog(
+                                      context,
+                                      () async {
+                                        await widget.event
+                                            .patchAvatar("", context);
+                                        widget.event.getUser(context);
+                                        context.router.pop();
+                                      },
+                                    );
+                                  }
+                                },
+                                text: "Удалить",
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: CustomButton(
-                          width: 190.w,
-                          fontSize: 14.sp,
-                          borderColor: AppColors.fadedBlueBorder,
-                          onPressed: () {},
-                          text: "Заменить",
-                        ),
-                      ),
-                      5.verticalSpace,
-                      Expanded(
-                        child: CustomButton(
-                          width: 190.w,
-                          fontSize: 14.sp,
-                          borderColor: AppColors.fadedBlueBorder,
-                          onPressed: () {},
-                          text: "Удалить",
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
             ),
             // buttons
             16.verticalSpace,
@@ -485,10 +526,11 @@ class _PopupBodyState extends State<PopupBody> {
 
                           if (LocalStorage.getUserLastName() !=
                               lastNameController.text.trim()) {
-                            await LocalStorage.setUserLastName(lastNameController.text);
+                            await LocalStorage.setUserLastName(
+                                lastNameController.text);
                             widget.event.setLastname();
-                            await widget.event
-                                .patchLastname(lastNameController.text.trim(), context);
+                            await widget.event.patchLastname(
+                                lastNameController.text.trim(), context);
                           }
 
                           if (LocalStorage.getSelectedCity() !=
@@ -555,4 +597,65 @@ Widget _listiles(
       ),
     ),
   );
+}
+
+void showConfirmationDialog(BuildContext context, void Function()? onConfirm) {
+  showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(16.r),
+            child: SizedBox(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CustomText(
+                    text: "Фото профиля будет удалено!",
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  16.verticalSpace,
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 4,
+                        child: CustomButton(
+                          onPressed: () {
+                            context.router.pop();
+                          },
+                          text: "Назад",
+                          height: 40.h,
+                          buttonColor: Colors.white,
+                          textColor: Colors.black,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      10.horizontalSpace,
+                      Expanded(
+                        flex: 6,
+                        child: CustomButton(
+                          onPressed: onConfirm,
+                          text: "Подтвердить",
+                          height: 40.h,
+                          buttonColor: AppColors.blueColor,
+                          textColor: Colors.white,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      });
 }

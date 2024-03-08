@@ -26,8 +26,8 @@ class MapNotifier extends StateNotifier<MapState> {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied ||
         permission == LocationPermission.deniedForever) {
-      state = state.copyWith(locationPermissionIsNOtGiven: true);
-      await Geolocator.requestPermission();
+      state = state.copyWith(locationPermissionDenied: true);
+      permission = await Geolocator.requestPermission();
     }
     if (permission == LocationPermission.always ||
         permission == LocationPermission.whileInUse) {
@@ -35,7 +35,7 @@ class MapNotifier extends StateNotifier<MapState> {
         final postion = await Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.high);
         state = state.copyWith(userPosition: postion);
-        state = state.copyWith(locationPermissionIsNOtGiven: false);
+        state = state.copyWith(locationPermissionDenied: false);
       } catch (e) {
         state = state.copyWith(locationServiceIsNotEnabled: true);
       }
@@ -62,7 +62,7 @@ class MapNotifier extends StateNotifier<MapState> {
           state.copyWith(activitiesWithGymsInsideAll: withCalculatedDistances);
 
       state = state.copyWith(listOfMarkers: markersList);
-      state = state.copyWith(locationPermissionIsNOtGiven: false);
+      state = state.copyWith(locationPermissionDenied: false);
       state = state.copyWith(isloading: false);
       setFlexes();
     } catch (e) {
@@ -436,7 +436,7 @@ class MapNotifier extends StateNotifier<MapState> {
       state = state.copyWith(topFlex: 6, bottomFlex: 8);
     }
     if ((list.isNotEmpty && list.length <= 2) &&
-        (state.locationPermissionIsNOtGiven ||
+        (state.locationPermissionDenied ||
             state.locationServiceIsNotEnabled)) {
       state = state.copyWith(
         topFlex: 4,
@@ -444,7 +444,7 @@ class MapNotifier extends StateNotifier<MapState> {
       );
     }
     if ((list.length >= 3 && list.length <= 4) &&
-        (state.locationPermissionIsNOtGiven ||
+        (state.locationPermissionDenied ||
             state.locationServiceIsNotEnabled)) {
       state = state.copyWith(
         topFlex: 5,
@@ -452,7 +452,7 @@ class MapNotifier extends StateNotifier<MapState> {
       );
     }
     if (list.length >= 5 &&
-        (state.locationPermissionIsNOtGiven ||
+        (state.locationPermissionDenied ||
             state.locationServiceIsNotEnabled)) {
       state = state.copyWith(
         topFlex: 7,
@@ -463,7 +463,7 @@ class MapNotifier extends StateNotifier<MapState> {
 
   void openGymslist() {
     final list = state.activitiesWithGymsInsideFromSelectedDiapozone;
-    if (!state.locationPermissionIsNOtGiven) {
+    if (!state.locationPermissionDenied) {
       if (list.length == 1) {
         state = state.copyWith(topFlex: 3);
         state = state.copyWith(bottomFlex: 8);
@@ -666,10 +666,10 @@ class MapNotifier extends StateNotifier<MapState> {
   }
 
   void locationButtonFunction(YandexMapController? mapController) async {
-    if (state.locationPermissionIsNOtGiven) {
+    if (state.locationPermissionDenied) {
       await Geolocator.requestPermission();
     }
-    if (!state.locationPermissionIsNOtGiven &&
+    if (!state.locationPermissionDenied &&
         state.locationServiceIsNotEnabled) {
       await Geolocator.openLocationSettings();
     }

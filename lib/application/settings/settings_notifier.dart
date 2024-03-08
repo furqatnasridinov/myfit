@@ -1,13 +1,17 @@
+// ignore_for_file: use_build_context_synchronously
+import 'dart:io';
 import 'package:activity/application/settings/settings_state.dart';
 import 'package:activity/domain/interface/settings.dart';
 import 'package:activity/infrastructure/local_notifications/notification_service.dart';
+import 'package:activity/infrastructure/models/request/send_confirmation_code_request.dart';
+import 'package:activity/infrastructure/models/request/send_phone_number_request.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
-
+import 'package:image_picker/image_picker.dart';
 import '../../infrastructure/models/response/auth_response.dart';
 
 class SettingsNotifier extends StateNotifier<SettingsState> {
@@ -23,6 +27,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     setAge();
     setWeight();
     setHeight();
+    setAvatar();
     setNotificationTime(LocalStorage.getReminderTime());
     getReminderDisabledOrEnabled();
   }
@@ -67,7 +72,6 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         },
       );
     } else {
-      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
@@ -91,7 +95,6 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         },
       );
     } else {
-      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
@@ -115,7 +118,6 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         },
       );
     } else {
-      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
@@ -139,7 +141,6 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         },
       );
     } else {
-      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
@@ -163,7 +164,6 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         },
       );
     } else {
-      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
@@ -187,7 +187,6 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         },
       );
     } else {
-      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
@@ -211,7 +210,6 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         },
       );
     } else {
-      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
@@ -235,7 +233,6 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         },
       );
     } else {
-      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
@@ -244,7 +241,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     final connected = await AppConnectivity().connectivity();
     if (connected) {
       state = state.copyWith(isloading: true);
-      final request = {"backgroundPictureUrl": avatar};
+      final request = {"pictureUrl": avatar};
       final response = await _settingsRepositoryInterface.patchUser(
         request: request,
       );
@@ -259,7 +256,88 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         },
       );
     } else {
-      // ignore: use_build_context_synchronously
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> sendPhoneNumber(BuildContext context,
+      {required SendPhoneNumberRequest request}) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response = await _settingsRepositoryInterface
+          .changePhoneSendPhoneNumber(request: request);
+      response.when(success: (data) {
+        // data
+        debugPrint(data.toString());
+      }, failure: (error, statuscode) {
+        AppHelpers.showErrorSnack(context, "$error $statuscode");
+      });
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> sendConfirmationCode(BuildContext context,
+      {required SendConfirmationCodeRequest request}) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response = await _settingsRepositoryInterface
+          .changePhoneSendConfirmationCode(request: request);
+      response.when(success: (data) {
+        LocalStorage.setPhoneNumber(data["object"]["user"]["login"]);
+        LocalStorage.setToken(data["object"]["jwtToken"]);
+        debugPrint(data.toString());
+      }, failure: (error, statuscode) {
+        AppHelpers.showErrorSnack(context, "$error $statuscode");
+      });
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> uploadPicture(BuildContext context,
+      {required File image}) async {
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      final response =
+          await _settingsRepositoryInterface.addPicture(image: image);
+      response.when(success: (data) {
+        //
+      }, failure: (error, statusCode) {
+        AppHelpers.showErrorSnack(context, "$error $statusCode");
+      });
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> pickImageFromGallery(BuildContext context) async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      await uploadPicture(context, image: File(pickedFile.path));
+      await getUser(context);
+    }
+  }
+
+  Future<void> getUser(BuildContext context) async {
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      //state = state.copyWith(isloading: true);
+      final response = await _settingsRepositoryInterface.getUser();
+      response.when(success: (data) {
+        if (data["operationResult"] == "OK") {
+          if (LocalStorage.getAvatar() != data["object"]["pictureUrl"] &&
+              data["object"]["pictureUrl"] != null) {
+            state = state.copyWith(avatar: data["object"]["pictureUrl"]);
+            LocalStorage.setAvatar(data["object"]["pictureUrl"]);
+          }
+        }
+        //debugPrint(data.toString());
+      }, failure: (error, statusCode) {
+        AppHelpers.showErrorSnack(context, "$error $statusCode");
+      });
+    } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
@@ -338,6 +416,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
 
   void setHeight() {
     state = state.copyWith(height: LocalStorage.getHeight());
+  }
+
+  void setAvatar() {
+    state = state.copyWith(avatar: LocalStorage.getAvatar());
   }
 
   void enableEditingPhone() {

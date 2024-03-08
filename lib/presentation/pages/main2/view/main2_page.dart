@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:activity/application/main2/main2_provider.dart';
 import 'package:activity/application/map/map_provider.dart';
+import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_text.dart';
@@ -32,6 +33,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     layerlink = LayerLink();
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(settingsProvider.notifier).setUserInfos();
       ref.read(mapProvider.notifier).getUserLocation().then((value) {
         ref.read(mapProvider.notifier).getYandexMapImage(
               context,

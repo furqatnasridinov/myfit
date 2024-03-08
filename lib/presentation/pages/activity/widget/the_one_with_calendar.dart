@@ -322,7 +322,10 @@ Widget activityCard(
               // get status text
               SizedBox(
                 child: InkWell(
-                  onTap: status == "OPEN" ? enrollFunction : null,
+                  onTap: //(status == "OPEN" || status == "CANCELED_USER")
+                  status == "OPEN"
+                      ? enrollFunction
+                      : null,
                   child: CustomText(
                     text: AppHelpers().getStatusText(status),
                     fontSize: 14.sp,

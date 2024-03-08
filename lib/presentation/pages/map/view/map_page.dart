@@ -51,7 +51,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.paused) {
-      if (ref.watch(mapProvider).locationPermissionIsNOtGiven) {
+      if (ref.watch(mapProvider).locationPermissionDenied) {
         _checkLocationPermission();
       }
     }
@@ -173,7 +173,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                               (state.activitiesWithGymsInsideFromSelectedDiapozone
                                           .length >
                                       2 ||
-                                  state.locationPermissionIsNOtGiven) &&
+                                  state.locationPermissionDenied) &&
                               !state.showMapOnly
                           ? const [
                               BoxShadow(
@@ -206,7 +206,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                         if (state.userPosition == null) {
                           await event.getUserLocation();
                           if (state.locationServiceIsNotEnabled ||
-                              state.locationPermissionIsNOtGiven) {
+                              state.locationPermissionDenied) {
                             await event.setLocationFromSelectedCity();
                           }
                         }

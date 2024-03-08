@@ -17,6 +17,7 @@ class SettingsState with _$SettingsState {
     @Default("") String age,
     @Default("") String weight,
     @Default("") String height,
+    @Default("") String avatar,
     @Default(false) bool isPhoneEditModeEnabled,
     @Default(false) bool isEmailEditModeEnabled,
     @Default("30") String reminderTime,

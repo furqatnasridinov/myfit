@@ -1,8 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
+import 'dart:math';
 import 'dart:ui';
 import 'package:activity/application/settings/settings_notifier.dart';
 import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/application/settings/settings_state.dart';
+import 'package:activity/infrastructure/models/request/send_phone_number_request.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
@@ -13,6 +15,7 @@ import 'package:activity/presentation/components/custom_textformfield.dart';
 import 'package:activity/presentation/components/edit_button.dart';
 import 'package:activity/presentation/pages/settings/widget/widget.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -93,26 +96,28 @@ class _PersonalInfoState extends State<PersonalInfo> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // photo
-                  SizedBox(
+                  InkWell(
+                    onTap: () async {
+                      await widget.event.pickImageFromGallery(context);
+                    },
                     child: CircleAvatar(
                       radius: 30.r,
-                      backgroundColor: AppColors.blueColor,
-                      child: Padding(
-                        padding: EdgeInsets.all(2.r),
-                        child: ClipOval(
-                            child: Image.asset(
-                          AppConstants.cristianBale,
-                          fit: BoxFit.cover,
-                        )
-                            /* CachedNetworkImage(
-                                imageUrl: AppConstants.owlNetworkImage,
-                                fit: BoxFit.cover,
-                                errorWidget: (context, url, error) {
-                                  return const SizedBox();
-                                },
-                              ), */
+                      backgroundColor: AppColors.backgroundColor,
+                      child: widget.state.avatar.isEmpty 
+                          ? const Center(
+                              child: Icon(
+                                Icons.add,
+                                color: AppColors.blueBorder,
+                              ),
+                            )
+                          : CircleAvatar(
+                              radius: 28.r,
+                              backgroundImage: NetworkImage(
+                                  "http://77.222.53.122/image/${widget.state.avatar}"),
+                              onBackgroundImageError: (exception, stackTrace) {
+                                debugPrint(exception.toString());
+                              },
                             ),
-                      ),
                     ),
                   ),
                   18.horizontalSpace,
@@ -180,19 +185,19 @@ class _PersonalInfoState extends State<PersonalInfo> {
               Row(
                 children: [
                   chipsLikeContainer(
-                    widget.state.age == "null" ? "0" : widget.state.age,
+                    widget.state.age.isEmpty ? "0" : widget.state.age,
                     "лет",
                     context,
                   ),
                   20.horizontalSpace,
                   chipsLikeContainer(
-                    widget.state.weight == "null" ? "0" : widget.state.weight,
+                    widget.state.weight.isEmpty ? "0" : widget.state.weight,
                     "кг",
                     context,
                   ),
                   20.horizontalSpace,
                   chipsLikeContainer(
-                    widget.state.height == "null" ? "0" : widget.state.height,
+                    widget.state.height.isEmpty ? "0" : widget.state.height,
                     "см",
                     context,
                   ),
@@ -248,8 +253,16 @@ class _PersonalInfoState extends State<PersonalInfo> {
                 },
                 onEditingComplete: () {
                   if (newDataAdded && phoneController.text.length == 12) {
+                    widget.event.sendPhoneNumber(
+                      context,
+                      request: SendPhoneNumberRequest(
+                        login: LocalStorage.getPhoneNumber(),
+                        newNumber: phoneController.text.trim(),
+                      ),
+                    );
                     // hide keyboard
                     FocusScope.of(context).unfocus();
+                    newDataAdded = false;
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -258,67 +271,8 @@ class _PersonalInfoState extends State<PersonalInfo> {
                           undoAction: () {
                             phoneController.text =
                                 LocalStorage.getPhoneNumber();
-                            newDataAdded = false;
-                            setState(() {});
                             widget.event.closeEditingPhone();
                             context.router.pop();
-                          },
-                          onSuccessfulChange: () async {
-                            widget.event.closeEditingPhone();
-                            newDataAdded = false;
-                            setState(() {});
-                            context.router.pop();
-                            await Future.delayed(
-                                const Duration(milliseconds: 100));
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return Dialog(
-                                    backgroundColor: Colors.white,
-                                    surfaceTintColor: Colors.transparent,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16.r),
-                                    ),
-                                    child: Padding(
-                                      padding: EdgeInsets.all(16.r),
-                                      child: SizedBox(
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                const Icon(
-                                                  Icons.done,
-                                                  color: AppColors.blueColor,
-                                                ),
-                                                5.horizontalSpace,
-                                                CustomText(
-                                                  text:
-                                                      "Номер был успешно изменён",
-                                                  fontSize: 16.sp,
-                                                  fontWeight: FontWeight.w600,
-                                                )
-                                              ],
-                                            ),
-                                            16.verticalSpace,
-                                            CustomButton(
-                                              onPressed: () {
-                                                context.router.pop();
-                                              },
-                                              text: "Спасибо",
-                                              height: 40.h,
-                                              width: 110.w,
-                                              buttonColor: AppColors.blueColor,
-                                              textColor: Colors.white,
-                                              fontSize: 14.sp,
-                                              fontWeight: FontWeight.w500,
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                });
                           },
                         );
                       },
@@ -334,6 +288,7 @@ class _PersonalInfoState extends State<PersonalInfo> {
                 suffixIcon: newDataAdded && phoneController.text.length == 12
                     ? InkWell(
                         onTap: () {
+                          newDataAdded = false;
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
@@ -342,8 +297,7 @@ class _PersonalInfoState extends State<PersonalInfo> {
                                 undoAction: () {
                                   phoneController.text =
                                       LocalStorage.getPhoneNumber();
-                                  newDataAdded = false;
-                                  setState(() {});
+
                                   widget.event.closeEditingPhone();
                                   context.router.pop();
                                 },
@@ -397,6 +351,57 @@ class _PersonalInfoState extends State<PersonalInfo> {
       ],
     );
   }
+}
+
+void showSuccessDialog(BuildContext context) {
+  showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(16.r),
+            child: SizedBox(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.done,
+                        color: AppColors.blueColor,
+                      ),
+                      5.horizontalSpace,
+                      CustomText(
+                        text: "Номер был успешно изменён",
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                      )
+                    ],
+                  ),
+                  16.verticalSpace,
+                  CustomButton(
+                    onPressed: () {
+                      context.router.pop();
+                    },
+                    text: "Спасибо",
+                    height: 40.h,
+                    width: 110.w,
+                    buttonColor: AppColors.blueColor,
+                    textColor: Colors.white,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      });
 }
 
 Widget chipsLikeContainer(

@@ -280,7 +280,7 @@ class _MainHeaderState extends State<SettingsHeader> {
       ),
 
       // action
-      actions: [
+      /* actions: [
         textfieldFocusnode.hasFocus
             ? const SizedBox()
             : Container(
@@ -350,7 +350,7 @@ class _MainHeaderState extends State<SettingsHeader> {
                   ],
                 ),
               ),
-      ],
+      ], */
     );
   }
 }

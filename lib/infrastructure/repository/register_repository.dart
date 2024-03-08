@@ -41,8 +41,7 @@ class RegisterRepository implements RegisterRepositoryInterface {
       return ApiResult.success(
         data: AuthResponse.fromJson(response.data["object"]),
       );
-    } catch (e) {
-      //throw e;
+    } catch (e) {      
       return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),

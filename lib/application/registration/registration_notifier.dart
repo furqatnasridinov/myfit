@@ -135,21 +135,22 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
               ? const Registration3Route()
               : const Main2Route();
           await LocalStorage.setToken(data.jwtToken ?? "");
+          await LocalStorage.setPhoneNumber(phoneNumber);
           if (data.user?.firstName != null) {
             await Future.wait([
               LocalStorage.setUserName(data.user?.firstName ?? ""),
               LocalStorage.setUserLastName(data.user?.lastName ?? ""),
               LocalStorage.setUserPatronomic(data.user?.patronymic ?? ""),
-              LocalStorage.setPhoneNumber(data.user?.login ?? ""),
+              //LocalStorage.setPhoneNumber(data.user?.login ?? ""),
               LocalStorage.setUserId(data.user?.id.toString() ?? "0"),
               LocalStorage.setSelectedCity(data.user?.city?.name ?? ""),
               LocalStorage.setSelectedCityLat(data.user?.city?.latitude ?? ""),
               LocalStorage.setSelectedCityLon(data.user?.city?.longitude ?? ""),
               LocalStorage.setAge(data.user?.age.toString() ?? ""),
               LocalStorage.setAvatar(data.user?.backgroundPictureUrl ?? ""),
-              LocalStorage.setHeight(data.user?.height.toString()),
+              LocalStorage.setHeight(data.user?.height.toString() ?? ""),
               LocalStorage.setGender(data.user?.gender ?? ""),
-              LocalStorage.setWeight(data.user?.weight.toString()),
+              LocalStorage.setWeight(data.user?.weight.toString() ?? ""),
             ]);
           }
           moveClientToNextPage(context, nextRoute);

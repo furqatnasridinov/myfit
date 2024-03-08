@@ -23,7 +23,7 @@ mixin _$MapState {
   EachMarkersModel? get activeMarker => throw _privateConstructorUsedError;
   List<double> get distances => throw _privateConstructorUsedError;
   double get selectedDiapozone => throw _privateConstructorUsedError;
-  bool get locationPermissionIsNOtGiven => throw _privateConstructorUsedError;
+  bool get locationPermissionDenied => throw _privateConstructorUsedError;
   bool get locationServiceIsNotEnabled => throw _privateConstructorUsedError;
   List<bool> get listOfBool => throw _privateConstructorUsedError;
   List<GymData> get gymFoundBySearching => throw _privateConstructorUsedError;
@@ -56,7 +56,7 @@ abstract class $MapStateCopyWith<$Res> {
       EachMarkersModel? activeMarker,
       List<double> distances,
       double selectedDiapozone,
-      bool locationPermissionIsNOtGiven,
+      bool locationPermissionDenied,
       bool locationServiceIsNotEnabled,
       List<bool> listOfBool,
       List<GymData> gymFoundBySearching,
@@ -90,7 +90,7 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
     Object? activeMarker = freezed,
     Object? distances = null,
     Object? selectedDiapozone = null,
-    Object? locationPermissionIsNOtGiven = null,
+    Object? locationPermissionDenied = null,
     Object? locationServiceIsNotEnabled = null,
     Object? listOfBool = null,
     Object? gymFoundBySearching = null,
@@ -128,9 +128,9 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
           ? _value.selectedDiapozone
           : selectedDiapozone // ignore: cast_nullable_to_non_nullable
               as double,
-      locationPermissionIsNOtGiven: null == locationPermissionIsNOtGiven
-          ? _value.locationPermissionIsNOtGiven
-          : locationPermissionIsNOtGiven // ignore: cast_nullable_to_non_nullable
+      locationPermissionDenied: null == locationPermissionDenied
+          ? _value.locationPermissionDenied
+          : locationPermissionDenied // ignore: cast_nullable_to_non_nullable
               as bool,
       locationServiceIsNotEnabled: null == locationServiceIsNotEnabled
           ? _value.locationServiceIsNotEnabled
@@ -196,7 +196,7 @@ abstract class _$$MapStateImplCopyWith<$Res>
       EachMarkersModel? activeMarker,
       List<double> distances,
       double selectedDiapozone,
-      bool locationPermissionIsNOtGiven,
+      bool locationPermissionDenied,
       bool locationServiceIsNotEnabled,
       List<bool> listOfBool,
       List<GymData> gymFoundBySearching,
@@ -228,7 +228,7 @@ class __$$MapStateImplCopyWithImpl<$Res>
     Object? activeMarker = freezed,
     Object? distances = null,
     Object? selectedDiapozone = null,
-    Object? locationPermissionIsNOtGiven = null,
+    Object? locationPermissionDenied = null,
     Object? locationServiceIsNotEnabled = null,
     Object? listOfBool = null,
     Object? gymFoundBySearching = null,
@@ -266,9 +266,9 @@ class __$$MapStateImplCopyWithImpl<$Res>
           ? _value.selectedDiapozone
           : selectedDiapozone // ignore: cast_nullable_to_non_nullable
               as double,
-      locationPermissionIsNOtGiven: null == locationPermissionIsNOtGiven
-          ? _value.locationPermissionIsNOtGiven
-          : locationPermissionIsNOtGiven // ignore: cast_nullable_to_non_nullable
+      locationPermissionDenied: null == locationPermissionDenied
+          ? _value.locationPermissionDenied
+          : locationPermissionDenied // ignore: cast_nullable_to_non_nullable
               as bool,
       locationServiceIsNotEnabled: null == locationServiceIsNotEnabled
           ? _value.locationServiceIsNotEnabled
@@ -329,7 +329,7 @@ class _$MapStateImpl extends _MapState {
       this.activeMarker = null,
       final List<double> distances = const [],
       this.selectedDiapozone = 5,
-      this.locationPermissionIsNOtGiven = false,
+      this.locationPermissionDenied = false,
       this.locationServiceIsNotEnabled = false,
       final List<bool> listOfBool = const [false, false, false, true],
       final List<GymData> gymFoundBySearching = const [],
@@ -384,7 +384,7 @@ class _$MapStateImpl extends _MapState {
   final double selectedDiapozone;
   @override
   @JsonKey()
-  final bool locationPermissionIsNOtGiven;
+  final bool locationPermissionDenied;
   @override
   @JsonKey()
   final bool locationServiceIsNotEnabled;
@@ -452,7 +452,7 @@ class _$MapStateImpl extends _MapState {
 
   @override
   String toString() {
-    return 'MapState(isloading: $isloading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, activeMarker: $activeMarker, distances: $distances, selectedDiapozone: $selectedDiapozone, locationPermissionIsNOtGiven: $locationPermissionIsNOtGiven, locationServiceIsNotEnabled: $locationServiceIsNotEnabled, listOfBool: $listOfBool, gymFoundBySearching: $gymFoundBySearching, isSearchbarOpened: $isSearchbarOpened, activitiesWithGymsInsideAll: $activitiesWithGymsInsideAll, activitiesWithGymsInsideFromSelectedDiapozone: $activitiesWithGymsInsideFromSelectedDiapozone, showMapOnly: $showMapOnly, mapScreenShot: $mapScreenShot, topFlex: $topFlex, bottomFlex: $bottomFlex, isLocationIconHidden: $isLocationIconHidden)';
+    return 'MapState(isloading: $isloading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, activeMarker: $activeMarker, distances: $distances, selectedDiapozone: $selectedDiapozone, locationPermissionDenied: $locationPermissionDenied, locationServiceIsNotEnabled: $locationServiceIsNotEnabled, listOfBool: $listOfBool, gymFoundBySearching: $gymFoundBySearching, isSearchbarOpened: $isSearchbarOpened, activitiesWithGymsInsideAll: $activitiesWithGymsInsideAll, activitiesWithGymsInsideFromSelectedDiapozone: $activitiesWithGymsInsideFromSelectedDiapozone, showMapOnly: $showMapOnly, mapScreenShot: $mapScreenShot, topFlex: $topFlex, bottomFlex: $bottomFlex, isLocationIconHidden: $isLocationIconHidden)';
   }
 
   @override
@@ -472,10 +472,9 @@ class _$MapStateImpl extends _MapState {
                 .equals(other._distances, _distances) &&
             (identical(other.selectedDiapozone, selectedDiapozone) ||
                 other.selectedDiapozone == selectedDiapozone) &&
-            (identical(other.locationPermissionIsNOtGiven,
-                    locationPermissionIsNOtGiven) ||
-                other.locationPermissionIsNOtGiven ==
-                    locationPermissionIsNOtGiven) &&
+            (identical(
+                    other.locationPermissionDenied, locationPermissionDenied) ||
+                other.locationPermissionDenied == locationPermissionDenied) &&
             (identical(other.locationServiceIsNotEnabled,
                     locationServiceIsNotEnabled) ||
                 other.locationServiceIsNotEnabled ==
@@ -512,7 +511,7 @@ class _$MapStateImpl extends _MapState {
       activeMarker,
       const DeepCollectionEquality().hash(_distances),
       selectedDiapozone,
-      locationPermissionIsNOtGiven,
+      locationPermissionDenied,
       locationServiceIsNotEnabled,
       const DeepCollectionEquality().hash(_listOfBool),
       const DeepCollectionEquality().hash(_gymFoundBySearching),
@@ -541,7 +540,7 @@ abstract class _MapState extends MapState {
       final EachMarkersModel? activeMarker,
       final List<double> distances,
       final double selectedDiapozone,
-      final bool locationPermissionIsNOtGiven,
+      final bool locationPermissionDenied,
       final bool locationServiceIsNotEnabled,
       final List<bool> listOfBool,
       final List<GymData> gymFoundBySearching,
@@ -569,7 +568,7 @@ abstract class _MapState extends MapState {
   @override
   double get selectedDiapozone;
   @override
-  bool get locationPermissionIsNOtGiven;
+  bool get locationPermissionDenied;
   @override
   bool get locationServiceIsNotEnabled;
   @override

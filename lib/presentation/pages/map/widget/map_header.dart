@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:activity/application/map/map_notifier.dart';
 import 'package:activity/application/map/map_state.dart';
+import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/custom_text.dart';
@@ -9,6 +10,7 @@ import 'package:activity/presentation/components/ui_button_filled.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -378,35 +380,33 @@ class _MainHeaderState extends State<MapHeader> {
                         child: Center(
                           child: SvgPicture.asset(
                             'assets/svg/calendar.svg',
-                            
                           ),
                         ),
                         //onTap: () => {context.go('/schedule')},
                       ),
                     ),
                     const Spacer(),
-                    SizedBox(
-                      child: CircleAvatar(
+                    Consumer(builder: (context, ref, child) {
+                      final settingsState = ref.watch(settingsProvider);
+                      return CircleAvatar(
                         radius: 20.r,
-                        backgroundColor: const Color.fromRGBO(119, 170, 249, 1),
-                        child: Padding(
-                          padding: EdgeInsets.all(2.r),
-                          child: ClipOval(
-                              child: Image.asset(
-                            AppConstants.cristianBale,
-                            fit: BoxFit.cover,
-                          )
-                              /* CachedNetworkImage(
-                                imageUrl: AppConstants.owlNetworkImage,
-                                fit: BoxFit.cover,
-                                errorWidget: (context, url, error) {
-                                  return const SizedBox();
+                        backgroundColor: AppColors.blueColor,
+                        child: settingsState.avatar.isEmpty
+                            ? CircleAvatar(
+                                radius: 28.r,
+                                backgroundImage:
+                                    const AssetImage(AppConstants.cristianBale))
+                            : CircleAvatar(
+                                radius: 18.r,
+                                backgroundImage: NetworkImage(
+                                    "http://77.222.53.122/image/${settingsState.avatar}"),
+                                onBackgroundImageError:
+                                    (exception, stackTrace) {
+                                  debugPrint(exception.toString());
                                 },
-                              ), */
                               ),
-                        ),
-                      ),
-                    ),
+                      );
+                    }),
                   ],
                 ),
               ),

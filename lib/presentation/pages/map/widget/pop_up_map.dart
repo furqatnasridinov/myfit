@@ -49,39 +49,38 @@ class PopUpMap extends StatelessWidget {
                   ),
                 ),
                 10.horizontalSpace,
-                Expanded(
-                  child: SizedBox(
-                    //color: Colors.red,
-                    height: 26.h,
-                    child: Consumer(
-                      builder: (context, ref, child) {
-                        final activityState = ref.watch(activityProvider);
-                        //final activityEvent = ref.read(activityProvider.notifier);
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: activityState.activityTypes?.length,
-                          itemBuilder: (context, index) {
-                            final name = activityState.activityTypes?[index];
-                            return Container(
-                              margin: EdgeInsets.only(right: 10.w),
-                              width: 24.w,
-                              height: 24.h,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(6.r),
-                                color: AppColors.backgroundColor,
-                              ),
-                              child: SvgPicture.asset(
-                                AppHelpers().getIconSvg(name!).isEmpty
-                                    ? "assets/svg/gym.svg"
-                                    : AppHelpers().getIconSvg(name),
-                                height: 15.h,
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
+                Container(
+                  alignment: Alignment.centerRight,
+                  //color: Colors.red,
+                  height: 26.h,
+                  child: Consumer(
+                    builder: (context, ref, child) {
+                      final activityState = ref.watch(activityProvider);
+                      //final activityEvent = ref.read(activityProvider.notifier);
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: activityState.activityTypes?.length,
+                        itemBuilder: (context, index) {
+                          final name = activityState.activityTypes?[index];
+                          return Container(
+                            margin: EdgeInsets.only(right: 10.w),
+                            width: 24.w,
+                            height: 24.h,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(6.r),
+                              color: AppColors.backgroundColor,
+                            ),
+                            child: SvgPicture.asset(
+                              AppHelpers().getIconSvg(name!).isEmpty
+                                  ? "assets/svg/gym.svg"
+                                  : AppHelpers().getIconSvg(name),
+                              height: 15.h,
+                            ),
+                          );
+                        },
+                      );
+                    },
                   ),
                 ),
               ],

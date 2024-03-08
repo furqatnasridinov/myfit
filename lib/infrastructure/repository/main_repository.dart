@@ -115,7 +115,8 @@ class MainRepository implements MainRepositoryInterface {
       debugPrint("error ${e.toString()}");
       //throw e;
       return ApiResult.failure(
-        error: NetworkExceptions.getDioException(e),
+        error: NetworkExceptions.
+        getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),
       );
     }

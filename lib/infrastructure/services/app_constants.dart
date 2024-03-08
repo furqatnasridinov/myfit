@@ -17,6 +17,11 @@ class AppConstants {
   static const String addNote = "api/schedule/addNote";
   static const String getCities = "api/main/city";
   static const String patchUser = "api/user/true";
+  static const String getUser = "api/user/true";
+  static const String changePhoneSendConfirmationCode = "api/user/changePhoneCodeConfirmation/2";
+  static const String changePhoneSendPhoneNumber = "api/user/changePhone/2";
+  static const String addPicture = "api/user/addPicture";
+
 
   static const String sendPhoneNumber = "api/user/loginCode";
   static const String sendCodeConfirmation = "api/user/loginCodeConfirmation";

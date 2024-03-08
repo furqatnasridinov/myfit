@@ -17,7 +17,11 @@ class RateDialog extends StatefulWidget {
   final int id;
   final String gymName;
   final String describtion;
-  const RateDialog({super.key, required this.id, required this.gymName, required this.describtion});
+  const RateDialog(
+      {super.key,
+      required this.id,
+      required this.gymName,
+      required this.describtion});
 
   @override
   State<RateDialog> createState() => _RateDialogState();
@@ -25,7 +29,7 @@ class RateDialog extends StatefulWidget {
 
 class _RateDialogState extends State<RateDialog> {
   bool hasFocus = false;
-  double rating = 3;
+  double rating = 0;
   bool ratingChanged = false;
   late TextEditingController controller;
 
@@ -43,6 +47,7 @@ class _RateDialogState extends State<RateDialog> {
 
   @override
   Widget build(BuildContext context) {
+    bool rateSelected = ratingChanged && rating != 0;
     return Padding(
       padding: EdgeInsets.all(16.r),
       child: SizedBox(
@@ -97,7 +102,7 @@ class _RateDialogState extends State<RateDialog> {
               child: Center(
                 child: RatingBar.builder(
                   initialRating: rating,
-                  minRating: 1,
+                  minRating: 0,
                   itemPadding: EdgeInsets.symmetric(horizontal: 4.w),
                   direction: Axis.horizontal,
                   itemCount: 5,
@@ -115,6 +120,10 @@ class _RateDialogState extends State<RateDialog> {
                       ratingChanged = true;
                       setState(() {});
                     }
+                    if (value == 0 && ratingChanged) {
+                      ratingChanged = false;
+                      setState(() {});
+                    }
                     rating = value;
                     debugPrint("rating: ${rating.toInt()}");
                   },
@@ -123,7 +132,7 @@ class _RateDialogState extends State<RateDialog> {
             ),
 
             // text field
-            if (ratingChanged)
+            if (rateSelected)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -191,20 +200,28 @@ class _RateDialogState extends State<RateDialog> {
                     child: CustomButton(
                       text: "Отправить",
                       onPressed: () async {
-                        // logic to send the review
-                        final request = RateRequest(
-                          grade: rating.toInt(),
-                          message: controller.text,
-                          lessonUser: LessonUser(id: widget.id),
-                        );
-                        await event.makeARate(context, request: request);
-                        // get updated list of schedule
-                        event.getCompletedSchedules(context);
-                        context.router.pop();
+                        if (rateSelected) {
+                          // logic to send the review
+                          final request = RateRequest(
+                            grade: rating.toInt(),
+                            message: controller.text,
+                            lessonUser: LessonUser(id: widget.id),
+                          );
+                          await event.makeARate(context, request: request);
+                          // get updated list of schedule
+                          event.getCompletedSchedules(context);
+                          context.router.pop();
+                        }
                       },
                       height: 40.h,
-                      buttonColor: AppColors.blueColor,
-                      textColor: Colors.white,
+                      buttonColor: rateSelected
+                          ? AppColors.blueColor
+                          : const Color.fromRGBO(220, 220, 220, 1),
+                      borderColor: rateSelected
+                          ? AppColors.blueColor
+                          : Colors.transparent,
+                      textColor:
+                          rateSelected ? Colors.white : AppColors.greyText,
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
                     ),

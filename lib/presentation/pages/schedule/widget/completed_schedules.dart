@@ -183,7 +183,7 @@ Widget listOfActivitiesEachItem(
                     SizedBox(
                       width: 220.w,
                       child: InterText(
-                        text: description,
+                        text: id.toString(),
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w400,
                       ),

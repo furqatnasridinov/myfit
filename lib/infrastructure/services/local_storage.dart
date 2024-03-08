@@ -350,6 +350,12 @@ class LocalStorage {
     removeSelectedCity();
     removeSelectedCityLat();
     removeSelectedCityLon();
+    removeAge();
+    removeWeight();
+    removeHeight();
+    removeAvatar();
+    removeGender();
+    removeReminderTime();
     // ...
   }
 }

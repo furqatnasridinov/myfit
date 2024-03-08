@@ -27,6 +27,7 @@ mixin _$SettingsState {
   String get age => throw _privateConstructorUsedError;
   String get weight => throw _privateConstructorUsedError;
   String get height => throw _privateConstructorUsedError;
+  String get avatar => throw _privateConstructorUsedError;
   bool get isPhoneEditModeEnabled => throw _privateConstructorUsedError;
   bool get isEmailEditModeEnabled => throw _privateConstructorUsedError;
   String get reminderTime => throw _privateConstructorUsedError;
@@ -56,6 +57,7 @@ abstract class $SettingsStateCopyWith<$Res> {
       String age,
       String weight,
       String height,
+      String avatar,
       bool isPhoneEditModeEnabled,
       bool isEmailEditModeEnabled,
       String reminderTime,
@@ -87,6 +89,7 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     Object? age = null,
     Object? weight = null,
     Object? height = null,
+    Object? avatar = null,
     Object? isPhoneEditModeEnabled = null,
     Object? isEmailEditModeEnabled = null,
     Object? reminderTime = null,
@@ -138,6 +141,10 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.height
           : height // ignore: cast_nullable_to_non_nullable
               as String,
+      avatar: null == avatar
+          ? _value.avatar
+          : avatar // ignore: cast_nullable_to_non_nullable
+              as String,
       isPhoneEditModeEnabled: null == isPhoneEditModeEnabled
           ? _value.isPhoneEditModeEnabled
           : isPhoneEditModeEnabled // ignore: cast_nullable_to_non_nullable
@@ -182,6 +189,7 @@ abstract class _$$SettingsStateImplCopyWith<$Res>
       String age,
       String weight,
       String height,
+      String avatar,
       bool isPhoneEditModeEnabled,
       bool isEmailEditModeEnabled,
       String reminderTime,
@@ -211,6 +219,7 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     Object? age = null,
     Object? weight = null,
     Object? height = null,
+    Object? avatar = null,
     Object? isPhoneEditModeEnabled = null,
     Object? isEmailEditModeEnabled = null,
     Object? reminderTime = null,
@@ -262,6 +271,10 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value.height
           : height // ignore: cast_nullable_to_non_nullable
               as String,
+      avatar: null == avatar
+          ? _value.avatar
+          : avatar // ignore: cast_nullable_to_non_nullable
+              as String,
       isPhoneEditModeEnabled: null == isPhoneEditModeEnabled
           ? _value.isPhoneEditModeEnabled
           : isPhoneEditModeEnabled // ignore: cast_nullable_to_non_nullable
@@ -301,6 +314,7 @@ class _$SettingsStateImpl extends _SettingsState {
       this.age = "",
       this.weight = "",
       this.height = "",
+      this.avatar = "",
       this.isPhoneEditModeEnabled = false,
       this.isEmailEditModeEnabled = false,
       this.reminderTime = "30",
@@ -350,6 +364,9 @@ class _$SettingsStateImpl extends _SettingsState {
   final String height;
   @override
   @JsonKey()
+  final String avatar;
+  @override
+  @JsonKey()
   final bool isPhoneEditModeEnabled;
   @override
   @JsonKey()
@@ -366,7 +383,7 @@ class _$SettingsStateImpl extends _SettingsState {
 
   @override
   String toString() {
-    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue)';
+    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue)';
   }
 
   @override
@@ -393,6 +410,7 @@ class _$SettingsStateImpl extends _SettingsState {
             (identical(other.age, age) || other.age == age) &&
             (identical(other.weight, weight) || other.weight == weight) &&
             (identical(other.height, height) || other.height == height) &&
+            (identical(other.avatar, avatar) || other.avatar == avatar) &&
             (identical(other.isPhoneEditModeEnabled, isPhoneEditModeEnabled) ||
                 other.isPhoneEditModeEnabled == isPhoneEditModeEnabled) &&
             (identical(other.isEmailEditModeEnabled, isEmailEditModeEnabled) ||
@@ -419,6 +437,7 @@ class _$SettingsStateImpl extends _SettingsState {
       age,
       weight,
       height,
+      avatar,
       isPhoneEditModeEnabled,
       isEmailEditModeEnabled,
       reminderTime,
@@ -445,6 +464,7 @@ abstract class _SettingsState extends SettingsState {
       final String age,
       final String weight,
       final String height,
+      final String avatar,
       final bool isPhoneEditModeEnabled,
       final bool isEmailEditModeEnabled,
       final String reminderTime,
@@ -474,6 +494,8 @@ abstract class _SettingsState extends SettingsState {
   String get weight;
   @override
   String get height;
+  @override
+  String get avatar;
   @override
   bool get isPhoneEditModeEnabled;
   @override
