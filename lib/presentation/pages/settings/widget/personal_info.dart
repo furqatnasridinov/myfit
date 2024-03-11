@@ -15,7 +15,6 @@ import 'package:activity/presentation/components/custom_textformfield.dart';
 import 'package:activity/presentation/components/edit_button.dart';
 import 'package:activity/presentation/pages/settings/widget/widget.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -328,7 +327,7 @@ class _PersonalInfoState extends State<PersonalInfo> {
                 maxLength: 12,
               ),
             ),
-            32.verticalSpace,
+           /*  32.verticalSpace,
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -345,7 +344,7 @@ class _PersonalInfoState extends State<PersonalInfo> {
               text: "supa-starrr@vinewood.com",
               fontSize: 14.sp,
               fontWeight: FontWeight.w400,
-            ),
+            ), */
           ],
         )),
       ],

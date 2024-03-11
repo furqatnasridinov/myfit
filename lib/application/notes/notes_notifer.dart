@@ -137,7 +137,7 @@ class NotesNotifier extends StateNotifier<NotesState> {
           state = state.copyWith(isloading: false);
           //state = state.copyWith(notesMapData: mapData);
         },
-        failure: (error, statusCode) {
+        failure: (error, statusCode, operationInfo) {
           state = state.copyWith(isloading: false);
           AppHelpers.showErrorSnack(context, "${error.toString()} statuscode $statusCode");
         },
@@ -159,7 +159,7 @@ class NotesNotifier extends StateNotifier<NotesState> {
       final response = await _scheduleRepositoryInterface.addNotes(request);
       response.when(
         success: (data) {},
-        failure: (error, statusCode) {},
+        failure: (error, statusCode, operationInfo) {},
       );
     } else {
       // ignore: use_build_context_synchronously

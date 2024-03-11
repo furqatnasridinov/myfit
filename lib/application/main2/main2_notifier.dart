@@ -54,36 +54,8 @@ class Main2Notifier extends StateNotifier<Main2State> {
         month = "Декабрь";
         break;
     }
-    switch (day) {
-      case "01":
-        day = "1";
-        break;
-      case "02":
-        day = "2";
-        break;
-      case "03":
-        day = "3";
-        break;
-      case "04":
-        day = "4";
-        break;
-      case "05":
-        day = "5";
-        break;
-      case "06":
-        day = "6";
-        break;
-      case "07":
-        day = "7";
-        break;
-      case "08":
-        day = "8";
-        break;
-      case "09":
-        day = "9";
-        break;
-      default:
-    }
+    // 09 марта to 9 марта (making it INT then STRING)
+    day = int.parse(day).toString();
     return "$month $day";
   }
 
@@ -129,37 +101,8 @@ class Main2Notifier extends StateNotifier<Main2State> {
         break;
     }
     String daysplitted = parts[2];
-    switch (daysplitted) {
-      case "01":
-        daysplitted = "1";
-        break;
-      case "02":
-        daysplitted = "2";
-        break;
-      case "03":
-        daysplitted = "3";
-        break;
-      case "04":
-        daysplitted = "4";
-        break;
-      case "05":
-        daysplitted = "5";
-        break;
-      case "06":
-        daysplitted = "6";
-        break;
-      case "07":
-        daysplitted = "7";
-        break;
-      case "08":
-        daysplitted = "8";
-        break;
-      case "09":
-        daysplitted = "9";
-        break;
-      default:
-    }
-
+    // 09 марта to 9 марта (making it INT then STRING)
+    daysplitted = int.parse(daysplitted).toString();
     return "$daysplitted $month ";
   }
 
@@ -286,7 +229,7 @@ class Main2Notifier extends StateNotifier<Main2State> {
             );
           }
         },
-        failure: (error, statusCode) {
+        failure: (error, statusCode, operationInfo) {
           state = state.copyWith(nearestLessonIsLoading: false);
           AppHelpers.showErrorSnack(context, error.toString());
         },
@@ -323,7 +266,7 @@ class Main2Notifier extends StateNotifier<Main2State> {
             statsForMonth: list!.reversed.toList(),
           );
         },
-        failure: (error, statusCode) {
+        failure: (error, statusCode, operationInfo) {
           state = state.copyWith(statsMonthIsloading: false);
           AppHelpers.showErrorSnack(context, error.toString());
         },
@@ -361,7 +304,7 @@ class Main2Notifier extends StateNotifier<Main2State> {
             state = state.copyWith(schedulesFoundBySearching: list);
           }
         },
-        failure: (error, statusCode) {},
+        failure: (error, statusCode, operationInfo) {},
       );
     } else {
       // ignore: use_build_context_synchronously

@@ -5,6 +5,8 @@ import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_card.dart';
+import 'package:activity/presentation/pages/map/widget/pop_up_map.dart';
+import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -239,8 +241,13 @@ class _MapScreenState extends ConsumerState<MapScreen>
                       //
                       onCameraPositionChanged:
                           (cameraPosition, reason, finished) {
-                        if (reason == CameraUpdateReason.gestures) {
+                        if (state.isGymsPopupShown && reason == CameraUpdateReason.gestures) {
                           event.removePopUp();
+                          event.showLocationButton();
+                        }
+                        // when stops moving show pop up
+                        if (finished) {
+                          event.showPopUpOnMap(context);
                         }
                       },
                       logoAlignment: const MapAlignment(
@@ -319,6 +326,23 @@ class _MapScreenState extends ConsumerState<MapScreen>
                       ),
                     ),
                   ),
+
+                  // here we shop bottom card of gyms
+                  if (state.isGymsPopupShown)
+                    Positioned(
+                      bottom: 0,
+                      child: PopUpMap(
+                        name: state.activeMarker?.name ?? "??",
+                        address: state.activeMarker?.address ?? "??",
+                        onTap: () {
+                          //event.removePopUp();
+                          event.showLocationButton();
+                          context.router.push(
+                            ActivityRoute(gymId: state.activeMarker?.id ?? 0),
+                          );
+                        },
+                      ),
+                    ),
                 ],
               ),
             ),

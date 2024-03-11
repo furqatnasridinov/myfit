@@ -22,7 +22,7 @@ class MainNotifier extends StateNotifier<MainState> {
         success: (data) {
           state = state.copyWith(advantages: data);
         },
-        failure: (error, statusCode) {},
+        failure: (error, statusCode, operationInfo) {},
       );
     } else {
       // ignore: use_build_context_synchronously
@@ -40,7 +40,7 @@ class MainNotifier extends StateNotifier<MainState> {
         success: (data) {
           state = state.copyWith(subscribtions: data);
         },
-        failure: (error, statusCode) {
+        failure: (error, statusCode, operationInfo) {
           state = state.copyWith(isloading: false);
         },
       );
@@ -60,7 +60,7 @@ class MainNotifier extends StateNotifier<MainState> {
         success: (data) {
           state = state.copyWith(comments: data);
         },
-        failure: (error, statusCode) {},
+        failure: (error, statusCode, operationInfo) {},
       );
     } else {
       // ignore: use_build_context_synchronously
@@ -104,7 +104,7 @@ class MainNotifier extends StateNotifier<MainState> {
           });
           state = state.copyWith(activitiesNearClient: listcha);
         },
-        failure: (error, statusCode) {},
+        failure: (error, statusCode, operationInfo) {},
       );
     } else {
       // ignore: use_build_context_synchronously

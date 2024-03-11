@@ -333,7 +333,7 @@ class LocalStorage {
       _preferences?.remove(AppConstants.keyUserName);
 
   static Future<bool> checkIfIsNotEmpty() async {
-    if (getToken().isNotEmpty && getUserId().isNotEmpty) {
+    if (getToken().isNotEmpty) {
       return true;
     } else {
       return false;

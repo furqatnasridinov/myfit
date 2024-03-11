@@ -28,7 +28,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
             isGymLoading: false,
           );
         },
-        failure: (error, statusCode) {
+        failure: (error, statusCode, operationInfo) {
           state = state.copyWith(isGymLoading: false);
           AppHelpers.showErrorSnack(context, "$error $statusCode");
         },
@@ -57,7 +57,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
             );
           }
         },
-        failure: (error, statusCode) {
+        failure: (error, statusCode, operationInfo) {
           state = state.copyWith(isActivitiesListLoading: false);
           AppHelpers.showErrorSnack(context, "$error $statusCode");
         },
@@ -83,7 +83,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
             );
           }
         },
-        failure: (error, statusCode) {
+        failure: (error, statusCode, operationInfo) {
           state = state.copyWith(isPhotosLoading: false);
           AppHelpers.showErrorSnack(context, "$error $statusCode");
         },
@@ -104,7 +104,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
             state = state.copyWith(infosForType: data["object"]);
           }
         },
-        failure: (error, statusCode) {
+        failure: (error, statusCode, operationInfo) {
           AppHelpers.showErrorSnack(context, "$error $statusCode");
         },
       );
@@ -235,7 +235,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
             );
           }
         },
-        failure: (error, statusCode) {
+        failure: (error, statusCode, operationInfo) {
           state = state.copyWith(isSchedulesLoading: false);
           AppHelpers.showErrorSnack(context, "$error $statusCode");
         },
@@ -499,7 +499,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
             //context.replaceRoute(const Main2Route());
           }
         },
-        failure: (error, statusCode) {},
+        failure: (error, statusCode, operationInfo) {},
       );
     } else {
       AppHelpers.showCheckTopSnackBar(context);

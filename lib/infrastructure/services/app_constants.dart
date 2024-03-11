@@ -30,7 +30,8 @@ class AppConstants {
 
   // photo
   static const String placeholderPhoto = 'assets/images/first.png';
-  static const String cristianBale = "assets/images/american_psycho.jpg";
+  static const String cristianBale = "assets/images/placeholder.jpg";
+  static const String defaultAvatar = "assets/images/default_avatar.png";
 
   // map data
   static const double moscowLat = 55.7522200;

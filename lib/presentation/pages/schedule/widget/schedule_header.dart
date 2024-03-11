@@ -352,22 +352,27 @@ class _MainHeaderState extends State<ScheduleHeader> {
                 padding: EdgeInsets.only(right: 15.w),
                 child: Consumer(builder: (context, ref, child) {
                   final settingsState = ref.watch(settingsProvider);
-                  return CircleAvatar(
-                    radius: 20.r,
-                    backgroundColor: AppColors.blueColor,
-                    child: settingsState.avatar.isEmpty
-                        ? CircleAvatar(
-                            radius: 28.r,
-                            backgroundImage:
-                                const AssetImage(AppConstants.cristianBale))
-                        : CircleAvatar(
-                            radius: 18.r,
-                            backgroundImage: NetworkImage(
-                                "http://77.222.53.122/image/${settingsState.avatar}"),
-                            onBackgroundImageError: (exception, stackTrace) {
-                              debugPrint(exception.toString());
-                            },
-                          ),
+                  return InkWell(
+                    onTap: (){
+                      context.router.push(const SettingsRoute());
+                    },
+                    child: CircleAvatar(
+                      radius: 20.r,
+                      backgroundColor: AppColors.blueColor,
+                      child: settingsState.avatar.isEmpty
+                          ? CircleAvatar(
+                              radius: 18.r,
+                              backgroundImage:
+                                  const AssetImage(AppConstants.cristianBale))
+                          : CircleAvatar(
+                              radius: 18.r,
+                              backgroundImage: NetworkImage(
+                                  "http://77.222.53.122/image/${settingsState.avatar}"),
+                              onBackgroundImageError: (exception, stackTrace) {
+                                debugPrint(exception.toString());
+                              },
+                            ),
+                    ),
                   );
                 }),
               ),

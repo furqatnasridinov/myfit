@@ -78,7 +78,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
             );
           }
         },
-        failure: (error, statusCode) {
+        failure: (error, statusCode, operationInfo) {
           AppHelpers.showErrorSnack(context, "$error $statusCode");
           state = state.copyWith(isloading: false);
         },
@@ -98,7 +98,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
         success: (data) {
           debugPrint(data.toString());
         },
-        failure: (error, statusCode) {
+        failure: (error, statusCode, operationInfo) {
           AppHelpers.showErrorSnack(context, "$error $statusCode");
         },
       );
@@ -113,7 +113,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       final response = await _scheduleRepositoryInterface.deleteRate(id: id);
       response.when(success: (data) {
         debugPrint(data.toString());
-      }, failure: (error, statusCode) {
+      }, failure: (error, statusCode, operationInfo) {
         AppHelpers.showErrorSnack(context, "$error $statusCode");
       });
     } else {
@@ -143,7 +143,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
           }
           state = state.copyWith(completedSchedules: listToCollect);
         }
-      }, failure: (error, statusCode) {
+      }, failure: (error, statusCode, operationInfo) {
         AppHelpers.showErrorSnack(context, "$error $statusCode");
       });
     } else {
@@ -363,7 +363,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
         success: (data) {
           AppHelpers.showSnack(context, "Запись отменена");
         },
-        failure: (error, statusCode) {
+        failure: (error, statusCode, operationInfo) {
           AppHelpers.showErrorSnack(context, "$error $statusCode");
         },
       );

@@ -216,7 +216,7 @@ class _MainHeaderState extends State<Main2Header> {
                           backgroundColor: AppColors.blueColor,
                           child: settingsState.avatar.isEmpty
                               ? CircleAvatar(
-                                  radius: 28.r,
+                                  radius: 18.r,
                                   backgroundImage: const AssetImage(
                                       AppConstants.cristianBale))
                               : CircleAvatar(

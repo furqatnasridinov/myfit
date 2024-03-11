@@ -136,13 +136,13 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
               : const Main2Route();
           await LocalStorage.setToken(data.jwtToken ?? "");
           await LocalStorage.setPhoneNumber(phoneNumber);
+          await LocalStorage.setUserId(data.user?.id.toString() ?? "0");
           if (data.user?.firstName != null) {
             await Future.wait([
               LocalStorage.setUserName(data.user?.firstName ?? ""),
               LocalStorage.setUserLastName(data.user?.lastName ?? ""),
               LocalStorage.setUserPatronomic(data.user?.patronymic ?? ""),
               //LocalStorage.setPhoneNumber(data.user?.login ?? ""),
-              LocalStorage.setUserId(data.user?.id.toString() ?? "0"),
               LocalStorage.setSelectedCity(data.user?.city?.name ?? ""),
               LocalStorage.setSelectedCityLat(data.user?.city?.latitude ?? ""),
               LocalStorage.setSelectedCityLon(data.user?.city?.longitude ?? ""),
@@ -155,7 +155,7 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
           }
           moveClientToNextPage(context, nextRoute);
         },
-        failure: (error, statusCode) {
+        failure: (error, statusCode, operationInfo) {
           AppHelpers.showErrorSnack(context, "$error $statusCode");
         },
       );

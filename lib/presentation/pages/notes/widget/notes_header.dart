@@ -1,12 +1,15 @@
 import 'dart:ui';
+import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/components/ui_button_filled.dart';
+import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -283,72 +286,33 @@ class _MainHeaderState extends State<NotesHeader> {
       actions: [
         textfieldFocusnode.hasFocus
             ? const SizedBox()
-            : Container(
-                width: 95.w,
-                height: 40.h,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(100.r),
-                  border: Border(
-                    bottom: BorderSide(
-                      color: AppColors.greyBorder,
-                      width: 1.w,
-                    ),
-                    top: BorderSide(
-                      color: AppColors.greyBorder,
-                      width: 1.w,
-                    ),
-                    left: BorderSide(
-                      color: AppColors.greyBorder,
-                      width: 1.w,
-                    ),
-                  ),
-                ),
-                margin: EdgeInsets.only(
-                  right: 16.w,
-                ),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 20.w,
-                        top: 8.h,
-                        bottom: 8.h,
-                      ),
-                      child: GestureDetector(
-                        child: SvgPicture.asset(
-                          'assets/svg/calendar.svg',
-                          width: 24.w,
-                          height: 24.h,
-                        ),
-                        //onTap: () => {context.go('/schedule')},
-                      ),
-                    ),
-                    const Spacer(),
-                    Container(
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.blueColor,
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(2.r),
-                        child: ClipOval(
-                            child: Image.asset(
-                          AppConstants.cristianBale,
-                          fit: BoxFit.cover,
-                        )
-                            /* CachedNetworkImage(
-                                imageUrl: AppConstants.owlNetworkImage,
-                                fit: BoxFit.cover,
-                                errorWidget: (context, url, error) {
-                                  return const SizedBox();
-                                },
-                              ), */
+            : Padding(
+                padding: EdgeInsets.only(right: 15.w),
+                child: Consumer(builder: (context, ref, child) {
+                  final settingsState = ref.watch(settingsProvider);
+                  return InkWell(
+                    onTap: () {
+                      context.router.push(const SettingsRoute());
+                    },
+                    child: CircleAvatar(
+                      radius: 20.r,
+                      backgroundColor: AppColors.blueColor,
+                      child: settingsState.avatar.isEmpty
+                          ? CircleAvatar(
+                              radius: 18.r,
+                              backgroundImage:
+                                  const AssetImage(AppConstants.cristianBale))
+                          : CircleAvatar(
+                              radius: 18.r,
+                              backgroundImage: NetworkImage(
+                                  "http://77.222.53.122/image/${settingsState.avatar}"),
+                              onBackgroundImageError: (exception, stackTrace) {
+                                debugPrint(exception.toString());
+                              },
                             ),
-                      ),
                     ),
-                  ],
-                ),
+                  );
+                }),
               ),
       ],
     );

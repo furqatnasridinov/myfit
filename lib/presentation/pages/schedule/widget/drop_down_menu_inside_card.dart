@@ -7,11 +7,11 @@ import 'package:flutter_svg/svg.dart';
 
 class DropDownMenuInsideCard extends StatelessWidget {
   void Function()? onTap;
-  int? id;
+  void Function()? onTap2;
   DropDownMenuInsideCard({
     super.key,
     this.onTap,
-    this.id,
+    this.onTap2,
   });
 
   @override
@@ -22,10 +22,23 @@ class DropDownMenuInsideCard extends StatelessWidget {
           width: 230.w,
           maxWidth: 255.w,
           height: 45.h,
-          customOffset: [-25.0.w, -39.h],
+          customOffset: [-25.0.w, -25.h],
           dropDownItemsList: [
             {
               'title': 'Открыть заметки',
+              'icon': SvgPicture.asset(
+                'assets/svg/edit_icon.svg',
+                colorFilter: const ColorFilter.mode(
+                  Color.fromRGBO(62, 134, 245, 1),
+                  BlendMode.srcIn,
+                ),
+                height: 18.h,
+                width: 18.w,
+              ),
+              'action': onTap,
+            },
+            {
+              'title': 'Подробнее о заведении',
               'icon': SvgPicture.asset(
                 'assets/svg/copy.svg',
                 colorFilter: const ColorFilter.mode(
@@ -35,7 +48,7 @@ class DropDownMenuInsideCard extends StatelessWidget {
                 height: 18.h,
                 width: 18.w,
               ),
-              'action': onTap,
+              'action': onTap2,
             },
           ],
           dropDownChild: const Icon(

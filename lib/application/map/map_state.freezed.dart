@@ -38,6 +38,7 @@ mixin _$MapState {
   int get topFlex => throw _privateConstructorUsedError;
   int get bottomFlex => throw _privateConstructorUsedError;
   bool get isLocationIconHidden => throw _privateConstructorUsedError;
+  bool get isGymsPopupShown => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $MapStateCopyWith<MapState> get copyWith =>
@@ -68,7 +69,8 @@ abstract class $MapStateCopyWith<$Res> {
       Uint8List? mapScreenShot,
       int topFlex,
       int bottomFlex,
-      bool isLocationIconHidden});
+      bool isLocationIconHidden,
+      bool isGymsPopupShown});
 }
 
 /// @nodoc
@@ -102,6 +104,7 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
     Object? topFlex = null,
     Object? bottomFlex = null,
     Object? isLocationIconHidden = null,
+    Object? isGymsPopupShown = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -177,6 +180,10 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
           ? _value.isLocationIconHidden
           : isLocationIconHidden // ignore: cast_nullable_to_non_nullable
               as bool,
+      isGymsPopupShown: null == isGymsPopupShown
+          ? _value.isGymsPopupShown
+          : isGymsPopupShown // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -208,7 +215,8 @@ abstract class _$$MapStateImplCopyWith<$Res>
       Uint8List? mapScreenShot,
       int topFlex,
       int bottomFlex,
-      bool isLocationIconHidden});
+      bool isLocationIconHidden,
+      bool isGymsPopupShown});
 }
 
 /// @nodoc
@@ -240,6 +248,7 @@ class __$$MapStateImplCopyWithImpl<$Res>
     Object? topFlex = null,
     Object? bottomFlex = null,
     Object? isLocationIconHidden = null,
+    Object? isGymsPopupShown = null,
   }) {
     return _then(_$MapStateImpl(
       isloading: null == isloading
@@ -315,6 +324,10 @@ class __$$MapStateImplCopyWithImpl<$Res>
           ? _value.isLocationIconHidden
           : isLocationIconHidden // ignore: cast_nullable_to_non_nullable
               as bool,
+      isGymsPopupShown: null == isGymsPopupShown
+          ? _value.isGymsPopupShown
+          : isGymsPopupShown // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -342,7 +355,8 @@ class _$MapStateImpl extends _MapState {
       this.mapScreenShot = null,
       this.topFlex = 2,
       this.bottomFlex = 6,
-      this.isLocationIconHidden = false})
+      this.isLocationIconHidden = false,
+      this.isGymsPopupShown = false})
       : _listOfMarkers = listOfMarkers,
         _distances = distances,
         _listOfBool = listOfBool,
@@ -449,10 +463,13 @@ class _$MapStateImpl extends _MapState {
   @override
   @JsonKey()
   final bool isLocationIconHidden;
+  @override
+  @JsonKey()
+  final bool isGymsPopupShown;
 
   @override
   String toString() {
-    return 'MapState(isloading: $isloading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, activeMarker: $activeMarker, distances: $distances, selectedDiapozone: $selectedDiapozone, locationPermissionDenied: $locationPermissionDenied, locationServiceIsNotEnabled: $locationServiceIsNotEnabled, listOfBool: $listOfBool, gymFoundBySearching: $gymFoundBySearching, isSearchbarOpened: $isSearchbarOpened, activitiesWithGymsInsideAll: $activitiesWithGymsInsideAll, activitiesWithGymsInsideFromSelectedDiapozone: $activitiesWithGymsInsideFromSelectedDiapozone, showMapOnly: $showMapOnly, mapScreenShot: $mapScreenShot, topFlex: $topFlex, bottomFlex: $bottomFlex, isLocationIconHidden: $isLocationIconHidden)';
+    return 'MapState(isloading: $isloading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, activeMarker: $activeMarker, distances: $distances, selectedDiapozone: $selectedDiapozone, locationPermissionDenied: $locationPermissionDenied, locationServiceIsNotEnabled: $locationServiceIsNotEnabled, listOfBool: $listOfBool, gymFoundBySearching: $gymFoundBySearching, isSearchbarOpened: $isSearchbarOpened, activitiesWithGymsInsideAll: $activitiesWithGymsInsideAll, activitiesWithGymsInsideFromSelectedDiapozone: $activitiesWithGymsInsideFromSelectedDiapozone, showMapOnly: $showMapOnly, mapScreenShot: $mapScreenShot, topFlex: $topFlex, bottomFlex: $bottomFlex, isLocationIconHidden: $isLocationIconHidden, isGymsPopupShown: $isGymsPopupShown)';
   }
 
   @override
@@ -499,31 +516,35 @@ class _$MapStateImpl extends _MapState {
             (identical(other.bottomFlex, bottomFlex) ||
                 other.bottomFlex == bottomFlex) &&
             (identical(other.isLocationIconHidden, isLocationIconHidden) ||
-                other.isLocationIconHidden == isLocationIconHidden));
+                other.isLocationIconHidden == isLocationIconHidden) &&
+            (identical(other.isGymsPopupShown, isGymsPopupShown) ||
+                other.isGymsPopupShown == isGymsPopupShown));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      isloading,
-      userPosition,
-      const DeepCollectionEquality().hash(_listOfMarkers),
-      activeMarker,
-      const DeepCollectionEquality().hash(_distances),
-      selectedDiapozone,
-      locationPermissionDenied,
-      locationServiceIsNotEnabled,
-      const DeepCollectionEquality().hash(_listOfBool),
-      const DeepCollectionEquality().hash(_gymFoundBySearching),
-      isSearchbarOpened,
-      const DeepCollectionEquality().hash(_activitiesWithGymsInsideAll),
-      const DeepCollectionEquality()
-          .hash(_activitiesWithGymsInsideFromSelectedDiapozone),
-      showMapOnly,
-      const DeepCollectionEquality().hash(mapScreenShot),
-      topFlex,
-      bottomFlex,
-      isLocationIconHidden);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        isloading,
+        userPosition,
+        const DeepCollectionEquality().hash(_listOfMarkers),
+        activeMarker,
+        const DeepCollectionEquality().hash(_distances),
+        selectedDiapozone,
+        locationPermissionDenied,
+        locationServiceIsNotEnabled,
+        const DeepCollectionEquality().hash(_listOfBool),
+        const DeepCollectionEquality().hash(_gymFoundBySearching),
+        isSearchbarOpened,
+        const DeepCollectionEquality().hash(_activitiesWithGymsInsideAll),
+        const DeepCollectionEquality()
+            .hash(_activitiesWithGymsInsideFromSelectedDiapozone),
+        showMapOnly,
+        const DeepCollectionEquality().hash(mapScreenShot),
+        topFlex,
+        bottomFlex,
+        isLocationIconHidden,
+        isGymsPopupShown
+      ]);
 
   @JsonKey(ignore: true)
   @override
@@ -552,7 +573,8 @@ abstract class _MapState extends MapState {
       final Uint8List? mapScreenShot,
       final int topFlex,
       final int bottomFlex,
-      final bool isLocationIconHidden}) = _$MapStateImpl;
+      final bool isLocationIconHidden,
+      final bool isGymsPopupShown}) = _$MapStateImpl;
   const _MapState._() : super._();
 
   @override
@@ -592,6 +614,8 @@ abstract class _MapState extends MapState {
   int get bottomFlex;
   @override
   bool get isLocationIconHidden;
+  @override
+  bool get isGymsPopupShown;
   @override
   @JsonKey(ignore: true)
   _$$MapStateImplCopyWith<_$MapStateImpl> get copyWith =>

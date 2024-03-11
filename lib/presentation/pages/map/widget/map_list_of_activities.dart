@@ -64,7 +64,6 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                             event: widget.event,
                             state: widget.state,
                           ),
-                          
                           ListView.builder(
                             //controller: widget.activitiesListController,
                             physics: const NeverScrollableScrollPhysics(),
@@ -231,6 +230,7 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                       return ListView.builder(
                           itemCount: gymsList.length,
                           //shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
                             return _listOfGymsBuilder(
                               gymsList[index].name,

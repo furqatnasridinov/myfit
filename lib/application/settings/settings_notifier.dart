@@ -66,8 +66,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
             );
           }
         },
-        failure: (error, statuscode) {
-          AppHelpers.showErrorSnack(context, "$error $statuscode");
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
           state = state.copyWith(isCitiesLoading: false);
         },
       );
@@ -89,8 +89,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           // no need to return we are saving locally
           state = state.copyWith(isloading: false);
         },
-        failure: (error, statuscode) {
-          AppHelpers.showErrorSnack(context, "$error $statuscode");
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
           state = state.copyWith(isloading: false);
         },
       );
@@ -112,8 +112,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           // no need to return we are saving locally
           state = state.copyWith(isloading: false);
         },
-        failure: (error, statuscode) {
-          AppHelpers.showErrorSnack(context, "$error $statuscode");
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
           state = state.copyWith(isloading: false);
         },
       );
@@ -135,8 +135,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           // no need to return we are saving locally
           state = state.copyWith(isloading: false);
         },
-        failure: (error, statuscode) {
-          AppHelpers.showErrorSnack(context, "$error $statuscode");
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
           state = state.copyWith(isloading: false);
         },
       );
@@ -158,8 +158,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           // no need to return we are saving locally
           state = state.copyWith(isloading: false);
         },
-        failure: (error, statuscode) {
-          AppHelpers.showErrorSnack(context, "$error $statuscode");
+       failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
           state = state.copyWith(isloading: false);
         },
       );
@@ -181,8 +181,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           // no need to return we are saving locally
           state = state.copyWith(isloading: false);
         },
-        failure: (error, statuscode) {
-          AppHelpers.showErrorSnack(context, "$error $statuscode");
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
           state = state.copyWith(isloading: false);
         },
       );
@@ -204,8 +204,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           // no need to return we are saving locally
           state = state.copyWith(isloading: false);
         },
-        failure: (error, statuscode) {
-          AppHelpers.showErrorSnack(context, "$error $statuscode");
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
           state = state.copyWith(isloading: false);
         },
       );
@@ -227,8 +227,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           // no need to return we are saving locally
           state = state.copyWith(isloading: false);
         },
-        failure: (error, statuscode) {
-          AppHelpers.showErrorSnack(context, "$error $statuscode");
+       failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
           state = state.copyWith(isloading: false);
         },
       );
@@ -250,8 +250,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           // no need to return we are saving locally
           state = state.copyWith(isloading: false);
         },
-        failure: (error, statuscode) {
-          AppHelpers.showErrorSnack(context, "$error $statuscode");
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(context, "$error $statusCode");
           state = state.copyWith(isloading: false);
         },
       );
@@ -269,8 +269,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       response.when(success: (data) {
         // data
         debugPrint(data.toString());
-      }, failure: (error, statuscode) {
-        AppHelpers.showErrorSnack(context, "$error $statuscode");
+      }, failure: (error, statusCode, operationInfo) {
+        AppHelpers.showErrorSnack(context, "$error $statusCode");
       });
     } else {
       AppHelpers.showCheckTopSnackBar(context);
@@ -287,8 +287,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         LocalStorage.setPhoneNumber(data["object"]["user"]["login"]);
         LocalStorage.setToken(data["object"]["jwtToken"]);
         debugPrint(data.toString());
-      }, failure: (error, statuscode) {
-        AppHelpers.showErrorSnack(context, "$error $statuscode");
+      }, failure: (error, statusCode, operationInfo) {
+        AppHelpers.showErrorSnack(context, "$error $statusCode");
       });
     } else {
       AppHelpers.showCheckTopSnackBar(context);
@@ -303,7 +303,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           await _settingsRepositoryInterface.addPicture(image: image);
       response.when(success: (data) {
         //
-      }, failure: (error, statusCode) {
+      }, failure: (error, statusCode, operationInfo) {
         AppHelpers.showErrorSnack(context, "$error $statusCode");
       });
     } else {
@@ -334,7 +334,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           }
         }
         //debugPrint(data.toString());
-      }, failure: (error, statusCode) {
+      }, failure: (error, statusCode, operationInfo) {
         AppHelpers.showErrorSnack(context, "$error $statusCode");
       });
     } else {

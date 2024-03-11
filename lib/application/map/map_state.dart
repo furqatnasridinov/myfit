@@ -31,6 +31,7 @@ class MapState with _$MapState {
     @Default(2) int topFlex,
     @Default(6) int bottomFlex,
     @Default(false) bool isLocationIconHidden,
+    @Default(false) bool isGymsPopupShown,
   }) = _MapState;
   const MapState._();
 }

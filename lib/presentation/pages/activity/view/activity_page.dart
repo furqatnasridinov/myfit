@@ -1,4 +1,5 @@
 import 'package:activity/application/activity/activity_provider.dart';
+import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,8 @@ class ActivityScreen extends ConsumerStatefulWidget {
 }
 
 class _ActivityPageState extends ConsumerState<ActivityScreen> {
+  bool canPop = false;
+
   @override
   void initState() {
     super.initState();
@@ -46,7 +49,6 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
   Widget build(BuildContext context) {
     final event = ref.read(activityProvider.notifier);
     final state = ref.watch(activityProvider);
-
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: state.isloading
