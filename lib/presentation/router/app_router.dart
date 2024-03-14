@@ -61,5 +61,9 @@ class AppRouter extends $AppRouter {
           page: PhotoViewRoute.page,
           path: "/photo_view",
         ),
+        AutoRoute(
+          page: NotificationRoute.page,
+          path: "/notification"
+        )
       ];
 }

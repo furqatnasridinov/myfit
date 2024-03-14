@@ -4,6 +4,7 @@ import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
+import 'package:activity/presentation/components/bottom_navigation.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/pages/main2/widget/main2_header.dart';
 import 'package:activity/presentation/pages/main2/widget/widget.dart';
@@ -62,112 +63,109 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     debugPrint("user id ${LocalStorage.getUserId()}");
     debugPrint("token ${LocalStorage.getToken()}");
     //LocalStorage.removeToken();
-    return PopScope(
-      //canPop: false,
-      child: Scaffold(
-        backgroundColor: AppColors.backgroundColor,
-        extendBodyBehindAppBar: true,
-        appBar: Main2Header(
-          state: state,
-          event: event,
-          controller: controller,
-        ),
-        body: SafeArea(
-          bottom: false,
-          child: Stack(
-            children: [
-              SingleChildScrollView(
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    10.verticalSpace,
-                    Padding(
-                      padding: EdgeInsets.only(left: 26.w),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: CustomText(
-                          text: LocalStorage.getUserName().isNotEmpty
-                              ? "Привет, ${LocalStorage.getUserName()}!"
-                              : 'Привет, George!',
-                          fontWeight: FontWeight.w600,
-                          fontSize: 20.sp,
-                        ),
-                      ),
-                    ),
-                    10.verticalSpace,
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: FirstTwoCards(
-                        state: state,
-                        event: event,
-                      ),
-                    ),
-                    32.verticalSpace,
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: state.nearestLesson == null
-                          ? const PlaceholderComingActivity() //button "Найти себе занятие"
-                          : ComingActivity(
-                              state: state,
-                              event: event,
-                            ),
-                    ),
-                    32.verticalSpace,
-                    Padding(
-                      padding: EdgeInsets.only(left: 25.w),
+    return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
+      extendBodyBehindAppBar: true,
+      appBar: Main2Header(
+        state: state,
+        event: event,
+        controller: controller,
+      ),
+      body: SafeArea(
+        bottom: false,
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  10.verticalSpace,
+                  Padding(
+                    padding: EdgeInsets.only(left: 26.w),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
                       child: CustomText(
-                        text: 'Бассейны поблизости',
-                        fontSize: 20.sp,
+                        text: LocalStorage.getUserName().isNotEmpty
+                            ? "Привет, ${LocalStorage.getUserName()}!"
+                            : 'Привет, George!',
                         fontWeight: FontWeight.w600,
+                        fontSize: 20.sp,
                       ),
                     ),
-                    10.verticalSpace,
-                    Consumer(builder: (context, ref, child) {
-                      final mapState = ref.watch(mapProvider);
-                      return Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        child: mapState.mapScreenShot == null
-                            ? const Main2MapPlaceHolder()
-                            : Main2Map(
-                                child: Image.memory(
-                                  mapState.mapScreenShot ?? Uint8List(100),
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return const Main2MapPlaceHolder();
-                                  },
-                                ),
+                  ),
+                  10.verticalSpace,
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: FirstTwoCards(
+                      state: state,
+                      event: event,
+                    ),
+                  ),
+                  32.verticalSpace,
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: state.nearestLesson == null
+                        ? const PlaceholderComingActivity() //button "Найти себе занятие"
+                        : ComingActivity(
+                            state: state,
+                            event: event,
+                          ),
+                  ),
+                  32.verticalSpace,
+                  Padding(
+                    padding: EdgeInsets.only(left: 25.w),
+                    child: CustomText(
+                      text: 'Бассейны поблизости',
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  10.verticalSpace,
+                  Consumer(builder: (context, ref, child) {
+                    final mapState = ref.watch(mapProvider);
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: mapState.mapScreenShot == null
+                          ? const Main2MapPlaceHolder()
+                          : Main2Map(
+                              child: Image.memory(
+                                mapState.mapScreenShot ?? Uint8List(100),
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Main2MapPlaceHolder();
+                                },
                               ),
-                      );
-                    }),
-                    32.verticalSpace,
-                    const DecoratedTextOne(),
-                  ],
-                ),
+                            ),
+                    );
+                  }),
+                  32.verticalSpace,
+                  const DecoratedTextOne(),
+                ],
               ),
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: state.isSearchbarOpened
-                    ? OverlayLikeMain2(
-                        state: state,
-                        event: event,
-                        controller: controller,
-                      )
-                    : const SizedBox.shrink(),
-              ),
+            ),
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: state.isSearchbarOpened
+                  ? OverlayLikeMain2(
+                      state: state,
+                      event: event,
+                      controller: controller,
+                    )
+                  : const SizedBox.shrink(),
+            ),
 
-              // scan bottom container
-              /* const Positioned(
-                bottom: 0,
-                child: BottomScanContainer(),
-              ), */
-            ],
-          ),
+            // scan bottom container
+            /* const Positioned(
+              bottom: 0,
+              child: BottomScanContainer(),
+            ), */
+          ],
         ),
       ),
+      bottomNavigationBar: const CustomBottomNavigation(),
     );
   }
 }

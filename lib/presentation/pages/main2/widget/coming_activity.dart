@@ -49,84 +49,23 @@ class ComingActivity extends StatelessWidget {
               )
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Column(children: [
-            Container(
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                  color: const Color.fromRGBO(245, 249, 255, 1),
-                  borderRadius: BorderRadius.circular(8.0)),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.flash_on_outlined,
-                    size: 18.0,
-                    color: Color.fromRGBO(119, 170, 249, 1),
-                  ),
-                  7.horizontalSpace,
-                  Flexible(
-                    child: CustomText(
-                      text:
-                          state.nearestLesson?.bodyData?.description ?? "Empty",
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
+            sectionBuilder(
+              Icons.flash_on_outlined,
+              state.nearestLesson?.bodyData?.description ?? "Empty",
             ),
             10.verticalSpace,
-            Container(
-              padding: EdgeInsets.all(10.r),
-              decoration: BoxDecoration(
-                color: const Color.fromRGBO(245, 249, 255, 1),
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.watch,
-                    size: 18.r,
-                    color: const Color.fromRGBO(119, 170, 249, 1),
-                  ),
-                  7.horizontalSpace,
-                  CustomText(
-                    text: today == formattedDay
-                        ? "${parts[1]}, Сегодня"
-                        : "${parts[1]}, $formattedDay",
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ],
-              ),
+            sectionBuilder(
+              Icons.watch,
+              today == formattedDay
+                  ? "${parts[1]}, Сегодня"
+                  : "${parts[1]}, $formattedDay",
             ),
             10.verticalSpace,
-            Container(
-              padding: EdgeInsets.all(10.r),
-              decoration: BoxDecoration(
-                color: const Color.fromRGBO(245, 249, 255, 1),
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.location_on_outlined,
-                    size: 18.r,
-                    color: const Color.fromRGBO(119, 170, 249, 1),
-                  ),
-                  7.horizontalSpace,
-                  Flexible(
-                    child: CustomText(
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 3,
-                      text: state.nearestLesson?.bodyData?.gym?.address ??
-                          "Empty",
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  )
-                ],
-              ),
+            sectionBuilder(
+              Icons.location_on_outlined,
+              state.nearestLesson?.bodyData?.gym?.address ?? "Empty",
             ),
           ]),
           /* 10.verticalSpace,
@@ -163,4 +102,27 @@ class ComingActivity extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget sectionBuilder(IconData icondata, String text) {
+  return Container(
+    padding: const EdgeInsets.all(10.0),
+    decoration: BoxDecoration(
+        color: AppColors.backgroundColor,
+        borderRadius: BorderRadius.circular(8.0),
+        border: Border.all(color: AppColors.fadedBlueBorder)),
+    child: Row(
+      children: [
+        Icon(icondata, size: 18.r, color: AppColors.blueColor),
+        7.horizontalSpace,
+        Flexible(
+          child: CustomText(
+            text: text,
+            fontSize: 13.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    ),
+  );
 }

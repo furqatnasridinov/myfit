@@ -3,6 +3,7 @@
 import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
+import 'package:activity/presentation/components/bottom_navigation.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/pages/map/widget/pop_up_map.dart';
@@ -241,7 +242,8 @@ class _MapScreenState extends ConsumerState<MapScreen>
                       //
                       onCameraPositionChanged:
                           (cameraPosition, reason, finished) {
-                        if (state.isGymsPopupShown && reason == CameraUpdateReason.gestures) {
+                        if (state.isGymsPopupShown &&
+                            reason == CameraUpdateReason.gestures) {
                           event.removePopUp();
                           event.showLocationButton();
                         }
@@ -348,6 +350,9 @@ class _MapScreenState extends ConsumerState<MapScreen>
             ),
           ],
         ),
+        /* bottomNavigationBar: state.isGymsPopupShown
+            ? const SizedBox.shrink()
+            : const CustomBottomNavigation(), */
       ),
     );
   }

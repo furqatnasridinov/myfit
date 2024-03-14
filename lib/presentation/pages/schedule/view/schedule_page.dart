@@ -6,6 +6,7 @@ import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/models/response/user_schedules_response.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
+import 'package:activity/presentation/components/bottom_navigation.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/inter_text.dart';
@@ -95,7 +96,6 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
                         .copyWith(top: 16.h),
                     sliver: Consumer(builder: (context, ref, child) {
                       final state = ref.watch(scheduleProvider);
-
                       return SliverList.builder(
                         itemCount: state.daysFromLastWeek.length,
                         itemBuilder: (context, index) {
@@ -166,6 +166,7 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
           ],
         ),
       ),
+      bottomNavigationBar: const CustomBottomNavigation(),
     );
   }
 }
