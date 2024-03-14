@@ -33,6 +33,7 @@ class RegisterRepository implements RegisterRepositoryInterface {
       final dataToSend = {
         "login": phoneNumber,
         "confirmToken": code,
+        "app" : true,
       };
       final response = await client.post(
         AppConstants.sendCodeConfirmation,

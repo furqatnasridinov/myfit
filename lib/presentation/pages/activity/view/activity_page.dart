@@ -1,10 +1,12 @@
 import 'package:activity/application/activity/activity_provider.dart';
-import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 import '../widget/widget.dart';
 
 @RoutePage()
@@ -17,7 +19,10 @@ class ActivityScreen extends ConsumerStatefulWidget {
 }
 
 class _ActivityPageState extends ConsumerState<ActivityScreen> {
-  bool canPop = false;
+  late final WebSocketChannel channel;
+
+  /* final channel = WebSocketChannel.connect(
+      Uri.parse("ws://77.222.53.122:8080/adminPanel/${widget.gymId}")); */
 
   @override
   void initState() {
@@ -27,7 +32,8 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
         ref.read(activityProvider.notifier)
           ..getListOf15CalendarDatesFromToday()
           ..getGymInfo(context, gymId: widget.gymId)
-          ..getActivityTypes(context, gymId: widget.gymId)
+          ..getActivityTypes(context,
+              gymId: widget.gymId) // and make first item as active
           ..getInfoForType(context, id: widget.gymId)
           ..getAllPhotos(context, widget.gymId)
           ..getAllLessons(context, id: widget.gymId)
@@ -40,9 +46,25 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
                   ref.watch(activityProvider).selectedActivity!)
               ..getLessonsOfSelectedActivity(
                   ref.watch(activityProvider).selectedActivity!);
+
+            // web socket
+
+            final WebSocketChannel channel = IOWebSocketChannel.connect(
+                Uri.parse(
+                    "ws://77.222.53.122:8080/appSchedulePanel/${widget.gymId}"),
+                headers: {
+                  'Authorization': 'Bearer ${LocalStorage.getToken()}',
+                });
+            ref.read(activityProvider.notifier).handleWebSocket(channel);
           });
       },
     );
+  }
+
+  @override
+  void dispose() {
+    channel.sink.close();
+    super.dispose();
   }
 
   @override

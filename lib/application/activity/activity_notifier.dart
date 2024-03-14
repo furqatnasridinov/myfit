@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class ActivityNotifier extends StateNotifier<ActivityState> {
   ActivityNotifier(this._activityRepositoryInterface)
@@ -276,11 +277,12 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         }
       });
     }
-
+    // makimg first day that is in state.listOf15CalendarDaysFromNow
+    // as selected day
     for (var element in listToColllectDays) {
       if (state.listOf15CalendarDaysFromNow.contains(element)) {
         state = state.copyWith(selectedCalendarDay: element);
-        break;
+        break; // stop the loop
       }
     }
 
@@ -289,6 +291,48 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       daysInWhichWeHaveLessons: listToColllectDays,
     );
     getLessonsToShowAfterSelectingADay(state.selectedCalendarDay ?? "");
+  }
+
+  void handleWebSocket(WebSocketChannel channel) {
+    /// Listen for all incoming data
+    try {
+      channel.stream.listen(
+        (data) {
+          debugPrint(data);
+          final lesson = Lesson(
+            id: data["id"],
+            date: data["date"],
+            calendarDate: formatOriginalToCalendar(data["date"]),
+            startTime: returnOnlyTime(data["date"]),
+            endTime:
+                getEndingTime(returnOnlyTime(data["date"]), data["duration"]),
+            description: data["description"],
+            duration: formatDuration(data["duration"]),
+            lessonType: data["lessonType"],
+            owner: data["owner"] != null ? Owner.fromJson(data["owner"]) : null,
+            repeat: data["repeat"].cast<int>(),
+            canSignUp: data["canSignUp"],
+            lessonState: data["lessonState"],
+          );
+          // logic to add new lessons to list or changing the existed
+          final list = state.lessonsOfSelectedActivity;
+          if (list.contains(lesson)) {
+            // change the lesson
+            final index = list.indexWhere((element) => element.id == lesson.id);
+            list[index] = lesson;
+          } else {
+            // add the lesson
+            list.add(lesson);
+          }
+        },
+        onError: (error) {
+          debugPrint(error.message);
+        },
+        onDone: (){}
+      );
+    } catch (e) {
+      throw e;
+    }
   }
 
   Future<void> setSelectedCalendarDay(String calendarDate) async {

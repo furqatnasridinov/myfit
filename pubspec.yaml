@@ -61,6 +61,7 @@ dependencies:
   timezone: ^0.9.2
   top_snackbar_flutter: ^3.1.0
   url_launcher: ^6.2.2
+  web_socket_channel: ^2.4.0
   yandex_mapkit: ^3.3.3
 
 dev_dependencies:
