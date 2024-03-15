@@ -45,13 +45,12 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
               ..getDescribtionAndPeculiarities(
                   ref.watch(activityProvider).selectedActivity!)
               ..getLessonsOfSelectedActivity(
-                  ref.watch(activityProvider).selectedActivity!);
+                  ref.watch(activityProvider).selectedActivity!, true);
 
             // web socket
-
             final WebSocketChannel channel = IOWebSocketChannel.connect(
                 Uri.parse(
-                    "ws://77.222.53.122:8080/appSchedulePanel/${widget.gymId}"),
+                    "ws://77.222.53.122:8080/appSchedulePanel/${LocalStorage.getUserId()}"),
                 headers: {
                   'Authorization': 'Bearer ${LocalStorage.getToken()}',
                 });

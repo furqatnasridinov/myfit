@@ -15,7 +15,7 @@ class AppRouter extends $AppRouter {
         ),
         CustomRoute(
           page: ScheduleRoute.page,
-          transitionsBuilder: TransitionsBuilders.slideLeft,
+          //transitionsBuilder: TransitionsBuilders.slideLeft,
           path: '/schedule',
         ),
         AutoRoute(

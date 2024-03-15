@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:activity/application/activity/activity_notifier.dart';
+import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/application/activity/activity_state.dart';
-import 'package:activity/application/main2/main2_provider.dart';
 import 'package:activity/infrastructure/models/data/chips_model.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
@@ -218,10 +218,12 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
           // список занятий заведения на выбранный день
           Consumer(
             builder: (contex, ref, child) {
-              final main2Event = ref.read(main2Provider.notifier);
+              final lessonsToShowAfterSelectingADay =
+                  ref.watch(activityProvider).lessonsToShowAfterSelectingADay;
+              //final main2Event = ref.read(main2Provider.notifier);
               //final scheduleevent = ref.read(scheduleProvider.notifier);
               //final activityEvent = ref.read(activityProvider.notifier);
-              if (widget.state.lessonsToShowAfterSelectingADay.isEmpty) {
+              if (lessonsToShowAfterSelectingADay.isEmpty) {
                 return Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.w),
                   child: CustomCard(
@@ -239,11 +241,10 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                 return ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount:
-                      widget.state.lessonsToShowAfterSelectingADay.length,
+                  itemCount: lessonsToShowAfterSelectingADay.length,
                   itemBuilder: (context, index) {
                     final currentSchedule =
-                        widget.state.lessonsToShowAfterSelectingADay[index];
+                        lessonsToShowAfterSelectingADay[index];
                     return activityCard(
                       currentSchedule.id ?? 0,
                       currentSchedule.startTime ?? "??",
@@ -263,7 +264,7 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                         // get the updated list of lessons
                         // activityEvent.getAllLessons(context, id: gymId);
                         // get the nearest lesson to show in main page after popping
-                        main2Event.getNearestLesson(context);
+                        //main2Event.getNearestLesson(context);
                         //scheduleevent.getUsersSchedules(context);
                       },
                     );
@@ -322,9 +323,8 @@ Widget activityCard(
               // get status text
               SizedBox(
                 child: InkWell(
-                  onTap: //(status == "OPEN" || status == "CANCELED_USER")
-                  status == "OPEN"
-                      ? enrollFunction
+                  onTap: (status == "OPEN" || status == "CANCELED_USER")
+                      /* status == "OPEN" */ ? enrollFunction
                       : null,
                   child: CustomText(
                     text: AppHelpers().getStatusText(status),

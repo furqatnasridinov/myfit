@@ -25,13 +25,9 @@ class Main2Screen extends ConsumerStatefulWidget {
 
 class _LoginScreen extends ConsumerState<Main2Screen> {
   final mapControllerCompleter = Completer<YandexMapController>();
-  late TextEditingController controller;
-  late LayerLink layerlink;
 
   @override
   void initState() {
-    controller = TextEditingController();
-    layerlink = LayerLink();
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(settingsProvider.notifier).setUserInfos();
@@ -48,29 +44,17 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
   }
 
   @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final state = ref.watch(main2Provider);
     final event = ref.read(main2Provider.notifier);
-    if (controller.text.isEmpty && state.schedulesFoundBySearching.isNotEmpty) {
-      event.cleanSearchList();
-    }
+
     debugPrint("user id ${LocalStorage.getUserId()}");
     debugPrint("token ${LocalStorage.getToken()}");
     //LocalStorage.removeToken();
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: Main2Header(
-        state: state,
-        event: event,
-        controller: controller,
-      ),
+      appBar: const Main2Header(showBackButton: false),
       body: SafeArea(
         bottom: false,
         child: Stack(
@@ -144,7 +128,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                 ],
               ),
             ),
-            Positioned(
+            /* Positioned(
               top: 0,
               left: 0,
               right: 0,
@@ -155,7 +139,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                       controller: controller,
                     )
                   : const SizedBox.shrink(),
-            ),
+            ), */
 
             // scan bottom container
             /* const Positioned(

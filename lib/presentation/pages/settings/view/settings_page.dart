@@ -1,6 +1,7 @@
 import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/components.dart';
+import 'package:activity/presentation/pages/main2/widget/main2_header.dart';
 import 'package:activity/presentation/pages/settings/widget/widget.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     debugPrint("image ${state.avatar}");
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: const SettingsHeader(),
+      appBar: const Main2Header(showBackButton: true),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         child: Column(

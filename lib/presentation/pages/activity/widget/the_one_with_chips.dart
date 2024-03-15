@@ -47,7 +47,7 @@ class TheOneWithChips extends StatelessWidget {
                           ..setSingleSelectedActivity(current)
                           ..getDescribtionAndPeculiarities(current ?? "")
                           ..getPhotosOfSelectedActivity(current ?? "")
-                          ..getLessonsOfSelectedActivity(current ?? "");
+                          ..getLessonsOfSelectedActivity(current ?? "",true);
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(

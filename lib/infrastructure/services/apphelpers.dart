@@ -97,8 +97,8 @@ class AppHelpers {
       case "CANCELED_GYM":
         return "Отменено заведением";
       case "CANCELED_USER":
-        return "Отменено вами";
-       // return "Записаться";
+        //return "Отменено вами";
+        return "Записаться";
       case "PROGRESS":
         return "В процессе...";
       case "COMPLETED":
@@ -119,8 +119,8 @@ class AppHelpers {
       case "CANCELED_GYM":
         return Colors.red;
       case "CANCELED_USER":
-      //return AppColors.blueText;
-        return Colors.red;
+      return AppColors.blueText;
+        //return Colors.red;
       case "PROGRESS":
         return Colors.green;
       case "COMPLETED":

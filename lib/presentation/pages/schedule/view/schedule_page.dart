@@ -55,9 +55,7 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: ScheduleHeader(
-        event: event,
-      ),
+      appBar: const ScheduleHeader(showNavigationButton: true),
       body: SafeArea(
         bottom: false,
         child: Column(

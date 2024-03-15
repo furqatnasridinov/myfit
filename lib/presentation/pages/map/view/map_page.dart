@@ -7,6 +7,7 @@ import 'package:activity/presentation/components/bottom_navigation.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/pages/map/widget/pop_up_map.dart';
+import 'package:activity/presentation/pages/schedule/widget/widget.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -114,10 +115,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
       },
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        appBar: MapHeader(
-          event: event,
-          state: state,
-        ),
+        appBar:  const ScheduleHeader(showNavigationButton: false),
         body: Column(
           children: [
             // top section
