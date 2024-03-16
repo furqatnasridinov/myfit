@@ -302,7 +302,7 @@ class LocalStorage {
 
   // get notification time
   static String getReminderTime() =>
-      _preferences?.getString(AppConstants.keyNotificationTime) ?? "";
+      _preferences?.getString(AppConstants.keyNotificationTime) ?? "30";
 
   // remove  notification time
   static void removeReminderTime() =>

@@ -54,7 +54,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: const Main2Header(showBackButton: false),
+      appBar: const Main2Header(showBackButton: false,canNavigateToSettings: true,),
       body: SafeArea(
         bottom: false,
         child: Stack(

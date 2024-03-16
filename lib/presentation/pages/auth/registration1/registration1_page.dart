@@ -209,7 +209,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                       ],
                     ),
                   ),
-                  32.verticalSpace,
+                  /* 32.verticalSpace,
                   InkWell(
                     onTap: () {
                       showDialog(
@@ -271,7 +271,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w400,
                     ),
-                  ),
+                  ), */
                 ],
               ),
             ),

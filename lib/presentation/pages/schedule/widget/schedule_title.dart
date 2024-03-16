@@ -73,9 +73,12 @@ class ScheduleTitle extends StatelessWidget {
                     context: context,
                     builder: (context) {
                       return Consumer(builder: (context, ref, child) {
-                        final state = ref.watch(settingsProvider);
+                        final reminderTime =
+                            ref.watch(settingsProvider).reminderTime;
+                        final isReminderDisabled =
+                            ref.watch(settingsProvider).isReminderDisabled;
                         final event = ref.read(settingsProvider.notifier);
-                        debugPrint("Reminder time ${state.reminderTime}");
+                        debugPrint("Reminder time $reminderTime");
                         debugPrint(
                             "Reminder time from local storage ${LocalStorage.getReminderTime()}");
                         debugPrint(
@@ -112,124 +115,66 @@ class ScheduleTitle extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                               ),
                               16.verticalSpace,
-                              // main
-                              state.isReminderDisabled
-                                  ? Container(
-                                      width: double.maxFinite,
-                                      height: 50.h,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(16.r),
-                                        color: AppColors.backgroundColor,
+                              Container(
+                                height: isReminderDisabled ? 50.h : null,
+                                width: double.maxFinite,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16.r),
+                                  color: AppColors.backgroundColor,
+                                ),
+                                padding: EdgeInsets.all(16.r),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      width: isReminderDisabled ? null : 172.w,
+                                      child: CustomText(
+                                        text: isReminderDisabled
+                                            ? "Напоминания отключены."
+                                            : "За какое время до занятия присылать пуш-напоминание",
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w400,
                                       ),
-                                      padding: EdgeInsets.all(16.r),
-                                      child: Row(
-                                        children: [
-                                          CustomText(
-                                            text: "Напоминания отключены.",
-                                            fontSize: 14.sp,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                          3.horizontalSpace,
-                                          UiDropDownMenu(
-                                            customOffset: [80.w, 20.w],
-                                            width: 100.w,
-                                            //height: 20.h,
-                                            dropDownItemsList: [
-                                              {
-                                                'title': 'за 30 мин',
-                                                'action': () {
-                                                  event.setNotificationTime(
-                                                      "30");
-                                                }
-                                              },
-                                              {
-                                                'title': 'за 1 час',
-                                                'action': () {
-                                                  event
-                                                      .setNotificationTime("1");
-                                                }
-                                              },
-                                              {
-                                                'title': 'за 2 часа',
-                                                'action': () {
-                                                  event
-                                                      .setNotificationTime("2");
-                                                }
-                                              },
-                                              {
-                                                'title': 'Никогда',
-                                                'action': () {
-                                                  LocalStorage
-                                                      .setReminderDisabled(
-                                                          true);
-                                                }
-                                              },
-                                            ],
-                                            dropDownChild: CustomText(
+                                    ),
+                                    3.verticalSpace,
+                                    UiDropDownMenu(
+                                      width: 100.w,
+                                      height: 20.h,
+                                      dropDownItemsList: [
+                                        {
+                                          'title': 'за 30 мин',
+                                          'action': () {
+                                            event.setNotificationTime("30");
+                                          }
+                                        },
+                                        {
+                                          'title': 'за 1 час',
+                                          'action': () {
+                                            event.setNotificationTime("1");
+                                          }
+                                        },
+                                        {
+                                          'title': 'за 2 часа',
+                                          'action': () {
+                                            event.setNotificationTime("2");
+                                          }
+                                        },
+                                        {
+                                          'title': 'Никогда',
+                                          'action': () {
+                                            event.disableReminder();
+                                          }
+                                        },
+                                      ],
+                                      dropDownChild: isReminderDisabled
+                                          ? CustomText(
                                               text: "Включить!",
-                                              fontSize: 14.sp,
-                                              fontWeight: FontWeight.w400,
                                               color: AppColors.blueColor,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  : Container(
-                                      width: double.maxFinite,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(16.r),
-                                        color: AppColors.backgroundColor,
-                                      ),
-                                      padding: EdgeInsets.all(16.r),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          SizedBox(
-                                            width: 172.w,
-                                            child: CustomText(
-                                              text:
-                                                  "За какое время до занятия присылать пуш-напоминание",
                                               fontSize: 14.sp,
                                               fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                          UiDropDownMenu(
-                                            width: 100.w,
-                                            height: 20.h,
-                                            dropDownItemsList: [
-                                              {
-                                                'title': 'за 30 мин',
-                                                'action': () {
-                                                  event.setNotificationTime(
-                                                      "30");
-                                                }
-                                              },
-                                              {
-                                                'title': 'за 1 час',
-                                                'action': () {
-                                                  event
-                                                      .setNotificationTime("1");
-                                                }
-                                              },
-                                              {
-                                                'title': 'за 2 часа',
-                                                'action': () {
-                                                  event
-                                                      .setNotificationTime("2");
-                                                }
-                                              },
-                                              {
-                                                'title': 'Никогда',
-                                                'action': () {
-                                                  event.disableReminder();
-                                                }
-                                              },
-                                            ],
-                                            dropDownChild: Container(
+                                            )
+                                          : Container(
                                               decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(8.r),
@@ -263,52 +208,29 @@ class ScheduleTitle extends StatelessWidget {
                                                   ),
                                                   10.horizontalSpace,
                                                   CustomText(
-                                                    text: state.reminderTime ==
-                                                            "30"
+                                                    text: reminderTime == "30"
                                                         ? "за 30 мин"
-                                                        : "за ${state.reminderTime} часа",
+                                                        : "за $reminderTime часа",
                                                   )
                                                 ],
                                               ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
                                     ),
-                              const Spacer(),
-                              // buttons
-                              if (!state.isReminderDisabled)
-                                Row(
-                                  //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: CustomButton(
-                                        height: 40.h,
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w500,
-                                        buttonColor: Colors.white,
-                                        onPressed: () {
-                                          context.popRoute();
-                                        },
-                                        text: "Отменить",
-                                      ),
-                                    ),
-                                    5.horizontalSpace,
-                                    Expanded(
-                                      child: CustomButton(
-                                        height: 40.h,
-                                        textColor: Colors.white,
-                                        buttonColor: AppColors.blueColor,
-                                        borderColor: AppColors.blueBorder,
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w500,
-                                        onPressed: () {
-                                          context.popRoute();
-                                        },
-                                        text: "Сохранить",
-                                      ),
-                                    )
                                   ],
+                                ),
+                              ),
+                              const Spacer(),
+                              // button
+                                CustomButton(
+                                  height: 40.h,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500,
+                                  buttonColor: AppColors.blueColor,
+                                  textColor: Colors.white,
+                                  onPressed: () {
+                                    context.popRoute();
+                                  },
+                                  text: "Вернуться к расписаниям",
                                 ),
                             ],
                           ),

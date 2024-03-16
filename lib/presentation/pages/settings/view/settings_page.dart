@@ -32,7 +32,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     debugPrint("image ${state.avatar}");
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: const Main2Header(showBackButton: true),
+      appBar:
+          const Main2Header(showBackButton: true, canNavigateToSettings: false),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         child: Column(
@@ -40,9 +41,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           children: [
             20.verticalSpace,
             CustomText(
-              text: state.qrcodeValue!.isEmpty
-                  ? "Настройки"
-                  : state.qrcodeValue ?? "",
+              text: "Настройки",
               fontSize: 20.sp,
               fontWeight: FontWeight.w600,
             ),

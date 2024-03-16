@@ -74,7 +74,8 @@ class _PersonalInfoState extends State<PersonalInfo> {
       print("city ${widget.state.selectedCity ?? ""}");
       print("phone ${widget.state.phoneNumber}");
       print("name ${widget.state.userName}");
-      print(LocalStorage.getPhoneNumber());
+      print("local phone ${LocalStorage.getPhoneNumber()}");
+      print("local age ${LocalStorage.getAge()}");
     }
 
     return Column(

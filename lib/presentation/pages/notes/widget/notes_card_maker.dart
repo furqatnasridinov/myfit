@@ -305,10 +305,7 @@ class _NotesCardMakerState extends State<NotesCardMaker> {
               //color: Colors.red,
               width: 113.w,
               child: CustomTextField(
-                onTap: () {
-                  tagFocus.requestFocus();
-                  setState(() {});
-                },
+                
                 style: GoogleFonts.inter(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
@@ -328,10 +325,6 @@ class _NotesCardMakerState extends State<NotesCardMaker> {
             SizedBox(
               width: 225.w,
               child: CustomTextField(
-                onTap: () {
-                  descriptionFocus.requestFocus();
-                  setState(() {});
-                },
                 style: GoogleFonts.inter(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,

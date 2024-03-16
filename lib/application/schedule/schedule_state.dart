@@ -20,7 +20,7 @@ class ScheduleState with _$ScheduleState {
     @Default(false) bool isFlashButtonActivated,
     @Default({}) Map<String, dynamic> notesMapData,
     @Default([]) List<ScheduleAndGym> schedulesFoundBySearching,
-    @Default("30 мин") String notificationTime,
+    @Default("30") String notificationTime,
     @Default(false) bool completedSchedulesShown,
     @Default(false) bool pendingSchedulesShown,
     @Default([]) List<CompletedSchedule> completedSchedules,

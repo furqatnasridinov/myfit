@@ -115,7 +115,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
       },
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        appBar:  const ScheduleHeader(showNavigationButton: false),
+        appBar: const ScheduleHeader(showNavigationButton: false),
         body: Column(
           children: [
             // top section
@@ -206,10 +206,8 @@ class _MapScreenState extends ConsumerState<MapScreen>
                         //setState(() {});
                         if (state.userPosition == null) {
                           await event.getUserLocation();
-                          if (state.locationServiceIsNotEnabled ||
-                              state.locationPermissionDenied) {
-                            await event.setLocationFromSelectedCity();
-                          }
+                          // if permissions not granted
+                          await event.setLocationFromSelectedCity();
                         }
                         event.setInitialCameraPosition(
                           controller: yandexMapController!,

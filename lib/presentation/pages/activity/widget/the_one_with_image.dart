@@ -293,17 +293,6 @@ void showPopUp(bool isFirstOne, BuildContext context) {
                         counterStyle: const TextStyle(
                           height: double.minPositive,
                         ),
-                        onTap: () {
-                          if (!focusNode.hasFocus) {
-                            focusNode.requestFocus();
-                            setstate(() {});
-                          }
-                        },
-                        onTapOutside: (onTapOutside) {
-                          if (focusNode.hasFocus) {
-                            focusNode.unfocus();
-                          }
-                        },
                         style: GoogleFonts.raleway(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,

@@ -5,14 +5,13 @@ import 'package:activity/application/settings/settings_notifier.dart';
 import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/application/settings/settings_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_text.dart';
+import 'package:activity/presentation/components/custom_textfield.dart';
 import 'package:activity/presentation/components/custom_textformfield.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,6 +33,7 @@ class _PopupBodyState extends State<PopupBody> {
   GlobalKey sizedBoxKey = GlobalKey();
   OverlayEntry? entry;
   City? selectedCity;
+  bool isNameEmpty = false;
   late TextEditingController cityController;
   late TextEditingController nameController;
   late TextEditingController lastNameController;
@@ -54,11 +54,9 @@ class _PopupBodyState extends State<PopupBody> {
     ageController = TextEditingController(
         text: LocalStorage.getAge().isEmpty ? "" : LocalStorage.getAge());
     weightController = TextEditingController(
-        text:
-            LocalStorage.getWeight().isEmpty ? "" : LocalStorage.getWeight());
+        text: LocalStorage.getWeight().isEmpty ? "" : LocalStorage.getWeight());
     heightController = TextEditingController(
-        text:
-            LocalStorage.getHeight().isEmpty ? "" : LocalStorage.getHeight());
+        text: LocalStorage.getHeight().isEmpty ? "" : LocalStorage.getHeight());
     widget.event.getListOfCities(context);
   }
 
@@ -142,28 +140,6 @@ class _PopupBodyState extends State<PopupBody> {
                       }),
                     ),
                   ),
-                  /* Expanded(
-                    child: MediaQuery.removePadding(
-                      context: context,
-                      removeTop: true,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: listofaddresses.length,
-                        itemBuilder: (context, index) {
-                          final currentCity = listofaddresses[index];
-                          return _listiles(
-                            currentCity.name ?? "",
-                            () {
-                              cityController.text = currentCity.name!;
-                              setState(() {});
-                              hideOverlay();
-                              widget.event.cityTextFieldUnfocus();
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  ), */
                 ]),
               ),
             ),
@@ -223,9 +199,21 @@ class _PopupBodyState extends State<PopupBody> {
                       5.verticalSpace,
                       SizedBox(
                         height: 40.h,
-                        child: CustomTextFormField(
+                        child: CustomTextField(
+                          isError: isNameEmpty,
+                          hasFocus: true,
+                          cursorColor: AppColors.greyText,
                           contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
                           controller: nameController,
+                          onChanged: (val) {
+                            if (val.trim().isEmpty && !isNameEmpty) {
+                              isNameEmpty = true;
+                              setState(() {});
+                            } else if (val.trim().isNotEmpty && isNameEmpty) {
+                              isNameEmpty = false;
+                              setState(() {});
+                            }
+                          },
                         ),
                       ),
                     ],
@@ -246,7 +234,7 @@ class _PopupBodyState extends State<PopupBody> {
                       5.verticalSpace,
                       SizedBox(
                         height: 40.h,
-                        child: CustomTextFormField(
+                        child: CustomTextField(
                           contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
                           controller: lastNameController,
                           hintText: LocalStorage.getUserLastName().isEmpty
@@ -323,9 +311,13 @@ class _PopupBodyState extends State<PopupBody> {
                     SizedBox(
                       width: 93.w,
                       height: 40.h,
-                      child: CustomTextFormField(
+                      child: CustomTextField(
                         keyboardType: TextInputType.number,
                         controller: ageController,
+                        counterStyle: const TextStyle(
+                          height: double.minPositive,
+                        ),
+                        counterText: "",
                         maxLines: 1,
                         maxLength: 3,
                         contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
@@ -347,9 +339,13 @@ class _PopupBodyState extends State<PopupBody> {
                     SizedBox(
                       width: 93.w,
                       height: 40.h,
-                      child: CustomTextFormField(
+                      child: CustomTextField(
                         keyboardType: TextInputType.number,
                         controller: weightController,
+                        counterStyle: const TextStyle(
+                          height: double.minPositive,
+                        ),
+                        counterText: "",
                         maxLines: 1,
                         maxLength: 3,
                         contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
@@ -371,9 +367,13 @@ class _PopupBodyState extends State<PopupBody> {
                     SizedBox(
                       width: 93.w,
                       height: 40.h,
-                      child: CustomTextFormField(
+                      child: CustomTextField(
                         keyboardType: TextInputType.number,
                         controller: heightController,
+                        counterStyle: const TextStyle(
+                          height: double.minPositive,
+                        ),
+                        counterText: "",
                         maxLines: 1,
                         maxLength: 3,
                         contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
@@ -515,58 +515,43 @@ class _PopupBodyState extends State<PopupBody> {
                         borderColor: AppColors.blueBorder,
                         textColor: Colors.white,
                         onPressed: () async {
-                          // check whether user added new data
-                          if (LocalStorage.getUserName() !=
-                              nameController.text.trim()) {
-                            await LocalStorage.setUserName(nameController.text);
-                            widget.event.setName();
-                            await widget.event
-                                .patchName(nameController.text.trim(), context);
-                          }
+                          if (!isNameEmpty) {
+                            // check whether user added new data
+                            if (LocalStorage.getUserName() !=
+                                nameController.text.trim()) {
+                              await widget.event.patchName(
+                                  nameController.text.trim(), context);
+                            }
 
-                          if (LocalStorage.getUserLastName() !=
-                              lastNameController.text.trim()) {
-                            await LocalStorage.setUserLastName(
-                                lastNameController.text);
-                            widget.event.setLastname();
-                            await widget.event.patchLastname(
-                                lastNameController.text.trim(), context);
-                          }
+                            if (LocalStorage.getUserLastName() !=
+                                lastNameController.text.trim()) {
+                              await widget.event.patchLastname(
+                                  lastNameController.text.trim(), context);
+                            }
 
-                          if (LocalStorage.getSelectedCity() !=
-                              cityController.text) {
-                            await LocalStorage.setSelectedCity(
-                                cityController.text);
-                            await LocalStorage.setSelectedCityLat(
-                                selectedCity?.latitude ?? "");
-                            await LocalStorage.setSelectedCityLon(
-                                selectedCity?.longitude ?? "");
-                            widget.event.setSelectedCity();
-                            await widget.event.patchCity(selectedCity, context);
-                            await mapEvent.setLocationFromSelectedCity();
-                            await mapEvent.getYandexMapImage(context);
+                            if (LocalStorage.getSelectedCity() !=
+                                cityController.text) {
+                              await widget.event
+                                  .patchCity(selectedCity, context);
+                              await mapEvent.setLocationFromSelectedCity();
+                              await mapEvent.getYandexMapImage(context);
+                            }
+                            if (LocalStorage.getAge() != ageController.text) {
+                              await widget.event
+                                  .patchAge(ageController.text, context);
+                            }
+                            if (LocalStorage.getWeight() !=
+                                weightController.text) {
+                              await widget.event
+                                  .patchWeight(weightController.text, context);
+                            }
+                            if (LocalStorage.getHeight() !=
+                                heightController.text) {
+                              await widget.event
+                                  .patchHeight(heightController.text, context);
+                            }
+                            context.popRoute();
                           }
-                          if (LocalStorage.getAge() != ageController.text) {
-                            await LocalStorage.setAge(ageController.text);
-                            widget.event.setAge();
-                            await widget.event
-                                .patchAge(ageController.text, context);
-                          }
-                          if (LocalStorage.getWeight() !=
-                              weightController.text) {
-                            await LocalStorage.setWeight(weightController.text);
-                            widget.event.setWeight();
-                            await widget.event
-                                .patchWeight(weightController.text, context);
-                          }
-                          if (LocalStorage.getHeight() !=
-                              heightController.text) {
-                            await LocalStorage.setHeight(heightController.text);
-                            widget.event.setHeight();
-                            await widget.event
-                                .patchHeight(heightController.text, context);
-                          }
-                          context.popRoute();
                         },
                         text: "Сохранить",
                       );

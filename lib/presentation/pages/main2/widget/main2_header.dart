@@ -18,7 +18,11 @@ import 'package:google_fonts/google_fonts.dart';
 class Main2Header extends ConsumerStatefulWidget
     implements PreferredSizeWidget {
   final bool showBackButton;
-  const Main2Header({required this.showBackButton, super.key});
+  final bool canNavigateToSettings;
+  const Main2Header(
+      {required this.showBackButton,
+      required this.canNavigateToSettings,
+      super.key});
 
   @override
   ConsumerState<Main2Header> createState() => _MainHeaderState();
@@ -359,9 +363,11 @@ class _MainHeaderState extends ConsumerState<Main2Header> {
                 padding: EdgeInsets.only(right: 15.w),
                 child: Consumer(builder: (context, ref, child) {
                   final settingsState = ref.watch(settingsProvider);
-                  return InkWell(
+                  return GestureDetector(
                     onTap: () {
-                      context.router.push(const SettingsRoute());
+                      if (widget.canNavigateToSettings) {
+                        context.router.push(const SettingsRoute());
+                      }
                     },
                     child: CircleAvatar(
                       radius: 20.r,

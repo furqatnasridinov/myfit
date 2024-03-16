@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/application/schedule/schedule_state.dart';
-import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/models/response/user_schedules_response.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
@@ -43,9 +42,6 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
         ..getTwoWeekDays()
         ..getCompletedSchedules(context);
       // getting reminders from local storage to state
-      ref.read(settingsProvider.notifier)
-        ..setNotificationTime(LocalStorage.getReminderTime())
-        ..getReminderDisabledOrEnabled();
     });
   }
 

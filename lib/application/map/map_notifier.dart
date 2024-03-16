@@ -162,19 +162,21 @@ class MapNotifier extends StateNotifier<MapState> {
   }
 
   Future<void> setLocationFromSelectedCity() async {
-    state = state.copyWith(
-        userPosition: Position(
-      longitude: double.parse(LocalStorage.getSelectedCityLon()),
-      latitude: double.parse(LocalStorage.getSelectedCityLat()),
-      timestamp: DateTime.now(),
-      accuracy: 5,
-      altitude: 5,
-      altitudeAccuracy: 0.5,
-      heading: 0.5,
-      headingAccuracy: 0,
-      speed: 0,
-      speedAccuracy: 0,
-    ));
+    if (state.locationServiceIsNotEnabled || state.locationPermissionDenied) {
+      state = state.copyWith(
+          userPosition: Position(
+        longitude: double.parse(LocalStorage.getSelectedCityLon()),
+        latitude: double.parse(LocalStorage.getSelectedCityLat()),
+        timestamp: DateTime.now(),
+        accuracy: 5,
+        altitude: 5,
+        altitudeAccuracy: 0.5,
+        heading: 0.5,
+        headingAccuracy: 0,
+        speed: 0,
+        speedAccuracy: 0,
+      ));
+    }
   }
 
   void setLocationServiceAsEnabled() {

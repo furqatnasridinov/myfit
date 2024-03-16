@@ -28,7 +28,9 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     setWeight();
     setHeight();
     setAvatar();
-    setNotificationTime(LocalStorage.getReminderTime());
+    if (!LocalStorage.isReminderDisabled()) {
+      setNotificationTime(LocalStorage.getReminderTime());
+    }
     getReminderDisabledOrEnabled();
   }
 
@@ -85,9 +87,13 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         request: request,
       );
       response.when(
-        success: (data) {
+        success: (data) async {
           // no need to return we are saving locally
-          state = state.copyWith(isloading: false);
+          if (data["operationResult"] == "OK") {
+            await LocalStorage.setUserName(data["object"]["firstName"]);
+            setName();
+            state = state.copyWith(isloading: false);
+          }
         },
         failure: (error, statusCode, operationInfo) {
           AppHelpers.showErrorSnack(context, "$error $statusCode");
@@ -108,9 +114,13 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         request: request,
       );
       response.when(
-        success: (data) {
+        success: (data) async {
           // no need to return we are saving locally
-          state = state.copyWith(isloading: false);
+          if (data["operationResult"] == "OK") {
+            await LocalStorage.setUserLastName(data["object"]["lastName"]);
+            setLastname();
+            state = state.copyWith(isloading: false);
+          }
         },
         failure: (error, statusCode, operationInfo) {
           AppHelpers.showErrorSnack(context, "$error $statusCode");
@@ -131,9 +141,15 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         request: request,
       );
       response.when(
-        success: (data) {
+        success: (data) async {
           // no need to return we are saving locally
-          state = state.copyWith(isloading: false);
+          if (data["operationResult"] == "OK") {
+            await LocalStorage.setSelectedCity(data["object"]["city"]["name"]);
+            await LocalStorage.setSelectedCityLat(data["object"]["city"]["latitude"]);
+            await LocalStorage.setSelectedCityLon(data["object"]["city"]["longitude"]);
+            setSelectedCity();
+            state = state.copyWith(isloading: false);
+          }
         },
         failure: (error, statusCode, operationInfo) {
           AppHelpers.showErrorSnack(context, "$error $statusCode");
@@ -154,11 +170,15 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         request: request,
       );
       response.when(
-        success: (data) {
+        success: (data) async {
           // no need to return we are saving locally
-          state = state.copyWith(isloading: false);
+          if (data["operationResult"] == "OK") {
+            await LocalStorage.setAge(data["object"]["age"].toString());
+            setAge();
+            state = state.copyWith(isloading: false);
+          }
         },
-       failure: (error, statusCode, operationInfo) {
+        failure: (error, statusCode, operationInfo) {
           AppHelpers.showErrorSnack(context, "$error $statusCode");
           state = state.copyWith(isloading: false);
         },
@@ -177,9 +197,13 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         request: request,
       );
       response.when(
-        success: (data) {
+        success: (data) async{
           // no need to return we are saving locally
-          state = state.copyWith(isloading: false);
+         if (data["operationResult"] == "OK") {
+            await LocalStorage.setWeight(data["object"]["weight"].toString());
+            setWeight();
+            state = state.copyWith(isloading: false);
+          }
         },
         failure: (error, statusCode, operationInfo) {
           AppHelpers.showErrorSnack(context, "$error $statusCode");
@@ -200,9 +224,13 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         request: request,
       );
       response.when(
-        success: (data) {
+        success: (data) async{
           // no need to return we are saving locally
-          state = state.copyWith(isloading: false);
+          if (data["operationResult"] == "OK") {
+            await LocalStorage.setHeight(data["object"]["height"].toString());
+            setHeight();
+            state = state.copyWith(isloading: false);
+          }
         },
         failure: (error, statusCode, operationInfo) {
           AppHelpers.showErrorSnack(context, "$error $statusCode");
@@ -227,7 +255,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           // no need to return we are saving locally
           state = state.copyWith(isloading: false);
         },
-       failure: (error, statusCode, operationInfo) {
+        failure: (error, statusCode, operationInfo) {
           AppHelpers.showErrorSnack(context, "$error $statusCode");
           state = state.copyWith(isloading: false);
         },

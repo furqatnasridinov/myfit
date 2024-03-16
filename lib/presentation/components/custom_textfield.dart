@@ -20,37 +20,39 @@ class CustomTextField extends StatelessWidget {
   TextStyle? counterStyle;
   bool hasFocus;
   bool isError;
-  Color? cursorColor;
+  Color? cursorColor = AppColors.greyText;
   String? Function(String?)? validator;
   List<TextInputFormatter>? inputFormatters;
   void Function(PointerDownEvent)? onTapOutside;
   void Function()? onEditingComplete;
   void Function()? onTap;
+  void Function(String)? onChanged;
   bool readOnly;
 
-  CustomTextField({
-    Key? key,
-    this.hintText,
-    this.controller,
-    this.suffixIcon,
-    this.contentPadding,
-    this.inputFormatters,
-    this.counterStyle,
-    this.readOnly = false,
-    this.hasFocus = false,
-    this.validator,
-    this.isError = false,
-    this.maxLines,
-    this.counterText,
-    this.maxLength,
-    this.focusNode,
-    this.keyboardType,
-    this.style,
-    this.onEditingComplete,
-    this.onTap,
-    this.onTapOutside,
-    this.cursorColor = Colors.black
-  }) : super(key: key);
+  CustomTextField(
+      {Key? key,
+      this.hintText,
+      this.controller,
+      this.suffixIcon,
+      this.contentPadding,
+      this.inputFormatters,
+      this.counterStyle,
+      this.readOnly = false,
+      this.hasFocus = false,
+      this.validator,
+      this.isError = false,
+      this.maxLines,
+      this.counterText,
+      this.onChanged,
+      this.maxLength,
+      this.focusNode,
+      this.keyboardType,
+      this.style,
+      this.onEditingComplete,
+      this.onTap,
+      this.onTapOutside,
+      this.cursorColor = Colors.black})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +68,7 @@ class CustomTextField extends StatelessWidget {
       validator: validator,
       keyboardType: keyboardType,
       controller: controller,
+      onChanged: onChanged,
       onTapOutside: onTapOutside,
       onTap: onTap,
       cursorColor: cursorColor,
@@ -86,15 +89,10 @@ class CustomTextField extends StatelessWidget {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
-            color: hasFocus
-                ? AppColors.blueColor
-                : isError
-                    ? Colors.red
-                    : AppColors.greyBorder,
-            width: 1.w,
+            color: isError ? Colors.red : AppColors.blueColor,
           ),
         ),
-        border: OutlineInputBorder(
+        /* border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
             color: hasFocus
@@ -104,7 +102,7 @@ class CustomTextField extends StatelessWidget {
                     : AppColors.greyBorder,
             width: 1.w,
           ),
-        ),
+        ), */
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
