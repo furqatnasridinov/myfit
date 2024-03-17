@@ -6,6 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
+/* This CustomBottomNavigation was created in the beginning before using autoRoute
+bottom navigation when the main2 page was not a part of the bottom navigation
+*/
+
 class CustomBottomNavigation extends StatelessWidget {
   const CustomBottomNavigation({super.key});
 
@@ -45,8 +49,8 @@ class CustomBottomNavigation extends StatelessWidget {
           singleBarItem(
             context,
             "/notification",
-            "assets/svg/notification2.svg",
-            "Уведомления",
+            "assets/svg/home.svg",
+            "Главная",
             () {
               if (context.router.stack.any(
                   (element) => element.routeData.path == "/notification")) {
@@ -94,7 +98,7 @@ Widget singleBarItem(
             color: context.router.currentPath == routePath
                 ? AppColors.fadedPrimary3
                 : Colors.white),
-        child: SvgPicture.asset(svgPath),
+        child: SvgPicture.asset(svgPath, ),
       ),
       10.verticalSpace,
       CustomText(

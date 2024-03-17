@@ -300,75 +300,40 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
 
   void handleWebSocket(WebSocketChannel channel) {
     /// Listen for all incoming data
-    try {
-      channel.stream.listen(
-        (data) async {
-          Map<String, dynamic> lessonData = jsonDecode(data);
-          var allLessons = state.allLessons;
-          String selectedDay = "";
-          final List<String> keys = allLessons.keys.toList();
-          for (var key in keys) {
-            allLessons[key].forEach((el) {
-              if (el["id"] == lessonData["id"]) {
-                el["lessonState"] = lessonData["lessonState"];
-                el["duration"] = lessonData["duration"];
-                el["date"] = lessonData["date"];
-                el["description"] = lessonData["description"];
-                selectedDay = formatOriginalToCalendar(lessonData["date"]);
-              }
-            });
-          }
-          state = state.copyWith(
-            allLessons: allLessons,
-          );
-          //await Future.delayed(const Duration(milliseconds: 400));
-          getLessonsOfSelectedActivity(state.selectedActivity ?? "", false)
-              .then((value) => state = state.copyWith(
-                    selectedCalendarDay: selectedDay,
-                  ));
 
-          /* final lesson = Lesson(
-            id: lessonData["id"],
-            date: lessonData["date"],
-            calendarDate: formatOriginalToCalendar(lessonData["date"]),
-            startTime: returnOnlyTime(lessonData["date"]),
-            endTime: getEndingTime(
-                returnOnlyTime(lessonData["date"]), lessonData["duration"]),
-            description: lessonData["description"],
-            duration: formatDuration(lessonData["duration"]),
-            lessonType: lessonData["lessonType"],
-            owner: lessonData["owner"] != null
-                ? Owner.fromJson(lessonData["owner"])
-                : null,
-            repeat: lessonData["repeat"].cast<int>(),
-            canSignUp: lessonData["canSignUp"],
-            lessonState: lessonData["lessonState"],
-          );
-          // logic to add new lessons to list or changing the existed
-          final List<Lesson> list = List.from(state.lessonsOfSelectedActivity);
-          final allLesson = state.allLessons;
-          bool contains = list.any((element) => element.id == lesson.id);
-          if (contains) {
-            // change the lesson
-            final index = list.indexWhere((element) => element.id == lesson.id);
-            list[index] = lesson;
-          } else {
-            // add the lesson
-            list.add(lesson);
-          }
-          state = state.copyWith(lessonsOfSelectedActivity: list); */
-        },
-        onError: (error) {
-          debugPrint(error.message);
-        },
-        onDone: () {
-          debugPrint("done");
-        },
-
-      );
-    } catch (e) {
-      throw e;
-    }
+    channel.stream.listen(
+      (data) async {
+        Map<String, dynamic> lessonData = jsonDecode(data);
+        var allLessons = state.allLessons;
+        String selectedDay = "";
+        final List<String> keys = allLessons.keys.toList();
+        for (var key in keys) {
+          allLessons[key].forEach((el) {
+            if (el["id"] == lessonData["id"]) {
+              el["lessonState"] = lessonData["lessonState"];
+              el["duration"] = lessonData["duration"];
+              el["date"] = lessonData["date"];
+              el["description"] = lessonData["description"];
+              selectedDay = formatOriginalToCalendar(lessonData["date"]);
+            }
+          });
+        }
+        state = state.copyWith(
+          allLessons: allLessons,
+        );
+        //await Future.delayed(const Duration(milliseconds: 400));
+        getLessonsOfSelectedActivity(state.selectedActivity ?? "", false)
+            .then((value) => state = state.copyWith(
+                  selectedCalendarDay: selectedDay,
+                ));
+      },
+      onError: (error) {
+        debugPrint(error.message);
+      },
+      onDone: () {
+        debugPrint("done");
+      },
+    );
   }
 
   Future<void> setSelectedCalendarDay(String calendarDate) async {

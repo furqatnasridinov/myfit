@@ -17,7 +17,11 @@ import 'package:google_fonts/google_fonts.dart';
 class ScheduleHeader extends ConsumerStatefulWidget
     implements PreferredSizeWidget {
   final bool showNavigationButton;
-  const ScheduleHeader({required this.showNavigationButton, super.key});
+  final bool showBackButton;
+  const ScheduleHeader(
+      {required this.showNavigationButton,
+      required this.showBackButton,
+      super.key});
 
   @override
   ConsumerState<ScheduleHeader> createState() => _MainHeaderState();
@@ -218,10 +222,11 @@ class _MainHeaderState extends ConsumerState<ScheduleHeader> {
     return AppBar(
       automaticallyImplyLeading: false,
       //backgroundColor: Colors.amber,
+      leadingWidth: widget.showBackButton ? null : 0,
       toolbarHeight: 40.h,
       backgroundColor: AppColors.backgroundColor,
       elevation: 0,
-      leadingWidth: null,
+
       centerTitle: false,
       titleSpacing: textfieldFocusnode.hasFocus ? 14.w : 5.0,
       shape: RoundedRectangleBorder(
@@ -272,7 +277,11 @@ class _MainHeaderState extends ConsumerState<ScheduleHeader> {
 
       // title
       title: AnimatedContainer(
-        duration: const Duration(milliseconds: 500),
+        margin: EdgeInsets.only(
+            left: !widget.showBackButton && !textfieldFocusnode.hasFocus
+                ? 16.w
+                : 0),
+        duration: const Duration(milliseconds: 200),
         width: textfieldFocusnode.hasFocus ? 360.w : 300.w,
         height: 40.h,
         decoration: BoxDecoration(
@@ -349,7 +358,7 @@ class _MainHeaderState extends ConsumerState<ScheduleHeader> {
                 fontWeight: FontWeight.w400,
                 fontFeatures: const [FontFeature.liningFigures()],
               ),
-              hintText: "Занятие, зал",
+              hintText: "Поиск заведений",
               border: InputBorder.none,
             ),
           ),

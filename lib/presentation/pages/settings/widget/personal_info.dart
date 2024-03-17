@@ -1,12 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
-import 'dart:math';
 import 'dart:ui';
 import 'package:activity/application/settings/settings_notifier.dart';
 import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/application/settings/settings_state.dart';
 import 'package:activity/infrastructure/models/request/send_phone_number_request.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_card.dart';

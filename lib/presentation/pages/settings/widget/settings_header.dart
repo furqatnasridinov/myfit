@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/dummy_data.dart';
 import 'package:activity/presentation/components/inter_text.dart';

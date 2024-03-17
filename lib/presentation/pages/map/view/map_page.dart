@@ -1,9 +1,7 @@
 // ignore_for_file: must_be_immutable
-
 import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
-import 'package:activity/presentation/components/bottom_navigation.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/pages/map/widget/pop_up_map.dart';
@@ -115,7 +113,10 @@ class _MapScreenState extends ConsumerState<MapScreen>
       },
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        appBar: const ScheduleHeader(showNavigationButton: false),
+        appBar: const ScheduleHeader(
+          showNavigationButton: false,
+          showBackButton: false,
+        ),
         body: Column(
           children: [
             // top section
@@ -234,9 +235,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                                     );
                               },
                             ),
-
-                      //
-                      onCameraPositionChanged:
+                     /*  onCameraPositionChanged:
                           (cameraPosition, reason, finished) {
                         if (state.isGymsPopupShown &&
                             reason == CameraUpdateReason.gestures) {
@@ -247,7 +246,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                         if (finished) {
                           event.showPopUpOnMap(context);
                         }
-                      },
+                      }, */
                       logoAlignment: const MapAlignment(
                         horizontal: HorizontalAlignment.left,
                         vertical: VerticalAlignment.bottom,
@@ -303,9 +302,9 @@ class _MapScreenState extends ConsumerState<MapScreen>
                   ),
                   Positioned(
                     right: 0.w,
-                    bottom: state.isLocationIconHidden ? 145.h : 10.h,
+                    bottom: state.isLocationIconHidden ? 155.h : 10.h,
                     child: Padding(
-                      padding: EdgeInsets.only(right: 10.w, bottom: 10.h),
+                      padding: EdgeInsets.only(right: 10.w),
                       child: InkWell(
                         onTap: () {
                           event.locationButtonFunction(yandexMapController);
@@ -318,7 +317,6 @@ class _MapScreenState extends ConsumerState<MapScreen>
                           child: SvgPicture.asset(
                             "assets/svg/location_icon.svg",
                             fit: BoxFit.scaleDown,
-                            //height: 24.h,
                           ),
                         ),
                       ),
@@ -332,12 +330,16 @@ class _MapScreenState extends ConsumerState<MapScreen>
                       child: PopUpMap(
                         name: state.activeMarker?.name ?? "??",
                         address: state.activeMarker?.address ?? "??",
-                        onTap: () {
+                        onNavigate: () {
                           //event.removePopUp();
                           event.showLocationButton();
                           context.router.push(
                             ActivityRoute(gymId: state.activeMarker?.id ?? 0),
                           );
+                        },
+                        onCancel: (){
+                          event.removePopUp();
+                          event.showLocationButton();
                         },
                       ),
                     ),

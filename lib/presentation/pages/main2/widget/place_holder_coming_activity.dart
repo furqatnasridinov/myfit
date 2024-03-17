@@ -1,6 +1,5 @@
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_button.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,6 +9,7 @@ class PlaceholderComingActivity extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final autoTabsRouter = AutoTabsRouter.of(context);
     return Container(
       height: 56.h,
       decoration: const BoxDecoration(
@@ -34,12 +34,7 @@ class PlaceholderComingActivity extends StatelessWidget {
         fontSize: 16.sp,
         fontWeight: FontWeight.w600,
         onPressed: () {
-          // event.showDefaultNotification();
-          /* event.showScheduledNotification(
-            time: DateTime.parse("2024-02-13 10:00:00"),
-          ); */
-          //NotificationService().cancelNotification();
-          context.router.push(MapRoute(showOnlyKnown: false));
+          autoTabsRouter.setActiveIndex(2);
         },
         text: "Найти себе занятие",
       ),

@@ -57,7 +57,6 @@ class _OverlayLikeMain2State extends State<OverlayLikeMain2> {
 
   @override
   Widget build(BuildContext context) {
-    print("контроллер текст ${widget.controller.length}");
     return TapRegion(
         onTapOutside: (pointerDownEvent) {
           // Get the position of the tap

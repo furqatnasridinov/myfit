@@ -1,12 +1,8 @@
 import 'package:activity/application/registration/registration_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/app_constants.dart';
 import 'package:activity/presentation/components/components.dart';
-import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_card.dart';
-import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/pages/auth/registration/custom_painter.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -6,18 +6,33 @@ class AppRouter extends $AppRouter {
   @override
   List<AutoRoute> get routes => [
         AutoRoute(
+          page: BottomNavigationHandlerRoute.page,
+          path: '/bottomNavigationHandler',
+          children: [
+            AutoRoute(
+              page: MapRoute.page,
+            ),
+            AutoRoute(
+              page: Main2Route.page,
+            ),
+            AutoRoute(
+              page: ScheduleRoute.page,
+            ),
+          ],
+        ),
+        AutoRoute(
           page: SplashRoute.page,
           path: "/",
         ),
         AutoRoute(
           page: ActivityRoute.page,
-          //path: '/',
+          path: '/activity',
         ),
-        CustomRoute(
+        /* CustomRoute(
           page: ScheduleRoute.page,
           //transitionsBuilder: TransitionsBuilders.slideLeft,
           path: '/schedule',
-        ),
+        ), */
         AutoRoute(
           page: MainRoute.page,
           path: "/main",
@@ -26,12 +41,19 @@ class AppRouter extends $AppRouter {
           page: NotesRoute.page,
           path: "/notes",
         ),
-        AutoRoute(page: Main2Route.page, path: "/main2"),
-        CustomRoute(
-            page: MapRoute.page,
-            transitionsBuilder: TransitionsBuilders.slideLeft,
-            path: "/map"),
-        AutoRoute(page: RegistrationRoute.page, path: "/registration"),
+        /* AutoRoute(
+          page: Main2Route.page,
+          path: "/main2",
+        ), */
+        /*  CustomRoute(
+          page: MapRoute.page,
+          transitionsBuilder: TransitionsBuilders.slideLeft,
+          path: "/map",
+        ), */
+        AutoRoute(
+          page: RegistrationRoute.page,
+          path: "/registration",
+        ),
         AutoRoute(
           page: Registration1Route.page,
           path: "/registration1",
@@ -63,7 +85,7 @@ class AppRouter extends $AppRouter {
         ),
         AutoRoute(
           page: NotificationRoute.page,
-          path: "/notification"
+          path: "/notification",
         )
       ];
 }

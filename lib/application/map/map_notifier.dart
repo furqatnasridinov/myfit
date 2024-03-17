@@ -7,9 +7,6 @@ import 'package:activity/infrastructure/models/request/get_yandex_map_image_requ
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
-import 'package:activity/presentation/pages/map/widget/pop_up_map.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -533,34 +530,13 @@ class MapNotifier extends StateNotifier<MapState> {
   void showPopUpOnMap(BuildContext context) {
     // remove prvious pop up first
     if (state.activeMarker != null &&
-        state.activeMarker?.name != "user" &&
-        context.router.currentPath == "/map") {
+        state.activeMarker?.name != "user" ) {
       removePopUp(); // if there is a pop up remove it
       if (!state.isLocationIconHidden) {
         hideLocationIcon();
       }
       state = state.copyWith(isGymsPopupShown: true);
 
-      /* final overlay = Overlay.of(context);
-      entry = OverlayEntry(
-        builder: (context) {
-          return Positioned(
-            bottom: 0,
-            child: PopUpMap(
-              name: state.activeMarker?.name ?? "??",
-              address: state.activeMarker?.address ?? "??",
-              onTap: () {
-                removePopUp();
-                showLocationButton();
-                context.router.push(
-                  ActivityRoute(gymId: state.activeMarker?.id ?? 0),
-                );
-              },
-            ),
-          );
-        },
-      );
-      overlay.insert(entry!); */
     }
   }
 

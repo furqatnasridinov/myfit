@@ -293,7 +293,7 @@ class _$ScheduleStateImpl extends _ScheduleState {
       this.isFlashButtonActivated = false,
       final Map<String, dynamic> notesMapData = const {},
       final List<ScheduleAndGym> schedulesFoundBySearching = const [],
-      this.notificationTime = "30 мин",
+      this.notificationTime = "30",
       this.completedSchedulesShown = false,
       this.pendingSchedulesShown = false,
       final List<CompletedSchedule> completedSchedules = const []})

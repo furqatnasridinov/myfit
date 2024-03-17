@@ -14,10 +14,12 @@ import 'package:flutter_svg/svg.dart';
 class PopUpMap extends StatelessWidget {
   final String name;
   final String address;
-  void Function()? onTap;
+  void Function()? onNavigate;
+  void Function()? onCancel;
   PopUpMap({
     super.key,
-    this.onTap,
+    this.onNavigate,
+    this.onCancel,
     required this.name,
     required this.address,
   });
@@ -95,15 +97,33 @@ class PopUpMap extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
             10.verticalSpace,
-            CustomButton(
-              onPressed: onTap,
-              text: "Подробнее",
-              width: double.maxFinite,
-              buttonColor: AppColors.blueColor,
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w500,
-              textColor: Colors.white,
-              height: 40.h,
+            Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: CustomButton(
+                    onPressed: onCancel,
+                    text: "Скрыть",
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                    textColor: Colors.black,
+                    height: 40.h,
+                  ),
+                ),
+                5.horizontalSpace,
+                Expanded(
+                  flex: 7,
+                  child: CustomButton(
+                    onPressed: onNavigate,
+                    text: "Подробнее",
+                    buttonColor: AppColors.blueColor,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                    textColor: Colors.white,
+                    height: 40.h,
+                  ),
+                ),
+              ],
             ),
           ],
         ),

@@ -4,12 +4,10 @@ import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
-import 'package:activity/presentation/components/bottom_navigation.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/pages/main2/widget/main2_header.dart';
 import 'package:activity/presentation/pages/main2/widget/widget.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -54,7 +52,10 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: const Main2Header(showBackButton: false,canNavigateToSettings: true,),
+      appBar: const Main2Header(
+        showBackButton: false,
+        canNavigateToSettings: true,
+      ),
       body: SafeArea(
         bottom: false,
         child: Stack(
@@ -107,14 +108,14 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                   ),
                   10.verticalSpace,
                   Consumer(builder: (context, ref, child) {
-                    final mapState = ref.watch(mapProvider);
+                    final mapScreenShot = ref.watch(mapProvider).mapScreenShot;
                     return Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: mapState.mapScreenShot == null
+                      child: mapScreenShot == null
                           ? const Main2MapPlaceHolder()
                           : Main2Map(
                               child: Image.memory(
-                                mapState.mapScreenShot ?? Uint8List(100),
+                                mapScreenShot,
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
                                   return const Main2MapPlaceHolder();
@@ -128,18 +129,6 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                 ],
               ),
             ),
-            /* Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: state.isSearchbarOpened
-                  ? OverlayLikeMain2(
-                      state: state,
-                      event: event,
-                      controller: controller,
-                    )
-                  : const SizedBox.shrink(),
-            ), */
 
             // scan bottom container
             /* const Positioned(
@@ -149,7 +138,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
           ],
         ),
       ),
-      bottomNavigationBar: const CustomBottomNavigation(),
+      //bottomNavigationBar: const CustomBottomNavigation(),
     );
   }
 }

@@ -5,7 +5,6 @@ import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/infrastructure/models/response/user_schedules_response.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
-import 'package:activity/presentation/components/bottom_navigation.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/inter_text.dart';
@@ -51,7 +50,10 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: const ScheduleHeader(showNavigationButton: true),
+      appBar: const ScheduleHeader(
+        showNavigationButton: true,
+        showBackButton: false,
+      ),
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -160,7 +162,7 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: const CustomBottomNavigation(),
+      //bottomNavigationBar: const CustomBottomNavigation(),
     );
   }
 }
@@ -272,58 +274,42 @@ Widget _plusButton(
   bool? isplusState,
 ) {
   return StatefulBuilder(builder: (context, setstate) {
+    //final tabsRouter = AutoTabsRouter.of(context);
     return UiDropDownMenu(
       width: double.maxFinite,
       maxWidth: 255.w,
       customOffset: [-45.0.w, -40.0.h],
-      dropDownItemsList: LocalStorage.getKnownActivities().isNotEmpty
-          ? [
-              {
-                'title': 'Найти что то новое',
-                'icon': SvgPicture.asset(
-                  "assets/svg/search.svg",
-                  colorFilter: const ColorFilter.mode(
-                    Color.fromRGBO(62, 134, 245, 1),
-                    BlendMode.srcIn,
-                  ),
-                  height: 18.h,
-                  width: 18.w,
-                ),
-                'action': () =>
-                    {context.router.push(MapRoute(showOnlyKnown: false))}
-              },
-              {
-                'title': 'Выбрать из уже знакомых занятий',
-                'icon': SvgPicture.asset(
-                  "assets/svg/copy.svg",
-                  colorFilter: const ColorFilter.mode(
-                    Color.fromRGBO(62, 134, 245, 1),
-                    BlendMode.srcIn,
-                  ),
-                  height: 18.h,
-                  width: 18.w,
-                ),
-                'action': () => {
-                      context.router.push(MapRoute(showOnlyKnown: true)),
-                    }
-              }
-            ]
-          : [
-              {
-                'title': 'Найти что то новое',
-                'icon': SvgPicture.asset(
-                  "assets/svg/search.svg",
-                  colorFilter: const ColorFilter.mode(
-                    Color.fromRGBO(62, 134, 245, 1),
-                    BlendMode.srcIn,
-                  ),
-                  height: 18.h,
-                  width: 18.w,
-                ),
-                'action': () =>
-                    {context.router.push(MapRoute(showOnlyKnown: false))}
-              }
-            ],
+      dropDownItemsList: [
+        {
+          'title': 'Найти что то новое',
+          'icon': SvgPicture.asset(
+            "assets/svg/search.svg",
+            colorFilter: const ColorFilter.mode(
+              Color.fromRGBO(62, 134, 245, 1),
+              BlendMode.srcIn,
+            ),
+            height: 18.h,
+            width: 18.w,
+          ),
+          'action': () => {context.router.push(MapRoute(showOnlyKnown: false))}
+        },
+        if (LocalStorage.getKnownActivities().isNotEmpty)
+          {
+            'title': 'Выбрать из уже знакомых занятий',
+            'icon': SvgPicture.asset(
+              "assets/svg/copy.svg",
+              colorFilter: const ColorFilter.mode(
+                Color.fromRGBO(62, 134, 245, 1),
+                BlendMode.srcIn,
+              ),
+              height: 18.h,
+              width: 18.w,
+            ),
+            'action': () => {
+                  context.router.push(MapRoute(showOnlyKnown: true)),
+                }
+          }
+      ],
       onOpenedAction: () => {
         isplusState = true,
         setstate(() {}),

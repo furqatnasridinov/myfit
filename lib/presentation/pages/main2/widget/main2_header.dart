@@ -271,7 +271,7 @@ class _MainHeaderState extends ConsumerState<Main2Header> {
             left: !widget.showBackButton && !textfieldFocusnode.hasFocus
                 ? 16.w
                 : 0),
-        duration: const Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 200),
         width: textfieldFocusnode.hasFocus ? 360.w : 300.w,
         height: 40.h,
         decoration: BoxDecoration(

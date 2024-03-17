@@ -232,7 +232,7 @@ Widget dropDownPending(
 ) {
   return UiDropDownMenu(
     maxWidth: 300.w,
-    customOffset: [-25.0.w, -39.h],
+    customOffset: [-25.0.w, -25.h],
     dropDownItemsList: [
       {
         'title': 'Открыть расписание заведения',

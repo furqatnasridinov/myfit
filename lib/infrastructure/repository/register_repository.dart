@@ -5,7 +5,6 @@ import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/register.dart';
 import 'package:activity/infrastructure/models/response/auth_response.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:dio/dio.dart';
 
 class RegisterRepository implements RegisterRepositoryInterface {
