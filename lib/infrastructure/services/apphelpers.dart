@@ -22,6 +22,7 @@ class AppHelpers {
       Overlay.of(context),
       CustomSnackBar.error(
         message: text,
+        maxLines: 3,
       ),
     );
   }
@@ -31,6 +32,7 @@ class AppHelpers {
       Overlay.of(context),
       CustomSnackBar.error(
         message: text,
+        maxLines: 3,
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:activity/application/map/map_state.dart';
+import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/main.dart';
 import 'package:activity/infrastructure/models/data/each_markers_models.dart';
 import 'package:activity/infrastructure/models/data/gym_data.dart';
@@ -102,7 +103,8 @@ class MapNotifier extends StateNotifier<MapState> {
           }
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          AppHelpers.showSnack(
+              context, NetworkExceptions.getErrorMessage(error));
           state = state.copyWith(isloading: false);
         },
       );
@@ -148,7 +150,8 @@ class MapNotifier extends StateNotifier<MapState> {
           }
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showSnack(context, "$error $statusCode");
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
       );
       state = state.copyWith(isloading: false);
@@ -329,7 +332,8 @@ class MapNotifier extends StateNotifier<MapState> {
               activitiesWithGymsInsideAll: withCalculatedDistances);
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(context, error.toString());
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
       );
       state = state.copyWith(isloading: false);
@@ -395,6 +399,7 @@ class MapNotifier extends StateNotifier<MapState> {
   Future<void> setFlexes() async {
     await Future.delayed(const Duration(milliseconds: 100));
     final list = state.activitiesWithGymsInsideFromSelectedDiapozone;
+    bool isAnyOpened = list.any((element) => element.isOpened);
     if (state.isloading) {
       state = state.copyWith(
         topFlex: 3,
@@ -407,10 +412,16 @@ class MapNotifier extends StateNotifier<MapState> {
         bottomFlex: 10,
       );
     }
-    if (list.length == 1) {
+    if (list.length == 1 && !state.isloading && !isAnyOpened) {
       state = state.copyWith(
         topFlex: 2,
         bottomFlex: 9,
+      );
+    }
+    if (list.length == 1 && isAnyOpened) {
+      state = state.copyWith(
+        topFlex: 4,
+        bottomFlex: 6,
       );
     }
     if (list.length == 2) {
@@ -482,16 +493,6 @@ class MapNotifier extends StateNotifier<MapState> {
     setFlexes();
   }
 
-  void openCloseGymsList() {
-    final list = state.activitiesWithGymsInsideFromSelectedDiapozone;
-    bool isOpened = list.any((element) => element.isOpened);
-    if (isOpened) {
-      openGymslist();
-    } else {
-      closeGymslist();
-    }
-  }
-
   void closeOpenedActivities() {
     bool isAnyOpened = state.activitiesWithGymsInsideFromSelectedDiapozone
         .any((element) => element.isOpened);
@@ -529,14 +530,12 @@ class MapNotifier extends StateNotifier<MapState> {
 
   void showPopUpOnMap(BuildContext context) {
     // remove prvious pop up first
-    if (state.activeMarker != null &&
-        state.activeMarker?.name != "user" ) {
+    if (state.activeMarker != null && state.activeMarker?.name != "user") {
       removePopUp(); // if there is a pop up remove it
       if (!state.isLocationIconHidden) {
         hideLocationIcon();
       }
       state = state.copyWith(isGymsPopupShown: true);
-
     }
   }
 
@@ -635,7 +634,10 @@ class MapNotifier extends StateNotifier<MapState> {
             state = state.copyWith(gymFoundBySearching: list);
           }
         },
-        failure: (error, statusCode, operationInfo) {},
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
+        },
       );
     } else {
       // ignore: use_build_context_synchronously

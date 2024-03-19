@@ -1,4 +1,5 @@
 import 'package:activity/application/notes/notes_state.dart';
+import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/schedule.dart';
 import 'package:activity/infrastructure/models/data/gym_with_tags.dart';
 import 'package:activity/infrastructure/models/request/add_note_request.dart';
@@ -139,7 +140,8 @@ class NotesNotifier extends StateNotifier<NotesState> {
         },
         failure: (error, statusCode, operationInfo) {
           state = state.copyWith(isloading: false);
-          AppHelpers.showErrorSnack(context, "${error.toString()} statuscode $statusCode");
+         AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {
@@ -159,7 +161,10 @@ class NotesNotifier extends StateNotifier<NotesState> {
       final response = await _scheduleRepositoryInterface.addNotes(request);
       response.when(
         success: (data) {},
-        failure: (error, statusCode, operationInfo) {},
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
+        },
       );
     } else {
       // ignore: use_build_context_synchronously

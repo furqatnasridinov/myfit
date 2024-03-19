@@ -5,11 +5,10 @@ import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/register.dart';
 import 'package:activity/infrastructure/models/response/auth_response.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
-import 'package:dio/dio.dart';
 
 class RegisterRepository implements RegisterRepositoryInterface {
   @override
-  Future<Map<String, dynamic>> sendPhoneNumber(String phoneNumber) async {
+  Future<ApiResult<Map<String,dynamic>>> sendPhoneNumber(String phoneNumber) async {
     try {
       final client = inject<HttpService>().clientDio();
       final dataToSend = {"login": phoneNumber};
@@ -17,10 +16,12 @@ class RegisterRepository implements RegisterRepositoryInterface {
         AppConstants.sendPhoneNumber,
         data: dataToSend,
       );
-      return response.data;
+      return ApiResult.success(data: response.data);
     } catch (error) {
-      final DioException e = error as DioException;
-      return e.response?.data;
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(error),
+        statusCode: NetworkExceptions.getDioStatus(error),
+      );
     }
   }
 

@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:activity/application/schedule/schedule_state.dart';
+import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/schedule.dart';
 import 'package:activity/infrastructure/models/data/completed_schedule.dart';
 import 'package:activity/infrastructure/models/request/rate_request.dart';
@@ -79,7 +80,8 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
           }
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
           state = state.copyWith(isloading: false);
         },
       );
@@ -99,7 +101,8 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
           debugPrint(data.toString());
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {
@@ -114,7 +117,8 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       response.when(success: (data) {
         debugPrint(data.toString());
       }, failure: (error, statusCode, operationInfo) {
-        AppHelpers.showErrorSnack(context, "$error $statusCode");
+        AppHelpers.showErrorSnack(
+            context, NetworkExceptions.getErrorMessage(error));
       });
     } else {
       AppHelpers.showCheckTopSnackBar(context);
@@ -144,7 +148,8 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
           state = state.copyWith(completedSchedules: listToCollect);
         }
       }, failure: (error, statusCode, operationInfo) {
-        AppHelpers.showErrorSnack(context, "$error $statusCode");
+        AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
       });
     } else {
       AppHelpers.showCheckTopSnackBar(context);
@@ -364,7 +369,8 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
           AppHelpers.showSnack(context, "Запись отменена");
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+         AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {

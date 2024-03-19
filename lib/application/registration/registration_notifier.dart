@@ -3,6 +3,7 @@
 import 'dart:ui';
 
 import 'package:activity/application/registration/registration_state.dart';
+import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/register.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_validator.dart';
@@ -95,17 +96,7 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
     if (connect) {
       final response =
           await _registerRepositoryInterface.sendPhoneNumber(phoneNumber);
-
-      debugPrint(response.toString());
-      if (response["operationResult"] == "OK") {
-        context.router.push(
-          const Registration2Route(),
-        );
-      } else {
-        AppHelpers.showErrorSnack(context, response["operationInfo"]);
-      }
-
-      /* response.when(
+      response.when(
         success: (data) {
           if (data["operationResult"] == "OK") {
             context.router.push(
@@ -113,11 +104,11 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
             );
           }
         },
-        failure: (error, statusCode) {
-          AppHelpers.showSnack(
-              context, "${error.toString()} ${"statuscode $statusCode"}");
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
-      ); */
+      );
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
@@ -156,7 +147,8 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
           moveClientToNextPage(context, nextRoute);
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {

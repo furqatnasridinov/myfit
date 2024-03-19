@@ -1,8 +1,6 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-
 part 'network_exceptions.freezed.dart';
 
 @freezed
@@ -25,7 +23,7 @@ class NetworkExceptions with _$NetworkExceptions {
 
   const factory NetworkExceptions.conflict() = Conflict;
 
-  const factory NetworkExceptions.internalServerError() = InternalServerError;
+  const factory NetworkExceptions.internalServerError(String? error) = InternalServerError;
 
   const factory NetworkExceptions.notImplemented() = NotImplemented;
 
@@ -41,6 +39,11 @@ class NetworkExceptions with _$NetworkExceptions {
 
   const factory NetworkExceptions.unexpectedError() = UnexpectedError;
 
+  const factory NetworkExceptions.receiveTimeout() = RecieveTimeOut;
+
+  const factory NetworkExceptions.unknown(String reason) = Unknown;
+
+
   static NetworkExceptions getDioException(error) {
     if (error is Exception) {
       try {
@@ -49,43 +52,45 @@ class NetworkExceptions with _$NetworkExceptions {
             case DioExceptionType.cancel:
               break;
             case DioExceptionType.connectionTimeout:
-              break;
+              return const NetworkExceptions.requestTimeout();
             case DioExceptionType.unknown:
-              break;
+              return const NetworkExceptions.unknown("unknown Reason");
             case DioExceptionType.receiveTimeout:
-              break;
+              return const NetworkExceptions.receiveTimeout();
             case DioExceptionType.badResponse:
-              switch (error.response!.statusCode) {
+              switch (error.response?.statusCode) {
                 case 400:
-                  break;
+                  return  NetworkExceptions.unknown(error.message ?? "badResponse");
                 case 401:
                   break;
                 case 403:
-                  break;
+                  return const NetworkExceptions.unauthorisedRequest();
                 case 404:
-                  break;
+                  return const NetworkExceptions.notFound("404 Not Found");
                 case 409:
-                  break;
+                  return const NetworkExceptions.conflict();
                 case 408:
-                  break;
+                  return const NetworkExceptions.badRequest();
                 case 500:
-                  break;
+                  return  NetworkExceptions.internalServerError(error.response?.data["operationInfo"]);
                 case 503:
-                  break;
+                  return const NetworkExceptions.serviceUnavailable();
                 default:
               }
               break;
             case DioExceptionType.sendTimeout:
-              break;
+              return const NetworkExceptions.sendTimeout();
             case DioExceptionType.badCertificate:
               break;
             case DioExceptionType.connectionError:
-              break;
+              return  NetworkExceptions.unknown(error.message ?? "connectionError");
           }
-        } else if (error is SocketException) {
-        } else {
+        } 
+        else {
+            return const NetworkExceptions.unknown("Unknown from else caught");
         }
-        return const NetworkExceptions.noInternetConnection();
+        return const NetworkExceptions.unknown("abdu");
+        
       } on FormatException catch (_) {
         return const NetworkExceptions.formatException();
       } catch (_) {
@@ -181,59 +186,45 @@ class NetworkExceptions with _$NetworkExceptions {
 
   static String getErrorMessage(NetworkExceptions networkExceptions) {
     var errorMessage = "";
-    networkExceptions.when(
-      notImplemented: () {
-        errorMessage = "Not Implemented";
-      },
-      requestCancelled: () {
-        errorMessage = "Request Cancelled";
-      },
-      internalServerError: () {
-        errorMessage = "Internal Server Error";
-      },
-      notFound: (String reason) {
-        errorMessage = reason;
-      },
-      serviceUnavailable: () {
-        errorMessage = "Service unavailable";
-      },
-      methodNotAllowed: () {
-        errorMessage = "Method Allowed";
-      },
-      badRequest: () {
-        errorMessage = "Bad request";
-      },
-      unauthorisedRequest: () {
-        errorMessage = "Unauthorised request";
-      },
-      unexpectedError: () {
-        errorMessage = "Unexpected error occurred";
-      },
-      requestTimeout: () {
-        errorMessage = "Connection request timeout";
-      },
-      noInternetConnection: () {
-        errorMessage = "No internet connection";
-      },
-      conflict: () {
-        errorMessage = "Error due to a conflict";
-      },
-      sendTimeout: () {
-        errorMessage = "Send timeout in connection with API server";
-      },
-      unableToProcess: () {
-        errorMessage = "Unable to process the data";
-      },
-      defaultError: (String error) {
-        errorMessage = error;
-      },
-      formatException: () {
-        errorMessage = "Unexpected error occurred";
-      },
-      notAcceptable: () {
-        errorMessage = "Not acceptable";
-      },
-    );
+    networkExceptions.when(notImplemented: () {
+      errorMessage = "Not Implemented";
+    }, requestCancelled: () {
+      errorMessage = "Request Cancelled";
+    }, internalServerError: (String? error) {
+      errorMessage = "Internal Server Error, $error";
+    }, notFound: (String reason) {
+      errorMessage = reason;
+    }, serviceUnavailable: () {
+      errorMessage = "Service unavailable";
+    }, methodNotAllowed: () {
+      errorMessage = "Method Allowed";
+    }, badRequest: () {
+      errorMessage = "Bad request";
+    }, unauthorisedRequest: () {
+      errorMessage = "Unauthorised request";
+    }, unexpectedError: () {
+      errorMessage = "Unexpected error occurred";
+    }, requestTimeout: () {
+      errorMessage = "Connection request timeout";
+    }, noInternetConnection: () {
+      errorMessage = "No internet connection";
+    }, conflict: () {
+      errorMessage = "Error due to a conflict";
+    }, sendTimeout: () {
+      errorMessage = "Send timeout in connection with API server";
+    }, unableToProcess: () {
+      errorMessage = "Unable to process the data";
+    }, defaultError: (String error) {
+      errorMessage = error;
+    }, formatException: () {
+      errorMessage = "Unexpected error occurred";
+    }, notAcceptable: () {
+      errorMessage = "Not acceptable";
+    }, receiveTimeout: () {
+      errorMessage = "Recieve timeout in connection with API server";
+    }, unknown: (String error) {
+      errorMessage = error;
+    });
     return errorMessage;
   }
 }

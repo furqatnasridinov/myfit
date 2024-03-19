@@ -1,8 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:io';
 import 'package:activity/application/settings/settings_state.dart';
+import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/settings.dart';
-import 'package:activity/infrastructure/local_notifications/notification_service.dart';
 import 'package:activity/infrastructure/models/request/send_confirmation_code_request.dart';
 import 'package:activity/infrastructure/models/request/send_phone_number_request.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
@@ -10,7 +10,6 @@ import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../infrastructure/models/response/auth_response.dart';
 
@@ -69,7 +68,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           }
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
           state = state.copyWith(isCitiesLoading: false);
         },
       );
@@ -96,7 +96,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           }
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
           state = state.copyWith(isloading: false);
         },
       );
@@ -123,7 +124,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           }
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
           state = state.copyWith(isloading: false);
         },
       );
@@ -152,7 +154,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           }
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
           state = state.copyWith(isloading: false);
         },
       );
@@ -179,7 +182,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           }
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
           state = state.copyWith(isloading: false);
         },
       );
@@ -206,7 +210,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           }
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
           state = state.copyWith(isloading: false);
         },
       );
@@ -233,7 +238,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           }
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
           state = state.copyWith(isloading: false);
         },
       );
@@ -256,7 +262,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           state = state.copyWith(isloading: false);
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+         AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
           state = state.copyWith(isloading: false);
         },
       );
@@ -279,7 +286,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           state = state.copyWith(isloading: false);
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
           state = state.copyWith(isloading: false);
         },
       );
@@ -316,7 +324,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         LocalStorage.setToken(data["object"]["jwtToken"]);
         debugPrint(data.toString());
       }, failure: (error, statusCode, operationInfo) {
-        AppHelpers.showErrorSnack(context, "$error $statusCode");
+        AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
       });
     } else {
       AppHelpers.showCheckTopSnackBar(context);
@@ -332,7 +341,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       response.when(success: (data) {
         //
       }, failure: (error, statusCode, operationInfo) {
-        AppHelpers.showErrorSnack(context, "$error $statusCode");
+        AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));;
       });
     } else {
       AppHelpers.showCheckTopSnackBar(context);
@@ -363,46 +373,14 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         }
         //debugPrint(data.toString());
       }, failure: (error, statusCode, operationInfo) {
-        AppHelpers.showErrorSnack(context, "$error $statusCode");
+        AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
       });
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
-
-  void showDefaultNotification() async {
-    PermissionStatus permissionStatus = await Permission.notification.request();
-    if (permissionStatus.isGranted) {
-      NotificationService().showDefaultNotification(
-        "Myfit App",
-        "Шерзоди пачак",
-      );
-    } else {
-      //await Permission.notification.request();
-    }
-  }
-
-  void showScheduledNotification({required DateTime time}) async {
-    if (!state.isReminderDisabled) {
-      PermissionStatus permissionStatus =
-          await Permission.notification.request();
-      if (permissionStatus.isGranted) {
-        final userReminder = state.reminderTime == ""
-            ? LocalStorage.getReminderTime()
-            : state.reminderTime;
-        final duration = getDurationFromReminderTime(userReminder);
-        final scheduledTime =
-            time.subtract(duration ?? const Duration(minutes: 30));
-        NotificationService().showScheduledNotification(
-          title: "Myfit App",
-          body: "Скоро начнется ваше занятие ",
-          dateTime: scheduledTime,
-        );
-      } else {
-        //AppHelpers.showSnack(context, "Разрешение не дано!");
-      }
-    }
-  }
+  
 
   void setQrCodeValue(String value) {
     state = state.copyWith(qrcodeValue: value);

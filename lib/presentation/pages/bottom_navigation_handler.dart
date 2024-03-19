@@ -35,7 +35,6 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
                   selectedIndex: tabsRouter.activeIndex,
                   indicatorColor: AppColors.fadedPrimary3,
                   surfaceTintColor: Colors.transparent,
-                  shadowColor: Colors.red,
                   indicatorShape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14.r),
                   ),
@@ -81,26 +80,29 @@ Widget eachItem(
 ) {
   return GestureDetector(
     onTap: onTap,
-    child: Column(mainAxisSize: MainAxisSize.min, children: [
-      Container(
-        width: 60.w,
-        height: 30.h,
-        padding: EdgeInsets.symmetric(vertical: 2.h),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14.r),
-          color: active ? AppColors.fadedPrimary3 : Colors.white,
+    child: ColoredBox(
+      color: Colors.white,
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        Container(
+          width: 60.w,
+          height: 30.h,
+          padding: EdgeInsets.symmetric(vertical: 2.h),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14.r),
+            color: active ? AppColors.fadedPrimary3 : Colors.white,
+          ),
+          child: SvgPicture.asset(
+            svgPath,
+          ),
         ),
-        child: SvgPicture.asset(
-          svgPath,
+        6.verticalSpace,
+        CustomText(
+          text: title,
+          fontSize: 13.sp,
+          fontWeight: FontWeight.w500,
+          color: AppColors.blueColor,
         ),
-      ),
-      6.verticalSpace,
-      CustomText(
-        text: title,
-        fontSize: 13.sp,
-        fontWeight: FontWeight.w500,
-        color: AppColors.blueColor,
-      ),
-    ]),
+      ]),
+    ),
   );
 }

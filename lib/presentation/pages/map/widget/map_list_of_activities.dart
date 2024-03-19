@@ -56,87 +56,47 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
             ? NoGymsInSelectedDiapozone(
                 state: widget.state, event: widget.event)
             : SizedBox(
-                child: widget.state.locationPermissionDenied ||
-                        widget.state.locationServiceIsNotEnabled
-                    ? Column(
-                        children: [
-                          EnableLocationPermission(
-                            event: widget.event,
-                            state: widget.state,
-                          ),
-                          ListView.builder(
-                            //controller: widget.activitiesListController,
-                            physics: const NeverScrollableScrollPhysics(),
-                            padding: EdgeInsets.symmetric(horizontal: 16.w),
-                            itemCount: widget
-                                .state
-                                .activitiesWithGymsInsideFromSelectedDiapozone
-                                .length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              final currentActivity = widget.state
-                                      .activitiesWithGymsInsideFromSelectedDiapozone[
-                                  index];
-                              return _listOfActivitiesBuilder(
-                                  currentActivity.lessontype ?? "??",
-                                  currentActivity.listOfGyms!.length.toString(),
-                                  currentActivity.isOpened,
-                                  currentActivity.listOfGyms!,
-                                  // ontap of gyms below
-                                  () {
-                                for (var element in widget.state
-                                    .activitiesWithGymsInsideFromSelectedDiapozone) {
-                                  if (element.isOpened == true &&
-                                      element != currentActivity) {
-                                    element.isOpened = false;
-                                    setState(() {});
-                                  }
-                                }
-                                currentActivity.isOpened =
-                                    !currentActivity.isOpened;
-                                setState(() {});
-                                widget.event.openCloseGymsList();
-                              });
-                            },
-                          ),
-                        ],
-                      )
-                    : ListView.builder(
-                        controller: widget.activitiesListController,
-                        //physics: const NeverScrollableScrollPhysics(),
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        itemCount: widget
-                            .state
-                            .activitiesWithGymsInsideFromSelectedDiapozone
-                            .length,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          final currentActivity = widget.state
-                                  .activitiesWithGymsInsideFromSelectedDiapozone[
-                              index];
-                          return _listOfActivitiesBuilder(
-                              currentActivity.lessontype ?? "??",
-                              currentActivity.listOfGyms!.length.toString(),
-                              currentActivity.isOpened,
-                              currentActivity.listOfGyms!,
-                              // ontap of gyms below
-                              () {
-                            for (var element in widget.state
-                                .activitiesWithGymsInsideFromSelectedDiapozone) {
-                              if (element.isOpened == true &&
-                                  element != currentActivity) {
-                                element.isOpened = false;
-                                setState(() {});
-                              }
-                            }
-                            currentActivity.isOpened =
-                                !currentActivity.isOpened;
+                child: Column(
+                children: [
+                  if (widget.state.locationPermissionDenied ||
+                      widget.state.locationServiceIsNotEnabled)
+                    EnableLocationPermission(
+                      event: widget.event,
+                      state: widget.state,
+                    ),
+                  ListView.builder(
+                    //controller: widget.activitiesListController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    itemCount: widget.state
+                        .activitiesWithGymsInsideFromSelectedDiapozone.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      final currentActivity = widget.state
+                          .activitiesWithGymsInsideFromSelectedDiapozone[index];
+                      return _listOfActivitiesBuilder(
+                          currentActivity.lessontype ?? "??",
+                          currentActivity.listOfGyms!.length.toString(),
+                          currentActivity.isOpened,
+                          currentActivity.listOfGyms!,
+                          // ontap of gyms below
+                          () {
+                        for (var element in widget.state
+                            .activitiesWithGymsInsideFromSelectedDiapozone) {
+                          if (element.isOpened == true &&
+                              element != currentActivity) {
+                            element.isOpened = false;
                             setState(() {});
-                            widget.event.openCloseGymsList();
-                          });
-                        },
-                      ),
-              );
+                          }
+                        }
+                        currentActivity.isOpened = !currentActivity.isOpened;
+                        setState(() {});
+                        widget.event.setFlexes();
+                      });
+                    },
+                  ),
+                ],
+              ));
   }
 
   _listOfActivitiesBuilder(

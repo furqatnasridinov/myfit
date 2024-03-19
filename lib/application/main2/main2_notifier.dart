@@ -1,4 +1,5 @@
 import 'package:activity/application/main2/main2_state.dart';
+import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/schedule.dart';
 import 'package:activity/infrastructure/models/data/schedule_and_gym.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
@@ -231,7 +232,8 @@ class Main2Notifier extends StateNotifier<Main2State> {
         },
         failure: (error, statusCode, operationInfo) {
           state = state.copyWith(nearestLessonIsLoading: false);
-          AppHelpers.showErrorSnack(context, error.toString());
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {
@@ -268,7 +270,8 @@ class Main2Notifier extends StateNotifier<Main2State> {
         },
         failure: (error, statusCode, operationInfo) {
           state = state.copyWith(statsMonthIsloading: false);
-          AppHelpers.showErrorSnack(context, error.toString());
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {
@@ -304,7 +307,10 @@ class Main2Notifier extends StateNotifier<Main2State> {
             state = state.copyWith(schedulesFoundBySearching: list);
           }
         },
-        failure: (error, statusCode, operationInfo) {},
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
+        },
       );
     } else {
       // ignore: use_build_context_synchronously

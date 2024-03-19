@@ -1,4 +1,5 @@
 import 'package:activity/application/main/main_state.dart';
+import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/main.dart';
 import 'package:activity/infrastructure/models/data/activity_near_client.dart';
 import 'package:activity/infrastructure/models/data/each_markers_models.dart';
@@ -22,7 +23,10 @@ class MainNotifier extends StateNotifier<MainState> {
         success: (data) {
           state = state.copyWith(advantages: data);
         },
-        failure: (error, statusCode, operationInfo) {},
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
+        },
       );
     } else {
       // ignore: use_build_context_synchronously
@@ -41,6 +45,8 @@ class MainNotifier extends StateNotifier<MainState> {
           state = state.copyWith(subscribtions: data);
         },
         failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
           state = state.copyWith(isloading: false);
         },
       );
@@ -60,7 +66,10 @@ class MainNotifier extends StateNotifier<MainState> {
         success: (data) {
           state = state.copyWith(comments: data);
         },
-        failure: (error, statusCode, operationInfo) {},
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
+        },
       );
     } else {
       // ignore: use_build_context_synchronously
@@ -104,7 +113,10 @@ class MainNotifier extends StateNotifier<MainState> {
           });
           state = state.copyWith(activitiesNearClient: listcha);
         },
-        failure: (error, statusCode, operationInfo) {},
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
+        },
       );
     } else {
       // ignore: use_build_context_synchronously
@@ -174,7 +186,7 @@ class MainNotifier extends StateNotifier<MainState> {
         ),
       );
     }
- 
+
     return listofPlaceMarks;
   }
 

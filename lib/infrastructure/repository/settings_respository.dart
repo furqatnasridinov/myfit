@@ -33,10 +33,9 @@ class SettingsRepository implements SetttingsRepositoryInterface {
       {required Map<String, dynamic> request}) async {
     try {
       final client = inject<HttpService>().clientDio();
-      final sendingData = request;
       final response = await client.patch(
         AppConstants.patchUser,
-        data: sendingData,
+        data: request,
       );
       return ApiResult.success(
         data: response.data,

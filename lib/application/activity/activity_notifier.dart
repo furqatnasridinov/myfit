@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:activity/application/activity/activity_state.dart';
+import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/activity.dart';
 import 'package:activity/infrastructure/models/data/description_and_peculiarities.dart';
 import 'package:activity/infrastructure/models/data/lesson.dart';
@@ -33,7 +34,8 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         },
         failure: (error, statusCode, operationInfo) {
           state = state.copyWith(isGymLoading: false);
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {
@@ -62,7 +64,8 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         },
         failure: (error, statusCode, operationInfo) {
           state = state.copyWith(isActivitiesListLoading: false);
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {
@@ -88,7 +91,8 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         },
         failure: (error, statusCode, operationInfo) {
           state = state.copyWith(isPhotosLoading: false);
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {
@@ -108,7 +112,8 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
           }
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {
@@ -240,7 +245,8 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         },
         failure: (error, statusCode, operationInfo) {
           state = state.copyWith(isSchedulesLoading: false);
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {
@@ -359,13 +365,13 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   String formatDuration(String time) {
     final parts = time.split(':');
     if (parts.length != 2) {
-      throw const FormatException('Неверный формат времени');
+      throw const FormatException();
     }
     final hours = int.tryParse(parts[0]);
     final minutes = int.tryParse(parts[1]);
 
     if (hours == null || minutes == null) {
-      throw const FormatException('Неверный формат времени');
+      throw const FormatException();
     }
 
     String hoursText = '';
