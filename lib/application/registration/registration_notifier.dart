@@ -158,9 +158,13 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
 
   Future<void> moveClientToNextPage(
       BuildContext context, PageRouteInfo<dynamic> nextRoute) async {
-    await Future.delayed(const Duration(milliseconds: 1500)).then(
-      (value) => context.replaceRoute(nextRoute),
-    );
+    await Future.delayed(const Duration(milliseconds: 1500)).then((value) {
+      if (nextRoute.routeName == "Main2Route") {
+        context.router.replaceAll([nextRoute]);
+      } else {
+        context.replaceRoute(nextRoute);
+      }
+    });
   }
 
   void enableFormNotValidated() {

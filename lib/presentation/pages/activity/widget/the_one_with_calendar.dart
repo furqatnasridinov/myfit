@@ -2,6 +2,7 @@
 import 'package:activity/application/activity/activity_notifier.dart';
 import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/application/activity/activity_state.dart';
+import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/infrastructure/models/data/chips_model.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
@@ -220,9 +221,8 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
             builder: (contex, ref, child) {
               final lessonsToShowAfterSelectingADay =
                   ref.watch(activityProvider).lessonsToShowAfterSelectingADay;
-              //final main2Event = ref.read(main2Provider.notifier);
-              //final scheduleevent = ref.read(scheduleProvider.notifier);
-              //final activityEvent = ref.read(activityProvider.notifier);
+              final loading = ref.watch(activityProvider).isEnrollingLoading;
+              final scheduleEvent = ref.read(scheduleProvider.notifier);
               if (lessonsToShowAfterSelectingADay.isEmpty) {
                 return Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -252,6 +252,7 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                       currentSchedule.duration ?? "??",
                       currentSchedule.description ?? "??",
                       currentSchedule.lessonState ?? "",
+                      loading,
                       () async {
                         await widget.event.enrollToGym(
                           context,
@@ -260,12 +261,8 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                         // временно до вебсокетов
                         currentSchedule.lessonState = "WAITING";
                         setState(() {});
-
                         // get the updated list of lessons
-                        // activityEvent.getAllLessons(context, id: gymId);
-                        // get the nearest lesson to show in main page after popping
-                        //main2Event.getNearestLesson(context);
-                        //scheduleevent.getUsersSchedules(context);
+                        scheduleEvent.getUsersSchedules(context);
                       },
                     );
                   },
@@ -288,6 +285,7 @@ Widget activityCard(
   String duration,
   String name,
   String? status,
+  bool loading,
   void Function()? enrollFunction,
 ) {
   return Padding(
@@ -324,10 +322,12 @@ Widget activityCard(
               SizedBox(
                 child: InkWell(
                   onTap: (status == "OPEN" || status == "CANCELED_USER")
-                      /* status == "OPEN" */ ? enrollFunction
+                      ? enrollFunction
                       : null,
                   child: CustomText(
-                    text: AppHelpers().getStatusText(status),
+                    text: loading
+                        ? "Загрузка..."
+                        : AppHelpers().getStatusText(status),
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
                     color: AppHelpers().getStatusTextColor(status),

@@ -19,6 +19,7 @@ mixin _$ActivityState {
   bool get isloading => throw _privateConstructorUsedError;
   bool get isGymLoading => throw _privateConstructorUsedError;
   bool get isActivitiesListLoading => throw _privateConstructorUsedError;
+  bool get isEnrollingLoading => throw _privateConstructorUsedError;
   bool get isPhotosLoading => throw _privateConstructorUsedError;
   bool get isSchedulesLoading => throw _privateConstructorUsedError;
   bool get infoForTypeLoading => throw _privateConstructorUsedError;
@@ -57,6 +58,7 @@ abstract class $ActivityStateCopyWith<$Res> {
       {bool isloading,
       bool isGymLoading,
       bool isActivitiesListLoading,
+      bool isEnrollingLoading,
       bool isPhotosLoading,
       bool isSchedulesLoading,
       bool infoForTypeLoading,
@@ -91,6 +93,7 @@ class _$ActivityStateCopyWithImpl<$Res, $Val extends ActivityState>
     Object? isloading = null,
     Object? isGymLoading = null,
     Object? isActivitiesListLoading = null,
+    Object? isEnrollingLoading = null,
     Object? isPhotosLoading = null,
     Object? isSchedulesLoading = null,
     Object? infoForTypeLoading = null,
@@ -120,6 +123,10 @@ class _$ActivityStateCopyWithImpl<$Res, $Val extends ActivityState>
       isActivitiesListLoading: null == isActivitiesListLoading
           ? _value.isActivitiesListLoading
           : isActivitiesListLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isEnrollingLoading: null == isEnrollingLoading
+          ? _value.isEnrollingLoading
+          : isEnrollingLoading // ignore: cast_nullable_to_non_nullable
               as bool,
       isPhotosLoading: null == isPhotosLoading
           ? _value.isPhotosLoading
@@ -201,6 +208,7 @@ abstract class _$$ActivityStateImplCopyWith<$Res>
       {bool isloading,
       bool isGymLoading,
       bool isActivitiesListLoading,
+      bool isEnrollingLoading,
       bool isPhotosLoading,
       bool isSchedulesLoading,
       bool infoForTypeLoading,
@@ -233,6 +241,7 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
     Object? isloading = null,
     Object? isGymLoading = null,
     Object? isActivitiesListLoading = null,
+    Object? isEnrollingLoading = null,
     Object? isPhotosLoading = null,
     Object? isSchedulesLoading = null,
     Object? infoForTypeLoading = null,
@@ -262,6 +271,10 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
       isActivitiesListLoading: null == isActivitiesListLoading
           ? _value.isActivitiesListLoading
           : isActivitiesListLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isEnrollingLoading: null == isEnrollingLoading
+          ? _value.isEnrollingLoading
+          : isEnrollingLoading // ignore: cast_nullable_to_non_nullable
               as bool,
       isPhotosLoading: null == isPhotosLoading
           ? _value.isPhotosLoading
@@ -338,6 +351,7 @@ class _$ActivityStateImpl extends _ActivityState {
       {this.isloading = false,
       this.isGymLoading = false,
       this.isActivitiesListLoading = false,
+      this.isEnrollingLoading = false,
       this.isPhotosLoading = false,
       this.isSchedulesLoading = false,
       this.infoForTypeLoading = false,
@@ -374,6 +388,9 @@ class _$ActivityStateImpl extends _ActivityState {
   @override
   @JsonKey()
   final bool isActivitiesListLoading;
+  @override
+  @JsonKey()
+  final bool isEnrollingLoading;
   @override
   @JsonKey()
   final bool isPhotosLoading;
@@ -486,7 +503,7 @@ class _$ActivityStateImpl extends _ActivityState {
 
   @override
   String toString() {
-    return 'ActivityState(isloading: $isloading, isGymLoading: $isGymLoading, isActivitiesListLoading: $isActivitiesListLoading, isPhotosLoading: $isPhotosLoading, isSchedulesLoading: $isSchedulesLoading, infoForTypeLoading: $infoForTypeLoading, gym: $gym, describtionAndPeculiarities: $describtionAndPeculiarities, activityTypes: $activityTypes, allPhotos: $allPhotos, allLessons: $allLessons, lessonsOfSelectedActivity: $lessonsOfSelectedActivity, daysInWhichWeHaveLessons: $daysInWhichWeHaveLessons, selectedCalendarDay: $selectedCalendarDay, lessonsToShowAfterSelectingADay: $lessonsToShowAfterSelectingADay, selectedActivity: $selectedActivity, photosOfSelectedActivity: $photosOfSelectedActivity, infosForType: $infosForType, listOf15CalendarDaysFromNow: $listOf15CalendarDaysFromNow)';
+    return 'ActivityState(isloading: $isloading, isGymLoading: $isGymLoading, isActivitiesListLoading: $isActivitiesListLoading, isEnrollingLoading: $isEnrollingLoading, isPhotosLoading: $isPhotosLoading, isSchedulesLoading: $isSchedulesLoading, infoForTypeLoading: $infoForTypeLoading, gym: $gym, describtionAndPeculiarities: $describtionAndPeculiarities, activityTypes: $activityTypes, allPhotos: $allPhotos, allLessons: $allLessons, lessonsOfSelectedActivity: $lessonsOfSelectedActivity, daysInWhichWeHaveLessons: $daysInWhichWeHaveLessons, selectedCalendarDay: $selectedCalendarDay, lessonsToShowAfterSelectingADay: $lessonsToShowAfterSelectingADay, selectedActivity: $selectedActivity, photosOfSelectedActivity: $photosOfSelectedActivity, infosForType: $infosForType, listOf15CalendarDaysFromNow: $listOf15CalendarDaysFromNow)';
   }
 
   @override
@@ -498,9 +515,10 @@ class _$ActivityStateImpl extends _ActivityState {
                 other.isloading == isloading) &&
             (identical(other.isGymLoading, isGymLoading) ||
                 other.isGymLoading == isGymLoading) &&
-            (identical(
-                    other.isActivitiesListLoading, isActivitiesListLoading) ||
+            (identical(other.isActivitiesListLoading, isActivitiesListLoading) ||
                 other.isActivitiesListLoading == isActivitiesListLoading) &&
+            (identical(other.isEnrollingLoading, isEnrollingLoading) ||
+                other.isEnrollingLoading == isEnrollingLoading) &&
             (identical(other.isPhotosLoading, isPhotosLoading) ||
                 other.isPhotosLoading == isPhotosLoading) &&
             (identical(other.isSchedulesLoading, isSchedulesLoading) ||
@@ -544,6 +562,7 @@ class _$ActivityStateImpl extends _ActivityState {
         isloading,
         isGymLoading,
         isActivitiesListLoading,
+        isEnrollingLoading,
         isPhotosLoading,
         isSchedulesLoading,
         infoForTypeLoading,
@@ -574,6 +593,7 @@ abstract class _ActivityState extends ActivityState {
       {final bool isloading,
       final bool isGymLoading,
       final bool isActivitiesListLoading,
+      final bool isEnrollingLoading,
       final bool isPhotosLoading,
       final bool isSchedulesLoading,
       final bool infoForTypeLoading,
@@ -598,6 +618,8 @@ abstract class _ActivityState extends ActivityState {
   bool get isGymLoading;
   @override
   bool get isActivitiesListLoading;
+  @override
+  bool get isEnrollingLoading;
   @override
   bool get isPhotosLoading;
   @override

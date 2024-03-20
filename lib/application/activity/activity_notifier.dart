@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:activity/application/activity/activity_state.dart';
 import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/activity.dart';
+import 'package:activity/domain/interface/schedule.dart';
 import 'package:activity/infrastructure/models/data/description_and_peculiarities.dart';
 import 'package:activity/infrastructure/models/data/lesson.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
@@ -15,10 +16,11 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class ActivityNotifier extends StateNotifier<ActivityState> {
-  ActivityNotifier(this._activityRepositoryInterface)
+  ActivityNotifier(
+      this._activityRepositoryInterface, this._scheduleRepositoryInterface)
       : super(const ActivityState());
   final ActivityRepositoryInterface _activityRepositoryInterface;
-
+  final ScheduleRepositoryInterface _scheduleRepositoryInterface;
   Future<void> getGymInfo(BuildContext context, {required int gymId}) async {
     final connected = await AppConnectivity().connectivity();
     if (connected) {
@@ -331,7 +333,8 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         getLessonsOfSelectedActivity(state.selectedActivity ?? "", false)
             .then((value) => state = state.copyWith(
                   selectedCalendarDay: selectedDay,
-                ));
+                ))
+            .then((value) => _scheduleRepositoryInterface.getUsersSchedules());
       },
       onError: (error) {
         debugPrint(error.message);
@@ -543,14 +546,19 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   Future<void> enrollToGym(BuildContext context, int id) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
+      state = state.copyWith(isEnrollingLoading: true);
       final response = await _activityRepositoryInterface.enrollToGym(id: id);
       response.when(
         success: (data) {
           if (data["operationResult"] == "OK") {
-            //context.replaceRoute(const Main2Route());
+            state = state.copyWith(isEnrollingLoading: false);
           }
         },
-        failure: (error, statusCode, operationInfo) {},
+        failure: (error, statusCode, operationInfo) {
+          state = state.copyWith(isEnrollingLoading: false);
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
+        },
       );
     } else {
       AppHelpers.showCheckTopSnackBar(context);
