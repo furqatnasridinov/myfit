@@ -121,7 +121,8 @@ class Main2Notifier extends StateNotifier<Main2State> {
       if (days > 0) '$days $daysWord',
       if (hours > 0) '$hours $hoursWord',
       if (minutes > 0) '$minutes $minutesWord',
-      if (seconds > 0) '$seconds секунд'
+      if ((days == 0 && hours == 0 && minutes == 0) && seconds > 0)
+        '$seconds секунд'
     ];
 
     return parts.join(' ');

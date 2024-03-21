@@ -32,10 +32,9 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      
       ref.read(settingsProvider.notifier)
-      ..requestNotificationPermissions()
-      ..setUserInfos();
+        ..requestNotificationPermissions()
+        ..setUserInfos();
       ref.read(mapProvider.notifier).getUserLocation().then((value) {
         ref.read(mapProvider.notifier).getYandexMapImage(
               context,
@@ -46,10 +45,11 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
         ..getUserStatsMonth(context);
 
       // web socket for updating lesson states
-        channel = IOWebSocketChannel.connect(
-        Uri.parse("ws://77.222.53.122:8080/appSchedulePanel/${LocalStorage.getUserId()}"),
-        headers: {'Authorization': 'Bearer ${LocalStorage.getToken()}'});
-        ref.read(activityProvider.notifier).handleWebSocket(channel, context);
+      channel = IOWebSocketChannel.connect(
+          Uri.parse(
+              "ws://77.222.53.122:8080/appSchedulePanel/${LocalStorage.getUserId()}"),
+          headers: {'Authorization': 'Bearer ${LocalStorage.getToken()}'});
+      ref.read(activityProvider.notifier).handleWebSocket(channel, context);
     });
   }
 
@@ -61,7 +61,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(main2Provider);
+    final nearestLesson = ref.watch(main2Provider).nearestLesson;
     final event = ref.read(main2Provider.notifier);
 
     debugPrint("user id ${LocalStorage.getUserId()}");
@@ -101,17 +101,16 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
                     child: FirstTwoCards(
-                      state: state,
                       event: event,
                     ),
                   ),
                   32.verticalSpace,
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: state.nearestLesson == null
+                    child: nearestLesson == null
                         ? const PlaceholderComingActivity() //button "Найти себе занятие"
                         : ComingActivity(
-                            state: state,
+                            nearestLesson: nearestLesson,
                             event: event,
                           ),
                   ),
