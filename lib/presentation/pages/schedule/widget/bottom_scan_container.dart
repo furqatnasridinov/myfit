@@ -15,10 +15,10 @@ class BottomScanContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer(builder: (context, ref, child) {
       final nearestLesson = ref.watch(main2Provider).nearestLesson;
-      final isActivityStartingIn15Minutes =
-          ref.watch(main2Provider).isActivityStartingIn15Minutes;
+      final showScanButton = ref.watch(main2Provider).showScanButton;
       final parts = nearestLesson?.bodyData?.date?.split("@");
-      return isActivityStartingIn15Minutes
+      final isLessonStarted = ref.watch(main2Provider).lessonIsAlreadyStarted;
+      return showScanButton
           ? Container(
               width: double.maxFinite,
               color: Colors.white,
@@ -34,7 +34,9 @@ class BottomScanContainer extends StatelessWidget {
                   ),
                   10.verticalSpace,
                   CustomText(
-                    text: "Занятие начнётся в ${parts?[1]}",
+                    text: isLessonStarted
+                        ? "Занятие уже началось"
+                        : "Занятие начнётся в ${parts?[1]}",
                     fontWeight: FontWeight.w400,
                     fontSize: 14.sp,
                   ),

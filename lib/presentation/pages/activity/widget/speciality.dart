@@ -8,73 +8,57 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class Speciality extends StatelessWidget {
-  Speciality({super.key});
-
-  final List<String> list = [
-    "Сменная обувь",
-    "Спортивная одежда",
-    "Справка о психическом состоянии",
-  ];
+  const Speciality({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomText(
-                text: "Особенности посещения",
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-              ),
-              InkWell(
-                onTap: () {
-                  showSpecialityPopUp(context);
-                },
-                child: Container(
-                  width: 26.w,
-                  height: 26.h,
-                  padding: EdgeInsets.all(3.5.r),
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                  ),
-                  child: SvgPicture.asset(
-                    "assets/svg/question.svg",
-                  ),
+    return Consumer(builder: (context, ref, child) {
+      final peculiarities = ref.watch(activityProvider).describtionAndPeculiarities?.peculiarities;
+      if (peculiarities == null || peculiarities.isEmpty) return const SizedBox();
+      return Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            32.verticalSpace,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomText(
+                  text: "Особенности посещения",
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
                 ),
-              )
-            ],
-          ),
-          10.verticalSpace,
-          Consumer(builder: (context, ref, child) {
-            final state = ref.watch(activityProvider);
-            return ListView.builder(
-              itemCount: 1, //list.length,
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return eachList(
-                    state.describtionAndPeculiarities?.peculiarities ?? "");
-              },
-            );
-          }),
-        ],
-      ),
-    );
+                GestureDetector(
+                  onTap: () {
+                    showSpecialityPopUp(context);
+                  },
+                  child: Container(
+                    width: 26.w,
+                    height: 26.h,
+                    padding: EdgeInsets.all(3.5.r),
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    ),
+                    child: SvgPicture.asset(
+                      "assets/svg/question.svg",
+                    ),
+                  ),
+                )
+              ],
+            ),
+            10.verticalSpace,
+            InterText(
+              text: peculiarities,
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w400,
+            ),
+          ],
+        ),
+      );
+    });
   }
-}
-
-Widget eachList(String text) {
-  return InterText(
-    text: text,
-    fontSize: 13.sp,
-    fontWeight: FontWeight.w400,
-  );
 }
 
 void showSpecialityPopUp(BuildContext context) {

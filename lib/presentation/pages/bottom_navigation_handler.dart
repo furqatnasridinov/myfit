@@ -32,6 +32,7 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
                   backgroundColor: Colors.white,
                   height: mapPageBottomCardShown ? 0 : 75.h,
                   elevation: 10,
+                  shadowColor: Colors.black,
                   selectedIndex: tabsRouter.activeIndex,
                   indicatorColor: AppColors.fadedPrimary3,
                   surfaceTintColor: Colors.transparent,

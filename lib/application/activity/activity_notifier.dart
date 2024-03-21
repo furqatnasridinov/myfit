@@ -1,10 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:convert';
-
 import 'package:activity/application/activity/activity_state.dart';
+import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/activity.dart';
-import 'package:activity/domain/interface/schedule.dart';
+import 'package:activity/infrastructure/local_notifications/notification_service.dart';
 import 'package:activity/infrastructure/models/data/description_and_peculiarities.dart';
 import 'package:activity/infrastructure/models/data/lesson.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
@@ -16,11 +16,10 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class ActivityNotifier extends StateNotifier<ActivityState> {
-  ActivityNotifier(
-      this._activityRepositoryInterface, this._scheduleRepositoryInterface)
+  ActivityNotifier(this._activityRepositoryInterface, this.scheduleNotifier)
       : super(const ActivityState());
   final ActivityRepositoryInterface _activityRepositoryInterface;
-  final ScheduleRepositoryInterface _scheduleRepositoryInterface;
+  final ScheduleNotifier scheduleNotifier;
   Future<void> getGymInfo(BuildContext context, {required int gymId}) async {
     final connected = await AppConnectivity().connectivity();
     if (connected) {
@@ -306,37 +305,58 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     getLessonsToShowAfterSelectingADay(state.selectedCalendarDay ?? "");
   }
 
-  void handleWebSocket(WebSocketChannel channel) {
+  void handleWebSocket(WebSocketChannel channel, BuildContext context) {
     /// Listen for all incoming data
-
     channel.stream.listen(
       (data) async {
+        // convert the incoming data to json
         Map<String, dynamic> lessonData = jsonDecode(data);
-        var allLessons = state.allLessons;
-        String selectedDay = "";
-        final List<String> keys = allLessons.keys.toList();
-        for (var key in keys) {
-          allLessons[key].forEach((el) {
-            if (el["id"] == lessonData["id"]) {
-              el["lessonState"] = lessonData["lessonState"];
-              el["duration"] = lessonData["duration"];
-              el["date"] = lessonData["date"];
-              el["description"] = lessonData["description"];
-              selectedDay = formatOriginalToCalendar(lessonData["date"]);
-            }
-          });
+        if (lessonData["lessonState"] == "CANCELED_GYM") {
+          // push notification for canceled lesson
+          NotificationService().showDefaultNotification(
+            "MyFit App",
+            "Ваша заявка на ${lessonData["lessonType"]} отменена",
+          );
         }
-        state = state.copyWith(
-          allLessons: allLessons,
-        );
-        //await Future.delayed(const Duration(milliseconds: 400));
-        getLessonsOfSelectedActivity(state.selectedActivity ?? "", false)
-            .then((value) => state = state.copyWith(
-                  selectedCalendarDay: selectedDay,
-                ))
-            .then((value) => _scheduleRepositoryInterface.getUsersSchedules());
+        if (lessonData["lessonState"] == "CONFIRMED") {
+          final calendarDate = formatOriginalToCalendar(lessonData["date"]);
+          final startTime = returnOnlyTime(lessonData["date"]);
+          // push notification for confirmed lesson
+          NotificationService().showDefaultNotification(
+            "MyFit App",
+            "Ваша заявка на ${lessonData["lessonType"]} подтверждена.Дата посещания $calendarDate в $startTime",
+          );
+        }
+        // get all lessons again && get lessons of selected activity
+        await getAllLessons(context, id: lessonData["gymId"]);
+        await getLessonsOfSelectedActivity(state.selectedActivity ?? "", false);
+        // get users schedules to show in schedule page
+        scheduleNotifier.getUsersSchedules(context);
       },
       onError: (error) {
+        AppHelpers.showErrorSnack(context, "WebSocket1 ${error.message}");
+        debugPrint(error.message);
+      },
+      onDone: () {
+        debugPrint("done");
+      },
+    );
+  }
+
+  void handleWebSocket2(WebSocketChannel channel, BuildContext context) {
+    /// Listen for all incoming data
+    channel.stream.listen(
+      (data) async {
+        // convert the incoming data to json
+        Map<String, dynamic> lessonData = jsonDecode(data);
+        // get all lessons again && get lessons of selected activity
+        await getAllLessons(context, id: lessonData["gymId"]);
+        await getLessonsOfSelectedActivity(state.selectedActivity ?? "", false);
+        // get users schedules to show in schedule page
+        scheduleNotifier.getUsersSchedules(context);
+      },
+      onError: (error) {
+        AppHelpers.showErrorSnack(context, "WebSocket2 ${error.message}");
         debugPrint(error.message);
       },
       onDone: () {

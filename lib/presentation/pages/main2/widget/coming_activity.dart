@@ -25,8 +25,6 @@ class ComingActivity extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child: SizedBox(
-                  //color: Colors.red,
-                  //width: 60.w,
                   child: CustomText(
                     text: 'Ближайшее событие:',
                     fontSize: 13.sp,
@@ -34,14 +32,13 @@ class ComingActivity extends StatelessWidget {
                   ),
                 ),
               ),
-              //15.horizontalSpace,
-              //const Spacer(),
               Flexible(
                 child: CustomText(
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  //text: 'через 1ч 16м',
-                  text: "через ${state.whenActivityStarts}",
+                  text: state.lessonIsAlreadyStarted
+                      ? "Занятие уже началось"
+                      : "через ${state.whenActivityStarts}",
                   fontSize: 10.sp,
                   fontWeight: FontWeight.w500,
                   color: AppColors.greyText,
@@ -68,36 +65,6 @@ class ComingActivity extends StatelessWidget {
               state.nearestLesson?.bodyData?.gym?.address ?? "Empty",
             ),
           ]),
-          /* 10.verticalSpace,
-          Row(
-            children: [
-              InkWell(
-                onTap: () {},
-                child: CustomText(
-                  text: 'Посмотреть детали',
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.blueColor,
-                ),
-              ),
-              const Spacer(),
-              InkWell(
-                onTap: () {},
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(6.r),
-                  child: Container(
-                    color: const Color.fromRGBO(245, 249, 255, 1),
-                    padding: EdgeInsets.all(3.r),
-                    child: Icon(
-                      Icons.edit_note,
-                      color: const Color.fromRGBO(119, 170, 249, 1),
-                      size: 18.r,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ) */
         ],
       ),
     );

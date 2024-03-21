@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:activity/application/activity/activity_notifier.dart';
 import 'package:activity/application/activity/activity_provider.dart';
-import 'package:activity/application/activity/activity_state.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/infrastructure/models/data/chips_model.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
@@ -14,12 +13,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TheOneWithCalendar extends StatefulWidget {
-  final ActivityState state;
   final ActivityNotifier event;
 
   const TheOneWithCalendar({
     super.key,
-    required this.state,
     required this.event,
   });
 
@@ -56,172 +53,117 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
           Padding(
             padding: EdgeInsets.only(left: 16.w),
             child: Container(
-              //color: Colors.green.shade300,
-              height: 75.h,
-              padding: EdgeInsets.symmetric(vertical: 4.w),
-              width: double.maxFinite,
-              child: ListView.builder(
-                itemCount: widget.state.listOf15CalendarDaysFromNow.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  final String currentDate =
-                      widget.state.listOf15CalendarDaysFromNow[index];
-                  bool isAvailable = widget.state.daysInWhichWeHaveLessons
-                      .contains(currentDate);
-                  bool isSelected =
-                      widget.state.selectedCalendarDay == currentDate;
-                  final parts = currentDate.split(" ");
-                  return GestureDetector(
-                      onTap: () async {
-                        if (isAvailable) {
-                          await widget.event
-                              .setSelectedCalendarDay(currentDate);
-                          widget.event.getLessonsToShowAfterSelectingADay(
-                            currentDate,
-                          );
-                        }
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.only(right: 9.w),
-                        child: SizedBox(
-                          //color: Colors.red,
-                          width: 41.w,
-                          child: Card(
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 1.w, vertical: 2.h),
-                            shadowColor:
-                                const Color.fromRGBO(123, 163, 225, 0.73),
-                            elevation: isSelected ? 2.1 : 0,
-                            color:
-                                isSelected ? AppColors.blueColor : Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              side: BorderSide(
-                                  color: isSelected
-                                      ? AppColors.blueColor
-                                      : isAvailable
-                                          ? AppColors.greyBorder
-                                          : Colors.transparent,
-                                  width: 1.w),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                InterText(
-                                  text: parts[0].toUpperCase(),
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: isSelected
-                                      ? Colors.white
-                                      : isAvailable
-                                          ? Colors.black
-                                          : const Color.fromRGBO(
-                                              176, 176, 176, 1),
-                                ),
-                                3.verticalSpace,
-                                CustomText(
-                                    fontSize: 10.sp,
-                                    fontWeight: FontWeight.w500,
-                                    text: parts[1],
-                                    color: isSelected
-                                        ? Colors.white
-                                        : isAvailable
-                                            ? Colors.black
-                                            : const Color.fromRGBO(
-                                                176, 176, 176, 1)),
-                                CustomText(
-                                  fontSize: 10.sp,
-                                  fontWeight: FontWeight.w500,
-                                  text: parts[2],
-                                  color: isSelected
-                                      ? Colors.white
-                                      : isAvailable
-                                          ? Colors.black
-                                          : const Color.fromRGBO(
-                                              176,
-                                              176,
-                                              176,
-                                              1,
-                                            ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ));
-                },
-              ),
-            ),
-          ),
-          16.verticalSpace,
-
-          // подактивности
-          /* Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomText(
-                      text: "${widget.state.selectedActivity}",
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    10.verticalSpace,
-                    Wrap(
-                      runSpacing: 5.h,
-                      spacing: 5.w,
-                      children: List.generate(podActives.length, (index) {
-                        final current = podActives[index];
-                        return InkWell(
-                          onTap: () {
-                            if (!current.isActive!) {
-                              for (var element in podActives) {
-                                if (element.isActive!) {
-                                  element.isActive = false;
-                                  setState(() {});
-                                }
-                              }
-                              current.isActive = true;
-                              setState(() {});
+                //color: Colors.green.shade300,
+                height: 75.h,
+                padding: EdgeInsets.symmetric(vertical: 4.w),
+                width: double.maxFinite,
+                child: Consumer(builder: (context, ref, child) {
+                  final listOf15CalendarDaysFromNow =
+                      ref.watch(activityProvider).listOf15CalendarDaysFromNow;
+                  final daysInWhichWeHaveLessons =
+                      ref.watch(activityProvider).daysInWhichWeHaveLessons;
+                  final selectedCalendarDay =
+                      ref.watch(activityProvider).selectedCalendarDay;
+                  return ListView.builder(
+                    itemCount: listOf15CalendarDaysFromNow.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      final String currentDate =
+                          listOf15CalendarDaysFromNow[index];
+                      bool isAvailable =
+                          daysInWhichWeHaveLessons.contains(currentDate);
+                      bool isSelected = selectedCalendarDay == currentDate;
+                      final parts = currentDate.split(" ");
+                      return GestureDetector(
+                          onTap: () async {
+                            if (isAvailable) {
+                              await widget.event
+                                  .setSelectedCalendarDay(currentDate);
+                              widget.event.getLessonsToShowAfterSelectingADay(
+                                currentDate,
+                              );
                             }
                           },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 16.w,
-                              vertical: 5.h,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6.r),
-                              border: Border.all(
-                                color: current.isActive!
-                                    ? Colors.transparent
-                                    : AppColors.blueBorder,
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 9.w),
+                            child: SizedBox(
+                              //color: Colors.red,
+                              width: 41.w,
+                              child: Card(
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: 1.w, vertical: 2.h),
+                                shadowColor:
+                                    const Color.fromRGBO(123, 163, 225, 0.73),
+                                elevation: isSelected ? 2.1 : 0,
+                                color: isSelected
+                                    ? AppColors.blueColor
+                                    : Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  side: BorderSide(
+                                      color: isSelected
+                                          ? AppColors.blueColor
+                                          : isAvailable
+                                              ? AppColors.greyBorder
+                                              : Colors.transparent,
+                                      width: 1.w),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    InterText(
+                                      text: parts[0].toUpperCase(),
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: isSelected
+                                          ? Colors.white
+                                          : isAvailable
+                                              ? Colors.black
+                                              : const Color.fromRGBO(
+                                                  176, 176, 176, 1),
+                                    ),
+                                    3.verticalSpace,
+                                    CustomText(
+                                        fontSize: 10.sp,
+                                        fontWeight: FontWeight.w500,
+                                        text: parts[1],
+                                        color: isSelected
+                                            ? Colors.white
+                                            : isAvailable
+                                                ? Colors.black
+                                                : const Color.fromRGBO(
+                                                    176, 176, 176, 1)),
+                                    CustomText(
+                                      fontSize: 10.sp,
+                                      fontWeight: FontWeight.w500,
+                                      text: parts[2],
+                                      color: isSelected
+                                          ? Colors.white
+                                          : isAvailable
+                                              ? Colors.black
+                                              : const Color.fromRGBO(
+                                                  176,
+                                                  176,
+                                                  176,
+                                                  1,
+                                                ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              color: current.isActive!
-                                  ? AppColors.blueColor
-                                  : Colors.white,
                             ),
-                            child: CustomText(
-                              text: current.text,
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w400,
-                              color: current.isActive!
-                                  ? Colors.white
-                                  : Colors.black,
-                            ),
-                          ),
-                        );
-                      }),
-                    ),
-                  ],
-                ),  */
-
-          //10.verticalSpace,
+                          ));
+                    },
+                  );
+                })),
+          ),
+          16.verticalSpace,
 
           // список занятий заведения на выбранный день
           Consumer(
             builder: (contex, ref, child) {
               final lessonsToShowAfterSelectingADay =
                   ref.watch(activityProvider).lessonsToShowAfterSelectingADay;
-              final loading = ref.watch(activityProvider).isEnrollingLoading;
               final scheduleEvent = ref.read(scheduleProvider.notifier);
               if (lessonsToShowAfterSelectingADay.isEmpty) {
                 return Padding(
@@ -252,7 +194,6 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                       currentSchedule.duration ?? "??",
                       currentSchedule.description ?? "??",
                       currentSchedule.lessonState ?? "",
-                      loading,
                       () async {
                         await widget.event.enrollToGym(
                           context,
@@ -285,7 +226,6 @@ Widget activityCard(
   String duration,
   String name,
   String? status,
-  bool loading,
   void Function()? enrollFunction,
 ) {
   return Padding(
@@ -325,9 +265,7 @@ Widget activityCard(
                       ? enrollFunction
                       : null,
                   child: CustomText(
-                    text: loading
-                        ? "Загрузка..."
-                        : AppHelpers().getStatusText(status),
+                    text: AppHelpers().getStatusText(status),
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
                     color: AppHelpers().getStatusTextColor(status),

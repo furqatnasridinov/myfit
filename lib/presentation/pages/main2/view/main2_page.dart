@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/application/main2/main2_provider.dart';
 import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/application/settings/settings_provider.dart';
@@ -11,6 +12,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 @RoutePage()
@@ -23,12 +26,16 @@ class Main2Screen extends ConsumerStatefulWidget {
 
 class _LoginScreen extends ConsumerState<Main2Screen> {
   final mapControllerCompleter = Completer<YandexMapController>();
+  late final WebSocketChannel channel;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref.read(settingsProvider.notifier).setUserInfos();
+      
+      ref.read(settingsProvider.notifier)
+      ..requestNotificationPermissions()
+      ..setUserInfos();
       ref.read(mapProvider.notifier).getUserLocation().then((value) {
         ref.read(mapProvider.notifier).getYandexMapImage(
               context,
@@ -37,8 +44,19 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
       ref.read(main2Provider.notifier)
         ..getNearestLesson(context)
         ..getUserStatsMonth(context);
-      //NotificationService().showActiveNotification();
+
+      // web socket for updating lesson states
+        channel = IOWebSocketChannel.connect(
+        Uri.parse("ws://77.222.53.122:8080/appSchedulePanel/${LocalStorage.getUserId()}"),
+        headers: {'Authorization': 'Bearer ${LocalStorage.getToken()}'});
+        ref.read(activityProvider.notifier).handleWebSocket(channel, context);
     });
+  }
+
+  @override
+  void dispose() {
+    channel.sink.close();
+    super.dispose();
   }
 
   @override

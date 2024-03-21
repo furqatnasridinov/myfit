@@ -25,7 +25,8 @@ mixin _$Main2State {
   List<UserStats> get statsForMonth => throw _privateConstructorUsedError;
   List<ScheduleAndGym> get schedulesFoundBySearching =>
       throw _privateConstructorUsedError;
-  bool get isActivityStartingIn15Minutes => throw _privateConstructorUsedError;
+  bool get showScanButton => throw _privateConstructorUsedError;
+  bool get lessonIsAlreadyStarted => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $Main2StateCopyWith<Main2State> get copyWith =>
@@ -47,7 +48,8 @@ abstract class $Main2StateCopyWith<$Res> {
       String whenActivityStarts,
       List<UserStats> statsForMonth,
       List<ScheduleAndGym> schedulesFoundBySearching,
-      bool isActivityStartingIn15Minutes});
+      bool showScanButton,
+      bool lessonIsAlreadyStarted});
 }
 
 /// @nodoc
@@ -71,7 +73,8 @@ class _$Main2StateCopyWithImpl<$Res, $Val extends Main2State>
     Object? whenActivityStarts = null,
     Object? statsForMonth = null,
     Object? schedulesFoundBySearching = null,
-    Object? isActivityStartingIn15Minutes = null,
+    Object? showScanButton = null,
+    Object? lessonIsAlreadyStarted = null,
   }) {
     return _then(_value.copyWith(
       nearestLessonIsLoading: null == nearestLessonIsLoading
@@ -106,9 +109,13 @@ class _$Main2StateCopyWithImpl<$Res, $Val extends Main2State>
           ? _value.schedulesFoundBySearching
           : schedulesFoundBySearching // ignore: cast_nullable_to_non_nullable
               as List<ScheduleAndGym>,
-      isActivityStartingIn15Minutes: null == isActivityStartingIn15Minutes
-          ? _value.isActivityStartingIn15Minutes
-          : isActivityStartingIn15Minutes // ignore: cast_nullable_to_non_nullable
+      showScanButton: null == showScanButton
+          ? _value.showScanButton
+          : showScanButton // ignore: cast_nullable_to_non_nullable
+              as bool,
+      lessonIsAlreadyStarted: null == lessonIsAlreadyStarted
+          ? _value.lessonIsAlreadyStarted
+          : lessonIsAlreadyStarted // ignore: cast_nullable_to_non_nullable
               as bool,
     ) as $Val);
   }
@@ -131,7 +138,8 @@ abstract class _$$Main2StateImplCopyWith<$Res>
       String whenActivityStarts,
       List<UserStats> statsForMonth,
       List<ScheduleAndGym> schedulesFoundBySearching,
-      bool isActivityStartingIn15Minutes});
+      bool showScanButton,
+      bool lessonIsAlreadyStarted});
 }
 
 /// @nodoc
@@ -153,7 +161,8 @@ class __$$Main2StateImplCopyWithImpl<$Res>
     Object? whenActivityStarts = null,
     Object? statsForMonth = null,
     Object? schedulesFoundBySearching = null,
-    Object? isActivityStartingIn15Minutes = null,
+    Object? showScanButton = null,
+    Object? lessonIsAlreadyStarted = null,
   }) {
     return _then(_$Main2StateImpl(
       nearestLessonIsLoading: null == nearestLessonIsLoading
@@ -188,9 +197,13 @@ class __$$Main2StateImplCopyWithImpl<$Res>
           ? _value._schedulesFoundBySearching
           : schedulesFoundBySearching // ignore: cast_nullable_to_non_nullable
               as List<ScheduleAndGym>,
-      isActivityStartingIn15Minutes: null == isActivityStartingIn15Minutes
-          ? _value.isActivityStartingIn15Minutes
-          : isActivityStartingIn15Minutes // ignore: cast_nullable_to_non_nullable
+      showScanButton: null == showScanButton
+          ? _value.showScanButton
+          : showScanButton // ignore: cast_nullable_to_non_nullable
+              as bool,
+      lessonIsAlreadyStarted: null == lessonIsAlreadyStarted
+          ? _value.lessonIsAlreadyStarted
+          : lessonIsAlreadyStarted // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
   }
@@ -208,7 +221,8 @@ class _$Main2StateImpl extends _Main2State {
       this.whenActivityStarts = "",
       final List<UserStats> statsForMonth = const [],
       final List<ScheduleAndGym> schedulesFoundBySearching = const [],
-      this.isActivityStartingIn15Minutes = false})
+      this.showScanButton = false,
+      this.lessonIsAlreadyStarted = false})
       : _statsForMonth = statsForMonth,
         _schedulesFoundBySearching = schedulesFoundBySearching,
         super._();
@@ -252,11 +266,14 @@ class _$Main2StateImpl extends _Main2State {
 
   @override
   @JsonKey()
-  final bool isActivityStartingIn15Minutes;
+  final bool showScanButton;
+  @override
+  @JsonKey()
+  final bool lessonIsAlreadyStarted;
 
   @override
   String toString() {
-    return 'Main2State(nearestLessonIsLoading: $nearestLessonIsLoading, statsMonthIsloading: $statsMonthIsloading, isSearchbarOpened: $isSearchbarOpened, showTillWhen: $showTillWhen, nearestLesson: $nearestLesson, whenActivityStarts: $whenActivityStarts, statsForMonth: $statsForMonth, schedulesFoundBySearching: $schedulesFoundBySearching, isActivityStartingIn15Minutes: $isActivityStartingIn15Minutes)';
+    return 'Main2State(nearestLessonIsLoading: $nearestLessonIsLoading, statsMonthIsloading: $statsMonthIsloading, isSearchbarOpened: $isSearchbarOpened, showTillWhen: $showTillWhen, nearestLesson: $nearestLesson, whenActivityStarts: $whenActivityStarts, statsForMonth: $statsForMonth, schedulesFoundBySearching: $schedulesFoundBySearching, showScanButton: $showScanButton, lessonIsAlreadyStarted: $lessonIsAlreadyStarted)';
   }
 
   @override
@@ -280,10 +297,10 @@ class _$Main2StateImpl extends _Main2State {
                 .equals(other._statsForMonth, _statsForMonth) &&
             const DeepCollectionEquality().equals(
                 other._schedulesFoundBySearching, _schedulesFoundBySearching) &&
-            (identical(other.isActivityStartingIn15Minutes,
-                    isActivityStartingIn15Minutes) ||
-                other.isActivityStartingIn15Minutes ==
-                    isActivityStartingIn15Minutes));
+            (identical(other.showScanButton, showScanButton) ||
+                other.showScanButton == showScanButton) &&
+            (identical(other.lessonIsAlreadyStarted, lessonIsAlreadyStarted) ||
+                other.lessonIsAlreadyStarted == lessonIsAlreadyStarted));
   }
 
   @override
@@ -297,7 +314,8 @@ class _$Main2StateImpl extends _Main2State {
       whenActivityStarts,
       const DeepCollectionEquality().hash(_statsForMonth),
       const DeepCollectionEquality().hash(_schedulesFoundBySearching),
-      isActivityStartingIn15Minutes);
+      showScanButton,
+      lessonIsAlreadyStarted);
 
   @JsonKey(ignore: true)
   @override
@@ -316,7 +334,8 @@ abstract class _Main2State extends Main2State {
       final String whenActivityStarts,
       final List<UserStats> statsForMonth,
       final List<ScheduleAndGym> schedulesFoundBySearching,
-      final bool isActivityStartingIn15Minutes}) = _$Main2StateImpl;
+      final bool showScanButton,
+      final bool lessonIsAlreadyStarted}) = _$Main2StateImpl;
   const _Main2State._() : super._();
 
   @override
@@ -336,7 +355,9 @@ abstract class _Main2State extends Main2State {
   @override
   List<ScheduleAndGym> get schedulesFoundBySearching;
   @override
-  bool get isActivityStartingIn15Minutes;
+  bool get showScanButton;
+  @override
+  bool get lessonIsAlreadyStarted;
   @override
   @JsonKey(ignore: true)
   _$$Main2StateImplCopyWith<_$Main2StateImpl> get copyWith =>

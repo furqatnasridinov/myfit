@@ -20,9 +20,7 @@ class ActivityScreen extends ConsumerStatefulWidget {
 
 class _ActivityPageState extends ConsumerState<ActivityScreen> {
   late final WebSocketChannel channel;
-
-  /* final channel = WebSocketChannel.connect(
-      Uri.parse("ws://77.222.53.122:8080/adminPanel/${widget.gymId}")); */
+  late final WebSocketChannel channel2;
 
   @override
   void initState() {
@@ -47,14 +45,17 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
               ..getLessonsOfSelectedActivity(
                   ref.watch(activityProvider).selectedActivity!, true);
 
-            // web socket
-            final WebSocketChannel channel = IOWebSocketChannel.connect(
-                Uri.parse(
-                    "ws://77.222.53.122:8080/appSchedulePanel/${LocalStorage.getUserId()}"),
-                headers: {
-                  'Authorization': 'Bearer ${LocalStorage.getToken()}',
-                });
-            ref.read(activityProvider.notifier).handleWebSocket(channel);
+            // web socket for updating lesson states
+/*             channel = IOWebSocketChannel.connect(
+                Uri.parse("ws://77.222.53.122:8080/appSchedulePanel/${LocalStorage.getUserId()}"),
+                headers: {'Authorization': 'Bearer ${LocalStorage.getToken()}'});
+                ref.read(activityProvider.notifier).handleWebSocket(channel, context); */
+            
+            // web socket for gettiing new lessons if they were added when the user is on the page
+            channel2 = IOWebSocketChannel.connect(
+                Uri.parse("ws://77.222.53.122:8080/appGymPanel/${widget.gymId}"),
+                headers: {'Authorization': 'Bearer ${LocalStorage.getToken()}'});
+                ref.read(activityProvider.notifier).handleWebSocket2(channel2, context);
           });
       },
     );
@@ -62,54 +63,41 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
 
   @override
   void dispose() {
-    channel.sink.close();
+    //channel.sink.close();
+    channel2.sink.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final event = ref.read(activityProvider.notifier);
-    final state = ref.watch(activityProvider);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      body: state.isloading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : SafeArea(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TheOneWithImage(
-                      state: state,
-                      event: event,
-                    ),
-                    32.verticalSpace,
-                    Contacts(event: event),
-                    32.verticalSpace,
-                    TheOneWithChips(
-                      gymId: widget.gymId,
-                      state: state,
-                      event: event,
-                    ),
-                    32.verticalSpace,
-                    const Description(),
-                    32.verticalSpace,
-                    TheOneWithPhotos(
-                      event: event,
-                    ),
-                    32.verticalSpace,
-                    Speciality(),
-                    32.verticalSpace,
-                    TheOneWithCalendar(
-                      state: state,
-                      event: event,
-                    ),
-                  ],
-                ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const TheOneWithImage(),
+              32.verticalSpace,
+              Contacts(event: event),
+              32.verticalSpace,
+              TheOneWithChips(
+                gymId: widget.gymId,
               ),
-            ),
+              const Description(),
+              TheOneWithPhotos(
+                event: event,
+              ),
+              const Speciality(),
+              32.verticalSpace,
+              TheOneWithCalendar(
+                event: event,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

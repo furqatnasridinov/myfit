@@ -103,7 +103,7 @@ class MapNotifier extends StateNotifier<MapState> {
           }
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showSnack(
+          AppHelpers.showErrorSnack(
               context, NetworkExceptions.getErrorMessage(error));
           state = state.copyWith(isloading: false);
         },

@@ -107,31 +107,11 @@ class Main2Notifier extends StateNotifier<Main2State> {
     return "$daysplitted $month ";
   }
 
-  void determineWhenActivityStarts(String startTime) {
-    // startTime 2023-11-11@13:15
-    List<String> parts = startTime.split("@");
-    String formatted = "${parts[0]} ${parts[1]}:00"; //"2023-11-11 13:15:00"
-    DateTime startingTimeInDTFormat =
-        DateTime.parse(formatted); //DateTime (2023-11-11 13:15:00.000)
-    DateTime now = DateTime.now();
-    final fifteenMinutesBeforeStart =
-        startingTimeInDTFormat.subtract(const Duration(minutes: 15));
-    if (now.isAfter(fifteenMinutesBeforeStart)) {
-      state = state.copyWith(isActivityStartingIn15Minutes: true);
-    }
-    if (startingTimeInDTFormat.isAfter(now)) {
-      Duration resultOnDuration = startingTimeInDTFormat.difference(now);
-      String formattedDifference = formatDuration(resultOnDuration);
-      state = state.copyWith(whenActivityStarts: formattedDifference);
-    } else {
-      state = state.copyWith(nearestLesson: null);
-    }
-  }
-
   String formatDuration(Duration duration) {
     int days = duration.inDays;
     int hours = duration.inHours % 24;
     int minutes = duration.inMinutes % 60;
+    int seconds = duration.inSeconds % 60;
 
     String daysWord = getDayWord(days);
     String hoursWord = getHourWord(hours);
@@ -140,7 +120,8 @@ class Main2Notifier extends StateNotifier<Main2State> {
     List<String> parts = [
       if (days > 0) '$days $daysWord',
       if (hours > 0) '$hours $hoursWord',
-      if (minutes > 0) '$minutes $minutesWord'
+      if (minutes > 0) '$minutes $minutesWord',
+      if (seconds > 0) '$seconds секунд'
     ];
 
     return parts.join(' ');
@@ -210,24 +191,16 @@ class Main2Notifier extends StateNotifier<Main2State> {
           if (data.bodyData != null) {
             final startTime = data.bodyData?.date?.replaceAll('@', 'T');
             DateTime startingTimeInDTFormat = DateTime.parse(startTime ?? "");
-            if (startingTimeInDTFormat.isAfter(DateTime.now())) {
-              determineWhenActivityStarts(data.bodyData!.date!);
-              state = state.copyWith(
-                nearestLesson: data,
-                nearestLessonIsLoading: false,
-              );
-            } else {
-              state = state.copyWith(
-                nearestLesson: null,
-                nearestLessonIsLoading: false,
-              );
-            }
-          }
-          if (data.bodyData == null) {
+            DateTime endTime = getEndTime(
+                startingTimeInDTFormat, data.bodyData?.duration ?? "");
+            determineWhenActivityStarts(startingTimeInDTFormat, endTime);
             state = state.copyWith(
-              nearestLesson: null,
+              nearestLesson: data,
               nearestLessonIsLoading: false,
             );
+            if (DateTime.now().isAfter(endTime)) {
+              state = state.copyWith(nearestLesson: null);
+            }
           }
         },
         failure: (error, statusCode, operationInfo) {
@@ -240,6 +213,34 @@ class Main2Notifier extends StateNotifier<Main2State> {
       // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
+  }
+
+  DateTime getEndTime(DateTime dateTime, String duration) {
+    final durationParts = duration.split(':');
+    final hours = int.parse(durationParts[0]);
+    final minutes = int.parse(durationParts[1]);
+    return dateTime.add(Duration(hours: hours, minutes: minutes));
+  }
+
+  void determineWhenActivityStarts(DateTime start, DateTime end) {
+    DateTime now = DateTime.now();
+    final fifteenMinutesBeforeStart =
+        start.subtract(const Duration(minutes: 15));
+    if (isBetween(fifteenMinutesBeforeStart, end, now)) {
+      state = state.copyWith(showScanButton: true);
+    }
+
+    if (start.isAfter(now)) {
+      Duration resultOnDuration = start.difference(now);
+      String formattedDifference = formatDuration(resultOnDuration);
+      state = state.copyWith(whenActivityStarts: formattedDifference);
+    } else {
+      state = state.copyWith(lessonIsAlreadyStarted: true);
+    }
+  }
+
+  bool isBetween(DateTime start, DateTime end, DateTime now) {
+    return now.isAfter(start) && now.isBefore(end);
   }
 
   Future<void> getUserStatsMonth(BuildContext context) async {

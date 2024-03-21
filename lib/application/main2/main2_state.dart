@@ -16,7 +16,8 @@ class Main2State with _$Main2State {
     @Default("") String whenActivityStarts,
     @Default([]) List<UserStats> statsForMonth,
     @Default([]) List<ScheduleAndGym> schedulesFoundBySearching,
-    @Default(false) bool isActivityStartingIn15Minutes,
+    @Default(false) bool showScanButton,
+    @Default(false) bool lessonIsAlreadyStarted,
   }) = _Main2State;
   const Main2State._();
 }

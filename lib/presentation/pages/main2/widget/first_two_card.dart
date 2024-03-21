@@ -146,7 +146,7 @@ class FirstTwoCards extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              Container(
+              /* Container(
                 padding: EdgeInsets.symmetric(
                   horizontal: 16.w,
                   vertical: 5.h,
@@ -162,7 +162,7 @@ class FirstTwoCards extends StatelessWidget {
                   fontSize: 13.sp,
                   fontWeight: FontWeight.w600,
                 ),
-              ),
+              ), */
               CustomText(
                 text: "Продлить",
                 fontSize: 10.sp,

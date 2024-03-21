@@ -20,7 +20,7 @@ class AppHelpers {
   static showSnack(BuildContext context, String text) {
     return showTopSnackBar(
       Overlay.of(context),
-      CustomSnackBar.error(
+      CustomSnackBar.info(
         message: text,
         maxLines: 3,
       ),
@@ -121,8 +121,8 @@ class AppHelpers {
       case "CANCELED_GYM":
         return Colors.red;
       case "CANCELED_USER":
-      return AppColors.blueText;
-        //return Colors.red;
+        return AppColors.blueText;
+      //return Colors.red;
       case "PROGRESS":
         return Colors.green;
       case "COMPLETED":

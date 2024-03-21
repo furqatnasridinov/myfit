@@ -11,6 +11,7 @@ import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../infrastructure/models/response/auth_response.dart';
 
 class SettingsNotifier extends StateNotifier<SettingsState> {
@@ -45,6 +46,18 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     state = state.copyWith(
       selectedCity: LocalStorage.getSelectedCity(),
     );
+  }
+
+  Future<void> requestNotificationPermissions() async {
+   final PermissionStatus status = await Permission.notification.request();
+   if (status.isGranted) {
+      // Notification permissions granted
+   } else if (status.isDenied) {
+      // Notification permissions denied
+   } else if (status.isPermanentlyDenied) {
+      // Notification permissions permanently denied, open app settings
+      //await openAppSettings();
+   }
   }
 
   Future<void> getListOfCities(BuildContext context) async {
@@ -147,8 +160,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           // no need to return we are saving locally
           if (data["operationResult"] == "OK") {
             await LocalStorage.setSelectedCity(data["object"]["city"]["name"]);
-            await LocalStorage.setSelectedCityLat(data["object"]["city"]["latitude"]);
-            await LocalStorage.setSelectedCityLon(data["object"]["city"]["longitude"]);
+            await LocalStorage.setSelectedCityLat(
+                data["object"]["city"]["latitude"]);
+            await LocalStorage.setSelectedCityLon(
+                data["object"]["city"]["longitude"]);
             setSelectedCity();
             state = state.copyWith(isloading: false);
           }
@@ -201,9 +216,9 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         request: request,
       );
       response.when(
-        success: (data) async{
+        success: (data) async {
           // no need to return we are saving locally
-         if (data["operationResult"] == "OK") {
+          if (data["operationResult"] == "OK") {
             await LocalStorage.setWeight(data["object"]["weight"].toString());
             setWeight();
             state = state.copyWith(isloading: false);
@@ -229,7 +244,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         request: request,
       );
       response.when(
-        success: (data) async{
+        success: (data) async {
           // no need to return we are saving locally
           if (data["operationResult"] == "OK") {
             await LocalStorage.setHeight(data["object"]["height"].toString());
@@ -262,7 +277,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           state = state.copyWith(isloading: false);
         },
         failure: (error, statusCode, operationInfo) {
-         AppHelpers.showErrorSnack(
+          AppHelpers.showErrorSnack(
               context, NetworkExceptions.getErrorMessage(error));
           state = state.copyWith(isloading: false);
         },
@@ -325,7 +340,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         debugPrint(data.toString());
       }, failure: (error, statusCode, operationInfo) {
         AppHelpers.showErrorSnack(
-              context, NetworkExceptions.getErrorMessage(error));
+            context, NetworkExceptions.getErrorMessage(error));
       });
     } else {
       AppHelpers.showCheckTopSnackBar(context);
@@ -342,7 +357,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         //
       }, failure: (error, statusCode, operationInfo) {
         AppHelpers.showErrorSnack(
-              context, NetworkExceptions.getErrorMessage(error));;
+            context, NetworkExceptions.getErrorMessage(error));
+        ;
       });
     } else {
       AppHelpers.showCheckTopSnackBar(context);
@@ -374,13 +390,12 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         //debugPrint(data.toString());
       }, failure: (error, statusCode, operationInfo) {
         AppHelpers.showErrorSnack(
-              context, NetworkExceptions.getErrorMessage(error));
+            context, NetworkExceptions.getErrorMessage(error));
       });
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
-  
 
   void setQrCodeValue(String value) {
     state = state.copyWith(qrcodeValue: value);
