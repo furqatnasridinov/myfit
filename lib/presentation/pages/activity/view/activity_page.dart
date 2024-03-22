@@ -5,6 +5,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import '../widget/widget.dart';
@@ -21,6 +22,7 @@ class ActivityScreen extends ConsumerStatefulWidget {
 class _ActivityPageState extends ConsumerState<ActivityScreen> {
   late final WebSocketChannel channel;
   late final WebSocketChannel channel2;
+  late RefreshController refreshController = RefreshController();
 
   @override
   void initState() {
@@ -30,7 +32,7 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
         ref.read(activityProvider.notifier)
           ..getListOf15CalendarDatesFromToday()
           ..getGymInfo(context, gymId: widget.gymId)
-          ..getActivityTypes(context,
+          ..getActivityTypes(context, true,
               gymId: widget.gymId) // and make first item as active
           ..getInfoForType(context, id: widget.gymId)
           ..getAllPhotos(context, widget.gymId)
@@ -50,12 +52,17 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
                 Uri.parse("ws://77.222.53.122:8080/appSchedulePanel/${LocalStorage.getUserId()}"),
                 headers: {'Authorization': 'Bearer ${LocalStorage.getToken()}'});
                 ref.read(activityProvider.notifier).handleWebSocket(channel, context); */
-            
+
             // web socket for gettiing new lessons if they were added when the user is on the page
             channel2 = IOWebSocketChannel.connect(
-                Uri.parse("ws://77.222.53.122:8080/appGymPanel/${widget.gymId}"),
-                headers: {'Authorization': 'Bearer ${LocalStorage.getToken()}'});
-                ref.read(activityProvider.notifier).handleWebSocket2(channel2, context);
+                Uri.parse(
+                    "ws://77.222.53.122:8080/appGymPanel/${widget.gymId}"),
+                headers: {
+                  'Authorization': 'Bearer ${LocalStorage.getToken()}'
+                });
+            ref
+                .read(activityProvider.notifier)
+                .handleWebSocket2(channel2, context);
           });
       },
     );
@@ -65,6 +72,7 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
   void dispose() {
     //channel.sink.close();
     channel2.sink.close();
+    refreshController.dispose();
     super.dispose();
   }
 
@@ -73,28 +81,57 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
     final event = ref.read(activityProvider.notifier);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const TheOneWithImage(),
-              32.verticalSpace,
-              Contacts(event: event),
-              32.verticalSpace,
-              TheOneWithChips(
-                gymId: widget.gymId,
-              ),
-              const Description(),
-              TheOneWithPhotos(
-                event: event,
-              ),
-              const Speciality(),
-              32.verticalSpace,
-              TheOneWithCalendar(
-                event: event,
-              ),
-            ],
+      body: SmartRefresher(
+        controller: refreshController,
+        header: const WaterDropMaterialHeader(
+          distance: 40,
+          backgroundColor: Colors.white,
+          color: AppColors.blueColor,
+        ),
+        onRefresh: () async {
+          ref.read(activityProvider.notifier)
+            ..getListOf15CalendarDatesFromToday()
+            ..getGymInfo(context, gymId: widget.gymId)
+            ..getActivityTypes(context, false, gymId: widget.gymId)
+            ..getInfoForType(context, id: widget.gymId)
+            ..getAllPhotos(context, widget.gymId)
+            ..getAllLessons(context, id: widget.gymId)
+                // get infos after the selected activity is set
+                .then((value) {
+              ref.read(activityProvider.notifier)
+                ..getPhotosOfSelectedActivity(
+                    ref.watch(activityProvider).selectedActivity!)
+                ..getDescribtionAndPeculiarities(
+                    ref.watch(activityProvider).selectedActivity!)
+                ..getLessonsOfSelectedActivity(
+                    ref.watch(activityProvider).selectedActivity!, true);
+            });
+            await Future.delayed(const Duration(seconds: 1));
+          refreshController.refreshCompleted();
+        },
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const TheOneWithImage(),
+                32.verticalSpace,
+                Contacts(event: event),
+                32.verticalSpace,
+                TheOneWithChips(
+                  gymId: widget.gymId,
+                ),
+                const Description(),
+                TheOneWithPhotos(
+                  event: event,
+                ),
+                const Speciality(),
+                32.verticalSpace,
+                TheOneWithCalendar(
+                  event: event,
+                ),
+              ],
+            ),
           ),
         ),
       ),

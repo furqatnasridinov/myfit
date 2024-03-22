@@ -44,7 +44,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
-  Future<void> getActivityTypes(BuildContext context,
+  Future<void> getActivityTypes(BuildContext context, bool selectFirst,
       {required int gymId}) async {
     await Future.delayed(const Duration(milliseconds: 10));
     final connected = await AppConnectivity().connectivity();
@@ -58,9 +58,10 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
             state = state.copyWith(
               activityTypes: data.object,
               isActivitiesListLoading: false,
-              selectedActivity:
-                  data.object![0], // first item as selected activity by default
             );
+            if (selectFirst) {
+              state = state.copyWith(selectedActivity: data.object!.first);
+            }
           }
         },
         failure: (error, statusCode, operationInfo) {

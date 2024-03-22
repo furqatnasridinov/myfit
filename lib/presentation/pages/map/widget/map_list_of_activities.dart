@@ -212,7 +212,7 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                                       !gymsList[index].isSelected;
                                   setState(() {});
                                   //
-                                  activityEvent.getActivityTypes(context,
+                                  activityEvent.getActivityTypes(context,false,
                                       gymId: gymsList[index].id!);
                                   widget.event.changeCameraPosition(
                                     widget.controller!,
