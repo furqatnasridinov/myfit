@@ -15,10 +15,10 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AutoTabsRouter(
-      routes: [
-        const Main2Route(),
-        const ScheduleRoute(),
-        MapRoute(showOnlyKnown: false),
+      routes: const [
+        Main2Route(),
+        ScheduleRoute(),
+        MapRoute(),
       ],
       builder: (context, child) {
         final tabsRouter = AutoTabsRouter.of(context);
@@ -28,6 +28,8 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
               builder: (context, ref, child) {
                 final mapPageBottomCardShown =
                     ref.watch(mapProvider).isGymsPopupShown;
+                final showOnlyKnownOnMap = ref.watch(mapProvider).showOnlyKnown;
+                final event = ref.read(mapProvider.notifier);
                 return NavigationBar(
                   backgroundColor: Colors.white,
                   height: mapPageBottomCardShown ? 0 : 75.h,
@@ -57,8 +59,17 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
                       tabsRouter.activeIndex == 1,
                     ),
                     eachItem(
-                      () {
+                      () async {
                         tabsRouter.setActiveIndex(2);
+                        if (showOnlyKnownOnMap) {
+                          event.setShowOnlyKnown(false).then((value) async {
+                            await event.getGymsList(context);
+                            await event.getGetListOfGymsFromDiapozone();
+                            await event.setFlexes();
+                            await event.getAllMarkers();
+                             event.addUserLocationMarker();
+                          });
+                        }
                       },
                       "assets/svg/map.svg",
                       "Поиск занятий",

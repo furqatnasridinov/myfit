@@ -28,6 +28,7 @@ mixin _$MapState {
   List<bool> get listOfBool => throw _privateConstructorUsedError;
   List<GymData> get gymFoundBySearching => throw _privateConstructorUsedError;
   bool get isSearchbarOpened => throw _privateConstructorUsedError;
+  bool get showOnlyKnown => throw _privateConstructorUsedError;
   List<LessonTypeWithGymsInside> get activitiesWithGymsInsideAll =>
       throw _privateConstructorUsedError;
   List<LessonTypeWithGymsInside>
@@ -62,6 +63,7 @@ abstract class $MapStateCopyWith<$Res> {
       List<bool> listOfBool,
       List<GymData> gymFoundBySearching,
       bool isSearchbarOpened,
+      bool showOnlyKnown,
       List<LessonTypeWithGymsInside> activitiesWithGymsInsideAll,
       List<LessonTypeWithGymsInside>
           activitiesWithGymsInsideFromSelectedDiapozone,
@@ -97,6 +99,7 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
     Object? listOfBool = null,
     Object? gymFoundBySearching = null,
     Object? isSearchbarOpened = null,
+    Object? showOnlyKnown = null,
     Object? activitiesWithGymsInsideAll = null,
     Object? activitiesWithGymsInsideFromSelectedDiapozone = null,
     Object? showMapOnly = null,
@@ -150,6 +153,10 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
       isSearchbarOpened: null == isSearchbarOpened
           ? _value.isSearchbarOpened
           : isSearchbarOpened // ignore: cast_nullable_to_non_nullable
+              as bool,
+      showOnlyKnown: null == showOnlyKnown
+          ? _value.showOnlyKnown
+          : showOnlyKnown // ignore: cast_nullable_to_non_nullable
               as bool,
       activitiesWithGymsInsideAll: null == activitiesWithGymsInsideAll
           ? _value.activitiesWithGymsInsideAll
@@ -208,6 +215,7 @@ abstract class _$$MapStateImplCopyWith<$Res>
       List<bool> listOfBool,
       List<GymData> gymFoundBySearching,
       bool isSearchbarOpened,
+      bool showOnlyKnown,
       List<LessonTypeWithGymsInside> activitiesWithGymsInsideAll,
       List<LessonTypeWithGymsInside>
           activitiesWithGymsInsideFromSelectedDiapozone,
@@ -241,6 +249,7 @@ class __$$MapStateImplCopyWithImpl<$Res>
     Object? listOfBool = null,
     Object? gymFoundBySearching = null,
     Object? isSearchbarOpened = null,
+    Object? showOnlyKnown = null,
     Object? activitiesWithGymsInsideAll = null,
     Object? activitiesWithGymsInsideFromSelectedDiapozone = null,
     Object? showMapOnly = null,
@@ -295,6 +304,10 @@ class __$$MapStateImplCopyWithImpl<$Res>
           ? _value.isSearchbarOpened
           : isSearchbarOpened // ignore: cast_nullable_to_non_nullable
               as bool,
+      showOnlyKnown: null == showOnlyKnown
+          ? _value.showOnlyKnown
+          : showOnlyKnown // ignore: cast_nullable_to_non_nullable
+              as bool,
       activitiesWithGymsInsideAll: null == activitiesWithGymsInsideAll
           ? _value._activitiesWithGymsInsideAll
           : activitiesWithGymsInsideAll // ignore: cast_nullable_to_non_nullable
@@ -347,6 +360,7 @@ class _$MapStateImpl extends _MapState {
       final List<bool> listOfBool = const [false, false, false, true],
       final List<GymData> gymFoundBySearching = const [],
       this.isSearchbarOpened = false,
+      this.showOnlyKnown = false,
       final List<LessonTypeWithGymsInside> activitiesWithGymsInsideAll =
           const [],
       final List<LessonTypeWithGymsInside>
@@ -424,6 +438,9 @@ class _$MapStateImpl extends _MapState {
   @override
   @JsonKey()
   final bool isSearchbarOpened;
+  @override
+  @JsonKey()
+  final bool showOnlyKnown;
   final List<LessonTypeWithGymsInside> _activitiesWithGymsInsideAll;
   @override
   @JsonKey()
@@ -469,7 +486,7 @@ class _$MapStateImpl extends _MapState {
 
   @override
   String toString() {
-    return 'MapState(isloading: $isloading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, activeMarker: $activeMarker, distances: $distances, selectedDiapozone: $selectedDiapozone, locationPermissionDenied: $locationPermissionDenied, locationServiceIsNotEnabled: $locationServiceIsNotEnabled, listOfBool: $listOfBool, gymFoundBySearching: $gymFoundBySearching, isSearchbarOpened: $isSearchbarOpened, activitiesWithGymsInsideAll: $activitiesWithGymsInsideAll, activitiesWithGymsInsideFromSelectedDiapozone: $activitiesWithGymsInsideFromSelectedDiapozone, showMapOnly: $showMapOnly, mapScreenShot: $mapScreenShot, topFlex: $topFlex, bottomFlex: $bottomFlex, isLocationIconHidden: $isLocationIconHidden, isGymsPopupShown: $isGymsPopupShown)';
+    return 'MapState(isloading: $isloading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, activeMarker: $activeMarker, distances: $distances, selectedDiapozone: $selectedDiapozone, locationPermissionDenied: $locationPermissionDenied, locationServiceIsNotEnabled: $locationServiceIsNotEnabled, listOfBool: $listOfBool, gymFoundBySearching: $gymFoundBySearching, isSearchbarOpened: $isSearchbarOpened, showOnlyKnown: $showOnlyKnown, activitiesWithGymsInsideAll: $activitiesWithGymsInsideAll, activitiesWithGymsInsideFromSelectedDiapozone: $activitiesWithGymsInsideFromSelectedDiapozone, showMapOnly: $showMapOnly, mapScreenShot: $mapScreenShot, topFlex: $topFlex, bottomFlex: $bottomFlex, isLocationIconHidden: $isLocationIconHidden, isGymsPopupShown: $isGymsPopupShown)';
   }
 
   @override
@@ -502,6 +519,8 @@ class _$MapStateImpl extends _MapState {
                 .equals(other._gymFoundBySearching, _gymFoundBySearching) &&
             (identical(other.isSearchbarOpened, isSearchbarOpened) ||
                 other.isSearchbarOpened == isSearchbarOpened) &&
+            (identical(other.showOnlyKnown, showOnlyKnown) ||
+                other.showOnlyKnown == showOnlyKnown) &&
             const DeepCollectionEquality().equals(
                 other._activitiesWithGymsInsideAll,
                 _activitiesWithGymsInsideAll) &&
@@ -535,6 +554,7 @@ class _$MapStateImpl extends _MapState {
         const DeepCollectionEquality().hash(_listOfBool),
         const DeepCollectionEquality().hash(_gymFoundBySearching),
         isSearchbarOpened,
+        showOnlyKnown,
         const DeepCollectionEquality().hash(_activitiesWithGymsInsideAll),
         const DeepCollectionEquality()
             .hash(_activitiesWithGymsInsideFromSelectedDiapozone),
@@ -566,6 +586,7 @@ abstract class _MapState extends MapState {
       final List<bool> listOfBool,
       final List<GymData> gymFoundBySearching,
       final bool isSearchbarOpened,
+      final bool showOnlyKnown,
       final List<LessonTypeWithGymsInside> activitiesWithGymsInsideAll,
       final List<LessonTypeWithGymsInside>
           activitiesWithGymsInsideFromSelectedDiapozone,
@@ -599,6 +620,8 @@ abstract class _MapState extends MapState {
   List<GymData> get gymFoundBySearching;
   @override
   bool get isSearchbarOpened;
+  @override
+  bool get showOnlyKnown;
   @override
   List<LessonTypeWithGymsInside> get activitiesWithGymsInsideAll;
   @override

@@ -18,8 +18,7 @@ import '../widget/widget.dart';
 
 @RoutePage()
 class MapScreen extends ConsumerStatefulWidget {
-  final bool showOnlyKnown;
-  const MapScreen(this.showOnlyKnown, {super.key});
+  const MapScreen( {super.key});
 
   @override
   ConsumerState<MapScreen> createState() => _MapScreenState();
@@ -214,7 +213,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                           controller: yandexMapController!,
                         );
                         // ignore: use_build_context_synchronously
-                        await event.getGymsList(context, widget.showOnlyKnown);
+                        await event.getGymsList(context);
                         await event.getGetListOfGymsFromDiapozone();
                         await event.setFlexes();
                         await event.getAllMarkers();

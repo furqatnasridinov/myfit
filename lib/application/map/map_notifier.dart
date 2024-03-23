@@ -284,9 +284,12 @@ class MapNotifier extends StateNotifier<MapState> {
     );
   }
 
+  Future<void> setShowOnlyKnown(bool value) async{
+    state = state.copyWith(showOnlyKnown: value);
+  }
+
   Future<void> getGymsList(
     BuildContext context,
-    bool showOnlyKnown,
   ) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
@@ -297,7 +300,7 @@ class MapNotifier extends StateNotifier<MapState> {
         success: (data) {
           final gymsMapFromServer = data["object"] as Map<String, dynamic>;
           final listToCollectActivitiesWithGyms = <LessonTypeWithGymsInside>[];
-          if (showOnlyKnown) {
+          if (state.showOnlyKnown) {
             List<String> knownActivities = LocalStorage.getKnownActivities();
             for (var element in knownActivities) {
               gymsMapFromServer.forEach((key, value) {

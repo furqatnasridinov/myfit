@@ -73,13 +73,9 @@ abstract class $AppRouter extends _i18.RootStackRouter {
       );
     },
     MapRoute.name: (routeData) {
-      final args = routeData.argsAs<MapRouteArgs>();
       return _i18.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i5.MapScreen(
-          args.showOnlyKnown,
-          key: args.key,
-        ),
+        child: const _i5.MapScreen(),
       );
     },
     NotesRoute.name: (routeData) {
@@ -248,40 +244,16 @@ class MainRoute extends _i18.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i5.MapScreen]
-class MapRoute extends _i18.PageRouteInfo<MapRouteArgs> {
-  MapRoute({
-    required bool showOnlyKnown,
-    _i19.Key? key,
-    List<_i18.PageRouteInfo>? children,
-  }) : super(
+class MapRoute extends _i18.PageRouteInfo<void> {
+  const MapRoute({List<_i18.PageRouteInfo>? children})
+      : super(
           MapRoute.name,
-          args: MapRouteArgs(
-            showOnlyKnown: showOnlyKnown,
-            key: key,
-          ),
           initialChildren: children,
         );
 
   static const String name = 'MapRoute';
 
-  static const _i18.PageInfo<MapRouteArgs> page =
-      _i18.PageInfo<MapRouteArgs>(name);
-}
-
-class MapRouteArgs {
-  const MapRouteArgs({
-    required this.showOnlyKnown,
-    this.key,
-  });
-
-  final bool showOnlyKnown;
-
-  final _i19.Key? key;
-
-  @override
-  String toString() {
-    return 'MapRouteArgs{showOnlyKnown: $showOnlyKnown, key: $key}';
-  }
+  static const _i18.PageInfo<void> page = _i18.PageInfo<void>(name);
 }
 
 /// generated route for

@@ -132,7 +132,7 @@ class _MainHeaderState extends ConsumerState<ScheduleHeader> {
                                       gymFoundBySearching.isNotEmpty &&
                                       widget.showNavigationButton) {
                                     context.router
-                                        .push(MapRoute(showOnlyKnown: false));
+                                        .push(const MapRoute());
                                     textfieldFocusnode.unfocus();
                                     controller.clear();
                                     setState(() {});

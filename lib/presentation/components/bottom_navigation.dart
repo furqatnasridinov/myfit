@@ -43,7 +43,7 @@ class CustomBottomNavigation extends StatelessWidget {
                   .any((element) => element.routeData.path == "/map")) {
                 context.router.removeWhere((route) => route.path == "/map");
               }
-              context.router.push(MapRoute(showOnlyKnown: false));
+              context.router.push(const MapRoute());
             },
           ),
           singleBarItem(
