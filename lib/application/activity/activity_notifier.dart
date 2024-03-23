@@ -20,6 +20,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       : super(const ActivityState());
   final ActivityRepositoryInterface _activityRepositoryInterface;
   final ScheduleNotifier scheduleNotifier;
+
   Future<void> getGymInfo(BuildContext context, {required int gymId}) async {
     final connected = await AppConnectivity().connectivity();
     if (connected) {
@@ -267,23 +268,34 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     for (var key in keys) {
       allLessons[key].forEach((el) {
         if (el["lessonType"] == selectedActivity) {
-          final lesson = Lesson(
-            id: el["id"],
-            date: el["date"],
-            calendarDate: formatOriginalToCalendar(el["date"]),
-            startTime: returnOnlyTime(el["date"]),
-            endTime: getEndingTime(returnOnlyTime(el["date"]), el["duration"]),
-            description: el["description"],
-            duration: formatDuration(el["duration"]),
-            lessonType: el["lessonType"],
-            owner: el["owner"] != null ? Owner.fromJson(el["owner"]) : null,
-            repeat: el["repeat"].cast<int>(),
-            canSignUp: el["canSignUp"],
-            lessonState: el["lessonState"],
-          );
-          listToCollectLessons.add(lesson);
-          if (!listToColllectDays.contains(lesson.calendarDate)) {
-            listToColllectDays.add(lesson.calendarDate ?? "");
+          try {
+            final DateTime startTime =
+                DateTime.parse(el["date"].toString().replaceAll("@", " "));
+            final lesson = Lesson(
+              id: el["id"],
+              date: el["date"],
+              calendarDate: formatOriginalToCalendar(el["date"]),
+              startTime: returnOnlyTime(el["date"]),
+              endTime:
+                  getEndingTime(returnOnlyTime(el["date"]), el["duration"]),
+              description: el["description"],
+              duration: formatDuration(el["duration"]),
+              lessonType: el["lessonType"],
+              owner: el["owner"] != null ? Owner.fromJson(el["owner"]) : null,
+              repeat: el["repeat"].cast<int>(),
+              canSignUp: el["canSignUp"],
+              lessonState: el["lessonState"],
+              showInCalendar: DateTime.now()
+                  .isBefore(startTime.subtract(const Duration(minutes: 30))),
+            );
+            if (lesson.showInCalendar!) {
+              listToCollectLessons.add(lesson);
+              if (!listToColllectDays.contains(lesson.calendarDate)) {
+                listToColllectDays.add(lesson.calendarDate ?? "");
+              }
+            }
+          } catch (e) {
+            throw e;
           }
         }
       });

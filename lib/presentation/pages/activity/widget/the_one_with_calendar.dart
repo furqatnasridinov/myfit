@@ -187,7 +187,9 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                   itemBuilder: (context, index) {
                     final currentSchedule =
                         lessonsToShowAfterSelectingADay[index];
+
                     return activityCard(
+                      currentSchedule.canSignUp ?? false,
                       currentSchedule.id ?? 0,
                       currentSchedule.startTime ?? "??",
                       currentSchedule.endTime ?? "??",
@@ -220,6 +222,7 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
 }
 
 Widget activityCard(
+  bool canSignUp,
   int id,
   String startTime,
   String finishTime,
@@ -228,67 +231,71 @@ Widget activityCard(
   String? status,
   void Function()? enrollFunction,
 ) {
-  return Padding(
-    padding: EdgeInsets.only(bottom: 10.h, left: 16.w, right: 16.w),
-    child: CustomCard(
-      width: double.maxFinite,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // times
-              SizedBox(
-                child: Row(
-                  children: [
-                    CustomText(
-                      text: startTime,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    2.horizontalSpace,
-                    const Text("-"),
-                    2.horizontalSpace,
-                    CustomText(
-                      text: finishTime,
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ],
-                ),
-              ),
-              // get status text
-              SizedBox(
-                child: InkWell(
-                  onTap: (status == "OPEN" || status == "CANCELED_USER")
-                      ? enrollFunction
-                      : null,
-                  child: CustomText(
-                    text: AppHelpers().getStatusText(status),
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                    color: AppHelpers().getStatusTextColor(status),
+  if (canSignUp || (!canSignUp && status == "CONFIRMED")) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 10.h, left: 16.w, right: 16.w),
+      child: CustomCard(
+        width: double.maxFinite,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // times
+                SizedBox(
+                  child: Row(
+                    children: [
+                      CustomText(
+                        text: startTime,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      2.horizontalSpace,
+                      const Text("-"),
+                      2.horizontalSpace,
+                      CustomText(
+                        text: finishTime,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ],
-          ),
-          5.verticalSpace,
-          InterText(
-            text: name,
-            fontSize: 13.sp,
-            fontWeight: FontWeight.w400,
-          ),
-          5.verticalSpace,
-          CustomText(
-            text: duration,
-            fontSize: 10.sp,
-            fontWeight: FontWeight.w500,
-            color: AppColors.greyText,
-          )
-        ],
+                // get status text
+                SizedBox(
+                  child: InkWell(
+                    onTap: (status == "OPEN" || status == "CANCELED_USER")
+                        ? enrollFunction
+                        : null,
+                    child: CustomText(
+                      text: AppHelpers().getStatusText(status),
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      color: AppHelpers().getStatusTextColor(status),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            5.verticalSpace,
+            InterText(
+              text: name,
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w400,
+            ),
+            5.verticalSpace,
+            CustomText(
+              text: duration,
+              fontSize: 10.sp,
+              fontWeight: FontWeight.w500,
+              color: AppColors.greyText,
+            )
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  } else {
+    return const SizedBox.shrink();
+  }
 }
