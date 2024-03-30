@@ -284,11 +284,14 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
               owner: el["owner"] != null ? Owner.fromJson(el["owner"]) : null,
               repeat: el["repeat"].cast<int>(),
               canSignUp: el["canSignUp"],
-              lessonState: el["lessonState"],
+              lessonState: el["lessonState"] ?? false,
               showInCalendar: DateTime.now()
                   .isBefore(startTime.subtract(const Duration(minutes: 30))),
+              isDeleted: el["isDeleted"] ?? false,
             );
-            if (lesson.showInCalendar!) {
+            if (lesson.showInCalendar! &&
+                !lesson.isDeleted! &&
+                lesson.canSignUp!) {
               listToCollectLessons.add(lesson);
               if (!listToColllectDays.contains(lesson.calendarDate)) {
                 listToColllectDays.add(lesson.calendarDate ?? "");
@@ -390,6 +393,10 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         listToCollectLessons.add(lesson);
       }
     }
+    // sort the list by startTime
+    listToCollectLessons.sort((a, b) =>
+        int.parse(a.startTime!.replaceAll(":", ""))
+            .compareTo(int.parse(b.startTime!.replaceAll(":", ""))));
     state =
         state.copyWith(lessonsToShowAfterSelectingADay: listToCollectLessons);
   }

@@ -5,6 +5,7 @@ import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/custom_textfield.dart';
 import 'package:activity/presentation/components/ui_dropdown_menu.dart';
+import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -49,30 +50,11 @@ class _TheOneWithImageState extends State<TheOneWithImage> {
       final address = ref.watch(activityProvider).gym?.address;
       return Stack(
         children: [
-          Container(
+          SizedBox(
             height: 210.h,
             width: double.maxFinite,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.black,
-                  Colors.transparent,
-                  Colors.transparent,
-                  Colors.black,
-                ],
-                stops: [
-                  0.07,
-                  0.5,
-                  0.77,
-                  1.0,
-                ],
-              ),
-            ),
             child: CachedNetworkImage(
-              imageUrl:
-                  "http://77.222.53.122/image/$mainPictureUrl",
+              imageUrl: "http://77.222.53.122/image/$mainPictureUrl",
               errorWidget: (context, url, error) {
                 return Image.asset(
                   "assets/images/avatar.png",
@@ -80,6 +62,37 @@ class _TheOneWithImageState extends State<TheOneWithImage> {
                 );
               },
               fit: BoxFit.cover,
+            ),
+          ),
+          GestureDetector(
+            onTap: (){
+              if (mainPictureUrl != null && mainPictureUrl.isNotEmpty) {
+                context.pushRoute(PhotoViewRoute(photos: [mainPictureUrl], index: 0));
+              }
+            },
+            child: SizedBox(
+              height: 210.h,
+              width: double.maxFinite,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black.withOpacity(0.65),
+                      Colors.transparent,
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.70),
+                    ],
+                    stops: const [
+                      0.02,
+                      0.35,
+                      0.67,
+                      1.5,
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
           Align(

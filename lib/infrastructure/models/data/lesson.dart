@@ -12,6 +12,7 @@ class Lesson {
   bool? canSignUp;
   String? lessonState;
   bool? showInCalendar;
+  bool? isDeleted;
 
   Lesson({
     this.id,
@@ -27,6 +28,7 @@ class Lesson {
     this.canSignUp,
     this.lessonState,
     this.showInCalendar,
+    this.isDeleted,
   });
 
   Lesson.fromJson(Map<String, dynamic> json) {
@@ -42,6 +44,7 @@ class Lesson {
     repeat = json['repeat'].cast<int>();
     canSignUp = json['canSignUp'];
     lessonState = json['lessonState'];
+    isDeleted = json['isDeleted'];
   }
 }
 

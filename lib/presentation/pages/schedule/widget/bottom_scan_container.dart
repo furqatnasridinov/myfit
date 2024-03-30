@@ -21,8 +21,17 @@ class BottomScanContainer extends StatelessWidget {
       return showScanButton
           ? Container(
               width: double.maxFinite,
-              color: Colors.white,
               padding: EdgeInsets.all(16.r),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Color.fromRGBO(0, 0, 0, 0.39),
+                    blurRadius: 20.4,
+                    offset: Offset(0, -1), // X,Y offsets of the shadow
+                  ),
+                ],
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
