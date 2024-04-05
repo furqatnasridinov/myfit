@@ -26,33 +26,30 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
   void initState() {
     phoneController = TextEditingController();
     super.initState();
-    phoneController.addListener(() {
-      String currentText = phoneController.text;
-      if (!currentText.startsWith('+7')) {
-        // Reset to '+7' if the user tries to delete it
-        phoneController.value = const TextEditingValue(
-          text: '+7 ',
-          selection: TextSelection.collapsed(offset: 3),
+      phoneController.addListener(() {
+    String currentText = phoneController.text;
+    if (!currentText.startsWith('+7')) {
+      // Reset to '+7' if the user tries to delete it
+      phoneController.value = const TextEditingValue(
+        text: '+7 ',
+        selection: TextSelection.collapsed(offset: 3),
+      );
+    } else if (currentText.length > 3) {
+      // Remove mask characters from the input
+      String input = currentText.substring(3).replaceAll(RegExp(r'[^0-9]'), '');
+      // Apply the mask only if there is more text beyond '+7'
+      String newText = '+7 ${applyMask(input, '(###) ###-##-##')}';
+      if (newText != currentText) {
+        phoneController.value = TextEditingValue(
+          text: newText,
+          selection: TextSelection.collapsed(offset: newText.length),
         );
-      } else if (currentText.length > 3) {
-        // Apply the mask only if there is more text beyond '+7'
-        String newText =
-            '+7 ${applyMask(currentText.substring(3), '(###) ###-##-##')}';
-        if (newText != currentText) {
-          phoneController.value = TextEditingValue(
-            text: newText,
-            selection: TextSelection.collapsed(offset: newText.length),
-          );
-        }
       }
-    });
+    }
+  });
   }
 
-  @override
-  void dispose() {
-    phoneController.dispose();
-    super.dispose();
-  }
+  
 
   String applyMask(String input, String mask) {
     // Implement your masking logic here
@@ -74,13 +71,16 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
   }
 
   @override
+  void dispose() {
+    phoneController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    //final width = MediaQuery.of(context).size.width;
     final event = ref.read(registrationProvider.notifier);
     final state = ref.watch(registrationProvider);
-/*     debugPrint("phone number ${state.phoneNumber}");
-    debugPrint("phone lenth ${state.phoneNumber.length}");
-    debugPrint("phone isvalid ${state.isValidPhone}"); */
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: Stack(
