@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "116248897950",
+    "project_id": "myfit-49385",
+    "storage_bucket": "myfit-49385.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:116248897950:android:89eebd4166afb1661f8e8f",
+        "android_client_info": {
+          "package_name": "com.example.activity"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDl011o1fvRSwAz1UCFRksNPzUT4EvfFo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

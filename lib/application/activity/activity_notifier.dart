@@ -329,7 +329,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         Map<String, dynamic> lessonData = jsonDecode(data);
         if (lessonData["lessonState"] == "CANCELED_GYM") {
           // push notification for canceled lesson
-          NotificationService().showDefaultNotification(
+          LocalNotificationService().showDefaultNotification(
             "MyFit App",
             "Ваша заявка на ${lessonData["lessonType"]} отменена",
           );
@@ -338,7 +338,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
           final calendarDate = formatOriginalToCalendar(lessonData["date"]);
           final startTime = returnOnlyTime(lessonData["date"]);
           // push notification for confirmed lesson
-          NotificationService().showDefaultNotification(
+          LocalNotificationService().showDefaultNotification(
             "MyFit App",
             "Ваша заявка на ${lessonData["lessonType"]} подтверждена.Дата посещания $calendarDate в $startTime",
           );
