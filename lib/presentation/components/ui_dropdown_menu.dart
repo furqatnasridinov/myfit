@@ -74,7 +74,7 @@ class UiDropDownMenu extends StatelessWidget {
   }
 
   PopupMenuItem _dropDownMenuRow(
-      String? title, Widget? icon, Color? iconColor, VoidCallback? action) {
+      String? title, Widget? icon, Color? iconColor, void Function()? action) {
     return PopupMenuItem(
       onTap: action,
       child: SizedBox(

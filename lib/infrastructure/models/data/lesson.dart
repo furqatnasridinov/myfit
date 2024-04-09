@@ -11,6 +11,8 @@ class Lesson {
   List<int>? repeat;
   bool? canSignUp;
   String? lessonState;
+  bool? showInCalendar;
+  bool? isDeleted;
 
   Lesson({
     this.id,
@@ -25,6 +27,8 @@ class Lesson {
     this.repeat,
     this.canSignUp,
     this.lessonState,
+    this.showInCalendar,
+    this.isDeleted,
   });
 
   Lesson.fromJson(Map<String, dynamic> json) {
@@ -39,6 +43,8 @@ class Lesson {
     owner = json['owner'] != null ? Owner.fromJson(json['owner']) : null;
     repeat = json['repeat'].cast<int>();
     canSignUp = json['canSignUp'];
+    lessonState = json['lessonState'];
+    isDeleted = json['isDeleted'];
   }
 }
 

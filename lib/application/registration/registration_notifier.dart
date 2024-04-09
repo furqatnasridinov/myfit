@@ -1,6 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:ui';
 
 import 'package:activity/application/registration/registration_state.dart';
+import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/register.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_validator.dart';
@@ -96,20 +99,17 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
       response.when(
         success: (data) {
           if (data["operationResult"] == "OK") {
-            // save phone number to local storage
-            LocalStorage.setPhoneNumber(phoneNumber)
-                .then((value) => context.router.push(
-                      const Registration2Route(),
-                    ));
+            context.router.push(
+              const Registration2Route(),
+            );
           }
         },
-        failure: (error, statusCode) {
-          AppHelpers.showSnack(
-              context, "${error.toString()} ${"statuscode $statusCode"}");
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {
-      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
@@ -122,42 +122,49 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
           phoneNumber, code);
       response.when(
         success: (data) async {
-          if (data.user?.firstName != "") {
-            await LocalStorage.setUserName(data.user?.firstName ?? "");
-            await LocalStorage.setUserLastName(data.user?.lastName ?? "");
-            await LocalStorage.setUserPatronomic(data.user?.patronymic ?? "");
-          }
-          LocalStorage.setUserId(
-            data.user?.id.toString() ?? "0",
-          );
-          LocalStorage.setSelectedCity(data.user?.city?.name ?? "");
-          LocalStorage.setSelectedCityLat(data.user?.city?.latitude ?? "");
-          LocalStorage.setSelectedCityLon(data.user?.city?.longitude ?? "");
-          LocalStorage.setAge(data.user?.age.toString() ?? "");
-          LocalStorage.setAvatar(data.user?.backgroundPictureUrl ?? "");
-          LocalStorage.setHeight(data.user?.height.toString());
-          await LocalStorage.setGender(data.user?.gender ?? "");
-          await LocalStorage.setWeight(data.user?.weight.toString());
+          PageRouteInfo<dynamic> nextRoute = data.user?.firstName == null
+              ? const Registration3Route()
+              : const Main2Route();
           await LocalStorage.setToken(data.jwtToken ?? "");
-          // ignore: use_build_context_synchronously
-          moveClientToThirdPage(context);
+          await LocalStorage.setPhoneNumber(phoneNumber);
+          await LocalStorage.setUserId(data.user?.id.toString() ?? "0");
+          if (data.user?.firstName != null) {
+            await Future.wait([
+              LocalStorage.setUserName(data.user?.firstName ?? ""),
+              LocalStorage.setUserLastName(data.user?.lastName ?? ""),
+              LocalStorage.setUserPatronomic(data.user?.patronymic ?? ""),
+              //LocalStorage.setPhoneNumber(data.user?.login ?? ""),
+              LocalStorage.setSelectedCity(data.user?.city?.name ?? ""),
+              LocalStorage.setSelectedCityLat(data.user?.city?.latitude ?? ""),
+              LocalStorage.setSelectedCityLon(data.user?.city?.longitude ?? ""),
+              LocalStorage.setAge(data.user?.age.toString() ?? ""),
+              LocalStorage.setAvatar(data.user?.backgroundPictureUrl ?? ""),
+              LocalStorage.setHeight(data.user?.height.toString() ?? ""),
+              LocalStorage.setGender(data.user?.gender ?? ""),
+              LocalStorage.setWeight(data.user?.weight.toString() ?? ""),
+            ]);
+          }
+          moveClientToNextPage(context, nextRoute);
         },
-        failure: (error, statusCode) {
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {
-      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
 
-  Future<void> moveClientToThirdPage(BuildContext context) async {
-    await Future.delayed(const Duration(milliseconds: 1500)).then(
-      (value) => context.replaceRoute(
-        const Registration3Route(),
-      ),
-    );
+  Future<void> moveClientToNextPage(
+      BuildContext context, PageRouteInfo<dynamic> nextRoute) async {
+    await Future.delayed(const Duration(milliseconds: 1500)).then((value) {
+      if (nextRoute.routeName == "Main2Route") {
+        context.router.replaceAll([nextRoute]);
+      } else {
+        context.replaceRoute(nextRoute);
+      }
+    });
   }
 
   void enableFormNotValidated() {

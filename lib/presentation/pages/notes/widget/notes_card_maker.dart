@@ -77,7 +77,7 @@ class _NotesCardMakerState extends State<NotesCardMaker> {
                 TextSpan(
                   text: formattedDay,
                   style: GoogleFonts.raleway(
-                    color: AppColors.blueColor,
+                    color: AppColors.blueText,
                     fontWeight: FontWeight.w600,
                     fontSize: 20.sp,
                     fontFeatures: const [FontFeature.liningFigures()],
@@ -90,7 +90,7 @@ class _NotesCardMakerState extends State<NotesCardMaker> {
           32.verticalSpace,
           // blue container
           CustomCard(
-            color: AppColors.blueColor,
+            color: AppColors.blueText,
             child: Column(
               children: [
                 // top section
@@ -305,10 +305,7 @@ class _NotesCardMakerState extends State<NotesCardMaker> {
               //color: Colors.red,
               width: 113.w,
               child: CustomTextField(
-                onTap: () {
-                  tagFocus.requestFocus();
-                  setState(() {});
-                },
+                
                 style: GoogleFonts.inter(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
@@ -328,10 +325,6 @@ class _NotesCardMakerState extends State<NotesCardMaker> {
             SizedBox(
               width: 225.w,
               child: CustomTextField(
-                onTap: () {
-                  descriptionFocus.requestFocus();
-                  setState(() {});
-                },
                 style: GoogleFonts.inter(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
@@ -356,6 +349,7 @@ class _NotesCardMakerState extends State<NotesCardMaker> {
         CustomButton(
           fontSize: 14.sp,
           fontWeight: FontWeight.w500,
+          height: 34.h,
           onPressed: () {
             if (tagController.text.length > 1 &&
                 descriptionController.text.length > 1) {

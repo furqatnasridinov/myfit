@@ -5,6 +5,7 @@ class CompletedSchedule {
     required this.describtion,
     required this.time,
     required this.grade,
+    required this.gymId,
   });
 
   final int id;
@@ -12,4 +13,5 @@ class CompletedSchedule {
   final String describtion;
   final String time;
   final int grade;
+  final int gymId;
 }

@@ -302,7 +302,7 @@ class LocalStorage {
 
   // get notification time
   static String getReminderTime() =>
-      _preferences?.getString(AppConstants.keyNotificationTime) ?? "";
+      _preferences?.getString(AppConstants.keyNotificationTime) ?? "30";
 
   // remove  notification time
   static void removeReminderTime() =>
@@ -333,7 +333,7 @@ class LocalStorage {
       _preferences?.remove(AppConstants.keyUserName);
 
   static Future<bool> checkIfIsNotEmpty() async {
-    if (getToken().isNotEmpty && getUserId().isNotEmpty) {
+    if (getToken().isNotEmpty) {
       return true;
     } else {
       return false;
@@ -343,9 +343,19 @@ class LocalStorage {
   // log out
   Future<void> logOut() async {
     removeToken();
+    removePhone();
     removeUserId();
     removeUserName();
     removeUserLastName();
+    removeSelectedCity();
+    removeSelectedCityLat();
+    removeSelectedCityLon();
+    removeAge();
+    removeWeight();
+    removeHeight();
+    removeAvatar();
+    removeGender();
+    removeReminderTime();
     // ...
   }
 }

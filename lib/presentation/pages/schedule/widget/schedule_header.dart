@@ -1,11 +1,11 @@
 import 'dart:ui';
 import 'package:activity/application/map/map_provider.dart';
-import 'package:activity/application/schedule/schedule_notifier.dart';
+import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/app_constants.dart';
+import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/inter_text.dart';
-import 'package:activity/presentation/components/ui_button_filled.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -14,18 +14,23 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ScheduleHeader extends StatefulWidget implements PreferredSizeWidget {
-  final ScheduleNotifier event;
-  const ScheduleHeader({super.key, required this.event});
+class ScheduleHeader extends ConsumerStatefulWidget
+    implements PreferredSizeWidget {
+  final bool showNavigationButton;
+  final bool showBackButton;
+  const ScheduleHeader(
+      {required this.showNavigationButton,
+      required this.showBackButton,
+      super.key});
 
   @override
-  State<ScheduleHeader> createState() => _MainHeaderState();
+  ConsumerState<ScheduleHeader> createState() => _MainHeaderState();
 
   @override
   Size get preferredSize => Size.fromHeight(55.h);
 }
 
-class _MainHeaderState extends State<ScheduleHeader> {
+class _MainHeaderState extends ConsumerState<ScheduleHeader> {
   late TextEditingController controller;
   late FocusNode textfieldFocusnode;
   late LayerLink layerlink;
@@ -61,83 +66,97 @@ class _MainHeaderState extends State<ScheduleHeader> {
                 }
               },
               child: Consumer(builder: (context, ref, child) {
-                final mapState = ref.watch(mapProvider);
-                return Container(
-                  height: controller.text.isEmpty ||
-                          mapState.gymFoundBySearching.isEmpty
-                      ? 160.h
-                      : 290.h,
-                  margin: EdgeInsets.only(left: 16.w, right: 16.w),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16.0),
-                    color: Colors.white,
-                    border: Border.all(
-                      width: 1.0,
-                      color: const Color.fromRGBO(119, 170, 249, 1),
-                    ),
-                  ),
-                  padding:
-                      EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        controller.text.isEmpty
-                            ? Center(
-                                child: CustomText(
-                                  text:
-                                      "Введите название занятия или заведения, которое хотите найти",
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              )
-                            : controller.text.length > 1 &&
-                                    mapState.gymFoundBySearching.isEmpty
-                                ? CustomText(
-                                    text:
-                                        "По вашему запросу ничего не найдено! ",
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w500,
-                                  )
-                                : Expanded(
-                                    child: MediaQuery.removePadding(
+                final gymFoundBySearching =
+                    ref.watch(mapProvider).gymFoundBySearching;
+                return controller.text.length > 2
+                    ? Container(
+                        //height: 160.h,
+                        constraints:
+                            BoxConstraints.loose(Size(double.maxFinite, 300.h)),
+                        margin: EdgeInsets.only(left: 16.w, right: 16.w),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16.0),
+                          color: Colors.white,
+                          border: Border.all(
+                            width: 1.0,
+                            color: const Color.fromRGBO(119, 170, 249, 1),
+                          ),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 12.h, horizontal: 16.w),
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              controller.text.length > 2 &&
+                                      gymFoundBySearching.isEmpty
+                                  ? CustomText(
+                                      text:
+                                          "По вашему запросу ничего не найдено! ",
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w500,
+                                    )
+                                  : MediaQuery.removePadding(
                                       context: context,
                                       removeTop: true,
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount:
-                                            mapState.gymFoundBySearching.length,
-                                        itemBuilder: (context, index) {
-                                          final currentGym = mapState
-                                              .gymFoundBySearching[index];
-                                          return _listiles(
-                                            currentGym.name ?? "??",
-                                            "${currentGym.distanceFromClient.toString()} км от вас",
-                                            () {
-                                              textfieldFocusnode.unfocus();
-                                              setState(() {});
-                                              context.router.push(
-                                                ActivityRoute(
-                                                    gymId: currentGym.id!),
-                                              );
-                                              controller.clear();
-                                            },
-                                          );
-                                        },
+                                      child: ConstrainedBox(
+                                        constraints:
+                                            BoxConstraints(maxHeight: 200.h),
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: gymFoundBySearching.length,
+                                          itemBuilder: (context, index) {
+                                            final currentGym =
+                                                gymFoundBySearching[index];
+                                            return _listiles(
+                                              currentGym.name ?? "??",
+                                              "${currentGym.distanceFromClient.toString()} км от вас",
+                                              () {
+                                                textfieldFocusnode.unfocus();
+                                                setState(() {});
+                                                context.router.push(
+                                                  ActivityRoute(
+                                                      gymId: currentGym.id!),
+                                                );
+                                                controller.clear();
+                                              },
+                                            );
+                                          },
+                                        ),
                                       ),
                                     ),
-                                  ),
-                        const SizedBox(height: 10.0),
-                        UiButtonFilled(
-                          btnText: 'Показать на карте',
-                          onPressedAction: () {
-                            textfieldFocusnode.unfocus();
-                            setState(() {});
-                            context.router.push(MapRoute(showOnlyKnown: false));
-                          },
-                          isFullWidth: true,
-                        )
-                      ]),
-                );
+                              const SizedBox(height: 10.0),
+                              CustomButton(
+                                onPressed: () {
+                                  if (controller.text.length > 2 &&
+                                      gymFoundBySearching.isNotEmpty &&
+                                      widget.showNavigationButton) {
+                                    context.router
+                                        .push(const MapRoute());
+                                    textfieldFocusnode.unfocus();
+                                    controller.clear();
+                                    setState(() {});
+                                  } else {
+                                    textfieldFocusnode.unfocus();
+                                    controller.clear();
+                                    setState(() {});
+                                  }
+                                },
+                                text: controller.text.length > 2 &&
+                                        gymFoundBySearching.isNotEmpty &&
+                                        widget.showNavigationButton
+                                    ? "Перейти к карте"
+                                    : "Закрыть",
+                                buttonColor: AppColors.blueColor,
+                                borderColor: AppColors.blueBorder,
+                                textColor: Colors.white,
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                                height: 40.h,
+                              ),
+                            ]),
+                      )
+                    : const SizedBox.shrink();
               }),
             ),
           ),
@@ -166,11 +185,27 @@ class _MainHeaderState extends State<ScheduleHeader> {
     controller = TextEditingController();
     textfieldFocusnode = FocusNode();
     layerlink = LayerLink();
+
     textfieldFocusnode.addListener(() {
       if (textfieldFocusnode.hasFocus) {
         showOverlay();
       } else {
         hideOverlay();
+      }
+    });
+
+    controller.addListener(() {
+      if (controller.text.length > 1 && controller.text != previousText) {
+        ref.read(mapProvider.notifier).searchGym(
+              context,
+              text: controller.text,
+            );
+        previousText = controller.text;
+        _updateOverlay();
+      }
+      if (ref.watch(mapProvider).gymFoundBySearching.isEmpty &&
+          controller.text.isNotEmpty) {
+        _updateOverlay();
       }
     });
   }
@@ -184,31 +219,14 @@ class _MainHeaderState extends State<ScheduleHeader> {
 
   @override
   Widget build(BuildContext context) {
-    Consumer(builder: (context, ref, child) {
-      final mapEvent = ref.read(mapProvider.notifier);
-      final mapState = ref.watch(mapProvider);
-      if (controller.text.length > 1 && controller.text != previousText) {
-        mapEvent.searchGym(
-          context,
-          text: controller.text,
-        );
-        previousText = controller.text;
-        _updateOverlay();
-      }
-
-      if (mapState.gymFoundBySearching.isEmpty && controller.text.isNotEmpty) {
-        _updateOverlay();
-      }
-      return const SizedBox();
-    });
-
     return AppBar(
       automaticallyImplyLeading: false,
       //backgroundColor: Colors.amber,
+      leadingWidth: widget.showBackButton ? null : 0,
       toolbarHeight: 40.h,
       backgroundColor: AppColors.backgroundColor,
       elevation: 0,
-      leadingWidth: null,
+
       centerTitle: false,
       titleSpacing: textfieldFocusnode.hasFocus ? 14.w : 5.0,
       shape: RoundedRectangleBorder(
@@ -259,7 +277,11 @@ class _MainHeaderState extends State<ScheduleHeader> {
 
       // title
       title: AnimatedContainer(
-        duration: const Duration(milliseconds: 500),
+        margin: EdgeInsets.only(
+            left: !widget.showBackButton && !textfieldFocusnode.hasFocus
+                ? 16.w
+                : 0),
+        duration: const Duration(milliseconds: 200),
         width: textfieldFocusnode.hasFocus ? 360.w : 300.w,
         height: 40.h,
         decoration: BoxDecoration(
@@ -336,7 +358,7 @@ class _MainHeaderState extends State<ScheduleHeader> {
                 fontWeight: FontWeight.w400,
                 fontFeatures: const [FontFeature.liningFigures()],
               ),
-              hintText: "Занятие, зал",
+              hintText: "Поиск заведений",
               border: InputBorder.none,
             ),
           ),
@@ -347,33 +369,33 @@ class _MainHeaderState extends State<ScheduleHeader> {
       actions: [
         textfieldFocusnode.hasFocus
             ? const SizedBox()
-            : Container(
-                margin: EdgeInsets.only(right: 15.w),
-                child: SizedOverflowBox(
-                  size: Size(40.w, 40.h),
-                  child: CircleAvatar(
-                    radius: 20.r,
-                    backgroundColor: const Color.fromRGBO(119, 170, 249, 1),
-                    child: Padding(
-                      padding: EdgeInsets.all(2.r),
-                      child: ClipOval(
-                        child: ClipOval(
-                            child: Image.asset(
-                          AppConstants.cristianBale,
-                          fit: BoxFit.cover,
-                        )
-                            /* CachedNetworkImage(
-                                imageUrl: AppConstants.owlNetworkImage,
-                                fit: BoxFit.cover,
-                                errorWidget: (context, url, error) {
-                                  return const SizedBox();
-                                },
-                              ), */
+            : Padding(
+                padding: EdgeInsets.only(right: 15.w),
+                child: Consumer(builder: (context, ref, child) {
+                  final settingsState = ref.watch(settingsProvider);
+                  return InkWell(
+                    onTap: () {
+                      context.router.push(const SettingsRoute());
+                    },
+                    child: CircleAvatar(
+                      radius: 20.r,
+                      backgroundColor: AppColors.blueColor,
+                      child: settingsState.avatar.isEmpty
+                          ? CircleAvatar(
+                              radius: 18.r,
+                              backgroundImage:
+                                  const AssetImage(AppConstants.cristianBale))
+                          : CircleAvatar(
+                              radius: 18.r,
+                              backgroundImage: NetworkImage(
+                                  "http://77.222.53.122/image/${settingsState.avatar}"),
+                              onBackgroundImageError: (exception, stackTrace) {
+                                debugPrint(exception.toString());
+                              },
                             ),
-                      ),
                     ),
-                  ),
-                ),
+                  );
+                }),
               ),
       ],
     );

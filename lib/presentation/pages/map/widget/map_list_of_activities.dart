@@ -56,88 +56,47 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
             ? NoGymsInSelectedDiapozone(
                 state: widget.state, event: widget.event)
             : SizedBox(
-                child: widget.state.locationPermissionIsNOtGiven ||
-                        widget.state.locationServiceIsNotEnabled
-                    ? Column(
-                        children: [
-                          EnableLocationPermission(
-                            event: widget.event,
-                            state: widget.state,
-                          ),
-                          
-                          ListView.builder(
-                            //controller: widget.activitiesListController,
-                            physics: const NeverScrollableScrollPhysics(),
-                            padding: EdgeInsets.symmetric(horizontal: 16.w),
-                            itemCount: widget
-                                .state
-                                .activitiesWithGymsInsideFromSelectedDiapozone
-                                .length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              final currentActivity = widget.state
-                                      .activitiesWithGymsInsideFromSelectedDiapozone[
-                                  index];
-                              return _listOfActivitiesBuilder(
-                                  currentActivity.lessontype ?? "??",
-                                  currentActivity.listOfGyms!.length.toString(),
-                                  currentActivity.isOpened,
-                                  currentActivity.listOfGyms!,
-                                  // ontap of gyms below
-                                  () {
-                                for (var element in widget.state
-                                    .activitiesWithGymsInsideFromSelectedDiapozone) {
-                                  if (element.isOpened == true &&
-                                      element != currentActivity) {
-                                    element.isOpened = false;
-                                    setState(() {});
-                                  }
-                                }
-                                currentActivity.isOpened =
-                                    !currentActivity.isOpened;
-                                setState(() {});
-                                widget.event.openCloseGymsList();
-                              });
-                            },
-                          ),
-                        ],
-                      )
-                    : ListView.builder(
-                        controller: widget.activitiesListController,
-                        //physics: const NeverScrollableScrollPhysics(),
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        itemCount: widget
-                            .state
-                            .activitiesWithGymsInsideFromSelectedDiapozone
-                            .length,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          final currentActivity = widget.state
-                                  .activitiesWithGymsInsideFromSelectedDiapozone[
-                              index];
-                          return _listOfActivitiesBuilder(
-                              currentActivity.lessontype ?? "??",
-                              currentActivity.listOfGyms!.length.toString(),
-                              currentActivity.isOpened,
-                              currentActivity.listOfGyms!,
-                              // ontap of gyms below
-                              () {
-                            for (var element in widget.state
-                                .activitiesWithGymsInsideFromSelectedDiapozone) {
-                              if (element.isOpened == true &&
-                                  element != currentActivity) {
-                                element.isOpened = false;
-                                setState(() {});
-                              }
-                            }
-                            currentActivity.isOpened =
-                                !currentActivity.isOpened;
+                child: Column(
+                children: [
+                  if (widget.state.locationPermissionDenied ||
+                      widget.state.locationServiceIsNotEnabled)
+                    EnableLocationPermission(
+                      event: widget.event,
+                      state: widget.state,
+                    ),
+                  ListView.builder(
+                    //controller: widget.activitiesListController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    itemCount: widget.state
+                        .activitiesWithGymsInsideFromSelectedDiapozone.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      final currentActivity = widget.state
+                          .activitiesWithGymsInsideFromSelectedDiapozone[index];
+                      return _listOfActivitiesBuilder(
+                          currentActivity.lessontype ?? "??",
+                          currentActivity.listOfGyms!.length.toString(),
+                          currentActivity.isOpened,
+                          currentActivity.listOfGyms!,
+                          // ontap of gyms below
+                          () {
+                        for (var element in widget.state
+                            .activitiesWithGymsInsideFromSelectedDiapozone) {
+                          if (element.isOpened == true &&
+                              element != currentActivity) {
+                            element.isOpened = false;
                             setState(() {});
-                            widget.event.openCloseGymsList();
-                          });
-                        },
-                      ),
-              );
+                          }
+                        }
+                        currentActivity.isOpened = !currentActivity.isOpened;
+                        setState(() {});
+                        widget.event.setFlexes();
+                      });
+                    },
+                  ),
+                ],
+              ));
   }
 
   _listOfActivitiesBuilder(
@@ -162,115 +121,122 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
               children: [
                 InkWell(
                   onTap: onTap,
-                  child: Container(
-                    height: 40.h,
-                    margin:
+                  child: Padding(
+                    padding:
                         EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
-                    //color: Colors.red,
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          child: SvgPicture.asset(
-                            AppHelpers().getIconSvg(title),
-                            height: 15.h,
+                    child: SizedBox(
+                      height: 40.h,
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            child: SvgPicture.asset(
+                              AppHelpers().getIconSvg(title),
+                              height: 15.h,
+                            ),
                           ),
-                        ),
-                        10.horizontalSpace,
-                        CustomText(
-                          text: title,
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        const Spacer(),
-                        SizedBox(
-                          //color: Colors.red.shade100,
-                          width: 100.w,
-                          child: Row(
-                            children: [
-                              // count of gyms
-                              CustomText(
-                                text: countOfGyms,
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.blueColor,
-                              ),
-                              5.horizontalSpace,
-                              Icon(
-                                isOpened
-                                    ? Icons.keyboard_arrow_up
-                                    : Icons.keyboard_arrow_down,
-                                color: AppColors.blueColor,
-                                size: 18.r,
-                              ),
-                              const Spacer(),
-                              CustomText(
-                                text: "${gymsList.first.distanceFromClient} км",
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.greyText,
-                              ),
-                            ],
+                          10.horizontalSpace,
+                          CustomText(
+                            text: title,
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
                           ),
-                        ),
-                      ],
+                          const Spacer(),
+                          SizedBox(
+                            //color: Colors.red.shade100,
+                            width: 100.w,
+                            child: Row(
+                              children: [
+                                // count of gyms
+                                CustomText(
+                                  text: countOfGyms,
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.blueColor,
+                                ),
+                                5.horizontalSpace,
+                                Icon(
+                                  isOpened
+                                      ? Icons.keyboard_arrow_up
+                                      : Icons.keyboard_arrow_down,
+                                  color: AppColors.blueColor,
+                                  size: 18.r,
+                                ),
+                                const Spacer(),
+                                CustomText(
+                                  text:
+                                      "${gymsList.first.distanceFromClient} км",
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.greyText,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
                 //10.verticalSpace,
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16.w),
-                  //color: Colors.red,
-                  height: gymsList.length == 1
-                      ? 50.h
-                      : gymsList.length == 2
-                          ? 100.h
-                          : 150.h,
-                  child: Consumer(
-                    builder: (context, ref, child) {
-                      final activityEvent = ref.read(activityProvider.notifier);
-                      return ListView.builder(
-                          itemCount: gymsList.length,
-                          //shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            return _listOfGymsBuilder(
-                              gymsList[index].name,
-                              gymsList[index].address,
-                              gymsList[index].distanceFromClient ?? 3469,
-                              "",
-                              gymsList[index].isSelected,
-                              () {
-                                for (var element in gymsList) {
-                                  if (element.isSelected == true) {
-                                    element.isSelected = false;
-                                    setState(() {});
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  child: SizedBox(
+                    /* height: gymsList.length == 1
+                        ? 50.h
+                        : gymsList.length == 2
+                            ? 100.h
+                            : 150.h, */
+                    child: Consumer(
+                      builder: (context, ref, child) {
+                        final activityEvent =
+                            ref.read(activityProvider.notifier);
+                        return ListView.builder(
+                            itemCount: gymsList.length,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return _listOfGymsBuilder(
+                                gymsList[index].name,
+                                gymsList[index].address,
+                                gymsList[index].distanceFromClient ?? 3469,
+                                "",
+                                gymsList[index].isSelected,
+                                () {
+                                  for (var element in gymsList) {
+                                    if (element.isSelected == true) {
+                                      element.isSelected = false;
+                                      setState(() {});
+                                    }
                                   }
-                                }
-                                gymsList[index].isSelected =
-                                    !gymsList[index].isSelected;
-                                setState(() {});
-                                //
-                                activityEvent.getActivityTypes(context,
-                                    gymId: gymsList[index].id!);
-                                widget.event.changeCameraPosition(
-                                  widget.controller!,
-                                  double.parse(
-                                      gymsList[index].latitude.toString()),
-                                  double.parse(
-                                      gymsList[index].longitude.toString()),
-                                );
-                                widget.event
-                                    .setMarkerAsOpened(
-                                      double.parse(
-                                          gymsList[index].latitude.toString()),
-                                      double.parse(
-                                          gymsList[index].longitude.toString()),
-                                    )
-                                    .then((value) =>
-                                        widget.event.showPopUpOnMap(context));
-                              },
-                            );
-                          });
-                    },
+                                  gymsList[index].isSelected =
+                                      !gymsList[index].isSelected;
+                                  setState(() {});
+                                  //
+                                  activityEvent.getActivityTypes(context,false,
+                                      gymId: gymsList[index].id!);
+                                  widget.event.changeCameraPosition(
+                                    widget.controller!,
+                                    double.parse(
+                                        gymsList[index].latitude.toString()),
+                                    double.parse(
+                                        gymsList[index].longitude.toString()),
+                                  );
+                                  widget.event
+                                      .setMarkerAsOpened(
+                                        double.parse(gymsList[index]
+                                            .latitude
+                                            .toString()),
+                                        double.parse(gymsList[index]
+                                            .longitude
+                                            .toString()),
+                                      )
+                                      .then((value) =>
+                                          widget.event.showPopUpOnMap(context));
+                                },
+                              );
+                            });
+                      },
+                    ),
                   ),
                 ),
               ],

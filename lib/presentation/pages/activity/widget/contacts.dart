@@ -17,7 +17,11 @@ class Contacts extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Consumer(
         builder: (context, ref, child) {
-          final state = ref.watch(activityProvider);
+          //final state = ref.watch(activityProvider);
+          final phone = ref.watch(activityProvider).gym?.phone;
+          final gymTelegram = ref.watch(activityProvider).gym?.telegram;
+          final gymVk = ref.watch(activityProvider).gym?.vk;
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -33,7 +37,7 @@ class Contacts extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       event.callTo(
-                        state.gym?.phone ?? "+79650292555",
+                        phone ?? "+79650292555",
                       );
                     },
                     child: SizedBox(
@@ -43,7 +47,7 @@ class Contacts extends StatelessWidget {
                           SvgPicture.asset("assets/svg/phone.svg"),
                           10.horizontalSpace,
                           CustomText(
-                            text: state.gym?.phone ?? "+7 (965) 029 25-55",
+                            text: phone ?? "Не указан",
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w400,
                           ),
@@ -51,17 +55,14 @@ class Contacts extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (state.gym?.telegram != null && state.gym?.telegram != "")
-                    telegram(
-                      () {
-                        event.launchTelegram(state.gym?.telegram ?? "");
-                      },
-                      state.gym?.telegram ?? "",
-                    ),
-                  if (state.gym?.telegram == null && state.gym?.vk != null)
+                  if (gymTelegram != null && gymTelegram != "")
+                    telegram(() {
+                      event.launchTelegram(gymTelegram);
+                    }, gymTelegram),
+                  if ((gymTelegram == null || gymTelegram == "") && gymVk != null)
                     vk(() {
-                      event.launchVk(state.gym?.vk ?? "");
-                    }, state.gym?.vk ?? "")
+                      event.launchVk(gymVk);
+                    }, gymVk)
                 ],
               ),
               32.verticalSpace,
@@ -72,7 +73,7 @@ class Contacts extends StatelessWidget {
               ),
               5.verticalSpace,
               InterText(
-                text: state.gym?.description ?? "",
+                text: ref.watch(activityProvider).gym?.description ?? "",
                 fontSize: 13.sp,
                 fontWeight: FontWeight.w400,
               )

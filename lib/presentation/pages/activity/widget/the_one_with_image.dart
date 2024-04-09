@@ -1,25 +1,21 @@
 import 'dart:ui';
-
-import 'package:activity/application/activity/activity_notifier.dart';
-import 'package:activity/application/activity/activity_state.dart';
+import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/custom_textfield.dart';
 import 'package:activity/presentation/components/ui_dropdown_menu.dart';
+import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TheOneWithImage extends StatefulWidget {
-  final ActivityState state;
-  final ActivityNotifier event;
-
-  const TheOneWithImage({Key? key, required this.state, required this.event})
-      : super(key: key);
+  const TheOneWithImage({Key? key}) : super(key: key);
 
   @override
   State<TheOneWithImage> createState() => _TheOneWithImageState();
@@ -48,161 +44,140 @@ class _TheOneWithImageState extends State<TheOneWithImage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          height: 210.h,
-          width: double.maxFinite,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Colors.black,
-                Colors.transparent,
-                Colors.transparent,
-                Colors.black,
-              ],
-              stops: [
-                0.07,
-                0.5,
-                0.77,
-                1.0,
-              ],
+    return Consumer(builder: (context, ref, child) {
+      final mainPictureUrl = ref.watch(activityProvider).gym?.mainPictureUrl;
+      final name = ref.watch(activityProvider).gym?.name;
+      final address = ref.watch(activityProvider).gym?.address;
+      return Stack(
+        children: [
+          SizedBox(
+            height: 210.h,
+            width: double.maxFinite,
+            child: CachedNetworkImage(
+              imageUrl: "http://77.222.53.122/image/$mainPictureUrl",
+              errorWidget: (context, url, error) {
+                return Image.asset(
+                  "assets/images/avatar.png",
+                  fit: BoxFit.cover,
+                );
+              },
+              fit: BoxFit.cover,
             ),
           ),
-          child: CachedNetworkImage(
-            imageUrl:
-                "http://77.222.53.122/image/${widget.state.gym?.mainPictureUrl}",
-            errorWidget: (context, url, error) {
-              return Image.asset(
-                "assets/images/avatar.png",
-                fit: BoxFit.cover,
-              );
+          GestureDetector(
+            onTap: (){
+              if (mainPictureUrl != null && mainPictureUrl.isNotEmpty) {
+                context.pushRoute(PhotoViewRoute(photos: [mainPictureUrl], index: 0));
+              }
             },
-            fit: BoxFit.cover,
-          ),
-        ),
-        Align(
-          alignment: Alignment.topLeft,
-          child: Padding(
-            padding: EdgeInsets.only(top: 15.h, left: 15.w, right: 15.w),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // back icon
-                InkWell(
-                  onTap: () {
-                    context.popRoute();
-                  },
-                  child: Container(
-                    width: 40.w,
-                    height: 40.h,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                    ),
-                    child: Center(
-                      child: SvgPicture.asset(
-                        "assets/svg/back_icon.svg",
-                        width: 5.w,
-                        height: 10.h,
-                      ),
-                    ),
+            child: SizedBox(
+              height: 210.h,
+              width: double.maxFinite,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black.withOpacity(0.65),
+                      Colors.transparent,
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.70),
+                    ],
+                    stops: const [
+                      0.02,
+                      0.35,
+                      0.67,
+                      1.5,
+                    ],
                   ),
                 ),
-
-                // name and description
-                10.horizontalSpace,
-                SizedBox(
-                  //color: Colors.red,
-                  width: 246.w,
-                  child: CustomText(
-                    color: Colors.white,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    fontSize: 19.sp,
-                    fontWeight: FontWeight.w600,
-                    //text: "Top DOG Fight Club",
-                    text: widget.state.gym?.name ?? "",
-                  ),
-                ),
-                10.horizontalSpace,
-                UiDropDownMenu(
-                  dropDownItemsList: [
-                    {
-                      'title': 'Сообщить об ошибке на странице',
-                      'icon': SvgPicture.asset(
-                        "assets/svg/complaint.svg",
-                        height: 18.h,
-                        width: 18.w,
-                      ),
-                      'action': () => {showPopUp(true, context)}
-                    },
-                    {
-                      'title': 'Пожаловаться на неприемлемый контент',
-                      'icon': SvgPicture.asset(
-                        "assets/svg/complaint.svg",
-                        colorFilter: const ColorFilter.mode(
-                          Colors.red,
-                          BlendMode.srcIn,
-                        ),
-                        height: 18.h,
-                        width: 18.w,
-                      ),
-                      'action': () => {showPopUp(false, context)}
-                    }
-                  ],
-                  customOffset: [-30.0.w, -30.0.h],
-                  width: 317.w,
-                  maxWidth: 317.w,
-                  dropDownChild: Container(
-                    //color: Colors.red,
-                    width: 37.w,
-                    height: 37.h,
-                    padding: EdgeInsets.only(
-                        top: 7.h, right: 7.w, left: 6.w, bottom: 6.h),
-                    child: Icon(
-                      Icons.more_vert,
-                      color: Colors.white,
-                      size: 25.r,
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
-        ),
-        Positioned.fill(
-          child: Align(
-            alignment: Alignment.bottomCenter,
+          Align(
+            alignment: Alignment.topLeft,
             child: Padding(
-              padding: EdgeInsets.only(left: 15.w, bottom: 15.h),
+              padding: EdgeInsets.only(top: 15.h, left: 15.w, right: 15.w),
               child: Row(
-                //crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    width: 24.w,
-                    height: 24.h,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6.r),
-                        color: AppColors.blueColor),
-                    padding: EdgeInsets.all(3.r),
-                    child: SvgPicture.asset(
-                      "assets/svg/location.svg",
-                      fit: BoxFit.cover,
-                      // ignore: deprecated_member_use
-                      color: Colors.white,
+                  // back icon
+                  GestureDetector(
+                    onTap: () {
+                      context.popRoute();
+                    },
+                    child: Container(
+                      width: 40.w,
+                      height: 40.h,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+                      child: Center(
+                        child: SvgPicture.asset(
+                          "assets/svg/back_icon.svg",
+                          width: 5.w,
+                          height: 10.h,
+                        ),
+                      ),
                     ),
                   ),
-                  7.horizontalSpace,
-                  Flexible(
-                    child: SizedBox(
-                      child: CustomText(
+
+                  // name and description
+                  10.horizontalSpace,
+                  SizedBox(
+                    //color: Colors.red,
+                    width: 246.w,
+                    child: CustomText(
+                      color: Colors.white,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      fontSize: 19.sp,
+                      fontWeight: FontWeight.w600,
+                      //text: "Top DOG Fight Club",
+                      text: name ?? "",
+                    ),
+                  ),
+                  10.horizontalSpace,
+                  UiDropDownMenu(
+                    dropDownItemsList: [
+                      {
+                        'title': 'Сообщить об ошибке на странице',
+                        'icon': SvgPicture.asset(
+                          "assets/svg/complaint.svg",
+                          height: 18.h,
+                          width: 18.w,
+                        ),
+                        'action': () => {showPopUp(true, context)}
+                      },
+                      {
+                        'title': 'Пожаловаться на неприемлемый контент',
+                        'icon': SvgPicture.asset(
+                          "assets/svg/complaint.svg",
+                          colorFilter: const ColorFilter.mode(
+                            Colors.red,
+                            BlendMode.srcIn,
+                          ),
+                          height: 18.h,
+                          width: 18.w,
+                        ),
+                        'action': () => {showPopUp(false, context)}
+                      }
+                    ],
+                    customOffset: [-30.0.w, -30.0.h],
+                    width: 317.w,
+                    maxWidth: 317.w,
+                    dropDownChild: Container(
+                      //color: Colors.red,
+                      width: 37.w,
+                      height: 37.h,
+                      padding: EdgeInsets.only(
+                          top: 7.h, right: 7.w, left: 6.w, bottom: 6.h),
+                      child: Icon(
+                        Icons.more_vert,
                         color: Colors.white,
-                        text: widget.state.gym?.address ?? "",
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14.sp,
+                        size: 25.r,
                       ),
                     ),
                   ),
@@ -210,9 +185,47 @@ class _TheOneWithImageState extends State<TheOneWithImage> {
               ),
             ),
           ),
-        ),
-      ],
-    );
+          Positioned.fill(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: EdgeInsets.only(left: 15.w, bottom: 15.h),
+                child: Row(
+                  //crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 24.w,
+                      height: 24.h,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6.r),
+                          color: AppColors.blueColor),
+                      padding: EdgeInsets.all(3.r),
+                      child: SvgPicture.asset(
+                        "assets/svg/location.svg",
+                        fit: BoxFit.cover,
+                        // ignore: deprecated_member_use
+                        color: Colors.white,
+                      ),
+                    ),
+                    7.horizontalSpace,
+                    Flexible(
+                      child: SizedBox(
+                        child: CustomText(
+                          color: Colors.white,
+                          text: address ?? "",
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14.sp,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    });
   }
 }
 
@@ -293,17 +306,6 @@ void showPopUp(bool isFirstOne, BuildContext context) {
                         counterStyle: const TextStyle(
                           height: double.minPositive,
                         ),
-                        onTap: () {
-                          if (!focusNode.hasFocus) {
-                            focusNode.requestFocus();
-                            setstate(() {});
-                          }
-                        },
-                        onTapOutside: (onTapOutside) {
-                          if (focusNode.hasFocus) {
-                            focusNode.unfocus();
-                          }
-                        },
                         style: GoogleFonts.raleway(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,

@@ -1,6 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
+import 'dart:convert';
 import 'package:activity/application/activity/activity_state.dart';
+import 'package:activity/application/schedule/schedule_notifier.dart';
+import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/activity.dart';
+import 'package:activity/infrastructure/local_notifications/notification_service.dart';
 import 'package:activity/infrastructure/models/data/description_and_peculiarities.dart';
 import 'package:activity/infrastructure/models/data/lesson.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
@@ -9,11 +13,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class ActivityNotifier extends StateNotifier<ActivityState> {
-  ActivityNotifier(this._activityRepositoryInterface)
+  ActivityNotifier(this._activityRepositoryInterface, this.scheduleNotifier)
       : super(const ActivityState());
   final ActivityRepositoryInterface _activityRepositoryInterface;
+  final ScheduleNotifier scheduleNotifier;
 
   Future<void> getGymInfo(BuildContext context, {required int gymId}) async {
     final connected = await AppConnectivity().connectivity();
@@ -28,9 +34,10 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
             isGymLoading: false,
           );
         },
-        failure: (error, statusCode) {
+        failure: (error, statusCode, operationInfo) {
           state = state.copyWith(isGymLoading: false);
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {
@@ -38,7 +45,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
-  Future<void> getActivityTypes(BuildContext context,
+  Future<void> getActivityTypes(BuildContext context, bool selectFirst,
       {required int gymId}) async {
     await Future.delayed(const Duration(milliseconds: 10));
     final connected = await AppConnectivity().connectivity();
@@ -52,14 +59,16 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
             state = state.copyWith(
               activityTypes: data.object,
               isActivitiesListLoading: false,
-              selectedActivity:
-                  data.object![0], // first item as selected activity by default
             );
+            if (selectFirst) {
+              state = state.copyWith(selectedActivity: data.object!.first);
+            }
           }
         },
-        failure: (error, statusCode) {
+        failure: (error, statusCode, operationInfo) {
           state = state.copyWith(isActivitiesListLoading: false);
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {
@@ -83,9 +92,10 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
             );
           }
         },
-        failure: (error, statusCode) {
+        failure: (error, statusCode, operationInfo) {
           state = state.copyWith(isPhotosLoading: false);
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {
@@ -104,8 +114,9 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
             state = state.copyWith(infosForType: data["object"]);
           }
         },
-        failure: (error, statusCode) {
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {
@@ -235,9 +246,10 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
             );
           }
         },
-        failure: (error, statusCode) {
+        failure: (error, statusCode, operationInfo) {
           state = state.copyWith(isSchedulesLoading: false);
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {
@@ -245,7 +257,8 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
-  void getLessonsOfSelectedActivity(String selectedActivity) {
+  Future<void> getLessonsOfSelectedActivity(
+      String selectedActivity, bool selectADefaultDay) async {
     final Map<String, dynamic> allLessons = state.allLessons;
     final String selectedActivity =
         state.selectedActivity ?? "no activity selected";
@@ -255,32 +268,49 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     for (var key in keys) {
       allLessons[key].forEach((el) {
         if (el["lessonType"] == selectedActivity) {
-          final lesson = Lesson(
-            id: el["id"],
-            date: el["date"],
-            calendarDate: formatOriginalToCalendar(el["date"]),
-            startTime: returnOnlyTime(el["date"]),
-            endTime: getEndingTime(returnOnlyTime(el["date"]), el["duration"]),
-            description: el["description"],
-            duration: formatDuration(el["duration"]),
-            lessonType: el["lessonType"],
-            owner: el["owner"] != null ? Owner.fromJson(el["owner"]) : null,
-            repeat: el["repeat"].cast<int>(),
-            canSignUp: el["canSignUp"],
-            lessonState: el["lessonState"],
-          );
-          listToCollectLessons.add(lesson);
-          if (!listToColllectDays.contains(lesson.calendarDate)) {
-            listToColllectDays.add(lesson.calendarDate ?? "");
+          try {
+            final DateTime startTime =
+                DateTime.parse(el["date"].toString().replaceAll("@", " "));
+            final lesson = Lesson(
+              id: el["id"],
+              date: el["date"],
+              calendarDate: formatOriginalToCalendar(el["date"]),
+              startTime: returnOnlyTime(el["date"]),
+              endTime:
+                  getEndingTime(returnOnlyTime(el["date"]), el["duration"]),
+              description: el["description"],
+              duration: formatDuration(el["duration"]),
+              lessonType: el["lessonType"],
+              owner: el["owner"] != null ? Owner.fromJson(el["owner"]) : null,
+              repeat: el["repeat"].cast<int>(),
+              canSignUp: el["canSignUp"],
+              lessonState: el["lessonState"] ?? false,
+              showInCalendar: DateTime.now()
+                  .isBefore(startTime.subtract(const Duration(minutes: 30))),
+              isDeleted: el["isDeleted"] ?? false,
+            );
+            if (lesson.showInCalendar! &&
+                !lesson.isDeleted! &&
+                lesson.canSignUp!) {
+              listToCollectLessons.add(lesson);
+              if (!listToColllectDays.contains(lesson.calendarDate)) {
+                listToColllectDays.add(lesson.calendarDate ?? "");
+              }
+            }
+          } catch (e) {
+            throw e;
           }
         }
       });
     }
-
-    for (var element in listToColllectDays) {
-      if (state.listOf15CalendarDaysFromNow.contains(element)) {
-        state = state.copyWith(selectedCalendarDay: element);
-        break;
+    // makimg first day that is in state.listOf15CalendarDaysFromNow
+    // as selected day
+    if (selectADefaultDay) {
+      for (var element in listToColllectDays) {
+        if (state.listOf15CalendarDaysFromNow.contains(element)) {
+          state = state.copyWith(selectedCalendarDay: element);
+          break; // stop the loop
+        }
       }
     }
 
@@ -289,6 +319,66 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       daysInWhichWeHaveLessons: listToColllectDays,
     );
     getLessonsToShowAfterSelectingADay(state.selectedCalendarDay ?? "");
+  }
+
+  void handleWebSocket(WebSocketChannel channel, BuildContext context) {
+    /// Listen for all incoming data
+    channel.stream.listen(
+      (data) async {
+        // convert the incoming data to json
+        Map<String, dynamic> lessonData = jsonDecode(data);
+        if (lessonData["lessonState"] == "CANCELED_GYM") {
+          // push notification for canceled lesson
+          LocalNotificationService().showDefaultNotification(
+            "MyFit App",
+            "Ваша заявка на ${lessonData["lessonType"]} отменена",
+          );
+        }
+        if (lessonData["lessonState"] == "CONFIRMED") {
+          final calendarDate = formatOriginalToCalendar(lessonData["date"]);
+          final startTime = returnOnlyTime(lessonData["date"]);
+          // push notification for confirmed lesson
+          LocalNotificationService().showDefaultNotification(
+            "MyFit App",
+            "Ваша заявка на ${lessonData["lessonType"]} подтверждена.Дата посещания $calendarDate в $startTime",
+          );
+        }
+        // get all lessons again && get lessons of selected activity
+        await getAllLessons(context, id: lessonData["gymId"]);
+        await getLessonsOfSelectedActivity(state.selectedActivity ?? "", false);
+        // get users schedules to show in schedule page
+        scheduleNotifier.getUsersSchedules(context);
+      },
+      onError: (error) {
+        AppHelpers.showErrorSnack(context, "WebSocket1 ${error.message}");
+        debugPrint(error.message);
+      },
+      onDone: () {
+        debugPrint("done");
+      },
+    );
+  }
+
+  void handleWebSocket2(WebSocketChannel channel, BuildContext context) {
+    /// Listen for all incoming data
+    channel.stream.listen(
+      (data) async {
+        // convert the incoming data to json
+        Map<String, dynamic> lessonData = jsonDecode(data);
+        // get all lessons again && get lessons of selected activity
+        await getAllLessons(context, id: lessonData["gymId"]);
+        await getLessonsOfSelectedActivity(state.selectedActivity ?? "", false);
+        // get users schedules to show in schedule page
+        scheduleNotifier.getUsersSchedules(context);
+      },
+      onError: (error) {
+        AppHelpers.showErrorSnack(context, "WebSocket2 ${error.message}");
+        debugPrint(error.message);
+      },
+      onDone: () {
+        debugPrint("done");
+      },
+    );
   }
 
   Future<void> setSelectedCalendarDay(String calendarDate) async {
@@ -303,6 +393,10 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         listToCollectLessons.add(lesson);
       }
     }
+    // sort the list by startTime
+    listToCollectLessons.sort((a, b) =>
+        int.parse(a.startTime!.replaceAll(":", ""))
+            .compareTo(int.parse(b.startTime!.replaceAll(":", ""))));
     state =
         state.copyWith(lessonsToShowAfterSelectingADay: listToCollectLessons);
   }
@@ -314,13 +408,13 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   String formatDuration(String time) {
     final parts = time.split(':');
     if (parts.length != 2) {
-      throw const FormatException('Неверный формат времени');
+      throw const FormatException();
     }
     final hours = int.tryParse(parts[0]);
     final minutes = int.tryParse(parts[1]);
 
     if (hours == null || minutes == null) {
-      throw const FormatException('Неверный формат времени');
+      throw const FormatException();
     }
 
     String hoursText = '';
@@ -492,14 +586,19 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   Future<void> enrollToGym(BuildContext context, int id) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
+      state = state.copyWith(isEnrollingLoading: true);
       final response = await _activityRepositoryInterface.enrollToGym(id: id);
       response.when(
         success: (data) {
           if (data["operationResult"] == "OK") {
-            //context.replaceRoute(const Main2Route());
+            state = state.copyWith(isEnrollingLoading: false);
           }
         },
-        failure: (error, statusCode) {},
+        failure: (error, statusCode, operationInfo) {
+          state = state.copyWith(isEnrollingLoading: false);
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
+        },
       );
     } else {
       AppHelpers.showCheckTopSnackBar(context);

@@ -14,10 +14,12 @@ import 'package:flutter_svg/svg.dart';
 class PopUpMap extends StatelessWidget {
   final String name;
   final String address;
-  void Function()? onTap;
+  void Function()? onNavigate;
+  void Function()? onCancel;
   PopUpMap({
     super.key,
-    this.onTap,
+    this.onNavigate,
+    this.onCancel,
     required this.name,
     required this.address,
   });
@@ -49,39 +51,38 @@ class PopUpMap extends StatelessWidget {
                   ),
                 ),
                 10.horizontalSpace,
-                Expanded(
-                  child: SizedBox(
-                    //color: Colors.red,
-                    height: 26.h,
-                    child: Consumer(
-                      builder: (context, ref, child) {
-                        final activityState = ref.watch(activityProvider);
-                        //final activityEvent = ref.read(activityProvider.notifier);
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: activityState.activityTypes?.length,
-                          itemBuilder: (context, index) {
-                            final name = activityState.activityTypes?[index];
-                            return Container(
-                              margin: EdgeInsets.only(right: 10.w),
-                              width: 24.w,
-                              height: 24.h,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(6.r),
-                                color: AppColors.backgroundColor,
-                              ),
-                              child: SvgPicture.asset(
-                                AppHelpers().getIconSvg(name!).isEmpty
-                                    ? "assets/svg/gym.svg"
-                                    : AppHelpers().getIconSvg(name),
-                                height: 15.h,
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
+                Container(
+                  alignment: Alignment.centerRight,
+                  //color: Colors.red,
+                  height: 26.h,
+                  child: Consumer(
+                    builder: (context, ref, child) {
+                      final activityState = ref.watch(activityProvider);
+                      //final activityEvent = ref.read(activityProvider.notifier);
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: activityState.activityTypes?.length,
+                        itemBuilder: (context, index) {
+                          final name = activityState.activityTypes?[index];
+                          return Container(
+                            margin: EdgeInsets.only(right: 10.w),
+                            width: 24.w,
+                            height: 24.h,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(6.r),
+                              color: AppColors.backgroundColor,
+                            ),
+                            child: SvgPicture.asset(
+                              AppHelpers().getIconSvg(name!).isEmpty
+                                  ? "assets/svg/gym.svg"
+                                  : AppHelpers().getIconSvg(name),
+                              height: 15.h,
+                            ),
+                          );
+                        },
+                      );
+                    },
                   ),
                 ),
               ],
@@ -96,15 +97,33 @@ class PopUpMap extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
             10.verticalSpace,
-            CustomButton(
-              onPressed: onTap,
-              text: "Подробнее",
-              width: double.maxFinite,
-              buttonColor: AppColors.blueColor,
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w500,
-              textColor: Colors.white,
-              height: 40.h,
+            Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: CustomButton(
+                    onPressed: onCancel,
+                    text: "Скрыть",
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                    textColor: Colors.black,
+                    height: 40.h,
+                  ),
+                ),
+                5.horizontalSpace,
+                Expanded(
+                  flex: 7,
+                  child: CustomButton(
+                    onPressed: onNavigate,
+                    text: "Подробнее",
+                    buttonColor: AppColors.blueColor,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                    textColor: Colors.white,
+                    height: 40.h,
+                  ),
+                ),
+              ],
             ),
           ],
         ),

@@ -4,7 +4,6 @@ import 'dart:async';
 
 import 'package:activity/application/registration/registration_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/inter_text.dart';
@@ -48,7 +47,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
     if (code == userCode) {
       isPinCodeValidate = true;
       ref.read(registrationProvider.notifier).sendCodeConfirmation(
-            LocalStorage.getPhoneNumber(),
+            ref.read(registrationProvider).phoneNumber,
             code,
             context,
           );

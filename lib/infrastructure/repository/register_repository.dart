@@ -8,8 +8,7 @@ import 'package:activity/infrastructure/services/app_constants.dart';
 
 class RegisterRepository implements RegisterRepositoryInterface {
   @override
-  Future<ApiResult<Map<String, dynamic>>> sendPhoneNumber(
-      String phoneNumber) async {
+  Future<ApiResult<Map<String,dynamic>>> sendPhoneNumber(String phoneNumber) async {
     try {
       final client = inject<HttpService>().clientDio();
       final dataToSend = {"login": phoneNumber};
@@ -17,13 +16,11 @@ class RegisterRepository implements RegisterRepositoryInterface {
         AppConstants.sendPhoneNumber,
         data: dataToSend,
       );
-      return ApiResult.success(
-        data: response.data,
-      );
-    } catch (e) {
+      return ApiResult.success(data: response.data);
+    } catch (error) {
       return ApiResult.failure(
-        error: NetworkExceptions.getDioException(e),
-        statusCode: NetworkExceptions.getDioStatus(e),
+        error: NetworkExceptions.getDioException(error),
+        statusCode: NetworkExceptions.getDioStatus(error),
       );
     }
   }
@@ -36,6 +33,7 @@ class RegisterRepository implements RegisterRepositoryInterface {
       final dataToSend = {
         "login": phoneNumber,
         "confirmToken": code,
+        "app" : true,
       };
       final response = await client.post(
         AppConstants.sendCodeConfirmation,
@@ -44,8 +42,7 @@ class RegisterRepository implements RegisterRepositoryInterface {
       return ApiResult.success(
         data: AuthResponse.fromJson(response.data["object"]),
       );
-    } catch (e) {
-      //throw e;
+    } catch (e) {      
       return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),

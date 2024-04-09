@@ -1,4 +1,3 @@
-import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,9 +14,10 @@ class Main2Map extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tabsRouter = AutoTabsRouter.of(context);
     return GestureDetector(
       onTap: () {
-        context.router.push(MapRoute(showOnlyKnown: false));
+        tabsRouter.setActiveIndex(2);
       },
       child: Container(
         height: 147.w,

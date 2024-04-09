@@ -7,9 +7,9 @@ part 'activity_state.freezed.dart';
 @freezed
 class ActivityState with _$ActivityState {
   const factory ActivityState({
-    @Default(false) bool isloading,
     @Default(false) bool isGymLoading,
     @Default(false) bool isActivitiesListLoading,
+    @Default(false) bool isEnrollingLoading,
     @Default(false) bool isPhotosLoading,
     @Default(false) bool isSchedulesLoading,
     @Default(false) bool infoForTypeLoading,

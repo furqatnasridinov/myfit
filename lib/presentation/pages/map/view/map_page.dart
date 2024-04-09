@@ -1,10 +1,12 @@
 // ignore_for_file: must_be_immutable
-
 import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_card.dart';
+import 'package:activity/presentation/pages/map/widget/pop_up_map.dart';
+import 'package:activity/presentation/pages/schedule/widget/widget.dart';
+import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,8 +18,7 @@ import '../widget/widget.dart';
 
 @RoutePage()
 class MapScreen extends ConsumerStatefulWidget {
-  final bool showOnlyKnown;
-  const MapScreen(this.showOnlyKnown, {super.key});
+  const MapScreen( {super.key});
 
   @override
   ConsumerState<MapScreen> createState() => _MapScreenState();
@@ -51,7 +52,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.paused) {
-      if (ref.watch(mapProvider).locationPermissionIsNOtGiven) {
+      if (ref.watch(mapProvider).locationPermissionDenied) {
         _checkLocationPermission();
       }
     }
@@ -111,9 +112,9 @@ class _MapScreenState extends ConsumerState<MapScreen>
       },
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        appBar: MapHeader(
-          event: event,
-          state: state,
+        appBar: const ScheduleHeader(
+          showNavigationButton: false,
+          showBackButton: false,
         ),
         body: Column(
           children: [
@@ -173,7 +174,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                               (state.activitiesWithGymsInsideFromSelectedDiapozone
                                           .length >
                                       2 ||
-                                  state.locationPermissionIsNOtGiven) &&
+                                  state.locationPermissionDenied) &&
                               !state.showMapOnly
                           ? const [
                               BoxShadow(
@@ -205,16 +206,14 @@ class _MapScreenState extends ConsumerState<MapScreen>
                         //setState(() {});
                         if (state.userPosition == null) {
                           await event.getUserLocation();
-                          if (state.locationServiceIsNotEnabled ||
-                              state.locationPermissionIsNOtGiven) {
-                            await event.setLocationFromSelectedCity();
-                          }
+                          // if permissions not granted
+                          await event.setLocationFromSelectedCity();
                         }
                         event.setInitialCameraPosition(
                           controller: yandexMapController!,
                         );
                         // ignore: use_build_context_synchronously
-                        await event.getGymsList(context, widget.showOnlyKnown);
+                        await event.getGymsList(context);
                         await event.getGetListOfGymsFromDiapozone();
                         await event.setFlexes();
                         await event.getAllMarkers();
@@ -235,14 +234,18 @@ class _MapScreenState extends ConsumerState<MapScreen>
                                     );
                               },
                             ),
-
-                      //
-                      onCameraPositionChanged:
+                     /*  onCameraPositionChanged:
                           (cameraPosition, reason, finished) {
-                        if (reason == CameraUpdateReason.gestures) {
+                        if (state.isGymsPopupShown &&
+                            reason == CameraUpdateReason.gestures) {
                           event.removePopUp();
+                          event.showLocationButton();
                         }
-                      },
+                        // when stops moving show pop up
+                        if (finished) {
+                          event.showPopUpOnMap(context);
+                        }
+                      }, */
                       logoAlignment: const MapAlignment(
                         horizontal: HorizontalAlignment.left,
                         vertical: VerticalAlignment.bottom,
@@ -298,9 +301,9 @@ class _MapScreenState extends ConsumerState<MapScreen>
                   ),
                   Positioned(
                     right: 0.w,
-                    bottom: state.isLocationIconHidden ? 145.h : 10.h,
+                    bottom: state.isLocationIconHidden ? 155.h : 10.h,
                     child: Padding(
-                      padding: EdgeInsets.only(right: 10.w, bottom: 10.h),
+                      padding: EdgeInsets.only(right: 10.w),
                       child: InkWell(
                         onTap: () {
                           event.locationButtonFunction(yandexMapController);
@@ -313,17 +316,40 @@ class _MapScreenState extends ConsumerState<MapScreen>
                           child: SvgPicture.asset(
                             "assets/svg/location_icon.svg",
                             fit: BoxFit.scaleDown,
-                            //height: 24.h,
                           ),
                         ),
                       ),
                     ),
                   ),
+
+                  // here we shop bottom card of gyms
+                  if (state.isGymsPopupShown)
+                    Positioned(
+                      bottom: 0,
+                      child: PopUpMap(
+                        name: state.activeMarker?.name ?? "??",
+                        address: state.activeMarker?.address ?? "??",
+                        onNavigate: () {
+                          //event.removePopUp();
+                          event.showLocationButton();
+                          context.router.push(
+                            ActivityRoute(gymId: state.activeMarker?.id ?? 0),
+                          );
+                        },
+                        onCancel: (){
+                          event.removePopUp();
+                          event.showLocationButton();
+                        },
+                      ),
+                    ),
                 ],
               ),
             ),
           ],
         ),
+        /* bottomNavigationBar: state.isGymsPopupShown
+            ? const SizedBox.shrink()
+            : const CustomBottomNavigation(), */
       ),
     );
   }

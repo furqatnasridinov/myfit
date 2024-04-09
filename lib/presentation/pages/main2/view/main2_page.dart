@@ -1,17 +1,22 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
+import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/application/main2/main2_provider.dart';
 import 'package:activity/application/map/map_provider.dart';
+import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/pages/main2/widget/main2_header.dart';
 import 'package:activity/presentation/pages/main2/widget/widget.dart';
-import 'package:activity/presentation/pages/schedule/widget/bottom_scan_container.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 @RoutePage()
@@ -24,15 +29,16 @@ class Main2Screen extends ConsumerStatefulWidget {
 
 class _LoginScreen extends ConsumerState<Main2Screen> {
   final mapControllerCompleter = Completer<YandexMapController>();
-  late TextEditingController controller;
-  late LayerLink layerlink;
+  late final WebSocketChannel channel;
+  late RefreshController refreshController = RefreshController();
 
   @override
   void initState() {
-    controller = TextEditingController();
-    layerlink = LayerLink();
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(settingsProvider.notifier)
+        ..requestNotificationPermissions()
+        ..setUserInfos();
       ref.read(mapProvider.notifier).getUserLocation().then((value) {
         ref.read(mapProvider.notifier).getYandexMapImage(
               context,
@@ -41,37 +47,50 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
       ref.read(main2Provider.notifier)
         ..getNearestLesson(context)
         ..getUserStatsMonth(context);
-      //NotificationService().showActiveNotification();
+
+      // web socket for updating lesson states
+      channel = IOWebSocketChannel.connect(
+          Uri.parse(
+              "ws://77.222.53.122:8080/appSchedulePanel/${LocalStorage.getUserId()}"),
+          headers: {'Authorization': 'Bearer ${LocalStorage.getToken()}'});
+      ref.read(activityProvider.notifier).handleWebSocket(channel, context);
     });
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    refreshController.dispose();
+    channel.sink.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(main2Provider);
+    final nearestLesson = ref.watch(main2Provider).nearestLesson;
     final event = ref.read(main2Provider.notifier);
-    if (controller.text.isEmpty && state.schedulesFoundBySearching.isNotEmpty) {
-      event.cleanSearchList();
-    }
 
+    debugPrint("user id ${LocalStorage.getUserId()}");
     debugPrint("token ${LocalStorage.getToken()}");
     //LocalStorage.removeToken();
-    return PopScope(
-      //canPop: false,
-      child: Scaffold(
-        backgroundColor: AppColors.backgroundColor,
-        extendBodyBehindAppBar: true,
-        appBar: Main2Header(
-          state: state,
-          event: event,
-          controller: controller,
+    return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
+      extendBodyBehindAppBar: true,
+      appBar: const Main2Header(
+        showBackButton: false,
+        canNavigateToSettings: true,
+      ),
+      body: SmartRefresher(
+        controller: refreshController,
+        header: const WaterDropMaterialHeader(
+          backgroundColor: Colors.white,
+          color: AppColors.blueColor,
         ),
-        body: SafeArea(
+        onRefresh: () async {
+          await ref.read(main2Provider.notifier).getNearestLesson(context);
+          await ref.read(main2Provider.notifier).getUserStatsMonth(context);
+          refreshController.refreshCompleted();
+        },
+        child: SafeArea(
           bottom: false,
           child: Stack(
             children: [
@@ -99,17 +118,16 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
                       child: FirstTwoCards(
-                        state: state,
                         event: event,
                       ),
                     ),
                     32.verticalSpace,
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: state.nearestLesson == null
+                      child: nearestLesson == null
                           ? const PlaceholderComingActivity() //button "Найти себе занятие"
                           : ComingActivity(
-                              state: state,
+                              nearestLesson: nearestLesson,
                               event: event,
                             ),
                     ),
@@ -124,14 +142,15 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                     ),
                     10.verticalSpace,
                     Consumer(builder: (context, ref, child) {
-                      final mapState = ref.watch(mapProvider);
+                      final mapScreenShot =
+                          ref.watch(mapProvider).mapScreenShot;
                       return Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        child: mapState.mapScreenShot == null
+                        child: mapScreenShot == null
                             ? const Main2MapPlaceHolder()
                             : Main2Map(
                                 child: Image.memory(
-                                  mapState.mapScreenShot ?? Uint8List(100),
+                                  mapScreenShot,
                                   fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) {
                                     return const Main2MapPlaceHolder();
@@ -145,28 +164,18 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                   ],
                 ),
               ),
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: state.isSearchbarOpened
-                    ? OverlayLikeMain2(
-                        state: state,
-                        event: event,
-                        controller: controller,
-                      )
-                    : const SizedBox.shrink(),
-              ),
 
               // scan bottom container
               /* const Positioned(
-                bottom: 0,
-                child: BottomScanContainer(),
-              ), */
+            bottom: 0,
+            child: BottomScanContainer(),
+          ), */
             ],
           ),
         ),
       ),
+
+      /* */
     );
   }
 }

@@ -10,26 +10,28 @@ class Description extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CustomText(
-            text: "Описание",
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-          ),
-          Consumer(builder: (context, ref, child) {
-            final state = ref.watch(activityProvider);
-            return InterText(
-              text: state.describtionAndPeculiarities?.typeDescription ?? "",
+    return Consumer(builder: (context, ref, child) {
+      final typeDescription = ref.watch(activityProvider).describtionAndPeculiarities?.typeDescription;
+      if (typeDescription == null || typeDescription == "") return const SizedBox();
+      return Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            32.verticalSpace,
+            CustomText(
+              text: "Описание",
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+            ),
+            InterText(
+              text: typeDescription,
               fontSize: 13.sp,
               fontWeight: FontWeight.w400,
-            );
-          }),
-        ],
-      ),
-    );
+            ),
+          ],
+        ),
+      );
+    });
   }
 }

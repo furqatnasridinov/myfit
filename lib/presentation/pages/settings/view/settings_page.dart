@@ -1,6 +1,7 @@
 import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/components.dart';
+import 'package:activity/presentation/pages/main2/widget/main2_header.dart';
 import 'package:activity/presentation/pages/settings/widget/widget.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref.read(settingsProvider.notifier).setUserInfos();
+      //ref.read(settingsProvider.notifier).setUserInfos();
     });
   }
 
@@ -28,9 +29,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(settingsProvider);
     final event = ref.read(settingsProvider.notifier);
+    debugPrint("image ${state.avatar}");
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: const SettingsHeader(),
+      appBar:
+          const Main2Header(showBackButton: true, canNavigateToSettings: false),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         child: Column(
@@ -38,7 +41,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           children: [
             20.verticalSpace,
             CustomText(
-              text: state.qrcodeValue!.isEmpty ? "Настройки" : state.qrcodeValue ?? "",
+              text: "Настройки",
               fontSize: 20.sp,
               fontWeight: FontWeight.w600,
             ),

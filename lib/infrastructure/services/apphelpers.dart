@@ -1,5 +1,4 @@
 import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -13,7 +12,7 @@ class AppHelpers {
       Overlay.of(context),
       const CustomSnackBar.error(
         //backgroundColor: AppColors.yellowbuttonColor,
-        message: "Check your internet connection and try again",
+        message: "Проверьте интернет соединение",
       ),
     );
   }
@@ -21,8 +20,9 @@ class AppHelpers {
   static showSnack(BuildContext context, String text) {
     return showTopSnackBar(
       Overlay.of(context),
-      CustomSnackBar.error(
+      CustomSnackBar.info(
         message: text,
+        maxLines: 3,
       ),
     );
   }
@@ -32,6 +32,7 @@ class AppHelpers {
       Overlay.of(context),
       CustomSnackBar.error(
         message: text,
+        maxLines: 3,
       ),
     );
   }
@@ -98,7 +99,8 @@ class AppHelpers {
       case "CANCELED_GYM":
         return "Отменено заведением";
       case "CANCELED_USER":
-        return "Отменено вами";
+        //return "Отменено вами";
+        return "Записаться";
       case "PROGRESS":
         return "В процессе...";
       case "COMPLETED":
@@ -119,7 +121,8 @@ class AppHelpers {
       case "CANCELED_GYM":
         return Colors.red;
       case "CANCELED_USER":
-        return Colors.red;
+        return AppColors.blueText;
+      //return Colors.red;
       case "PROGRESS":
         return Colors.green;
       case "COMPLETED":

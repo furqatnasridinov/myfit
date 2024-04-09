@@ -52,7 +52,7 @@ class User {
     lastName = json['lastName'];
     patronymic = json['patronymic'];
     gender = json['gender'];
-    backgroundPictureUrl = json['backgroundPictureUrl'];
+    backgroundPictureUrl = json['pictureUrl'];
     city = json['city'] != null ? City.fromJson(json['city']) : null;
     age = json['age'];
     weight = json['weight'];
@@ -67,7 +67,7 @@ class User {
     data['lastName'] = lastName;
     data['patronymic'] = patronymic;
     data['gender'] = gender;
-    data['backgroundPictureUrl'] = backgroundPictureUrl;
+    data['pictureUrl'] = backgroundPictureUrl;
     if (city != null) {
       data['city'] = city!.toJson();
     }

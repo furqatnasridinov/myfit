@@ -24,7 +24,7 @@ class ApplicationSettings extends StatelessWidget {
           fontSize: 16.sp,
           fontWeight: FontWeight.w600,
         ),
-        10.verticalSpace,
+       /*  10.verticalSpace,
         eachBlock(
           "assets/svg/notification.svg",
           "Уведомления",
@@ -74,6 +74,12 @@ class ApplicationSettings extends StatelessWidget {
               ),
             ],
           ),
+        ), */
+        10.verticalSpace,
+        eachBlock(
+          "assets/svg/call_us.svg",
+          "Связь с разработчиками",
+          () {},
         ),
         10.verticalSpace,
         eachBlock(

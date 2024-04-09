@@ -20,7 +20,10 @@ class MySubscribtion extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
             EditButton(
-              onTap: () {},
+              onTap: () {
+                /* NotificationService().showDefaultNotification("Myfit App",
+                    "You have clicked on edit button in MySubscribtion widget."); */
+              },
             ),
           ],
         ),

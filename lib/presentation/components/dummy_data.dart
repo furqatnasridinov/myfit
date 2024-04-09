@@ -23,4 +23,6 @@ class DummyData {
       destination: "1,2км от вас",
     ),
   ];
+
+
 }

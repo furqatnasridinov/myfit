@@ -35,7 +35,7 @@ class EnableLocationPermission extends StatelessWidget {
               TextSpan(
                 recognizer: TapGestureRecognizer()
                   ..onTap = () async {
-                    if (state.locationPermissionIsNOtGiven) {
+                    if (state.locationPermissionDenied) {
                       await Geolocator.openAppSettings();
                     }
                     if(state.locationServiceIsNotEnabled){

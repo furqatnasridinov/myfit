@@ -1,13 +1,11 @@
 import 'dart:math';
+import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/application/schedule/schedule_state.dart';
-import 'package:activity/application/settings/settings_provider.dart';
-import 'package:activity/infrastructure/models/request/rate_request.dart';
 import 'package:activity/infrastructure/models/response/user_schedules_response.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
-import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/inter_text.dart';
@@ -44,9 +42,6 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
         ..getTwoWeekDays()
         ..getCompletedSchedules(context);
       // getting reminders from local storage to state
-      ref.read(settingsProvider.notifier)
-        ..setNotificationTime(LocalStorage.getReminderTime())
-        ..getReminderDisabledOrEnabled();
     });
   }
 
@@ -56,8 +51,9 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: ScheduleHeader(
-        event: event,
+      appBar: const ScheduleHeader(
+        showNavigationButton: true,
+        showBackButton: false,
       ),
       body: SafeArea(
         bottom: false,
@@ -77,10 +73,17 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
 
                   // Прошедшие занятия
                   SliverPadding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w)
-                        .copyWith(top: 16.h),
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
                     sliver: const SliverToBoxAdapter(
                       child: CompletedSchedules(),
+                    ),
+                  ),
+
+                  // В ожидании подтверждения
+                  SliverPadding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    sliver: const SliverToBoxAdapter(
+                      child: PendingSchedules(),
                     ),
                   ),
 
@@ -90,77 +93,66 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
                         .copyWith(top: 16.h),
                     sliver: Consumer(builder: (context, ref, child) {
                       final state = ref.watch(scheduleProvider);
-                      if (!state.isloading &&
-                          state.daysFromLastWeek.isNotEmpty) {
-                        return SliverList.builder(
-                          itemCount: state.daysFromLastWeek.length,
-                          itemBuilder: (context, index) {
-                            final date = state.daysFromLastWeek[index];
-                            final now = DateTime.now();
-                            final todayWith00Hours = DateTime(
-                              now.year,
-                              now.month,
-                              now.day,
-                            ); // today in this format => (2024-01-07 00:00:00)
-                            final scheduleDate = DateTime.parse(date);
-                            final formattedDay = event.formatDay(date);
-                            final formattedDayOfWeek =
-                                event.determineWeekday(date);
+                      return SliverList.builder(
+                        itemCount: state.daysFromLastWeek.length,
+                        itemBuilder: (context, index) {
+                          final date = state.daysFromLastWeek[index];
+                          final now = DateTime.now();
+                          final todayWith00Hours = DateTime(
+                            now.year,
+                            now.month,
+                            now.day,
+                          ); // today in this format => (2024-01-07 00:00:00)
+                          final scheduleDate = DateTime.parse(date);
+                          final formattedDay = event.formatDay(date);
+                          final formattedDayOfWeek =
+                              event.determineWeekday(date);
 
-                            // Проверка, является ли день текущим или будущим
-                            bool isTodayOrFuture = scheduleDate
-                                    .isAfter(todayWith00Hours) ||
-                                scheduleDate.isAtSameMomentAs(todayWith00Hours);
+                          // Проверка, является ли день текущим или будущим
+                          bool isTodayOrFuture = scheduleDate
+                                  .isAfter(todayWith00Hours) ||
+                              scheduleDate.isAtSameMomentAs(todayWith00Hours);
 
-                            // Находим, есть ли расписание на этот день
-                            UserSchedulesResponse? scheduleForDay;
-                            for (var schedule in state.listOfuserSchedules) {
-                              if (schedule.calendarDate == date) {
-                                scheduleForDay = schedule;
-                                break;
-                              }
+                          // Находим, есть ли расписание на этот день
+                          UserSchedulesResponse? scheduleForDay;
+                          for (var schedule in state.listOfuserSchedules) {
+                            if (schedule.calendarDate == date) {
+                              scheduleForDay = schedule;
+                              break;
                             }
+                          }
 
-                            // Показываем день только если он сегодня/будущий или если есть активности в прошлом
-                            if (isTodayOrFuture ||
-                                (scheduleForDay != null &&
-                                    scheduleForDay
-                                        .listOfSchedules!.isNotEmpty)) {
-                              // Если расписание найдено, показываем itemListBuilder,
-                              // иначе daysWithNoSchedule
-                              if (scheduleForDay != null) {
-                                return itemListBuilder(
-                                    context,
-                                    formattedDayOfWeek,
-                                    formattedDay,
-                                    date,
-                                    scheduleForDay.listOfSchedules ?? [],
-                                    event,
-                                    todayWith00Hours,
-                                    scheduleForDay.isPlusStateTriggered);
-                              } else {
-                                return daysWithNoSchedule(
+                          // Показываем день только если он сегодня/будущий или если есть активности в прошлом
+                          if (isTodayOrFuture ||
+                              (scheduleForDay != null &&
+                                  scheduleForDay.listOfSchedules!.isNotEmpty)) {
+                            // Если расписание найдено, показываем itemListBuilder,
+                            // иначе daysWithNoSchedule
+                            if (scheduleForDay != null) {
+                              return itemListBuilder(
                                   context,
                                   formattedDayOfWeek,
                                   formattedDay,
+                                  date,
+                                  scheduleForDay.listOfSchedules ?? [],
                                   event,
-                                  scheduleForDay?.isPlusStateTriggered ?? false,
-                                );
-                              }
+                                  todayWith00Hours,
+                                  scheduleForDay.isPlusStateTriggered);
                             } else {
-                              // Не отображаем виджет для дней в прошлом без активностей
-                              return const SizedBox.shrink();
+                              return daysWithNoSchedule(
+                                context,
+                                formattedDayOfWeek,
+                                formattedDay,
+                                event,
+                                scheduleForDay?.isPlusStateTriggered ?? false,
+                              );
                             }
-                          },
-                        );
-                      } else {
-                        return const SliverToBoxAdapter(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [CircularProgressIndicator()],
-                          ),
-                        );
-                      }
+                          } else {
+                            // Не отображаем виджет для дней в прошлом без активностей
+                            return const SizedBox.shrink();
+                          }
+                        },
+                      );
                     }),
                   ),
                 ],
@@ -171,6 +163,7 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
           ],
         ),
       ),
+      //bottomNavigationBar: const CustomBottomNavigation(),
     );
   }
 }
@@ -226,7 +219,7 @@ Widget itemListBuilder(
                   context,
                   event,
                   state,
-                  current.id ?? 0,
+                  current.gym?.id ?? 0,
                   current.date ?? '',
                   current.description ?? "",
                   current.duration ?? "",
@@ -282,86 +275,80 @@ Widget _plusButton(
   bool? isplusState,
 ) {
   return StatefulBuilder(builder: (context, setstate) {
-    return UiDropDownMenu(
-      width: double.maxFinite,
-      maxWidth: 255.w,
-      customOffset: [-45.0.w, -40.0.h],
-      dropDownItemsList: LocalStorage.getKnownActivities().isNotEmpty
-          ? [
-              {
-                'title': 'Найти что то новое',
-                'icon': SvgPicture.asset(
-                  "assets/svg/search.svg",
-                  colorFilter: const ColorFilter.mode(
-                    Color.fromRGBO(62, 134, 245, 1),
-                    BlendMode.srcIn,
-                  ),
-                  height: 18.h,
-                  width: 18.w,
-                ),
-                'action': () =>
-                    {context.router.push(MapRoute(showOnlyKnown: false))}
-              },
-              {
-                'title': 'Выбрать из уже знакомых занятий',
-                'icon': SvgPicture.asset(
-                  "assets/svg/copy.svg",
-                  colorFilter: const ColorFilter.mode(
-                    Color.fromRGBO(62, 134, 245, 1),
-                    BlendMode.srcIn,
-                  ),
-                  height: 18.h,
-                  width: 18.w,
-                ),
-                'action': () => {
-                      context.router.push(MapRoute(showOnlyKnown: true)),
-                    }
-              }
-            ]
-          : [
-              {
-                'title': 'Найти что то новое',
-                'icon': SvgPicture.asset(
-                  "assets/svg/search.svg",
-                  colorFilter: const ColorFilter.mode(
-                    Color.fromRGBO(62, 134, 245, 1),
-                    BlendMode.srcIn,
-                  ),
-                  height: 18.h,
-                  width: 18.w,
-                ),
-                'action': () =>
-                    {context.router.push(MapRoute(showOnlyKnown: false))}
-              }
-            ],
-      onOpenedAction: () => {
-        isplusState = true,
-        setstate(() {}),
-      },
-      onClosedAction: () => {
-        isplusState = false,
-        setstate(() {}),
-      },
-      dropDownChild: Container(
-        width: 40.w,
-        height: 40.h,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8.r),
-            border: Border.all(
-              width: 1.w,
-              color: AppColors.blueColor,
+    final tabsRouter = AutoTabsRouter.of(context);
+    return Consumer(builder: (context, ref, child) {
+      final event = ref.read(mapProvider.notifier);
+      final showOnlyKnownOnMap = ref.watch(mapProvider).showOnlyKnown;
+      return UiDropDownMenu(
+        width: double.maxFinite,
+        maxWidth: 255.w,
+        customOffset: [-45.0.w, -40.0.h],
+        dropDownItemsList: [
+          {
+            'title': 'Найти что то новое',
+            'icon': SvgPicture.asset(
+              "assets/svg/search.svg",
+              colorFilter: const ColorFilter.mode(
+                Color.fromRGBO(62, 134, 245, 1),
+                BlendMode.srcIn,
+              ),
+              height: 18.h,
+              width: 18.w,
             ),
-            color: AppColors.blueColor),
-        child: Transform.rotate(
-          angle: isplusState == true ? (45 * pi / 180) : (0 * pi / 180),
-          child: Icon(
-            Icons.add,
-            color: Colors.white,
-            size: 18.r,
+            'action': () => {context.router.push(const MapRoute())}
+          },
+          if (LocalStorage.getKnownActivities().isNotEmpty)
+            {
+              'title': 'Выбрать из уже знакомых занятий',
+              'icon': SvgPicture.asset(
+                "assets/svg/copy.svg",
+                colorFilter: const ColorFilter.mode(
+                  Color.fromRGBO(62, 134, 245, 1),
+                  BlendMode.srcIn,
+                ),
+                height: 18.h,
+                width: 18.w,
+              ),
+              'action': () => {
+                    if (showOnlyKnownOnMap) {
+                        tabsRouter.setActiveIndex(2)
+                      }else{
+                        context.router.push(const MapRoute()),
+                        event.setShowOnlyKnown(true),
+                      }
+                   
+                  }
+            }
+        ],
+        onOpenedAction: () => {
+          isplusState = true,
+          setstate(() {}),
+        },
+        onClosedAction: () => {
+          isplusState = false,
+          setstate(() {}),
+        },
+        dropDownChild: Container(
+          width: 40.w,
+          height: 40.h,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.r),
+              border: Border.all(
+                width: 1.w,
+                color: AppColors.blueColor,
+              ),
+              color: AppColors.blueColor),
+          child: Transform.rotate(
+            angle: isplusState == true ? (45 * pi / 180) : (0 * pi / 180),
+            child: Icon(
+              Icons.add,
+              color: Colors.white,
+              size: 18.r,
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   });
 }
 
@@ -369,7 +356,7 @@ Widget listOfActivitiesEachItem(
   BuildContext context,
   ScheduleNotifier event,
   final ScheduleState state,
-  final int id,
+  final int gymId,
   final String time,
   final String description,
   final String duration,
@@ -447,9 +434,9 @@ Widget listOfActivitiesEachItem(
                             gymName: name,
                           ),
                         ),
-                        event: event,
-                        id: id,
-                        startingTimeInDateTime: timeFromServerCastedToDateTime,
+                        onTap2: () => context.router.push(
+                          ActivityRoute(gymId: gymId),
+                        ),
                       ),
                     ],
                   ),

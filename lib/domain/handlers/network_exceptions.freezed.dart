@@ -27,7 +27,7 @@ mixin _$NetworkExceptions {
     required TResult Function() requestTimeout,
     required TResult Function() sendTimeout,
     required TResult Function() conflict,
-    required TResult Function() internalServerError,
+    required TResult Function(String? error) internalServerError,
     required TResult Function() notImplemented,
     required TResult Function() serviceUnavailable,
     required TResult Function() noInternetConnection,
@@ -35,6 +35,8 @@ mixin _$NetworkExceptions {
     required TResult Function() unableToProcess,
     required TResult Function(String error) defaultError,
     required TResult Function() unexpectedError,
+    required TResult Function() receiveTimeout,
+    required TResult Function(String reason) unknown,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -48,7 +50,7 @@ mixin _$NetworkExceptions {
     TResult? Function()? requestTimeout,
     TResult? Function()? sendTimeout,
     TResult? Function()? conflict,
-    TResult? Function()? internalServerError,
+    TResult? Function(String? error)? internalServerError,
     TResult? Function()? notImplemented,
     TResult? Function()? serviceUnavailable,
     TResult? Function()? noInternetConnection,
@@ -56,6 +58,8 @@ mixin _$NetworkExceptions {
     TResult? Function()? unableToProcess,
     TResult? Function(String error)? defaultError,
     TResult? Function()? unexpectedError,
+    TResult? Function()? receiveTimeout,
+    TResult? Function(String reason)? unknown,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -69,7 +73,7 @@ mixin _$NetworkExceptions {
     TResult Function()? requestTimeout,
     TResult Function()? sendTimeout,
     TResult Function()? conflict,
-    TResult Function()? internalServerError,
+    TResult Function(String? error)? internalServerError,
     TResult Function()? notImplemented,
     TResult Function()? serviceUnavailable,
     TResult Function()? noInternetConnection,
@@ -77,6 +81,8 @@ mixin _$NetworkExceptions {
     TResult Function()? unableToProcess,
     TResult Function(String error)? defaultError,
     TResult Function()? unexpectedError,
+    TResult Function()? receiveTimeout,
+    TResult Function(String reason)? unknown,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -99,6 +105,8 @@ mixin _$NetworkExceptions {
     required TResult Function(UnableToProcess value) unableToProcess,
     required TResult Function(DefaultError value) defaultError,
     required TResult Function(UnexpectedError value) unexpectedError,
+    required TResult Function(RecieveTimeOut value) receiveTimeout,
+    required TResult Function(Unknown value) unknown,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -120,6 +128,8 @@ mixin _$NetworkExceptions {
     TResult? Function(UnableToProcess value)? unableToProcess,
     TResult? Function(DefaultError value)? defaultError,
     TResult? Function(UnexpectedError value)? unexpectedError,
+    TResult? Function(RecieveTimeOut value)? receiveTimeout,
+    TResult? Function(Unknown value)? unknown,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -141,6 +151,8 @@ mixin _$NetworkExceptions {
     TResult Function(UnableToProcess value)? unableToProcess,
     TResult Function(DefaultError value)? defaultError,
     TResult Function(UnexpectedError value)? unexpectedError,
+    TResult Function(RecieveTimeOut value)? receiveTimeout,
+    TResult Function(Unknown value)? unknown,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -211,7 +223,7 @@ class _$RequestCancelledImpl implements RequestCancelled {
     required TResult Function() requestTimeout,
     required TResult Function() sendTimeout,
     required TResult Function() conflict,
-    required TResult Function() internalServerError,
+    required TResult Function(String? error) internalServerError,
     required TResult Function() notImplemented,
     required TResult Function() serviceUnavailable,
     required TResult Function() noInternetConnection,
@@ -219,6 +231,8 @@ class _$RequestCancelledImpl implements RequestCancelled {
     required TResult Function() unableToProcess,
     required TResult Function(String error) defaultError,
     required TResult Function() unexpectedError,
+    required TResult Function() receiveTimeout,
+    required TResult Function(String reason) unknown,
   }) {
     return requestCancelled();
   }
@@ -235,7 +249,7 @@ class _$RequestCancelledImpl implements RequestCancelled {
     TResult? Function()? requestTimeout,
     TResult? Function()? sendTimeout,
     TResult? Function()? conflict,
-    TResult? Function()? internalServerError,
+    TResult? Function(String? error)? internalServerError,
     TResult? Function()? notImplemented,
     TResult? Function()? serviceUnavailable,
     TResult? Function()? noInternetConnection,
@@ -243,6 +257,8 @@ class _$RequestCancelledImpl implements RequestCancelled {
     TResult? Function()? unableToProcess,
     TResult? Function(String error)? defaultError,
     TResult? Function()? unexpectedError,
+    TResult? Function()? receiveTimeout,
+    TResult? Function(String reason)? unknown,
   }) {
     return requestCancelled?.call();
   }
@@ -259,7 +275,7 @@ class _$RequestCancelledImpl implements RequestCancelled {
     TResult Function()? requestTimeout,
     TResult Function()? sendTimeout,
     TResult Function()? conflict,
-    TResult Function()? internalServerError,
+    TResult Function(String? error)? internalServerError,
     TResult Function()? notImplemented,
     TResult Function()? serviceUnavailable,
     TResult Function()? noInternetConnection,
@@ -267,6 +283,8 @@ class _$RequestCancelledImpl implements RequestCancelled {
     TResult Function()? unableToProcess,
     TResult Function(String error)? defaultError,
     TResult Function()? unexpectedError,
+    TResult Function()? receiveTimeout,
+    TResult Function(String reason)? unknown,
     required TResult orElse(),
   }) {
     if (requestCancelled != null) {
@@ -295,6 +313,8 @@ class _$RequestCancelledImpl implements RequestCancelled {
     required TResult Function(UnableToProcess value) unableToProcess,
     required TResult Function(DefaultError value) defaultError,
     required TResult Function(UnexpectedError value) unexpectedError,
+    required TResult Function(RecieveTimeOut value) receiveTimeout,
+    required TResult Function(Unknown value) unknown,
   }) {
     return requestCancelled(this);
   }
@@ -319,6 +339,8 @@ class _$RequestCancelledImpl implements RequestCancelled {
     TResult? Function(UnableToProcess value)? unableToProcess,
     TResult? Function(DefaultError value)? defaultError,
     TResult? Function(UnexpectedError value)? unexpectedError,
+    TResult? Function(RecieveTimeOut value)? receiveTimeout,
+    TResult? Function(Unknown value)? unknown,
   }) {
     return requestCancelled?.call(this);
   }
@@ -343,6 +365,8 @@ class _$RequestCancelledImpl implements RequestCancelled {
     TResult Function(UnableToProcess value)? unableToProcess,
     TResult Function(DefaultError value)? defaultError,
     TResult Function(UnexpectedError value)? unexpectedError,
+    TResult Function(RecieveTimeOut value)? receiveTimeout,
+    TResult Function(Unknown value)? unknown,
     required TResult orElse(),
   }) {
     if (requestCancelled != null) {
@@ -404,7 +428,7 @@ class _$UnauthorisedRequestImpl implements UnauthorisedRequest {
     required TResult Function() requestTimeout,
     required TResult Function() sendTimeout,
     required TResult Function() conflict,
-    required TResult Function() internalServerError,
+    required TResult Function(String? error) internalServerError,
     required TResult Function() notImplemented,
     required TResult Function() serviceUnavailable,
     required TResult Function() noInternetConnection,
@@ -412,6 +436,8 @@ class _$UnauthorisedRequestImpl implements UnauthorisedRequest {
     required TResult Function() unableToProcess,
     required TResult Function(String error) defaultError,
     required TResult Function() unexpectedError,
+    required TResult Function() receiveTimeout,
+    required TResult Function(String reason) unknown,
   }) {
     return unauthorisedRequest();
   }
@@ -428,7 +454,7 @@ class _$UnauthorisedRequestImpl implements UnauthorisedRequest {
     TResult? Function()? requestTimeout,
     TResult? Function()? sendTimeout,
     TResult? Function()? conflict,
-    TResult? Function()? internalServerError,
+    TResult? Function(String? error)? internalServerError,
     TResult? Function()? notImplemented,
     TResult? Function()? serviceUnavailable,
     TResult? Function()? noInternetConnection,
@@ -436,6 +462,8 @@ class _$UnauthorisedRequestImpl implements UnauthorisedRequest {
     TResult? Function()? unableToProcess,
     TResult? Function(String error)? defaultError,
     TResult? Function()? unexpectedError,
+    TResult? Function()? receiveTimeout,
+    TResult? Function(String reason)? unknown,
   }) {
     return unauthorisedRequest?.call();
   }
@@ -452,7 +480,7 @@ class _$UnauthorisedRequestImpl implements UnauthorisedRequest {
     TResult Function()? requestTimeout,
     TResult Function()? sendTimeout,
     TResult Function()? conflict,
-    TResult Function()? internalServerError,
+    TResult Function(String? error)? internalServerError,
     TResult Function()? notImplemented,
     TResult Function()? serviceUnavailable,
     TResult Function()? noInternetConnection,
@@ -460,6 +488,8 @@ class _$UnauthorisedRequestImpl implements UnauthorisedRequest {
     TResult Function()? unableToProcess,
     TResult Function(String error)? defaultError,
     TResult Function()? unexpectedError,
+    TResult Function()? receiveTimeout,
+    TResult Function(String reason)? unknown,
     required TResult orElse(),
   }) {
     if (unauthorisedRequest != null) {
@@ -488,6 +518,8 @@ class _$UnauthorisedRequestImpl implements UnauthorisedRequest {
     required TResult Function(UnableToProcess value) unableToProcess,
     required TResult Function(DefaultError value) defaultError,
     required TResult Function(UnexpectedError value) unexpectedError,
+    required TResult Function(RecieveTimeOut value) receiveTimeout,
+    required TResult Function(Unknown value) unknown,
   }) {
     return unauthorisedRequest(this);
   }
@@ -512,6 +544,8 @@ class _$UnauthorisedRequestImpl implements UnauthorisedRequest {
     TResult? Function(UnableToProcess value)? unableToProcess,
     TResult? Function(DefaultError value)? defaultError,
     TResult? Function(UnexpectedError value)? unexpectedError,
+    TResult? Function(RecieveTimeOut value)? receiveTimeout,
+    TResult? Function(Unknown value)? unknown,
   }) {
     return unauthorisedRequest?.call(this);
   }
@@ -536,6 +570,8 @@ class _$UnauthorisedRequestImpl implements UnauthorisedRequest {
     TResult Function(UnableToProcess value)? unableToProcess,
     TResult Function(DefaultError value)? defaultError,
     TResult Function(UnexpectedError value)? unexpectedError,
+    TResult Function(RecieveTimeOut value)? receiveTimeout,
+    TResult Function(Unknown value)? unknown,
     required TResult orElse(),
   }) {
     if (unauthorisedRequest != null) {
@@ -596,7 +632,7 @@ class _$BadRequestImpl implements BadRequest {
     required TResult Function() requestTimeout,
     required TResult Function() sendTimeout,
     required TResult Function() conflict,
-    required TResult Function() internalServerError,
+    required TResult Function(String? error) internalServerError,
     required TResult Function() notImplemented,
     required TResult Function() serviceUnavailable,
     required TResult Function() noInternetConnection,
@@ -604,6 +640,8 @@ class _$BadRequestImpl implements BadRequest {
     required TResult Function() unableToProcess,
     required TResult Function(String error) defaultError,
     required TResult Function() unexpectedError,
+    required TResult Function() receiveTimeout,
+    required TResult Function(String reason) unknown,
   }) {
     return badRequest();
   }
@@ -620,7 +658,7 @@ class _$BadRequestImpl implements BadRequest {
     TResult? Function()? requestTimeout,
     TResult? Function()? sendTimeout,
     TResult? Function()? conflict,
-    TResult? Function()? internalServerError,
+    TResult? Function(String? error)? internalServerError,
     TResult? Function()? notImplemented,
     TResult? Function()? serviceUnavailable,
     TResult? Function()? noInternetConnection,
@@ -628,6 +666,8 @@ class _$BadRequestImpl implements BadRequest {
     TResult? Function()? unableToProcess,
     TResult? Function(String error)? defaultError,
     TResult? Function()? unexpectedError,
+    TResult? Function()? receiveTimeout,
+    TResult? Function(String reason)? unknown,
   }) {
     return badRequest?.call();
   }
@@ -644,7 +684,7 @@ class _$BadRequestImpl implements BadRequest {
     TResult Function()? requestTimeout,
     TResult Function()? sendTimeout,
     TResult Function()? conflict,
-    TResult Function()? internalServerError,
+    TResult Function(String? error)? internalServerError,
     TResult Function()? notImplemented,
     TResult Function()? serviceUnavailable,
     TResult Function()? noInternetConnection,
@@ -652,6 +692,8 @@ class _$BadRequestImpl implements BadRequest {
     TResult Function()? unableToProcess,
     TResult Function(String error)? defaultError,
     TResult Function()? unexpectedError,
+    TResult Function()? receiveTimeout,
+    TResult Function(String reason)? unknown,
     required TResult orElse(),
   }) {
     if (badRequest != null) {
@@ -680,6 +722,8 @@ class _$BadRequestImpl implements BadRequest {
     required TResult Function(UnableToProcess value) unableToProcess,
     required TResult Function(DefaultError value) defaultError,
     required TResult Function(UnexpectedError value) unexpectedError,
+    required TResult Function(RecieveTimeOut value) receiveTimeout,
+    required TResult Function(Unknown value) unknown,
   }) {
     return badRequest(this);
   }
@@ -704,6 +748,8 @@ class _$BadRequestImpl implements BadRequest {
     TResult? Function(UnableToProcess value)? unableToProcess,
     TResult? Function(DefaultError value)? defaultError,
     TResult? Function(UnexpectedError value)? unexpectedError,
+    TResult? Function(RecieveTimeOut value)? receiveTimeout,
+    TResult? Function(Unknown value)? unknown,
   }) {
     return badRequest?.call(this);
   }
@@ -728,6 +774,8 @@ class _$BadRequestImpl implements BadRequest {
     TResult Function(UnableToProcess value)? unableToProcess,
     TResult Function(DefaultError value)? defaultError,
     TResult Function(UnexpectedError value)? unexpectedError,
+    TResult Function(RecieveTimeOut value)? receiveTimeout,
+    TResult Function(Unknown value)? unknown,
     required TResult orElse(),
   }) {
     if (badRequest != null) {
@@ -814,7 +862,7 @@ class _$NotFoundImpl implements NotFound {
     required TResult Function() requestTimeout,
     required TResult Function() sendTimeout,
     required TResult Function() conflict,
-    required TResult Function() internalServerError,
+    required TResult Function(String? error) internalServerError,
     required TResult Function() notImplemented,
     required TResult Function() serviceUnavailable,
     required TResult Function() noInternetConnection,
@@ -822,6 +870,8 @@ class _$NotFoundImpl implements NotFound {
     required TResult Function() unableToProcess,
     required TResult Function(String error) defaultError,
     required TResult Function() unexpectedError,
+    required TResult Function() receiveTimeout,
+    required TResult Function(String reason) unknown,
   }) {
     return notFound(reason);
   }
@@ -838,7 +888,7 @@ class _$NotFoundImpl implements NotFound {
     TResult? Function()? requestTimeout,
     TResult? Function()? sendTimeout,
     TResult? Function()? conflict,
-    TResult? Function()? internalServerError,
+    TResult? Function(String? error)? internalServerError,
     TResult? Function()? notImplemented,
     TResult? Function()? serviceUnavailable,
     TResult? Function()? noInternetConnection,
@@ -846,6 +896,8 @@ class _$NotFoundImpl implements NotFound {
     TResult? Function()? unableToProcess,
     TResult? Function(String error)? defaultError,
     TResult? Function()? unexpectedError,
+    TResult? Function()? receiveTimeout,
+    TResult? Function(String reason)? unknown,
   }) {
     return notFound?.call(reason);
   }
@@ -862,7 +914,7 @@ class _$NotFoundImpl implements NotFound {
     TResult Function()? requestTimeout,
     TResult Function()? sendTimeout,
     TResult Function()? conflict,
-    TResult Function()? internalServerError,
+    TResult Function(String? error)? internalServerError,
     TResult Function()? notImplemented,
     TResult Function()? serviceUnavailable,
     TResult Function()? noInternetConnection,
@@ -870,6 +922,8 @@ class _$NotFoundImpl implements NotFound {
     TResult Function()? unableToProcess,
     TResult Function(String error)? defaultError,
     TResult Function()? unexpectedError,
+    TResult Function()? receiveTimeout,
+    TResult Function(String reason)? unknown,
     required TResult orElse(),
   }) {
     if (notFound != null) {
@@ -898,6 +952,8 @@ class _$NotFoundImpl implements NotFound {
     required TResult Function(UnableToProcess value) unableToProcess,
     required TResult Function(DefaultError value) defaultError,
     required TResult Function(UnexpectedError value) unexpectedError,
+    required TResult Function(RecieveTimeOut value) receiveTimeout,
+    required TResult Function(Unknown value) unknown,
   }) {
     return notFound(this);
   }
@@ -922,6 +978,8 @@ class _$NotFoundImpl implements NotFound {
     TResult? Function(UnableToProcess value)? unableToProcess,
     TResult? Function(DefaultError value)? defaultError,
     TResult? Function(UnexpectedError value)? unexpectedError,
+    TResult? Function(RecieveTimeOut value)? receiveTimeout,
+    TResult? Function(Unknown value)? unknown,
   }) {
     return notFound?.call(this);
   }
@@ -946,6 +1004,8 @@ class _$NotFoundImpl implements NotFound {
     TResult Function(UnableToProcess value)? unableToProcess,
     TResult Function(DefaultError value)? defaultError,
     TResult Function(UnexpectedError value)? unexpectedError,
+    TResult Function(RecieveTimeOut value)? receiveTimeout,
+    TResult Function(Unknown value)? unknown,
     required TResult orElse(),
   }) {
     if (notFound != null) {
@@ -1011,7 +1071,7 @@ class _$MethodNotAllowedImpl implements MethodNotAllowed {
     required TResult Function() requestTimeout,
     required TResult Function() sendTimeout,
     required TResult Function() conflict,
-    required TResult Function() internalServerError,
+    required TResult Function(String? error) internalServerError,
     required TResult Function() notImplemented,
     required TResult Function() serviceUnavailable,
     required TResult Function() noInternetConnection,
@@ -1019,6 +1079,8 @@ class _$MethodNotAllowedImpl implements MethodNotAllowed {
     required TResult Function() unableToProcess,
     required TResult Function(String error) defaultError,
     required TResult Function() unexpectedError,
+    required TResult Function() receiveTimeout,
+    required TResult Function(String reason) unknown,
   }) {
     return methodNotAllowed();
   }
@@ -1035,7 +1097,7 @@ class _$MethodNotAllowedImpl implements MethodNotAllowed {
     TResult? Function()? requestTimeout,
     TResult? Function()? sendTimeout,
     TResult? Function()? conflict,
-    TResult? Function()? internalServerError,
+    TResult? Function(String? error)? internalServerError,
     TResult? Function()? notImplemented,
     TResult? Function()? serviceUnavailable,
     TResult? Function()? noInternetConnection,
@@ -1043,6 +1105,8 @@ class _$MethodNotAllowedImpl implements MethodNotAllowed {
     TResult? Function()? unableToProcess,
     TResult? Function(String error)? defaultError,
     TResult? Function()? unexpectedError,
+    TResult? Function()? receiveTimeout,
+    TResult? Function(String reason)? unknown,
   }) {
     return methodNotAllowed?.call();
   }
@@ -1059,7 +1123,7 @@ class _$MethodNotAllowedImpl implements MethodNotAllowed {
     TResult Function()? requestTimeout,
     TResult Function()? sendTimeout,
     TResult Function()? conflict,
-    TResult Function()? internalServerError,
+    TResult Function(String? error)? internalServerError,
     TResult Function()? notImplemented,
     TResult Function()? serviceUnavailable,
     TResult Function()? noInternetConnection,
@@ -1067,6 +1131,8 @@ class _$MethodNotAllowedImpl implements MethodNotAllowed {
     TResult Function()? unableToProcess,
     TResult Function(String error)? defaultError,
     TResult Function()? unexpectedError,
+    TResult Function()? receiveTimeout,
+    TResult Function(String reason)? unknown,
     required TResult orElse(),
   }) {
     if (methodNotAllowed != null) {
@@ -1095,6 +1161,8 @@ class _$MethodNotAllowedImpl implements MethodNotAllowed {
     required TResult Function(UnableToProcess value) unableToProcess,
     required TResult Function(DefaultError value) defaultError,
     required TResult Function(UnexpectedError value) unexpectedError,
+    required TResult Function(RecieveTimeOut value) receiveTimeout,
+    required TResult Function(Unknown value) unknown,
   }) {
     return methodNotAllowed(this);
   }
@@ -1119,6 +1187,8 @@ class _$MethodNotAllowedImpl implements MethodNotAllowed {
     TResult? Function(UnableToProcess value)? unableToProcess,
     TResult? Function(DefaultError value)? defaultError,
     TResult? Function(UnexpectedError value)? unexpectedError,
+    TResult? Function(RecieveTimeOut value)? receiveTimeout,
+    TResult? Function(Unknown value)? unknown,
   }) {
     return methodNotAllowed?.call(this);
   }
@@ -1143,6 +1213,8 @@ class _$MethodNotAllowedImpl implements MethodNotAllowed {
     TResult Function(UnableToProcess value)? unableToProcess,
     TResult Function(DefaultError value)? defaultError,
     TResult Function(UnexpectedError value)? unexpectedError,
+    TResult Function(RecieveTimeOut value)? receiveTimeout,
+    TResult Function(Unknown value)? unknown,
     required TResult orElse(),
   }) {
     if (methodNotAllowed != null) {
@@ -1203,7 +1275,7 @@ class _$NotAcceptableImpl implements NotAcceptable {
     required TResult Function() requestTimeout,
     required TResult Function() sendTimeout,
     required TResult Function() conflict,
-    required TResult Function() internalServerError,
+    required TResult Function(String? error) internalServerError,
     required TResult Function() notImplemented,
     required TResult Function() serviceUnavailable,
     required TResult Function() noInternetConnection,
@@ -1211,6 +1283,8 @@ class _$NotAcceptableImpl implements NotAcceptable {
     required TResult Function() unableToProcess,
     required TResult Function(String error) defaultError,
     required TResult Function() unexpectedError,
+    required TResult Function() receiveTimeout,
+    required TResult Function(String reason) unknown,
   }) {
     return notAcceptable();
   }
@@ -1227,7 +1301,7 @@ class _$NotAcceptableImpl implements NotAcceptable {
     TResult? Function()? requestTimeout,
     TResult? Function()? sendTimeout,
     TResult? Function()? conflict,
-    TResult? Function()? internalServerError,
+    TResult? Function(String? error)? internalServerError,
     TResult? Function()? notImplemented,
     TResult? Function()? serviceUnavailable,
     TResult? Function()? noInternetConnection,
@@ -1235,6 +1309,8 @@ class _$NotAcceptableImpl implements NotAcceptable {
     TResult? Function()? unableToProcess,
     TResult? Function(String error)? defaultError,
     TResult? Function()? unexpectedError,
+    TResult? Function()? receiveTimeout,
+    TResult? Function(String reason)? unknown,
   }) {
     return notAcceptable?.call();
   }
@@ -1251,7 +1327,7 @@ class _$NotAcceptableImpl implements NotAcceptable {
     TResult Function()? requestTimeout,
     TResult Function()? sendTimeout,
     TResult Function()? conflict,
-    TResult Function()? internalServerError,
+    TResult Function(String? error)? internalServerError,
     TResult Function()? notImplemented,
     TResult Function()? serviceUnavailable,
     TResult Function()? noInternetConnection,
@@ -1259,6 +1335,8 @@ class _$NotAcceptableImpl implements NotAcceptable {
     TResult Function()? unableToProcess,
     TResult Function(String error)? defaultError,
     TResult Function()? unexpectedError,
+    TResult Function()? receiveTimeout,
+    TResult Function(String reason)? unknown,
     required TResult orElse(),
   }) {
     if (notAcceptable != null) {
@@ -1287,6 +1365,8 @@ class _$NotAcceptableImpl implements NotAcceptable {
     required TResult Function(UnableToProcess value) unableToProcess,
     required TResult Function(DefaultError value) defaultError,
     required TResult Function(UnexpectedError value) unexpectedError,
+    required TResult Function(RecieveTimeOut value) receiveTimeout,
+    required TResult Function(Unknown value) unknown,
   }) {
     return notAcceptable(this);
   }
@@ -1311,6 +1391,8 @@ class _$NotAcceptableImpl implements NotAcceptable {
     TResult? Function(UnableToProcess value)? unableToProcess,
     TResult? Function(DefaultError value)? defaultError,
     TResult? Function(UnexpectedError value)? unexpectedError,
+    TResult? Function(RecieveTimeOut value)? receiveTimeout,
+    TResult? Function(Unknown value)? unknown,
   }) {
     return notAcceptable?.call(this);
   }
@@ -1335,6 +1417,8 @@ class _$NotAcceptableImpl implements NotAcceptable {
     TResult Function(UnableToProcess value)? unableToProcess,
     TResult Function(DefaultError value)? defaultError,
     TResult Function(UnexpectedError value)? unexpectedError,
+    TResult Function(RecieveTimeOut value)? receiveTimeout,
+    TResult Function(Unknown value)? unknown,
     required TResult orElse(),
   }) {
     if (notAcceptable != null) {
@@ -1395,7 +1479,7 @@ class _$RequestTimeoutImpl implements RequestTimeout {
     required TResult Function() requestTimeout,
     required TResult Function() sendTimeout,
     required TResult Function() conflict,
-    required TResult Function() internalServerError,
+    required TResult Function(String? error) internalServerError,
     required TResult Function() notImplemented,
     required TResult Function() serviceUnavailable,
     required TResult Function() noInternetConnection,
@@ -1403,6 +1487,8 @@ class _$RequestTimeoutImpl implements RequestTimeout {
     required TResult Function() unableToProcess,
     required TResult Function(String error) defaultError,
     required TResult Function() unexpectedError,
+    required TResult Function() receiveTimeout,
+    required TResult Function(String reason) unknown,
   }) {
     return requestTimeout();
   }
@@ -1419,7 +1505,7 @@ class _$RequestTimeoutImpl implements RequestTimeout {
     TResult? Function()? requestTimeout,
     TResult? Function()? sendTimeout,
     TResult? Function()? conflict,
-    TResult? Function()? internalServerError,
+    TResult? Function(String? error)? internalServerError,
     TResult? Function()? notImplemented,
     TResult? Function()? serviceUnavailable,
     TResult? Function()? noInternetConnection,
@@ -1427,6 +1513,8 @@ class _$RequestTimeoutImpl implements RequestTimeout {
     TResult? Function()? unableToProcess,
     TResult? Function(String error)? defaultError,
     TResult? Function()? unexpectedError,
+    TResult? Function()? receiveTimeout,
+    TResult? Function(String reason)? unknown,
   }) {
     return requestTimeout?.call();
   }
@@ -1443,7 +1531,7 @@ class _$RequestTimeoutImpl implements RequestTimeout {
     TResult Function()? requestTimeout,
     TResult Function()? sendTimeout,
     TResult Function()? conflict,
-    TResult Function()? internalServerError,
+    TResult Function(String? error)? internalServerError,
     TResult Function()? notImplemented,
     TResult Function()? serviceUnavailable,
     TResult Function()? noInternetConnection,
@@ -1451,6 +1539,8 @@ class _$RequestTimeoutImpl implements RequestTimeout {
     TResult Function()? unableToProcess,
     TResult Function(String error)? defaultError,
     TResult Function()? unexpectedError,
+    TResult Function()? receiveTimeout,
+    TResult Function(String reason)? unknown,
     required TResult orElse(),
   }) {
     if (requestTimeout != null) {
@@ -1479,6 +1569,8 @@ class _$RequestTimeoutImpl implements RequestTimeout {
     required TResult Function(UnableToProcess value) unableToProcess,
     required TResult Function(DefaultError value) defaultError,
     required TResult Function(UnexpectedError value) unexpectedError,
+    required TResult Function(RecieveTimeOut value) receiveTimeout,
+    required TResult Function(Unknown value) unknown,
   }) {
     return requestTimeout(this);
   }
@@ -1503,6 +1595,8 @@ class _$RequestTimeoutImpl implements RequestTimeout {
     TResult? Function(UnableToProcess value)? unableToProcess,
     TResult? Function(DefaultError value)? defaultError,
     TResult? Function(UnexpectedError value)? unexpectedError,
+    TResult? Function(RecieveTimeOut value)? receiveTimeout,
+    TResult? Function(Unknown value)? unknown,
   }) {
     return requestTimeout?.call(this);
   }
@@ -1527,6 +1621,8 @@ class _$RequestTimeoutImpl implements RequestTimeout {
     TResult Function(UnableToProcess value)? unableToProcess,
     TResult Function(DefaultError value)? defaultError,
     TResult Function(UnexpectedError value)? unexpectedError,
+    TResult Function(RecieveTimeOut value)? receiveTimeout,
+    TResult Function(Unknown value)? unknown,
     required TResult orElse(),
   }) {
     if (requestTimeout != null) {
@@ -1587,7 +1683,7 @@ class _$SendTimeoutImpl implements SendTimeout {
     required TResult Function() requestTimeout,
     required TResult Function() sendTimeout,
     required TResult Function() conflict,
-    required TResult Function() internalServerError,
+    required TResult Function(String? error) internalServerError,
     required TResult Function() notImplemented,
     required TResult Function() serviceUnavailable,
     required TResult Function() noInternetConnection,
@@ -1595,6 +1691,8 @@ class _$SendTimeoutImpl implements SendTimeout {
     required TResult Function() unableToProcess,
     required TResult Function(String error) defaultError,
     required TResult Function() unexpectedError,
+    required TResult Function() receiveTimeout,
+    required TResult Function(String reason) unknown,
   }) {
     return sendTimeout();
   }
@@ -1611,7 +1709,7 @@ class _$SendTimeoutImpl implements SendTimeout {
     TResult? Function()? requestTimeout,
     TResult? Function()? sendTimeout,
     TResult? Function()? conflict,
-    TResult? Function()? internalServerError,
+    TResult? Function(String? error)? internalServerError,
     TResult? Function()? notImplemented,
     TResult? Function()? serviceUnavailable,
     TResult? Function()? noInternetConnection,
@@ -1619,6 +1717,8 @@ class _$SendTimeoutImpl implements SendTimeout {
     TResult? Function()? unableToProcess,
     TResult? Function(String error)? defaultError,
     TResult? Function()? unexpectedError,
+    TResult? Function()? receiveTimeout,
+    TResult? Function(String reason)? unknown,
   }) {
     return sendTimeout?.call();
   }
@@ -1635,7 +1735,7 @@ class _$SendTimeoutImpl implements SendTimeout {
     TResult Function()? requestTimeout,
     TResult Function()? sendTimeout,
     TResult Function()? conflict,
-    TResult Function()? internalServerError,
+    TResult Function(String? error)? internalServerError,
     TResult Function()? notImplemented,
     TResult Function()? serviceUnavailable,
     TResult Function()? noInternetConnection,
@@ -1643,6 +1743,8 @@ class _$SendTimeoutImpl implements SendTimeout {
     TResult Function()? unableToProcess,
     TResult Function(String error)? defaultError,
     TResult Function()? unexpectedError,
+    TResult Function()? receiveTimeout,
+    TResult Function(String reason)? unknown,
     required TResult orElse(),
   }) {
     if (sendTimeout != null) {
@@ -1671,6 +1773,8 @@ class _$SendTimeoutImpl implements SendTimeout {
     required TResult Function(UnableToProcess value) unableToProcess,
     required TResult Function(DefaultError value) defaultError,
     required TResult Function(UnexpectedError value) unexpectedError,
+    required TResult Function(RecieveTimeOut value) receiveTimeout,
+    required TResult Function(Unknown value) unknown,
   }) {
     return sendTimeout(this);
   }
@@ -1695,6 +1799,8 @@ class _$SendTimeoutImpl implements SendTimeout {
     TResult? Function(UnableToProcess value)? unableToProcess,
     TResult? Function(DefaultError value)? defaultError,
     TResult? Function(UnexpectedError value)? unexpectedError,
+    TResult? Function(RecieveTimeOut value)? receiveTimeout,
+    TResult? Function(Unknown value)? unknown,
   }) {
     return sendTimeout?.call(this);
   }
@@ -1719,6 +1825,8 @@ class _$SendTimeoutImpl implements SendTimeout {
     TResult Function(UnableToProcess value)? unableToProcess,
     TResult Function(DefaultError value)? defaultError,
     TResult Function(UnexpectedError value)? unexpectedError,
+    TResult Function(RecieveTimeOut value)? receiveTimeout,
+    TResult Function(Unknown value)? unknown,
     required TResult orElse(),
   }) {
     if (sendTimeout != null) {
@@ -1779,7 +1887,7 @@ class _$ConflictImpl implements Conflict {
     required TResult Function() requestTimeout,
     required TResult Function() sendTimeout,
     required TResult Function() conflict,
-    required TResult Function() internalServerError,
+    required TResult Function(String? error) internalServerError,
     required TResult Function() notImplemented,
     required TResult Function() serviceUnavailable,
     required TResult Function() noInternetConnection,
@@ -1787,6 +1895,8 @@ class _$ConflictImpl implements Conflict {
     required TResult Function() unableToProcess,
     required TResult Function(String error) defaultError,
     required TResult Function() unexpectedError,
+    required TResult Function() receiveTimeout,
+    required TResult Function(String reason) unknown,
   }) {
     return conflict();
   }
@@ -1803,7 +1913,7 @@ class _$ConflictImpl implements Conflict {
     TResult? Function()? requestTimeout,
     TResult? Function()? sendTimeout,
     TResult? Function()? conflict,
-    TResult? Function()? internalServerError,
+    TResult? Function(String? error)? internalServerError,
     TResult? Function()? notImplemented,
     TResult? Function()? serviceUnavailable,
     TResult? Function()? noInternetConnection,
@@ -1811,6 +1921,8 @@ class _$ConflictImpl implements Conflict {
     TResult? Function()? unableToProcess,
     TResult? Function(String error)? defaultError,
     TResult? Function()? unexpectedError,
+    TResult? Function()? receiveTimeout,
+    TResult? Function(String reason)? unknown,
   }) {
     return conflict?.call();
   }
@@ -1827,7 +1939,7 @@ class _$ConflictImpl implements Conflict {
     TResult Function()? requestTimeout,
     TResult Function()? sendTimeout,
     TResult Function()? conflict,
-    TResult Function()? internalServerError,
+    TResult Function(String? error)? internalServerError,
     TResult Function()? notImplemented,
     TResult Function()? serviceUnavailable,
     TResult Function()? noInternetConnection,
@@ -1835,6 +1947,8 @@ class _$ConflictImpl implements Conflict {
     TResult Function()? unableToProcess,
     TResult Function(String error)? defaultError,
     TResult Function()? unexpectedError,
+    TResult Function()? receiveTimeout,
+    TResult Function(String reason)? unknown,
     required TResult orElse(),
   }) {
     if (conflict != null) {
@@ -1863,6 +1977,8 @@ class _$ConflictImpl implements Conflict {
     required TResult Function(UnableToProcess value) unableToProcess,
     required TResult Function(DefaultError value) defaultError,
     required TResult Function(UnexpectedError value) unexpectedError,
+    required TResult Function(RecieveTimeOut value) receiveTimeout,
+    required TResult Function(Unknown value) unknown,
   }) {
     return conflict(this);
   }
@@ -1887,6 +2003,8 @@ class _$ConflictImpl implements Conflict {
     TResult? Function(UnableToProcess value)? unableToProcess,
     TResult? Function(DefaultError value)? defaultError,
     TResult? Function(UnexpectedError value)? unexpectedError,
+    TResult? Function(RecieveTimeOut value)? receiveTimeout,
+    TResult? Function(Unknown value)? unknown,
   }) {
     return conflict?.call(this);
   }
@@ -1911,6 +2029,8 @@ class _$ConflictImpl implements Conflict {
     TResult Function(UnableToProcess value)? unableToProcess,
     TResult Function(DefaultError value)? defaultError,
     TResult Function(UnexpectedError value)? unexpectedError,
+    TResult Function(RecieveTimeOut value)? receiveTimeout,
+    TResult Function(Unknown value)? unknown,
     required TResult orElse(),
   }) {
     if (conflict != null) {
@@ -1929,6 +2049,8 @@ abstract class _$$InternalServerErrorImplCopyWith<$Res> {
   factory _$$InternalServerErrorImplCopyWith(_$InternalServerErrorImpl value,
           $Res Function(_$InternalServerErrorImpl) then) =
       __$$InternalServerErrorImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String? error});
 }
 
 /// @nodoc
@@ -1938,27 +2060,51 @@ class __$$InternalServerErrorImplCopyWithImpl<$Res>
   __$$InternalServerErrorImplCopyWithImpl(_$InternalServerErrorImpl _value,
       $Res Function(_$InternalServerErrorImpl) _then)
       : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? error = freezed,
+  }) {
+    return _then(_$InternalServerErrorImpl(
+      freezed == error
+          ? _value.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
 }
 
 /// @nodoc
 
 class _$InternalServerErrorImpl implements InternalServerError {
-  const _$InternalServerErrorImpl();
+  const _$InternalServerErrorImpl(this.error);
+
+  @override
+  final String? error;
 
   @override
   String toString() {
-    return 'NetworkExceptions.internalServerError()';
+    return 'NetworkExceptions.internalServerError(error: $error)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$InternalServerErrorImpl);
+            other is _$InternalServerErrorImpl &&
+            (identical(other.error, error) || other.error == error));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(runtimeType, error);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$InternalServerErrorImplCopyWith<_$InternalServerErrorImpl> get copyWith =>
+      __$$InternalServerErrorImplCopyWithImpl<_$InternalServerErrorImpl>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1972,7 +2118,7 @@ class _$InternalServerErrorImpl implements InternalServerError {
     required TResult Function() requestTimeout,
     required TResult Function() sendTimeout,
     required TResult Function() conflict,
-    required TResult Function() internalServerError,
+    required TResult Function(String? error) internalServerError,
     required TResult Function() notImplemented,
     required TResult Function() serviceUnavailable,
     required TResult Function() noInternetConnection,
@@ -1980,8 +2126,10 @@ class _$InternalServerErrorImpl implements InternalServerError {
     required TResult Function() unableToProcess,
     required TResult Function(String error) defaultError,
     required TResult Function() unexpectedError,
+    required TResult Function() receiveTimeout,
+    required TResult Function(String reason) unknown,
   }) {
-    return internalServerError();
+    return internalServerError(error);
   }
 
   @override
@@ -1996,7 +2144,7 @@ class _$InternalServerErrorImpl implements InternalServerError {
     TResult? Function()? requestTimeout,
     TResult? Function()? sendTimeout,
     TResult? Function()? conflict,
-    TResult? Function()? internalServerError,
+    TResult? Function(String? error)? internalServerError,
     TResult? Function()? notImplemented,
     TResult? Function()? serviceUnavailable,
     TResult? Function()? noInternetConnection,
@@ -2004,8 +2152,10 @@ class _$InternalServerErrorImpl implements InternalServerError {
     TResult? Function()? unableToProcess,
     TResult? Function(String error)? defaultError,
     TResult? Function()? unexpectedError,
+    TResult? Function()? receiveTimeout,
+    TResult? Function(String reason)? unknown,
   }) {
-    return internalServerError?.call();
+    return internalServerError?.call(error);
   }
 
   @override
@@ -2020,7 +2170,7 @@ class _$InternalServerErrorImpl implements InternalServerError {
     TResult Function()? requestTimeout,
     TResult Function()? sendTimeout,
     TResult Function()? conflict,
-    TResult Function()? internalServerError,
+    TResult Function(String? error)? internalServerError,
     TResult Function()? notImplemented,
     TResult Function()? serviceUnavailable,
     TResult Function()? noInternetConnection,
@@ -2028,10 +2178,12 @@ class _$InternalServerErrorImpl implements InternalServerError {
     TResult Function()? unableToProcess,
     TResult Function(String error)? defaultError,
     TResult Function()? unexpectedError,
+    TResult Function()? receiveTimeout,
+    TResult Function(String reason)? unknown,
     required TResult orElse(),
   }) {
     if (internalServerError != null) {
-      return internalServerError();
+      return internalServerError(error);
     }
     return orElse();
   }
@@ -2056,6 +2208,8 @@ class _$InternalServerErrorImpl implements InternalServerError {
     required TResult Function(UnableToProcess value) unableToProcess,
     required TResult Function(DefaultError value) defaultError,
     required TResult Function(UnexpectedError value) unexpectedError,
+    required TResult Function(RecieveTimeOut value) receiveTimeout,
+    required TResult Function(Unknown value) unknown,
   }) {
     return internalServerError(this);
   }
@@ -2080,6 +2234,8 @@ class _$InternalServerErrorImpl implements InternalServerError {
     TResult? Function(UnableToProcess value)? unableToProcess,
     TResult? Function(DefaultError value)? defaultError,
     TResult? Function(UnexpectedError value)? unexpectedError,
+    TResult? Function(RecieveTimeOut value)? receiveTimeout,
+    TResult? Function(Unknown value)? unknown,
   }) {
     return internalServerError?.call(this);
   }
@@ -2104,6 +2260,8 @@ class _$InternalServerErrorImpl implements InternalServerError {
     TResult Function(UnableToProcess value)? unableToProcess,
     TResult Function(DefaultError value)? defaultError,
     TResult Function(UnexpectedError value)? unexpectedError,
+    TResult Function(RecieveTimeOut value)? receiveTimeout,
+    TResult Function(Unknown value)? unknown,
     required TResult orElse(),
   }) {
     if (internalServerError != null) {
@@ -2114,7 +2272,13 @@ class _$InternalServerErrorImpl implements InternalServerError {
 }
 
 abstract class InternalServerError implements NetworkExceptions {
-  const factory InternalServerError() = _$InternalServerErrorImpl;
+  const factory InternalServerError(final String? error) =
+      _$InternalServerErrorImpl;
+
+  String? get error;
+  @JsonKey(ignore: true)
+  _$$InternalServerErrorImplCopyWith<_$InternalServerErrorImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -2164,7 +2328,7 @@ class _$NotImplementedImpl implements NotImplemented {
     required TResult Function() requestTimeout,
     required TResult Function() sendTimeout,
     required TResult Function() conflict,
-    required TResult Function() internalServerError,
+    required TResult Function(String? error) internalServerError,
     required TResult Function() notImplemented,
     required TResult Function() serviceUnavailable,
     required TResult Function() noInternetConnection,
@@ -2172,6 +2336,8 @@ class _$NotImplementedImpl implements NotImplemented {
     required TResult Function() unableToProcess,
     required TResult Function(String error) defaultError,
     required TResult Function() unexpectedError,
+    required TResult Function() receiveTimeout,
+    required TResult Function(String reason) unknown,
   }) {
     return notImplemented();
   }
@@ -2188,7 +2354,7 @@ class _$NotImplementedImpl implements NotImplemented {
     TResult? Function()? requestTimeout,
     TResult? Function()? sendTimeout,
     TResult? Function()? conflict,
-    TResult? Function()? internalServerError,
+    TResult? Function(String? error)? internalServerError,
     TResult? Function()? notImplemented,
     TResult? Function()? serviceUnavailable,
     TResult? Function()? noInternetConnection,
@@ -2196,6 +2362,8 @@ class _$NotImplementedImpl implements NotImplemented {
     TResult? Function()? unableToProcess,
     TResult? Function(String error)? defaultError,
     TResult? Function()? unexpectedError,
+    TResult? Function()? receiveTimeout,
+    TResult? Function(String reason)? unknown,
   }) {
     return notImplemented?.call();
   }
@@ -2212,7 +2380,7 @@ class _$NotImplementedImpl implements NotImplemented {
     TResult Function()? requestTimeout,
     TResult Function()? sendTimeout,
     TResult Function()? conflict,
-    TResult Function()? internalServerError,
+    TResult Function(String? error)? internalServerError,
     TResult Function()? notImplemented,
     TResult Function()? serviceUnavailable,
     TResult Function()? noInternetConnection,
@@ -2220,6 +2388,8 @@ class _$NotImplementedImpl implements NotImplemented {
     TResult Function()? unableToProcess,
     TResult Function(String error)? defaultError,
     TResult Function()? unexpectedError,
+    TResult Function()? receiveTimeout,
+    TResult Function(String reason)? unknown,
     required TResult orElse(),
   }) {
     if (notImplemented != null) {
@@ -2248,6 +2418,8 @@ class _$NotImplementedImpl implements NotImplemented {
     required TResult Function(UnableToProcess value) unableToProcess,
     required TResult Function(DefaultError value) defaultError,
     required TResult Function(UnexpectedError value) unexpectedError,
+    required TResult Function(RecieveTimeOut value) receiveTimeout,
+    required TResult Function(Unknown value) unknown,
   }) {
     return notImplemented(this);
   }
@@ -2272,6 +2444,8 @@ class _$NotImplementedImpl implements NotImplemented {
     TResult? Function(UnableToProcess value)? unableToProcess,
     TResult? Function(DefaultError value)? defaultError,
     TResult? Function(UnexpectedError value)? unexpectedError,
+    TResult? Function(RecieveTimeOut value)? receiveTimeout,
+    TResult? Function(Unknown value)? unknown,
   }) {
     return notImplemented?.call(this);
   }
@@ -2296,6 +2470,8 @@ class _$NotImplementedImpl implements NotImplemented {
     TResult Function(UnableToProcess value)? unableToProcess,
     TResult Function(DefaultError value)? defaultError,
     TResult Function(UnexpectedError value)? unexpectedError,
+    TResult Function(RecieveTimeOut value)? receiveTimeout,
+    TResult Function(Unknown value)? unknown,
     required TResult orElse(),
   }) {
     if (notImplemented != null) {
@@ -2356,7 +2532,7 @@ class _$ServiceUnavailableImpl implements ServiceUnavailable {
     required TResult Function() requestTimeout,
     required TResult Function() sendTimeout,
     required TResult Function() conflict,
-    required TResult Function() internalServerError,
+    required TResult Function(String? error) internalServerError,
     required TResult Function() notImplemented,
     required TResult Function() serviceUnavailable,
     required TResult Function() noInternetConnection,
@@ -2364,6 +2540,8 @@ class _$ServiceUnavailableImpl implements ServiceUnavailable {
     required TResult Function() unableToProcess,
     required TResult Function(String error) defaultError,
     required TResult Function() unexpectedError,
+    required TResult Function() receiveTimeout,
+    required TResult Function(String reason) unknown,
   }) {
     return serviceUnavailable();
   }
@@ -2380,7 +2558,7 @@ class _$ServiceUnavailableImpl implements ServiceUnavailable {
     TResult? Function()? requestTimeout,
     TResult? Function()? sendTimeout,
     TResult? Function()? conflict,
-    TResult? Function()? internalServerError,
+    TResult? Function(String? error)? internalServerError,
     TResult? Function()? notImplemented,
     TResult? Function()? serviceUnavailable,
     TResult? Function()? noInternetConnection,
@@ -2388,6 +2566,8 @@ class _$ServiceUnavailableImpl implements ServiceUnavailable {
     TResult? Function()? unableToProcess,
     TResult? Function(String error)? defaultError,
     TResult? Function()? unexpectedError,
+    TResult? Function()? receiveTimeout,
+    TResult? Function(String reason)? unknown,
   }) {
     return serviceUnavailable?.call();
   }
@@ -2404,7 +2584,7 @@ class _$ServiceUnavailableImpl implements ServiceUnavailable {
     TResult Function()? requestTimeout,
     TResult Function()? sendTimeout,
     TResult Function()? conflict,
-    TResult Function()? internalServerError,
+    TResult Function(String? error)? internalServerError,
     TResult Function()? notImplemented,
     TResult Function()? serviceUnavailable,
     TResult Function()? noInternetConnection,
@@ -2412,6 +2592,8 @@ class _$ServiceUnavailableImpl implements ServiceUnavailable {
     TResult Function()? unableToProcess,
     TResult Function(String error)? defaultError,
     TResult Function()? unexpectedError,
+    TResult Function()? receiveTimeout,
+    TResult Function(String reason)? unknown,
     required TResult orElse(),
   }) {
     if (serviceUnavailable != null) {
@@ -2440,6 +2622,8 @@ class _$ServiceUnavailableImpl implements ServiceUnavailable {
     required TResult Function(UnableToProcess value) unableToProcess,
     required TResult Function(DefaultError value) defaultError,
     required TResult Function(UnexpectedError value) unexpectedError,
+    required TResult Function(RecieveTimeOut value) receiveTimeout,
+    required TResult Function(Unknown value) unknown,
   }) {
     return serviceUnavailable(this);
   }
@@ -2464,6 +2648,8 @@ class _$ServiceUnavailableImpl implements ServiceUnavailable {
     TResult? Function(UnableToProcess value)? unableToProcess,
     TResult? Function(DefaultError value)? defaultError,
     TResult? Function(UnexpectedError value)? unexpectedError,
+    TResult? Function(RecieveTimeOut value)? receiveTimeout,
+    TResult? Function(Unknown value)? unknown,
   }) {
     return serviceUnavailable?.call(this);
   }
@@ -2488,6 +2674,8 @@ class _$ServiceUnavailableImpl implements ServiceUnavailable {
     TResult Function(UnableToProcess value)? unableToProcess,
     TResult Function(DefaultError value)? defaultError,
     TResult Function(UnexpectedError value)? unexpectedError,
+    TResult Function(RecieveTimeOut value)? receiveTimeout,
+    TResult Function(Unknown value)? unknown,
     required TResult orElse(),
   }) {
     if (serviceUnavailable != null) {
@@ -2549,7 +2737,7 @@ class _$NoInternetConnectionImpl implements NoInternetConnection {
     required TResult Function() requestTimeout,
     required TResult Function() sendTimeout,
     required TResult Function() conflict,
-    required TResult Function() internalServerError,
+    required TResult Function(String? error) internalServerError,
     required TResult Function() notImplemented,
     required TResult Function() serviceUnavailable,
     required TResult Function() noInternetConnection,
@@ -2557,6 +2745,8 @@ class _$NoInternetConnectionImpl implements NoInternetConnection {
     required TResult Function() unableToProcess,
     required TResult Function(String error) defaultError,
     required TResult Function() unexpectedError,
+    required TResult Function() receiveTimeout,
+    required TResult Function(String reason) unknown,
   }) {
     return noInternetConnection();
   }
@@ -2573,7 +2763,7 @@ class _$NoInternetConnectionImpl implements NoInternetConnection {
     TResult? Function()? requestTimeout,
     TResult? Function()? sendTimeout,
     TResult? Function()? conflict,
-    TResult? Function()? internalServerError,
+    TResult? Function(String? error)? internalServerError,
     TResult? Function()? notImplemented,
     TResult? Function()? serviceUnavailable,
     TResult? Function()? noInternetConnection,
@@ -2581,6 +2771,8 @@ class _$NoInternetConnectionImpl implements NoInternetConnection {
     TResult? Function()? unableToProcess,
     TResult? Function(String error)? defaultError,
     TResult? Function()? unexpectedError,
+    TResult? Function()? receiveTimeout,
+    TResult? Function(String reason)? unknown,
   }) {
     return noInternetConnection?.call();
   }
@@ -2597,7 +2789,7 @@ class _$NoInternetConnectionImpl implements NoInternetConnection {
     TResult Function()? requestTimeout,
     TResult Function()? sendTimeout,
     TResult Function()? conflict,
-    TResult Function()? internalServerError,
+    TResult Function(String? error)? internalServerError,
     TResult Function()? notImplemented,
     TResult Function()? serviceUnavailable,
     TResult Function()? noInternetConnection,
@@ -2605,6 +2797,8 @@ class _$NoInternetConnectionImpl implements NoInternetConnection {
     TResult Function()? unableToProcess,
     TResult Function(String error)? defaultError,
     TResult Function()? unexpectedError,
+    TResult Function()? receiveTimeout,
+    TResult Function(String reason)? unknown,
     required TResult orElse(),
   }) {
     if (noInternetConnection != null) {
@@ -2633,6 +2827,8 @@ class _$NoInternetConnectionImpl implements NoInternetConnection {
     required TResult Function(UnableToProcess value) unableToProcess,
     required TResult Function(DefaultError value) defaultError,
     required TResult Function(UnexpectedError value) unexpectedError,
+    required TResult Function(RecieveTimeOut value) receiveTimeout,
+    required TResult Function(Unknown value) unknown,
   }) {
     return noInternetConnection(this);
   }
@@ -2657,6 +2853,8 @@ class _$NoInternetConnectionImpl implements NoInternetConnection {
     TResult? Function(UnableToProcess value)? unableToProcess,
     TResult? Function(DefaultError value)? defaultError,
     TResult? Function(UnexpectedError value)? unexpectedError,
+    TResult? Function(RecieveTimeOut value)? receiveTimeout,
+    TResult? Function(Unknown value)? unknown,
   }) {
     return noInternetConnection?.call(this);
   }
@@ -2681,6 +2879,8 @@ class _$NoInternetConnectionImpl implements NoInternetConnection {
     TResult Function(UnableToProcess value)? unableToProcess,
     TResult Function(DefaultError value)? defaultError,
     TResult Function(UnexpectedError value)? unexpectedError,
+    TResult Function(RecieveTimeOut value)? receiveTimeout,
+    TResult Function(Unknown value)? unknown,
     required TResult orElse(),
   }) {
     if (noInternetConnection != null) {
@@ -2741,7 +2941,7 @@ class _$FormatExceptionImpl implements FormatException {
     required TResult Function() requestTimeout,
     required TResult Function() sendTimeout,
     required TResult Function() conflict,
-    required TResult Function() internalServerError,
+    required TResult Function(String? error) internalServerError,
     required TResult Function() notImplemented,
     required TResult Function() serviceUnavailable,
     required TResult Function() noInternetConnection,
@@ -2749,6 +2949,8 @@ class _$FormatExceptionImpl implements FormatException {
     required TResult Function() unableToProcess,
     required TResult Function(String error) defaultError,
     required TResult Function() unexpectedError,
+    required TResult Function() receiveTimeout,
+    required TResult Function(String reason) unknown,
   }) {
     return formatException();
   }
@@ -2765,7 +2967,7 @@ class _$FormatExceptionImpl implements FormatException {
     TResult? Function()? requestTimeout,
     TResult? Function()? sendTimeout,
     TResult? Function()? conflict,
-    TResult? Function()? internalServerError,
+    TResult? Function(String? error)? internalServerError,
     TResult? Function()? notImplemented,
     TResult? Function()? serviceUnavailable,
     TResult? Function()? noInternetConnection,
@@ -2773,6 +2975,8 @@ class _$FormatExceptionImpl implements FormatException {
     TResult? Function()? unableToProcess,
     TResult? Function(String error)? defaultError,
     TResult? Function()? unexpectedError,
+    TResult? Function()? receiveTimeout,
+    TResult? Function(String reason)? unknown,
   }) {
     return formatException?.call();
   }
@@ -2789,7 +2993,7 @@ class _$FormatExceptionImpl implements FormatException {
     TResult Function()? requestTimeout,
     TResult Function()? sendTimeout,
     TResult Function()? conflict,
-    TResult Function()? internalServerError,
+    TResult Function(String? error)? internalServerError,
     TResult Function()? notImplemented,
     TResult Function()? serviceUnavailable,
     TResult Function()? noInternetConnection,
@@ -2797,6 +3001,8 @@ class _$FormatExceptionImpl implements FormatException {
     TResult Function()? unableToProcess,
     TResult Function(String error)? defaultError,
     TResult Function()? unexpectedError,
+    TResult Function()? receiveTimeout,
+    TResult Function(String reason)? unknown,
     required TResult orElse(),
   }) {
     if (formatException != null) {
@@ -2825,6 +3031,8 @@ class _$FormatExceptionImpl implements FormatException {
     required TResult Function(UnableToProcess value) unableToProcess,
     required TResult Function(DefaultError value) defaultError,
     required TResult Function(UnexpectedError value) unexpectedError,
+    required TResult Function(RecieveTimeOut value) receiveTimeout,
+    required TResult Function(Unknown value) unknown,
   }) {
     return formatException(this);
   }
@@ -2849,6 +3057,8 @@ class _$FormatExceptionImpl implements FormatException {
     TResult? Function(UnableToProcess value)? unableToProcess,
     TResult? Function(DefaultError value)? defaultError,
     TResult? Function(UnexpectedError value)? unexpectedError,
+    TResult? Function(RecieveTimeOut value)? receiveTimeout,
+    TResult? Function(Unknown value)? unknown,
   }) {
     return formatException?.call(this);
   }
@@ -2873,6 +3083,8 @@ class _$FormatExceptionImpl implements FormatException {
     TResult Function(UnableToProcess value)? unableToProcess,
     TResult Function(DefaultError value)? defaultError,
     TResult Function(UnexpectedError value)? unexpectedError,
+    TResult Function(RecieveTimeOut value)? receiveTimeout,
+    TResult Function(Unknown value)? unknown,
     required TResult orElse(),
   }) {
     if (formatException != null) {
@@ -2933,7 +3145,7 @@ class _$UnableToProcessImpl implements UnableToProcess {
     required TResult Function() requestTimeout,
     required TResult Function() sendTimeout,
     required TResult Function() conflict,
-    required TResult Function() internalServerError,
+    required TResult Function(String? error) internalServerError,
     required TResult Function() notImplemented,
     required TResult Function() serviceUnavailable,
     required TResult Function() noInternetConnection,
@@ -2941,6 +3153,8 @@ class _$UnableToProcessImpl implements UnableToProcess {
     required TResult Function() unableToProcess,
     required TResult Function(String error) defaultError,
     required TResult Function() unexpectedError,
+    required TResult Function() receiveTimeout,
+    required TResult Function(String reason) unknown,
   }) {
     return unableToProcess();
   }
@@ -2957,7 +3171,7 @@ class _$UnableToProcessImpl implements UnableToProcess {
     TResult? Function()? requestTimeout,
     TResult? Function()? sendTimeout,
     TResult? Function()? conflict,
-    TResult? Function()? internalServerError,
+    TResult? Function(String? error)? internalServerError,
     TResult? Function()? notImplemented,
     TResult? Function()? serviceUnavailable,
     TResult? Function()? noInternetConnection,
@@ -2965,6 +3179,8 @@ class _$UnableToProcessImpl implements UnableToProcess {
     TResult? Function()? unableToProcess,
     TResult? Function(String error)? defaultError,
     TResult? Function()? unexpectedError,
+    TResult? Function()? receiveTimeout,
+    TResult? Function(String reason)? unknown,
   }) {
     return unableToProcess?.call();
   }
@@ -2981,7 +3197,7 @@ class _$UnableToProcessImpl implements UnableToProcess {
     TResult Function()? requestTimeout,
     TResult Function()? sendTimeout,
     TResult Function()? conflict,
-    TResult Function()? internalServerError,
+    TResult Function(String? error)? internalServerError,
     TResult Function()? notImplemented,
     TResult Function()? serviceUnavailable,
     TResult Function()? noInternetConnection,
@@ -2989,6 +3205,8 @@ class _$UnableToProcessImpl implements UnableToProcess {
     TResult Function()? unableToProcess,
     TResult Function(String error)? defaultError,
     TResult Function()? unexpectedError,
+    TResult Function()? receiveTimeout,
+    TResult Function(String reason)? unknown,
     required TResult orElse(),
   }) {
     if (unableToProcess != null) {
@@ -3017,6 +3235,8 @@ class _$UnableToProcessImpl implements UnableToProcess {
     required TResult Function(UnableToProcess value) unableToProcess,
     required TResult Function(DefaultError value) defaultError,
     required TResult Function(UnexpectedError value) unexpectedError,
+    required TResult Function(RecieveTimeOut value) receiveTimeout,
+    required TResult Function(Unknown value) unknown,
   }) {
     return unableToProcess(this);
   }
@@ -3041,6 +3261,8 @@ class _$UnableToProcessImpl implements UnableToProcess {
     TResult? Function(UnableToProcess value)? unableToProcess,
     TResult? Function(DefaultError value)? defaultError,
     TResult? Function(UnexpectedError value)? unexpectedError,
+    TResult? Function(RecieveTimeOut value)? receiveTimeout,
+    TResult? Function(Unknown value)? unknown,
   }) {
     return unableToProcess?.call(this);
   }
@@ -3065,6 +3287,8 @@ class _$UnableToProcessImpl implements UnableToProcess {
     TResult Function(UnableToProcess value)? unableToProcess,
     TResult Function(DefaultError value)? defaultError,
     TResult Function(UnexpectedError value)? unexpectedError,
+    TResult Function(RecieveTimeOut value)? receiveTimeout,
+    TResult Function(Unknown value)? unknown,
     required TResult orElse(),
   }) {
     if (unableToProcess != null) {
@@ -3151,7 +3375,7 @@ class _$DefaultErrorImpl implements DefaultError {
     required TResult Function() requestTimeout,
     required TResult Function() sendTimeout,
     required TResult Function() conflict,
-    required TResult Function() internalServerError,
+    required TResult Function(String? error) internalServerError,
     required TResult Function() notImplemented,
     required TResult Function() serviceUnavailable,
     required TResult Function() noInternetConnection,
@@ -3159,6 +3383,8 @@ class _$DefaultErrorImpl implements DefaultError {
     required TResult Function() unableToProcess,
     required TResult Function(String error) defaultError,
     required TResult Function() unexpectedError,
+    required TResult Function() receiveTimeout,
+    required TResult Function(String reason) unknown,
   }) {
     return defaultError(error);
   }
@@ -3175,7 +3401,7 @@ class _$DefaultErrorImpl implements DefaultError {
     TResult? Function()? requestTimeout,
     TResult? Function()? sendTimeout,
     TResult? Function()? conflict,
-    TResult? Function()? internalServerError,
+    TResult? Function(String? error)? internalServerError,
     TResult? Function()? notImplemented,
     TResult? Function()? serviceUnavailable,
     TResult? Function()? noInternetConnection,
@@ -3183,6 +3409,8 @@ class _$DefaultErrorImpl implements DefaultError {
     TResult? Function()? unableToProcess,
     TResult? Function(String error)? defaultError,
     TResult? Function()? unexpectedError,
+    TResult? Function()? receiveTimeout,
+    TResult? Function(String reason)? unknown,
   }) {
     return defaultError?.call(error);
   }
@@ -3199,7 +3427,7 @@ class _$DefaultErrorImpl implements DefaultError {
     TResult Function()? requestTimeout,
     TResult Function()? sendTimeout,
     TResult Function()? conflict,
-    TResult Function()? internalServerError,
+    TResult Function(String? error)? internalServerError,
     TResult Function()? notImplemented,
     TResult Function()? serviceUnavailable,
     TResult Function()? noInternetConnection,
@@ -3207,6 +3435,8 @@ class _$DefaultErrorImpl implements DefaultError {
     TResult Function()? unableToProcess,
     TResult Function(String error)? defaultError,
     TResult Function()? unexpectedError,
+    TResult Function()? receiveTimeout,
+    TResult Function(String reason)? unknown,
     required TResult orElse(),
   }) {
     if (defaultError != null) {
@@ -3235,6 +3465,8 @@ class _$DefaultErrorImpl implements DefaultError {
     required TResult Function(UnableToProcess value) unableToProcess,
     required TResult Function(DefaultError value) defaultError,
     required TResult Function(UnexpectedError value) unexpectedError,
+    required TResult Function(RecieveTimeOut value) receiveTimeout,
+    required TResult Function(Unknown value) unknown,
   }) {
     return defaultError(this);
   }
@@ -3259,6 +3491,8 @@ class _$DefaultErrorImpl implements DefaultError {
     TResult? Function(UnableToProcess value)? unableToProcess,
     TResult? Function(DefaultError value)? defaultError,
     TResult? Function(UnexpectedError value)? unexpectedError,
+    TResult? Function(RecieveTimeOut value)? receiveTimeout,
+    TResult? Function(Unknown value)? unknown,
   }) {
     return defaultError?.call(this);
   }
@@ -3283,6 +3517,8 @@ class _$DefaultErrorImpl implements DefaultError {
     TResult Function(UnableToProcess value)? unableToProcess,
     TResult Function(DefaultError value)? defaultError,
     TResult Function(UnexpectedError value)? unexpectedError,
+    TResult Function(RecieveTimeOut value)? receiveTimeout,
+    TResult Function(Unknown value)? unknown,
     required TResult orElse(),
   }) {
     if (defaultError != null) {
@@ -3348,7 +3584,7 @@ class _$UnexpectedErrorImpl implements UnexpectedError {
     required TResult Function() requestTimeout,
     required TResult Function() sendTimeout,
     required TResult Function() conflict,
-    required TResult Function() internalServerError,
+    required TResult Function(String? error) internalServerError,
     required TResult Function() notImplemented,
     required TResult Function() serviceUnavailable,
     required TResult Function() noInternetConnection,
@@ -3356,6 +3592,8 @@ class _$UnexpectedErrorImpl implements UnexpectedError {
     required TResult Function() unableToProcess,
     required TResult Function(String error) defaultError,
     required TResult Function() unexpectedError,
+    required TResult Function() receiveTimeout,
+    required TResult Function(String reason) unknown,
   }) {
     return unexpectedError();
   }
@@ -3372,7 +3610,7 @@ class _$UnexpectedErrorImpl implements UnexpectedError {
     TResult? Function()? requestTimeout,
     TResult? Function()? sendTimeout,
     TResult? Function()? conflict,
-    TResult? Function()? internalServerError,
+    TResult? Function(String? error)? internalServerError,
     TResult? Function()? notImplemented,
     TResult? Function()? serviceUnavailable,
     TResult? Function()? noInternetConnection,
@@ -3380,6 +3618,8 @@ class _$UnexpectedErrorImpl implements UnexpectedError {
     TResult? Function()? unableToProcess,
     TResult? Function(String error)? defaultError,
     TResult? Function()? unexpectedError,
+    TResult? Function()? receiveTimeout,
+    TResult? Function(String reason)? unknown,
   }) {
     return unexpectedError?.call();
   }
@@ -3396,7 +3636,7 @@ class _$UnexpectedErrorImpl implements UnexpectedError {
     TResult Function()? requestTimeout,
     TResult Function()? sendTimeout,
     TResult Function()? conflict,
-    TResult Function()? internalServerError,
+    TResult Function(String? error)? internalServerError,
     TResult Function()? notImplemented,
     TResult Function()? serviceUnavailable,
     TResult Function()? noInternetConnection,
@@ -3404,6 +3644,8 @@ class _$UnexpectedErrorImpl implements UnexpectedError {
     TResult Function()? unableToProcess,
     TResult Function(String error)? defaultError,
     TResult Function()? unexpectedError,
+    TResult Function()? receiveTimeout,
+    TResult Function(String reason)? unknown,
     required TResult orElse(),
   }) {
     if (unexpectedError != null) {
@@ -3432,6 +3674,8 @@ class _$UnexpectedErrorImpl implements UnexpectedError {
     required TResult Function(UnableToProcess value) unableToProcess,
     required TResult Function(DefaultError value) defaultError,
     required TResult Function(UnexpectedError value) unexpectedError,
+    required TResult Function(RecieveTimeOut value) receiveTimeout,
+    required TResult Function(Unknown value) unknown,
   }) {
     return unexpectedError(this);
   }
@@ -3456,6 +3700,8 @@ class _$UnexpectedErrorImpl implements UnexpectedError {
     TResult? Function(UnableToProcess value)? unableToProcess,
     TResult? Function(DefaultError value)? defaultError,
     TResult? Function(UnexpectedError value)? unexpectedError,
+    TResult? Function(RecieveTimeOut value)? receiveTimeout,
+    TResult? Function(Unknown value)? unknown,
   }) {
     return unexpectedError?.call(this);
   }
@@ -3480,6 +3726,8 @@ class _$UnexpectedErrorImpl implements UnexpectedError {
     TResult Function(UnableToProcess value)? unableToProcess,
     TResult Function(DefaultError value)? defaultError,
     TResult Function(UnexpectedError value)? unexpectedError,
+    TResult Function(RecieveTimeOut value)? receiveTimeout,
+    TResult Function(Unknown value)? unknown,
     required TResult orElse(),
   }) {
     if (unexpectedError != null) {
@@ -3491,4 +3739,443 @@ class _$UnexpectedErrorImpl implements UnexpectedError {
 
 abstract class UnexpectedError implements NetworkExceptions {
   const factory UnexpectedError() = _$UnexpectedErrorImpl;
+}
+
+/// @nodoc
+abstract class _$$RecieveTimeOutImplCopyWith<$Res> {
+  factory _$$RecieveTimeOutImplCopyWith(_$RecieveTimeOutImpl value,
+          $Res Function(_$RecieveTimeOutImpl) then) =
+      __$$RecieveTimeOutImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$RecieveTimeOutImplCopyWithImpl<$Res>
+    extends _$NetworkExceptionsCopyWithImpl<$Res, _$RecieveTimeOutImpl>
+    implements _$$RecieveTimeOutImplCopyWith<$Res> {
+  __$$RecieveTimeOutImplCopyWithImpl(
+      _$RecieveTimeOutImpl _value, $Res Function(_$RecieveTimeOutImpl) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$RecieveTimeOutImpl implements RecieveTimeOut {
+  const _$RecieveTimeOutImpl();
+
+  @override
+  String toString() {
+    return 'NetworkExceptions.receiveTimeout()';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$RecieveTimeOutImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() requestCancelled,
+    required TResult Function() unauthorisedRequest,
+    required TResult Function() badRequest,
+    required TResult Function(String reason) notFound,
+    required TResult Function() methodNotAllowed,
+    required TResult Function() notAcceptable,
+    required TResult Function() requestTimeout,
+    required TResult Function() sendTimeout,
+    required TResult Function() conflict,
+    required TResult Function(String? error) internalServerError,
+    required TResult Function() notImplemented,
+    required TResult Function() serviceUnavailable,
+    required TResult Function() noInternetConnection,
+    required TResult Function() formatException,
+    required TResult Function() unableToProcess,
+    required TResult Function(String error) defaultError,
+    required TResult Function() unexpectedError,
+    required TResult Function() receiveTimeout,
+    required TResult Function(String reason) unknown,
+  }) {
+    return receiveTimeout();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? requestCancelled,
+    TResult? Function()? unauthorisedRequest,
+    TResult? Function()? badRequest,
+    TResult? Function(String reason)? notFound,
+    TResult? Function()? methodNotAllowed,
+    TResult? Function()? notAcceptable,
+    TResult? Function()? requestTimeout,
+    TResult? Function()? sendTimeout,
+    TResult? Function()? conflict,
+    TResult? Function(String? error)? internalServerError,
+    TResult? Function()? notImplemented,
+    TResult? Function()? serviceUnavailable,
+    TResult? Function()? noInternetConnection,
+    TResult? Function()? formatException,
+    TResult? Function()? unableToProcess,
+    TResult? Function(String error)? defaultError,
+    TResult? Function()? unexpectedError,
+    TResult? Function()? receiveTimeout,
+    TResult? Function(String reason)? unknown,
+  }) {
+    return receiveTimeout?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? requestCancelled,
+    TResult Function()? unauthorisedRequest,
+    TResult Function()? badRequest,
+    TResult Function(String reason)? notFound,
+    TResult Function()? methodNotAllowed,
+    TResult Function()? notAcceptable,
+    TResult Function()? requestTimeout,
+    TResult Function()? sendTimeout,
+    TResult Function()? conflict,
+    TResult Function(String? error)? internalServerError,
+    TResult Function()? notImplemented,
+    TResult Function()? serviceUnavailable,
+    TResult Function()? noInternetConnection,
+    TResult Function()? formatException,
+    TResult Function()? unableToProcess,
+    TResult Function(String error)? defaultError,
+    TResult Function()? unexpectedError,
+    TResult Function()? receiveTimeout,
+    TResult Function(String reason)? unknown,
+    required TResult orElse(),
+  }) {
+    if (receiveTimeout != null) {
+      return receiveTimeout();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(RequestCancelled value) requestCancelled,
+    required TResult Function(UnauthorisedRequest value) unauthorisedRequest,
+    required TResult Function(BadRequest value) badRequest,
+    required TResult Function(NotFound value) notFound,
+    required TResult Function(MethodNotAllowed value) methodNotAllowed,
+    required TResult Function(NotAcceptable value) notAcceptable,
+    required TResult Function(RequestTimeout value) requestTimeout,
+    required TResult Function(SendTimeout value) sendTimeout,
+    required TResult Function(Conflict value) conflict,
+    required TResult Function(InternalServerError value) internalServerError,
+    required TResult Function(NotImplemented value) notImplemented,
+    required TResult Function(ServiceUnavailable value) serviceUnavailable,
+    required TResult Function(NoInternetConnection value) noInternetConnection,
+    required TResult Function(FormatException value) formatException,
+    required TResult Function(UnableToProcess value) unableToProcess,
+    required TResult Function(DefaultError value) defaultError,
+    required TResult Function(UnexpectedError value) unexpectedError,
+    required TResult Function(RecieveTimeOut value) receiveTimeout,
+    required TResult Function(Unknown value) unknown,
+  }) {
+    return receiveTimeout(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(RequestCancelled value)? requestCancelled,
+    TResult? Function(UnauthorisedRequest value)? unauthorisedRequest,
+    TResult? Function(BadRequest value)? badRequest,
+    TResult? Function(NotFound value)? notFound,
+    TResult? Function(MethodNotAllowed value)? methodNotAllowed,
+    TResult? Function(NotAcceptable value)? notAcceptable,
+    TResult? Function(RequestTimeout value)? requestTimeout,
+    TResult? Function(SendTimeout value)? sendTimeout,
+    TResult? Function(Conflict value)? conflict,
+    TResult? Function(InternalServerError value)? internalServerError,
+    TResult? Function(NotImplemented value)? notImplemented,
+    TResult? Function(ServiceUnavailable value)? serviceUnavailable,
+    TResult? Function(NoInternetConnection value)? noInternetConnection,
+    TResult? Function(FormatException value)? formatException,
+    TResult? Function(UnableToProcess value)? unableToProcess,
+    TResult? Function(DefaultError value)? defaultError,
+    TResult? Function(UnexpectedError value)? unexpectedError,
+    TResult? Function(RecieveTimeOut value)? receiveTimeout,
+    TResult? Function(Unknown value)? unknown,
+  }) {
+    return receiveTimeout?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(RequestCancelled value)? requestCancelled,
+    TResult Function(UnauthorisedRequest value)? unauthorisedRequest,
+    TResult Function(BadRequest value)? badRequest,
+    TResult Function(NotFound value)? notFound,
+    TResult Function(MethodNotAllowed value)? methodNotAllowed,
+    TResult Function(NotAcceptable value)? notAcceptable,
+    TResult Function(RequestTimeout value)? requestTimeout,
+    TResult Function(SendTimeout value)? sendTimeout,
+    TResult Function(Conflict value)? conflict,
+    TResult Function(InternalServerError value)? internalServerError,
+    TResult Function(NotImplemented value)? notImplemented,
+    TResult Function(ServiceUnavailable value)? serviceUnavailable,
+    TResult Function(NoInternetConnection value)? noInternetConnection,
+    TResult Function(FormatException value)? formatException,
+    TResult Function(UnableToProcess value)? unableToProcess,
+    TResult Function(DefaultError value)? defaultError,
+    TResult Function(UnexpectedError value)? unexpectedError,
+    TResult Function(RecieveTimeOut value)? receiveTimeout,
+    TResult Function(Unknown value)? unknown,
+    required TResult orElse(),
+  }) {
+    if (receiveTimeout != null) {
+      return receiveTimeout(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class RecieveTimeOut implements NetworkExceptions {
+  const factory RecieveTimeOut() = _$RecieveTimeOutImpl;
+}
+
+/// @nodoc
+abstract class _$$UnknownImplCopyWith<$Res> {
+  factory _$$UnknownImplCopyWith(
+          _$UnknownImpl value, $Res Function(_$UnknownImpl) then) =
+      __$$UnknownImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String reason});
+}
+
+/// @nodoc
+class __$$UnknownImplCopyWithImpl<$Res>
+    extends _$NetworkExceptionsCopyWithImpl<$Res, _$UnknownImpl>
+    implements _$$UnknownImplCopyWith<$Res> {
+  __$$UnknownImplCopyWithImpl(
+      _$UnknownImpl _value, $Res Function(_$UnknownImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? reason = null,
+  }) {
+    return _then(_$UnknownImpl(
+      null == reason
+          ? _value.reason
+          : reason // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$UnknownImpl implements Unknown {
+  const _$UnknownImpl(this.reason);
+
+  @override
+  final String reason;
+
+  @override
+  String toString() {
+    return 'NetworkExceptions.unknown(reason: $reason)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$UnknownImpl &&
+            (identical(other.reason, reason) || other.reason == reason));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, reason);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$UnknownImplCopyWith<_$UnknownImpl> get copyWith =>
+      __$$UnknownImplCopyWithImpl<_$UnknownImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() requestCancelled,
+    required TResult Function() unauthorisedRequest,
+    required TResult Function() badRequest,
+    required TResult Function(String reason) notFound,
+    required TResult Function() methodNotAllowed,
+    required TResult Function() notAcceptable,
+    required TResult Function() requestTimeout,
+    required TResult Function() sendTimeout,
+    required TResult Function() conflict,
+    required TResult Function(String? error) internalServerError,
+    required TResult Function() notImplemented,
+    required TResult Function() serviceUnavailable,
+    required TResult Function() noInternetConnection,
+    required TResult Function() formatException,
+    required TResult Function() unableToProcess,
+    required TResult Function(String error) defaultError,
+    required TResult Function() unexpectedError,
+    required TResult Function() receiveTimeout,
+    required TResult Function(String reason) unknown,
+  }) {
+    return unknown(reason);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? requestCancelled,
+    TResult? Function()? unauthorisedRequest,
+    TResult? Function()? badRequest,
+    TResult? Function(String reason)? notFound,
+    TResult? Function()? methodNotAllowed,
+    TResult? Function()? notAcceptable,
+    TResult? Function()? requestTimeout,
+    TResult? Function()? sendTimeout,
+    TResult? Function()? conflict,
+    TResult? Function(String? error)? internalServerError,
+    TResult? Function()? notImplemented,
+    TResult? Function()? serviceUnavailable,
+    TResult? Function()? noInternetConnection,
+    TResult? Function()? formatException,
+    TResult? Function()? unableToProcess,
+    TResult? Function(String error)? defaultError,
+    TResult? Function()? unexpectedError,
+    TResult? Function()? receiveTimeout,
+    TResult? Function(String reason)? unknown,
+  }) {
+    return unknown?.call(reason);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? requestCancelled,
+    TResult Function()? unauthorisedRequest,
+    TResult Function()? badRequest,
+    TResult Function(String reason)? notFound,
+    TResult Function()? methodNotAllowed,
+    TResult Function()? notAcceptable,
+    TResult Function()? requestTimeout,
+    TResult Function()? sendTimeout,
+    TResult Function()? conflict,
+    TResult Function(String? error)? internalServerError,
+    TResult Function()? notImplemented,
+    TResult Function()? serviceUnavailable,
+    TResult Function()? noInternetConnection,
+    TResult Function()? formatException,
+    TResult Function()? unableToProcess,
+    TResult Function(String error)? defaultError,
+    TResult Function()? unexpectedError,
+    TResult Function()? receiveTimeout,
+    TResult Function(String reason)? unknown,
+    required TResult orElse(),
+  }) {
+    if (unknown != null) {
+      return unknown(reason);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(RequestCancelled value) requestCancelled,
+    required TResult Function(UnauthorisedRequest value) unauthorisedRequest,
+    required TResult Function(BadRequest value) badRequest,
+    required TResult Function(NotFound value) notFound,
+    required TResult Function(MethodNotAllowed value) methodNotAllowed,
+    required TResult Function(NotAcceptable value) notAcceptable,
+    required TResult Function(RequestTimeout value) requestTimeout,
+    required TResult Function(SendTimeout value) sendTimeout,
+    required TResult Function(Conflict value) conflict,
+    required TResult Function(InternalServerError value) internalServerError,
+    required TResult Function(NotImplemented value) notImplemented,
+    required TResult Function(ServiceUnavailable value) serviceUnavailable,
+    required TResult Function(NoInternetConnection value) noInternetConnection,
+    required TResult Function(FormatException value) formatException,
+    required TResult Function(UnableToProcess value) unableToProcess,
+    required TResult Function(DefaultError value) defaultError,
+    required TResult Function(UnexpectedError value) unexpectedError,
+    required TResult Function(RecieveTimeOut value) receiveTimeout,
+    required TResult Function(Unknown value) unknown,
+  }) {
+    return unknown(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(RequestCancelled value)? requestCancelled,
+    TResult? Function(UnauthorisedRequest value)? unauthorisedRequest,
+    TResult? Function(BadRequest value)? badRequest,
+    TResult? Function(NotFound value)? notFound,
+    TResult? Function(MethodNotAllowed value)? methodNotAllowed,
+    TResult? Function(NotAcceptable value)? notAcceptable,
+    TResult? Function(RequestTimeout value)? requestTimeout,
+    TResult? Function(SendTimeout value)? sendTimeout,
+    TResult? Function(Conflict value)? conflict,
+    TResult? Function(InternalServerError value)? internalServerError,
+    TResult? Function(NotImplemented value)? notImplemented,
+    TResult? Function(ServiceUnavailable value)? serviceUnavailable,
+    TResult? Function(NoInternetConnection value)? noInternetConnection,
+    TResult? Function(FormatException value)? formatException,
+    TResult? Function(UnableToProcess value)? unableToProcess,
+    TResult? Function(DefaultError value)? defaultError,
+    TResult? Function(UnexpectedError value)? unexpectedError,
+    TResult? Function(RecieveTimeOut value)? receiveTimeout,
+    TResult? Function(Unknown value)? unknown,
+  }) {
+    return unknown?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(RequestCancelled value)? requestCancelled,
+    TResult Function(UnauthorisedRequest value)? unauthorisedRequest,
+    TResult Function(BadRequest value)? badRequest,
+    TResult Function(NotFound value)? notFound,
+    TResult Function(MethodNotAllowed value)? methodNotAllowed,
+    TResult Function(NotAcceptable value)? notAcceptable,
+    TResult Function(RequestTimeout value)? requestTimeout,
+    TResult Function(SendTimeout value)? sendTimeout,
+    TResult Function(Conflict value)? conflict,
+    TResult Function(InternalServerError value)? internalServerError,
+    TResult Function(NotImplemented value)? notImplemented,
+    TResult Function(ServiceUnavailable value)? serviceUnavailable,
+    TResult Function(NoInternetConnection value)? noInternetConnection,
+    TResult Function(FormatException value)? formatException,
+    TResult Function(UnableToProcess value)? unableToProcess,
+    TResult Function(DefaultError value)? defaultError,
+    TResult Function(UnexpectedError value)? unexpectedError,
+    TResult Function(RecieveTimeOut value)? receiveTimeout,
+    TResult Function(Unknown value)? unknown,
+    required TResult orElse(),
+  }) {
+    if (unknown != null) {
+      return unknown(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class Unknown implements NetworkExceptions {
+  const factory Unknown(final String reason) = _$UnknownImpl;
+
+  String get reason;
+  @JsonKey(ignore: true)
+  _$$UnknownImplCopyWith<_$UnknownImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }

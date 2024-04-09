@@ -1,4 +1,5 @@
 import 'package:activity/application/map/map_state.dart';
+import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/main.dart';
 import 'package:activity/infrastructure/models/data/each_markers_models.dart';
 import 'package:activity/infrastructure/models/data/gym_data.dart';
@@ -7,9 +8,6 @@ import 'package:activity/infrastructure/models/request/get_yandex_map_image_requ
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
-import 'package:activity/presentation/pages/map/widget/pop_up_map.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,8 +24,8 @@ class MapNotifier extends StateNotifier<MapState> {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied ||
         permission == LocationPermission.deniedForever) {
-      state = state.copyWith(locationPermissionIsNOtGiven: true);
-      await Geolocator.requestPermission();
+      state = state.copyWith(locationPermissionDenied: true);
+      permission = await Geolocator.requestPermission();
     }
     if (permission == LocationPermission.always ||
         permission == LocationPermission.whileInUse) {
@@ -35,7 +33,7 @@ class MapNotifier extends StateNotifier<MapState> {
         final postion = await Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.high);
         state = state.copyWith(userPosition: postion);
-        state = state.copyWith(locationPermissionIsNOtGiven: false);
+        state = state.copyWith(locationPermissionDenied: false);
       } catch (e) {
         state = state.copyWith(locationServiceIsNotEnabled: true);
       }
@@ -62,7 +60,7 @@ class MapNotifier extends StateNotifier<MapState> {
           state.copyWith(activitiesWithGymsInsideAll: withCalculatedDistances);
 
       state = state.copyWith(listOfMarkers: markersList);
-      state = state.copyWith(locationPermissionIsNOtGiven: false);
+      state = state.copyWith(locationPermissionDenied: false);
       state = state.copyWith(isloading: false);
       setFlexes();
     } catch (e) {
@@ -104,8 +102,9 @@ class MapNotifier extends StateNotifier<MapState> {
             state = state.copyWith(mapScreenShot: data, isloading: false);
           }
         },
-        failure: (error, statusCode) {
-          AppHelpers.showErrorSnack(context, "$error $statusCode");
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
           state = state.copyWith(isloading: false);
         },
       );
@@ -150,8 +149,9 @@ class MapNotifier extends StateNotifier<MapState> {
             state = state.copyWith(mapScreenShot: data);
           }
         },
-        failure: (error, statusCode) {
-          AppHelpers.showSnack(context, "$error $statusCode");
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
       );
       state = state.copyWith(isloading: false);
@@ -162,19 +162,21 @@ class MapNotifier extends StateNotifier<MapState> {
   }
 
   Future<void> setLocationFromSelectedCity() async {
-    state = state.copyWith(
-        userPosition: Position(
-      longitude: double.parse(LocalStorage.getSelectedCityLon()),
-      latitude: double.parse(LocalStorage.getSelectedCityLat()),
-      timestamp: DateTime.now(),
-      accuracy: 5,
-      altitude: 5,
-      altitudeAccuracy: 0.5,
-      heading: 0.5,
-      headingAccuracy: 0,
-      speed: 0,
-      speedAccuracy: 0,
-    ));
+    if (state.locationServiceIsNotEnabled || state.locationPermissionDenied) {
+      state = state.copyWith(
+          userPosition: Position(
+        longitude: double.parse(LocalStorage.getSelectedCityLon()),
+        latitude: double.parse(LocalStorage.getSelectedCityLat()),
+        timestamp: DateTime.now(),
+        accuracy: 5,
+        altitude: 5,
+        altitudeAccuracy: 0.5,
+        heading: 0.5,
+        headingAccuracy: 0,
+        speed: 0,
+        speedAccuracy: 0,
+      ));
+    }
   }
 
   void setLocationServiceAsEnabled() {
@@ -282,9 +284,12 @@ class MapNotifier extends StateNotifier<MapState> {
     );
   }
 
+  Future<void> setShowOnlyKnown(bool value) async{
+    state = state.copyWith(showOnlyKnown: value);
+  }
+
   Future<void> getGymsList(
     BuildContext context,
-    bool showOnlyKnown,
   ) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
@@ -295,7 +300,7 @@ class MapNotifier extends StateNotifier<MapState> {
         success: (data) {
           final gymsMapFromServer = data["object"] as Map<String, dynamic>;
           final listToCollectActivitiesWithGyms = <LessonTypeWithGymsInside>[];
-          if (showOnlyKnown) {
+          if (state.showOnlyKnown) {
             List<String> knownActivities = LocalStorage.getKnownActivities();
             for (var element in knownActivities) {
               gymsMapFromServer.forEach((key, value) {
@@ -329,8 +334,9 @@ class MapNotifier extends StateNotifier<MapState> {
           state = state.copyWith(
               activitiesWithGymsInsideAll: withCalculatedDistances);
         },
-        failure: (error, statusCode) {
-          AppHelpers.showErrorSnack(context, error.toString());
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
         },
       );
       state = state.copyWith(isloading: false);
@@ -396,6 +402,7 @@ class MapNotifier extends StateNotifier<MapState> {
   Future<void> setFlexes() async {
     await Future.delayed(const Duration(milliseconds: 100));
     final list = state.activitiesWithGymsInsideFromSelectedDiapozone;
+    bool isAnyOpened = list.any((element) => element.isOpened);
     if (state.isloading) {
       state = state.copyWith(
         topFlex: 3,
@@ -408,10 +415,16 @@ class MapNotifier extends StateNotifier<MapState> {
         bottomFlex: 10,
       );
     }
-    if (list.length == 1) {
+    if (list.length == 1 && !state.isloading && !isAnyOpened) {
       state = state.copyWith(
         topFlex: 2,
         bottomFlex: 9,
+      );
+    }
+    if (list.length == 1 && isAnyOpened) {
+      state = state.copyWith(
+        topFlex: 4,
+        bottomFlex: 6,
       );
     }
     if (list.length == 2) {
@@ -436,24 +449,21 @@ class MapNotifier extends StateNotifier<MapState> {
       state = state.copyWith(topFlex: 6, bottomFlex: 8);
     }
     if ((list.isNotEmpty && list.length <= 2) &&
-        (state.locationPermissionIsNOtGiven ||
-            state.locationServiceIsNotEnabled)) {
+        (state.locationPermissionDenied || state.locationServiceIsNotEnabled)) {
       state = state.copyWith(
         topFlex: 4,
         bottomFlex: 6,
       );
     }
     if ((list.length >= 3 && list.length <= 4) &&
-        (state.locationPermissionIsNOtGiven ||
-            state.locationServiceIsNotEnabled)) {
+        (state.locationPermissionDenied || state.locationServiceIsNotEnabled)) {
       state = state.copyWith(
         topFlex: 5,
         bottomFlex: 6,
       );
     }
     if (list.length >= 5 &&
-        (state.locationPermissionIsNOtGiven ||
-            state.locationServiceIsNotEnabled)) {
+        (state.locationPermissionDenied || state.locationServiceIsNotEnabled)) {
       state = state.copyWith(
         topFlex: 7,
         bottomFlex: 5,
@@ -463,7 +473,7 @@ class MapNotifier extends StateNotifier<MapState> {
 
   void openGymslist() {
     final list = state.activitiesWithGymsInsideFromSelectedDiapozone;
-    if (!state.locationPermissionIsNOtGiven) {
+    if (!state.locationPermissionDenied) {
       if (list.length == 1) {
         state = state.copyWith(topFlex: 3);
         state = state.copyWith(bottomFlex: 8);
@@ -484,16 +494,6 @@ class MapNotifier extends StateNotifier<MapState> {
 
   void closeGymslist() {
     setFlexes();
-  }
-
-  void openCloseGymsList() {
-    final list = state.activitiesWithGymsInsideFromSelectedDiapozone;
-    bool isOpened = list.any((element) => element.isOpened);
-    if (isOpened) {
-      openGymslist();
-    } else {
-      closeGymslist();
-    }
   }
 
   void closeOpenedActivities() {
@@ -533,38 +533,18 @@ class MapNotifier extends StateNotifier<MapState> {
 
   void showPopUpOnMap(BuildContext context) {
     // remove prvious pop up first
-    if (state.activeMarker?.name != "user") {
-      removePopUp();
+    if (state.activeMarker != null && state.activeMarker?.name != "user") {
+      removePopUp(); // if there is a pop up remove it
       if (!state.isLocationIconHidden) {
         hideLocationIcon();
       }
-      final overlay = Overlay.of(context);
-      entry = OverlayEntry(
-        builder: (context) {
-          return Positioned(
-            bottom: 0,
-            child: PopUpMap(
-              name: state.activeMarker?.name ?? "??",
-              address: state.activeMarker?.address ?? "??",
-              onTap: () {
-                entry!.remove();
-                showLocationButton();
-                context.router.push(
-                  ActivityRoute(gymId: state.activeMarker?.id ?? 0),
-                );
-              },
-            ),
-          );
-        },
-      );
-      overlay.insert(entry!);
+      state = state.copyWith(isGymsPopupShown: true);
     }
   }
 
   void removePopUp() {
-    if (entry != null && entry!.mounted) {
-      entry?.remove();
-      showLocationButton();
+    if (state.isGymsPopupShown) {
+      state = state.copyWith(isGymsPopupShown: false);
     }
   }
 
@@ -657,7 +637,10 @@ class MapNotifier extends StateNotifier<MapState> {
             state = state.copyWith(gymFoundBySearching: list);
           }
         },
-        failure: (error, statuscode) {},
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
+        },
       );
     } else {
       // ignore: use_build_context_synchronously
@@ -666,11 +649,10 @@ class MapNotifier extends StateNotifier<MapState> {
   }
 
   void locationButtonFunction(YandexMapController? mapController) async {
-    if (state.locationPermissionIsNOtGiven) {
+    if (state.locationPermissionDenied) {
       await Geolocator.requestPermission();
     }
-    if (!state.locationPermissionIsNOtGiven &&
-        state.locationServiceIsNotEnabled) {
+    if (!state.locationPermissionDenied && state.locationServiceIsNotEnabled) {
       await Geolocator.openLocationSettings();
     }
     mapController?.moveCamera(

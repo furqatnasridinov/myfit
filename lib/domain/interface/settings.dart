@@ -1,8 +1,16 @@
+import 'dart:io';
 import 'package:activity/domain/handlers/api_result.dart';
+import 'package:activity/infrastructure/models/request/send_confirmation_code_request.dart';
+import 'package:activity/infrastructure/models/request/send_phone_number_request.dart';
 
 abstract class SetttingsRepositoryInterface {
   Future<ApiResult<Map<String, dynamic>>> patchUser(
       {required Map<String, dynamic> request});
-  //Future<ApiResult<User>> getUser(/* by token */) ;
+  Future<ApiResult<Map<String, dynamic>>> getUser() ;
   Future<ApiResult<Map<String, dynamic>>> getListOfCities();
+  Future<ApiResult<Map<String, dynamic>>> changePhoneSendPhoneNumber(
+      {required SendPhoneNumberRequest request});
+  Future<ApiResult<Map<String, dynamic>>> changePhoneSendConfirmationCode(
+      {required SendConfirmationCodeRequest request});
+  Future<ApiResult<Map<String, dynamic>>> addPicture({required File image});
 }
