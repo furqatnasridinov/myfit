@@ -2,7 +2,6 @@
 import 'package:activity/application/activity/activity_notifier.dart';
 import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
-import 'package:activity/infrastructure/models/data/chips_model.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/presentation/components/components.dart';
@@ -24,13 +23,13 @@ class TheOneWithCalendar extends StatefulWidget {
   State<TheOneWithCalendar> createState() => _TheOneWithCalendarState();
 }
 
-final List<ChipsModel> podActives = [
+/* final List<ChipsModel> podActives = [
   ChipsModel(text: "Показать всё", isActive: true),
   ChipsModel(text: "Общая тренировка"),
   ChipsModel(text: "Спарринг"),
   ChipsModel(text: "Зал"),
   ChipsModel(text: "Николай Борисович"),
-];
+]; */
 
 class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
   @override

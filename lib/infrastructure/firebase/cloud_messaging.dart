@@ -44,6 +44,7 @@ class CloudMessaging {
     // ignore: unused_local_variable
     final NotificationSettings permissionSettings = await _firebaseMessaging.requestPermission();
     if (Platform.isAndroid) {
+      // remove platform check in future when i get developer account
         final fcmToken = await _firebaseMessaging.getToken();
         debugPrint('FCM Token: $fcmToken');
     }
