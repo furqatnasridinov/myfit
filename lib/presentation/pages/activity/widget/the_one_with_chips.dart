@@ -1,5 +1,6 @@
 import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/presentation/components/animation_button_effect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -39,7 +40,7 @@ class TheOneWithChips extends StatelessWidget {
                     children: List.generate(activityTypes.length, (index) {
                       final current = activityTypes[index];
                       bool isActive = current == selectedActivity;
-                      return InkWell(
+                      return GestureDetector(
                         onTap: () async {
                           await event.removeSelectedCalendarDay();
                           event
@@ -48,7 +49,34 @@ class TheOneWithChips extends StatelessWidget {
                             ..getPhotosOfSelectedActivity(current)
                             ..getLessonsOfSelectedActivity(current, true);
                         },
-                        child: Container(
+                        child: AnimationButtonEffect(
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(6.r),
+                              border: Border.all(
+                                color: isActive
+                                    ? Colors.transparent
+                                    : AppColors.blueBorder,
+                              ),
+                              color:
+                                  isActive ? AppColors.blueColor : Colors.white,
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16.w,
+                                vertical: 5.h,
+                              ),
+                              child: CustomText(
+                                text: current,
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                                color: isActive ? Colors.white : Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        /* Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: 16.w,
                             vertical: 5.h,
@@ -69,7 +97,7 @@ class TheOneWithChips extends StatelessWidget {
                             fontWeight: FontWeight.w400,
                             color: isActive ? Colors.white : Colors.black,
                           ),
-                        ),
+                        ), */
                       );
                     }),
                   ),

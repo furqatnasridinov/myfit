@@ -6,6 +6,7 @@ import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/infrastructure/models/response/user_schedules_response.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
+import 'package:activity/presentation/components/animation_button_effect.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/inter_text.dart';
@@ -328,26 +329,30 @@ Widget _plusButton(
           isplusState = false,
           setstate(() {}),
         },
-        dropDownChild: Container(
-          width: 40.w,
-          height: 40.h,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.r),
-              border: Border.all(
-                width: 1.w,
+        dropDownChild: AnimationButtonEffect(
+          child: SizedBox(
+            width: 40.w,
+              height: 40.h,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.r),
+                border: Border.all(
+                  width: 1.w,
+                  color: AppColors.blueColor,
+                ),
                 color: AppColors.blueColor,
               ),
-              color: AppColors.blueColor),
-          child: Transform.rotate(
-            angle: isplusState == true ? (45 * pi / 180) : (0 * pi / 180),
-            child: Icon(
-              Icons.add,
-              color: Colors.white,
-              size: 18.r,
+            child: Transform.rotate(
+              angle: isplusState == true ? (45 * pi / 180) : (0 * pi / 180),
+              child: Icon(
+                Icons.add,
+                color: Colors.white,
+                size: 18.r,
+              ),
             ),
           ),
-        ),
-      );
+                ),
+        ));
     });
   });
 }

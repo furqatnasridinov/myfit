@@ -97,7 +97,8 @@ class AppHelpers {
       case "CONFIRMED":
         return "Вы записаны";
       case "CANCELED_GYM":
-        return "Отменено заведением";
+        //return "Отменено заведением";
+        return "Записаться";
       case "CANCELED_USER":
         //return "Отменено вами";
         return "Записаться";
@@ -119,7 +120,8 @@ class AppHelpers {
       case "CONFIRMED":
         return Colors.black;
       case "CANCELED_GYM":
-        return Colors.red;
+        //return Colors.red;
+        return AppColors.blueText;
       case "CANCELED_USER":
         return AppColors.blueText;
       //return Colors.red;

@@ -37,39 +37,49 @@ class UiDropDownMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton(
-      //padding: EdgeInsets.zero,
-
-      elevation: 0,
-      color: Colors.white,
-      offset: customOffset != null
-          ? Offset(customOffset?[0], customOffset?[1])
-          : const Offset(0, -10),
-      onOpened: onOpenedAction,
-      onCanceled: onClosedAction,
-      constraints: BoxConstraints(maxWidth: maxWidth!),
-      shape: OutlineInputBorder(
-        borderSide: const BorderSide(color: Color.fromRGBO(119, 170, 249, 1)),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(16.r),
-          bottomRight: Radius.circular(16.r),
-          topLeft: leftCornerShape == true
-              ? Radius.circular(4.r)
-              : Radius.circular(16.r),
-          topRight: leftCornerShape == true
-              ? Radius.circular(16.r)
-              : Radius.circular(4.r),
-        ),
+    return Theme(
+      data: Theme.of(context).copyWith(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
       ),
-      //color: Colors.white,
-      position: PopupMenuPosition.under,
-      itemBuilder: (BuildContext context) => [
-        ...dropDownItemsList
-            .map((el) => _dropDownMenuRow(el['title'].toString(), el['icon'],
-                el['iconColor'], el['action']))
-            .toList()
-      ],
-      child: dropDownChild,
+      child: PopupMenuButton(
+        //padding: EdgeInsets.zero,
+        enableFeedback: false,
+        elevation: 0,
+        tooltip: "",
+        shadowColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        color: Colors.white,
+        splashRadius: 16.r,
+        offset: customOffset != null
+            ? Offset(customOffset?[0], customOffset?[1])
+            : const Offset(0, -10),
+        onOpened: onOpenedAction,
+        onCanceled: onClosedAction,
+        constraints: BoxConstraints(maxWidth: maxWidth!),
+        shape: OutlineInputBorder(
+          borderSide: const BorderSide(color: Color.fromRGBO(119, 170, 249, 1)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(16.r),
+            bottomRight: Radius.circular(16.r),
+            topLeft: leftCornerShape == true
+                ? Radius.circular(4.r)
+                : Radius.circular(16.r),
+            topRight: leftCornerShape == true
+                ? Radius.circular(16.r)
+                : Radius.circular(4.r),
+          ),
+        ),
+        //color: Colors.white,
+        position: PopupMenuPosition.under,
+        itemBuilder: (BuildContext context) => [
+          ...dropDownItemsList
+              .map((el) => _dropDownMenuRow(el['title'].toString(), el['icon'],
+                  el['iconColor'], el['action']))
+              .toList()
+        ],
+        child: dropDownChild,
+      ),
     );
   }
 

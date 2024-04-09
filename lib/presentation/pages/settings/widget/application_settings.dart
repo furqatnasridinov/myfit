@@ -2,6 +2,7 @@
 
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
+import 'package:activity/presentation/components/animation_button_effect.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_text.dart';
@@ -166,27 +167,28 @@ class ApplicationSettings extends StatelessWidget {
 }
 
 Widget eachBlock(String svgPath, String title, void Function()? onTap) {
-  return InkWell(
-    onTap: onTap,
-    borderRadius: BorderRadius.circular(8.r),
-    child: CustomCard(
-      bottomPadding: 8.h,
-      topPadding: 8.h,
-      height: 56.h,
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            svgPath,
-            //width: 24.w,
-            //height: 24.h,
-          ),
-          10.horizontalSpace,
-          CustomText(
-            text: title,
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w400,
-          ),
-        ],
+  return AnimationButtonEffect(
+    child: GestureDetector(
+      onTap: onTap,
+      child: CustomCard(
+        bottomPadding: 8.h,
+        topPadding: 8.h,
+        height: 56.h,
+        child: Row(
+          children: [
+            SvgPicture.asset(
+              svgPath,
+              //width: 24.w,
+              //height: 24.h,
+            ),
+            10.horizontalSpace,
+            CustomText(
+              text: title,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w400,
+            ),
+          ],
+        ),
       ),
     ),
   );

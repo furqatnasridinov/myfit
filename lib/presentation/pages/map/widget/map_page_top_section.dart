@@ -3,6 +3,7 @@ import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/application/map/map_state.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
+import 'package:activity/presentation/components/animation_button_effect.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/pages/map/widget/widget.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ class MapPageTopSection extends StatelessWidget {
             fontSize: 20.sp,
             fontWeight: FontWeight.w600,
           ),
-          InkWell(
+          GestureDetector(
             onTap: () {
               event.removePopUp();
               AppHelpers.showCustomModalBottomSheet(
@@ -49,18 +50,21 @@ class MapPageTopSection extends StatelessWidget {
                 }),
               );
             },
-            child: Container(
-              width: 40.w,
-              height: 40.h,
-              padding: EdgeInsets.all(8.r),
-              decoration: BoxDecoration(
-                border: Border.all(width: 1.w, color: AppColors.greyBorder),
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Center(
-                child: SvgPicture.asset(
-                  "assets/svg/icon_filter.svg",
+            child: AnimationButtonEffect(
+              child: SizedBox(
+                width: 40.w,
+                height: 40.h,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 1.w, color: AppColors.greyBorder),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: Center(
+                    child: SvgPicture.asset(
+                      "assets/svg/icon_filter.svg",
+                    ),
+                  ),
                 ),
               ),
             ),

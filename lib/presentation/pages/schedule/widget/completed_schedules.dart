@@ -1,8 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:math';
+
 import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/presentation/components/animation_button_effect.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/inter_text.dart';
@@ -21,8 +24,9 @@ class CompletedSchedules extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final event = ref.watch(scheduleProvider.notifier);
-    final state = ref.watch(scheduleProvider);
-    return state.completedSchedules.isEmpty
+    final completedSchedules = ref.watch(scheduleProvider).completedSchedules;
+    final completedSchedulesShown = ref.watch(scheduleProvider).completedSchedulesShown;
+    return completedSchedules.isEmpty
         ? const SizedBox.shrink()
         : Padding(
             padding: EdgeInsets.only(top: 16.h),
@@ -38,43 +42,77 @@ class CompletedSchedules extends ConsumerWidget {
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
-                    InkWell(
-                      borderRadius: BorderRadius.circular(8.r),
+                    GestureDetector(
                       onTap: () {
-                        if (state.completedSchedulesShown) {
+                        if (completedSchedulesShown) {
                           event.hideCompletedSchedules();
                         } else {
                           event.showCompletedSchedules();
                         }
                       },
-                      child: Container(
-                        height: 40.h,
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8.r),
-                          border: Border.all(
-                            color: AppColors.blueBorder,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CustomText(
-                              text: state.completedSchedulesShown
-                                  ? "Свернуть"
-                                  : "Развернуть",
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
+                      child: AnimationButtonEffect(
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.r),
+                            border: Border.all(
+                              color: AppColors.blueBorder,
                             ),
-                            4.horizontalSpace,
-                            Icon(
-                              state.completedSchedulesShown
-                                  ? Icons.keyboard_arrow_up
-                                  : Icons.keyboard_arrow_down,
-                              size: 20.sp,
-                              color: Colors.black.withOpacity(0.7),
-                            )
-                          ],
+                          ),
+                          child: SizedBox(
+                            height: 40.h,
+                            width: 135.w,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 5.w),
+                              child: Row(
+                                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    width: 95.w,
+                                    child: AnimatedCrossFade(
+                                      firstCurve: Curves.easeInOut,
+                                      secondCurve: Curves.easeInOut,
+                                      //secondCurve: Curves.easeIn,
+                                      duration: const Duration(milliseconds: 300),
+                                      firstChild: CustomText(
+                                        text: "Свернуть",
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      secondChild: CustomText(
+                                        text: "Развернуть",
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      crossFadeState:
+                                          completedSchedulesShown
+                                              ? CrossFadeState.showFirst
+                                              : CrossFadeState.showSecond,
+                                    ),
+                                  ),
+                                  4.horizontalSpace,
+                                  TweenAnimationBuilder<double>(
+                                    duration: const Duration(milliseconds: 300),
+                                    tween: Tween(
+                                        begin: 0,
+                                        end: completedSchedulesShown
+                                            ? 1.0
+                                            : 0),
+                                    builder: (BuildContext context, double angle,
+                                        Widget? child) {
+                                      return Transform.rotate(
+                                        angle: angle * pi,
+                                        child: Icon(
+                                          Icons.keyboard_arrow_down,
+                                          size: 20.sp,
+                                          color: Colors.black.withOpacity(0.7),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -83,23 +121,26 @@ class CompletedSchedules extends ConsumerWidget {
                 5.verticalSpace,
 
                 // body
-                if (state.completedSchedulesShown)
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: state.completedSchedules.length,
-                    itemBuilder: (context, index) {
-                      return listOfActivitiesEachItem(
-                          context,
-                          state.completedSchedules[index].id,
-                          state.completedSchedules[index].time,
-                          state.completedSchedules[index].describtion,
-                          state.completedSchedules[index].gymName,
-                          state.completedSchedules[index].grade,
-                          state.completedSchedules[index].gymId,
-                          event);
-                    },
-                  ),
+                if (completedSchedulesShown)
+                  Consumer(builder: (context, watch, child) {
+                    final completedSchedules = ref.watch(scheduleProvider).completedSchedules;
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: completedSchedules.length,
+                      itemBuilder: (context, index) {
+                        return listOfActivitiesEachItem(
+                            context,
+                            completedSchedules[index].id,
+                            completedSchedules[index].time,
+                            completedSchedules[index].describtion,
+                            completedSchedules[index].gymName,
+                            completedSchedules[index].grade,
+                            completedSchedules[index].gymId,
+                            event);
+                      },
+                    );
+                  }),
               ],
             ),
           );

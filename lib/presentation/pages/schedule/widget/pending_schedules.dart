@@ -1,8 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:math';
+
 import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/presentation/components/animation_button_effect.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/inter_text.dart';
@@ -20,8 +23,9 @@ class PendingSchedules extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final event = ref.watch(scheduleProvider.notifier);
-    final state = ref.watch(scheduleProvider);
-    return state.waitingSchedules.isEmpty
+    final waitingSchedules = ref.watch(scheduleProvider).waitingSchedules;
+    final pendingSchedulesShown = ref.watch(scheduleProvider).pendingSchedulesShown;
+    return waitingSchedules.isEmpty
         ? const SizedBox.shrink()
         : Padding(
             padding: EdgeInsets.only(top: 16.h),
@@ -37,43 +41,76 @@ class PendingSchedules extends ConsumerWidget {
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
-                    InkWell(
-                      borderRadius: BorderRadius.circular(8.r),
+                    GestureDetector(
                       onTap: () {
-                        if (state.pendingSchedulesShown) {
+                        if (pendingSchedulesShown) {
                           event.hidePendingSchedules();
                         } else {
                           event.showPendingSchedules();
                         }
                       },
-                      child: Container(
-                        height: 40.h,
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8.r),
-                          border: Border.all(
-                            color: AppColors.blueBorder,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CustomText(
-                              text: state.pendingSchedulesShown
-                                  ? "Свернуть"
-                                  : "Развернуть",
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
+                      child: AnimationButtonEffect(
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.r),
+                            border: Border.all(
+                              color: AppColors.blueBorder,
                             ),
-                            4.horizontalSpace,
-                            Icon(
-                              state.pendingSchedulesShown
-                                  ? Icons.keyboard_arrow_up
-                                  : Icons.keyboard_arrow_down,
-                              size: 20.sp,
-                              color: Colors.black.withOpacity(0.7),
-                            )
-                          ],
+                          ),
+                          child: SizedBox(
+                            height: 40.h,
+                            width: 135.w,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 5.w),
+                              child: Row(
+                                //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  SizedBox(
+                                    width: 95.w,
+                                    child: AnimatedCrossFade(
+                                      firstCurve: Curves.easeInOut,
+                                      secondCurve: Curves.easeInOut,
+                                      //secondCurve: Curves.easeIn,
+                                      duration: const Duration(milliseconds: 300),
+                                      firstChild: CustomText(
+                                        text: "Свернуть",
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      secondChild: CustomText(
+                                        text: "Развернуть",
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      crossFadeState: pendingSchedulesShown
+                                          ? CrossFadeState.showFirst
+                                          : CrossFadeState.showSecond,
+                                    ),
+                                  ),
+                                  4.horizontalSpace,
+                                  TweenAnimationBuilder<double>(
+                                    duration: const Duration(milliseconds: 300),
+                                    tween: Tween(
+                                        begin: 0,
+                                        end: pendingSchedulesShown
+                                            ? 1.0
+                                            : 0),
+                                    builder: (BuildContext context, double angle,
+                                        Widget? child) {
+                                      return Transform.rotate(
+                                        angle: angle * pi,
+                                        child: Icon(
+                                          Icons.keyboard_arrow_down,
+                                          size: 20.sp,
+                                          color: Colors.black.withOpacity(0.7),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -82,24 +119,27 @@ class PendingSchedules extends ConsumerWidget {
                 5.verticalSpace,
 
                 // body
-                if (state.pendingSchedulesShown)
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: state.waitingSchedules.length,
-                    itemBuilder: (context, index) {
-                      return listOfActivitiesEachItem2(
-                        context,
-                        state.waitingSchedules[index].id,
-                        state.waitingSchedules[index].time,
-                        state.waitingSchedules[index].describtion,
-                        state.waitingSchedules[index].gymName,
-                        state.waitingSchedules[index].grade,
-                        state.waitingSchedules[index].gymId,
-                        event,
-                      );
-                    },
-                  ),
+                if (pendingSchedulesShown)
+                  Consumer(builder: (context, ref, child) {
+                    final waitingSchedules = ref.watch(scheduleProvider).waitingSchedules;
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount:waitingSchedules.length,
+                      itemBuilder: (context, index) {
+                        return listOfActivitiesEachItem2(
+                          context,
+                          waitingSchedules[index].id,
+                          waitingSchedules[index].time,
+                          waitingSchedules[index].describtion,
+                          waitingSchedules[index].gymName,
+                          waitingSchedules[index].grade,
+                          waitingSchedules[index].gymId,
+                          event,
+                        );
+                      },
+                    );
+                  }),
               ],
             ),
           );

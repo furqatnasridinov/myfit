@@ -36,6 +36,9 @@ class PlaceholderComingActivity extends StatelessWidget {
         onPressed: () {
           autoTabsRouter.setActiveIndex(2);
         },
+        onHover: (value){
+          //print("hover $value");
+        },
         text: "Найти себе занятие",
       ),
     );

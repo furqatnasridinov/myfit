@@ -2,6 +2,7 @@
 import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
+import 'package:activity/presentation/components/animation_button_effect.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/pages/map/widget/pop_up_map.dart';
@@ -112,9 +113,9 @@ class _MapScreenState extends ConsumerState<MapScreen>
       },
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        appBar: const ScheduleHeader(
+        appBar:  ScheduleHeader(
           showNavigationButton: false,
-          showBackButton: false,
+          showBackButton: state.showOnlyKnown,
         ),
         body: Column(
           children: [
@@ -166,16 +167,12 @@ class _MapScreenState extends ConsumerState<MapScreen>
               flex: state.bottomFlex,
               child: Stack(
                 children: [
-                  Container(
+                  // map itself
+                  DecoratedBox(
                     decoration: BoxDecoration(
-                      boxShadow: state.activitiesWithGymsInsideFromSelectedDiapozone
-                                      .length >
-                                  5 &&
-                              (state.activitiesWithGymsInsideFromSelectedDiapozone
-                                          .length >
-                                      2 ||
-                                  state.locationPermissionDenied) &&
-                              !state.showMapOnly
+                      boxShadow: state.activitiesWithGymsInsideFromSelectedDiapozone.length > 5 &&
+                      (state.activitiesWithGymsInsideFromSelectedDiapozone.length > 2 ||
+                      state.locationPermissionDenied) && !state.showMapOnly
                           ? const [
                               BoxShadow(
                                 color: Color.fromRGBO(0, 0, 0, 0.15),
@@ -252,11 +249,13 @@ class _MapScreenState extends ConsumerState<MapScreen>
                       ),
                     ),
                   ),
+
+                  // show map only button
                   Align(
                     alignment: Alignment.topCenter,
                     child: Padding(
                       padding: EdgeInsets.only(top: 10.h),
-                      child: InkWell(
+                      child: GestureDetector(
                         onTap: () {
                           if (state.showMapOnly) {
                             event.reduceMap();
@@ -266,63 +265,69 @@ class _MapScreenState extends ConsumerState<MapScreen>
                             event.closeOpenedActivities();
                           }
                         },
-                        child: CustomCard(
-                            radius: 8.r,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                15.horizontalSpace,
-                                CustomText(
-                                  text: state.showMapOnly
-                                      ? "Показать список активностей"
-                                      : "Карта на весь экран",
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                10.horizontalSpace,
-                                SizedBox(
-                                  width: 18.w,
-                                  height: 18.h,
-                                  child: Center(
-                                    child: SvgPicture.asset(
-                                      state.showMapOnly
-                                          ? "assets/svg/arrow_down.svg"
-                                          : "assets/svg/arrow_up.svg",
-                                      width: 18.w,
-                                      height: 18.h,
+                        child: AnimationButtonEffect(
+                          child: CustomCard(
+                              radius: 8.r,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  15.horizontalSpace,
+                                  CustomText(
+                                    text: state.showMapOnly
+                                        ? "Показать список активностей"
+                                        : "Карта на весь экран",
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  10.horizontalSpace,
+                                  SizedBox(
+                                    width: 18.w,
+                                    height: 18.h,
+                                    child: Center(
+                                      child: SvgPicture.asset(
+                                        state.showMapOnly
+                                            ? "assets/svg/arrow_down.svg"
+                                            : "assets/svg/arrow_up.svg",
+                                        width: 18.w,
+                                        height: 18.h,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                15.horizontalSpace,
-                              ],
-                            )),
+                                  15.horizontalSpace,
+                                ],
+                              )),
+                        ),
                       ),
                     ),
                   ),
+
+                  // center location icon
                   Positioned(
                     right: 0.w,
                     bottom: state.isLocationIconHidden ? 155.h : 10.h,
                     child: Padding(
                       padding: EdgeInsets.only(right: 10.w),
-                      child: InkWell(
+                      child: GestureDetector(
                         onTap: () {
                           event.locationButtonFunction(yandexMapController);
                         },
-                        child: CustomCard(
-                          height: 40.h,
-                          width: 40.w,
-                          radius: 8.r,
-                          paddingAll: 8.r,
-                          child: SvgPicture.asset(
-                            "assets/svg/location_icon.svg",
-                            fit: BoxFit.scaleDown,
+                        child: AnimationButtonEffect(
+                          child: CustomCard(
+                            height: 40.h,
+                            width: 40.w,
+                            radius: 8.r,
+                            paddingAll: 8.r,
+                            child: SvgPicture.asset(
+                              "assets/svg/location_icon.svg",
+                              fit: BoxFit.scaleDown,
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
 
-                  // here we shop bottom card of gyms
+                  // here we show bottom card of gyms
                   if (state.isGymsPopupShown)
                     Positioned(
                       bottom: 0,
@@ -347,9 +352,6 @@ class _MapScreenState extends ConsumerState<MapScreen>
             ),
           ],
         ),
-        /* bottomNavigationBar: state.isGymsPopupShown
-            ? const SizedBox.shrink()
-            : const CustomBottomNavigation(), */
       ),
     );
   }

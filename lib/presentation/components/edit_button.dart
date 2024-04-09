@@ -46,14 +46,37 @@ class EditButton extends StatelessWidget {
               ),
             ],
           )
-        : */ InkWell(
+        : */
+        InkWell(
             onTap: onTap,
-            child: CustomText(
+            child: 
+            AnimatedCrossFade(
+              firstChild: CustomText(
+                text:  "Изменить",
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
+                color: AppColors.blueText,
+              ),
+              secondChild: CustomText(
+                text:  "Отменить" ,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
+                color: Colors.red ,
+              ),
+              crossFadeState: editingEnabled
+                  ? CrossFadeState.showSecond
+                  : CrossFadeState.showFirst,
+              duration: const Duration(milliseconds: 150),
+              firstCurve: Curves.easeIn,
+              secondCurve: Curves.easeInOut,
+              sizeCurve: Easing.legacy,
+            )
+            /* CustomText(
               text: editingEnabled ? "Отменить" : "Изменить",
               fontSize: 14.sp,
               fontWeight: FontWeight.w400,
               color: editingEnabled ? Colors.red : AppColors.blueText,
-            ),
-          );
+            ), */
+            );
   }
 }

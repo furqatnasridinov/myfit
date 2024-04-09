@@ -107,6 +107,7 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
     void Function()? onTap,
   ) {
     return Container(
+      //duration: const Duration(milliseconds: 3000),
       height: isOpened ? null : 40.h,
       width: double.maxFinite,
       decoration: BoxDecoration(
@@ -181,11 +182,6 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.w),
                   child: SizedBox(
-                    /* height: gymsList.length == 1
-                        ? 50.h
-                        : gymsList.length == 2
-                            ? 100.h
-                            : 150.h, */
                     child: Consumer(
                       builder: (context, ref, child) {
                         final activityEvent =

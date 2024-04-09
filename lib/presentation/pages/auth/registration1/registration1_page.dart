@@ -1,5 +1,6 @@
 import 'package:activity/application/registration/registration_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/presentation/components/animation_button_effect.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/pages/auth/registration/custom_painter.dart';
@@ -26,30 +27,29 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
   void initState() {
     phoneController = TextEditingController();
     super.initState();
-      phoneController.addListener(() {
-    String currentText = phoneController.text;
-    if (!currentText.startsWith('+7')) {
-      // Reset to '+7' if the user tries to delete it
-      phoneController.value = const TextEditingValue(
-        text: '+7 ',
-        selection: TextSelection.collapsed(offset: 3),
-      );
-    } else if (currentText.length > 3) {
-      // Remove mask characters from the input
-      String input = currentText.substring(3).replaceAll(RegExp(r'[^0-9]'), '');
-      // Apply the mask only if there is more text beyond '+7'
-      String newText = '+7 ${applyMask(input, '(###) ###-##-##')}';
-      if (newText != currentText) {
-        phoneController.value = TextEditingValue(
-          text: newText,
-          selection: TextSelection.collapsed(offset: newText.length),
+    phoneController.addListener(() {
+      String currentText = phoneController.text;
+      if (!currentText.startsWith('+7')) {
+        // Reset to '+7' if the user tries to delete it
+        phoneController.value = const TextEditingValue(
+          text: '+7 ',
+          selection: TextSelection.collapsed(offset: 3),
         );
+      } else if (currentText.length > 3) {
+        // Remove mask characters from the input
+        String input =
+            currentText.substring(3).replaceAll(RegExp(r'[^0-9]'), '');
+        // Apply the mask only if there is more text beyond '+7'
+        String newText = '+7 ${applyMask(input, '(###) ###-##-##')}';
+        if (newText != currentText) {
+          phoneController.value = TextEditingValue(
+            text: newText,
+            selection: TextSelection.collapsed(offset: newText.length),
+          );
+        }
       }
-    }
-  });
+    });
   }
-
-  
 
   String applyMask(String input, String mask) {
     // Implement your masking logic here
@@ -174,7 +174,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                               ),
                             ),
                             // button
-                            InkWell(
+                            GestureDetector(
                               onTap: () {
                                 if (state.isValidPhone) {
                                   event.sendPhoneNumber(
@@ -183,20 +183,24 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                                   );
                                 }
                               },
-                              child: Container(
-                                width: 40.w,
-                                height: 40.h,
-                                decoration: BoxDecoration(
-                                  color: state.isValidPhone
-                                      ? AppColors.blueColor
-                                      : Colors.grey,
-                                  borderRadius: BorderRadius.circular(8.r),
-                                ),
-                                padding: EdgeInsets.all(5.r),
-                                child: Icon(
-                                  Icons.send,
-                                  color: Colors.white,
-                                  size: 20.r,
+                              child: AnimationButtonEffect(
+                                disabled: !state.isValidPhone,
+                                child: SizedBox(
+                                  width: 40.w,
+                                  height: 40.h,
+                                  child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      color: state.isValidPhone
+                                          ? AppColors.blueColor
+                                          : Colors.grey,
+                                      borderRadius: BorderRadius.circular(8.r),
+                                    ),
+                                    child: Icon(
+                                      Icons.send,
+                                      color: Colors.white,
+                                      size: 20.r,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),

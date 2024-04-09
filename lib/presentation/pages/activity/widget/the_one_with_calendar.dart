@@ -4,6 +4,7 @@ import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
+import 'package:activity/presentation/components/animation_button_effect.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/inter_text.dart';
@@ -67,87 +68,83 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                     itemCount: listOf15CalendarDaysFromNow.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
-                      final String currentDate =
-                          listOf15CalendarDaysFromNow[index];
-                      bool isAvailable =
-                          daysInWhichWeHaveLessons.contains(currentDate);
+                      final String currentDate =listOf15CalendarDaysFromNow[index];
+                      bool isAvailable =daysInWhichWeHaveLessons.contains(currentDate);
                       bool isSelected = selectedCalendarDay == currentDate;
                       final parts = currentDate.split(" ");
                       return GestureDetector(
                           onTap: () async {
                             if (isAvailable) {
-                              await widget.event
-                                  .setSelectedCalendarDay(currentDate);
-                              widget.event.getLessonsToShowAfterSelectingADay(
-                                currentDate,
-                              );
+                              await widget.event.setSelectedCalendarDay(currentDate);
+                              widget.event.getLessonsToShowAfterSelectingADay(currentDate);
                             }
                           },
                           child: Padding(
                             padding: EdgeInsets.only(right: 9.w),
-                            child: SizedBox(
-                              //color: Colors.red,
-                              width: 41.w,
-                              child: Card(
-                                margin: EdgeInsets.symmetric(
-                                    horizontal: 1.w, vertical: 2.h),
-                                shadowColor:
-                                    const Color.fromRGBO(123, 163, 225, 0.73),
-                                elevation: isSelected ? 2.1 : 0,
-                                color: isSelected
-                                    ? AppColors.blueColor
-                                    : Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.r),
-                                  side: BorderSide(
-                                      color: isSelected
-                                          ? AppColors.blueColor
-                                          : isAvailable
-                                              ? AppColors.greyBorder
-                                              : Colors.transparent,
-                                      width: 1.w),
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    InterText(
-                                      text: parts[0].toUpperCase(),
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: isSelected
-                                          ? Colors.white
-                                          : isAvailable
-                                              ? Colors.black
-                                              : const Color.fromRGBO(
-                                                  176, 176, 176, 1),
-                                    ),
-                                    3.verticalSpace,
-                                    CustomText(
-                                        fontSize: 10.sp,
-                                        fontWeight: FontWeight.w500,
-                                        text: parts[1],
+                            child: AnimationButtonEffect(
+                              disabled: isAvailable ? false : true,
+                              child: SizedBox(
+                                //color: Colors.red,
+                                width: 41.w,
+                                child: Card(
+                                  margin: EdgeInsets.symmetric(horizontal: 1.w, vertical: 2.h),
+                                  shadowColor:const Color.fromRGBO(123, 163, 225, 0.73),
+                                  elevation: isSelected ? 2.1 : 0,
+                                  color: isSelected
+                                      ? AppColors.blueColor
+                                      : Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.r),
+                                    side: BorderSide(
+                                        color: isSelected
+                                            ? AppColors.blueColor
+                                            : isAvailable
+                                                ? AppColors.greyBorder
+                                                : Colors.transparent,
+                                        width: 1.w),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      InterText(
+                                        text: parts[0].toUpperCase(),
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w600,
                                         color: isSelected
                                             ? Colors.white
                                             : isAvailable
                                                 ? Colors.black
                                                 : const Color.fromRGBO(
-                                                    176, 176, 176, 1)),
-                                    CustomText(
-                                      fontSize: 10.sp,
-                                      fontWeight: FontWeight.w500,
-                                      text: parts[2],
-                                      color: isSelected
-                                          ? Colors.white
-                                          : isAvailable
-                                              ? Colors.black
-                                              : const Color.fromRGBO(
-                                                  176,
-                                                  176,
-                                                  176,
-                                                  1,
-                                                ),
-                                    ),
-                                  ],
+                                                    176, 176, 176, 1),
+                                      ),
+                                      3.verticalSpace,
+                                      CustomText(
+                                          fontSize: 10.sp,
+                                          fontWeight: FontWeight.w500,
+                                          text: parts[1],
+                                          color: isSelected
+                                              ? Colors.white
+                                              : isAvailable
+                                                  ? Colors.black
+                                                  : const Color.fromRGBO(
+                                                      176, 176, 176, 1)),
+                                      CustomText(
+                                        fontSize: 10.sp,
+                                        fontWeight: FontWeight.w500,
+                                        text: parts[2],
+                                        color: isSelected
+                                            ? Colors.white
+                                            : isAvailable
+                                                ? Colors.black
+                                                : const Color.fromRGBO(
+                                                    176,
+                                                    176,
+                                                    176,
+                                                    1,
+                                                  ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -264,7 +261,7 @@ Widget activityCard(
                 // get status text
                 SizedBox(
                   child: InkWell(
-                    onTap: (status == "OPEN" || status == "CANCELED_USER")
+                    onTap: (status == "OPEN" || status == "CANCELED_USER" || status == "CANCELED_GYM")
                         ? enrollFunction
                         : null,
                     child: CustomText(
