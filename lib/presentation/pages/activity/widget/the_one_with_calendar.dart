@@ -1,9 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
+import 'dart:async';
+
 import 'package:activity/application/activity/activity_notifier.dart';
 import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
+import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
+import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/animation_button_effect.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_card.dart';
@@ -68,15 +72,19 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                     itemCount: listOf15CalendarDaysFromNow.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
-                      final String currentDate =listOf15CalendarDaysFromNow[index];
-                      bool isAvailable =daysInWhichWeHaveLessons.contains(currentDate);
+                      final String currentDate =
+                          listOf15CalendarDaysFromNow[index];
+                      bool isAvailable =
+                          daysInWhichWeHaveLessons.contains(currentDate);
                       bool isSelected = selectedCalendarDay == currentDate;
                       final parts = currentDate.split(" ");
                       return GestureDetector(
                           onTap: () async {
                             if (isAvailable) {
-                              await widget.event.setSelectedCalendarDay(currentDate);
-                              widget.event.getLessonsToShowAfterSelectingADay(currentDate);
+                              await widget.event
+                                  .setSelectedCalendarDay(currentDate);
+                              widget.event.getLessonsToShowAfterSelectingADay(
+                                  currentDate);
                             }
                           },
                           child: Padding(
@@ -87,8 +95,10 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                                 //color: Colors.red,
                                 width: 41.w,
                                 child: Card(
-                                  margin: EdgeInsets.symmetric(horizontal: 1.w, vertical: 2.h),
-                                  shadowColor:const Color.fromRGBO(123, 163, 225, 0.73),
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 1.w, vertical: 2.h),
+                                  shadowColor:
+                                      const Color.fromRGBO(123, 163, 225, 0.73),
                                   elevation: isSelected ? 2.1 : 0,
                                   color: isSelected
                                       ? AppColors.blueColor
@@ -202,6 +212,11 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                         setState(() {});
                         // get the updated list of lessons
                         scheduleEvent.getUsersSchedules(context);
+
+                        // to add this lessontype to known lessontypes if it's not there
+                        ref
+                            .read(settingsProvider.notifier)
+                            .getWaitingLessonTypes(context);
                       },
                     );
                   },
@@ -227,6 +242,7 @@ Widget activityCard(
   String? status,
   void Function()? enrollFunction,
 ) {
+  bool isButtonPressed = false;
   if (canSignUp || (!canSignUp && status == "CONFIRMED")) {
     return Padding(
       padding: EdgeInsets.only(bottom: 10.h, left: 16.w, right: 16.w),
@@ -260,15 +276,27 @@ Widget activityCard(
                 ),
                 // get status text
                 SizedBox(
-                  child: InkWell(
-                    onTap: (status == "OPEN" || status == "CANCELED_USER" || status == "CANCELED_GYM")
-                        ? enrollFunction
+                  child: GestureDetector(
+                    onTap: (status == "OPEN" ||
+                                status == "CANCELED_USER" ||
+                                status == "CANCELED_GYM") &&
+                            !isButtonPressed
+                        ? () {
+                            isButtonPressed = true;
+                            enrollFunction?.call();
+                          }
                         : null,
-                    child: CustomText(
-                      text: AppHelpers().getStatusText(status),
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                      color: AppHelpers().getStatusTextColor(status),
+                    child: SizedBox(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 8.w, vertical: 2.h),
+                        child: CustomText(
+                          text: AppHelpers().getStatusText(status),
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                          color: AppHelpers().getStatusTextColor(status),
+                        ),
+                      ),
                     ),
                   ),
                 ),

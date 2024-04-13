@@ -24,6 +24,7 @@ mixin _$ScheduleState {
   List<CompletedSchedule> get waitingSchedules =>
       throw _privateConstructorUsedError;
   bool get showTillWhen => throw _privateConstructorUsedError;
+  bool get qrLoading => throw _privateConstructorUsedError;
   bool get plusState => throw _privateConstructorUsedError;
   List<String> get daysFromLastWeek => throw _privateConstructorUsedError;
   bool get isLocationButtonActivated => throw _privateConstructorUsedError;
@@ -54,6 +55,7 @@ abstract class $ScheduleStateCopyWith<$Res> {
       List<UserSchedulesResponse> listOfuserSchedules,
       List<CompletedSchedule> waitingSchedules,
       bool showTillWhen,
+      bool qrLoading,
       bool plusState,
       List<String> daysFromLastWeek,
       bool isLocationButtonActivated,
@@ -84,6 +86,7 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
     Object? listOfuserSchedules = null,
     Object? waitingSchedules = null,
     Object? showTillWhen = null,
+    Object? qrLoading = null,
     Object? plusState = null,
     Object? daysFromLastWeek = null,
     Object? isLocationButtonActivated = null,
@@ -115,6 +118,10 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
       showTillWhen: null == showTillWhen
           ? _value.showTillWhen
           : showTillWhen // ignore: cast_nullable_to_non_nullable
+              as bool,
+      qrLoading: null == qrLoading
+          ? _value.qrLoading
+          : qrLoading // ignore: cast_nullable_to_non_nullable
               as bool,
       plusState: null == plusState
           ? _value.plusState
@@ -174,6 +181,7 @@ abstract class _$$ScheduleStateImplCopyWith<$Res>
       List<UserSchedulesResponse> listOfuserSchedules,
       List<CompletedSchedule> waitingSchedules,
       bool showTillWhen,
+      bool qrLoading,
       bool plusState,
       List<String> daysFromLastWeek,
       bool isLocationButtonActivated,
@@ -202,6 +210,7 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
     Object? listOfuserSchedules = null,
     Object? waitingSchedules = null,
     Object? showTillWhen = null,
+    Object? qrLoading = null,
     Object? plusState = null,
     Object? daysFromLastWeek = null,
     Object? isLocationButtonActivated = null,
@@ -233,6 +242,10 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
       showTillWhen: null == showTillWhen
           ? _value.showTillWhen
           : showTillWhen // ignore: cast_nullable_to_non_nullable
+              as bool,
+      qrLoading: null == qrLoading
+          ? _value.qrLoading
+          : qrLoading // ignore: cast_nullable_to_non_nullable
               as bool,
       plusState: null == plusState
           ? _value.plusState
@@ -287,6 +300,7 @@ class _$ScheduleStateImpl extends _ScheduleState {
       final List<UserSchedulesResponse> listOfuserSchedules = const [],
       final List<CompletedSchedule> waitingSchedules = const [],
       this.showTillWhen = true,
+      this.qrLoading = false,
       this.plusState = false,
       final List<String> daysFromLastWeek = const [],
       this.isLocationButtonActivated = false,
@@ -342,6 +356,9 @@ class _$ScheduleStateImpl extends _ScheduleState {
   @override
   @JsonKey()
   final bool showTillWhen;
+  @override
+  @JsonKey()
+  final bool qrLoading;
   @override
   @JsonKey()
   final bool plusState;
@@ -401,7 +418,7 @@ class _$ScheduleStateImpl extends _ScheduleState {
 
   @override
   String toString() {
-    return 'ScheduleState(isloading: $isloading, schedulesInMapForm: $schedulesInMapForm, listOfuserSchedules: $listOfuserSchedules, waitingSchedules: $waitingSchedules, showTillWhen: $showTillWhen, plusState: $plusState, daysFromLastWeek: $daysFromLastWeek, isLocationButtonActivated: $isLocationButtonActivated, isFlashButtonActivated: $isFlashButtonActivated, notesMapData: $notesMapData, schedulesFoundBySearching: $schedulesFoundBySearching, notificationTime: $notificationTime, completedSchedulesShown: $completedSchedulesShown, pendingSchedulesShown: $pendingSchedulesShown, completedSchedules: $completedSchedules)';
+    return 'ScheduleState(isloading: $isloading, schedulesInMapForm: $schedulesInMapForm, listOfuserSchedules: $listOfuserSchedules, waitingSchedules: $waitingSchedules, showTillWhen: $showTillWhen, qrLoading: $qrLoading, plusState: $plusState, daysFromLastWeek: $daysFromLastWeek, isLocationButtonActivated: $isLocationButtonActivated, isFlashButtonActivated: $isFlashButtonActivated, notesMapData: $notesMapData, schedulesFoundBySearching: $schedulesFoundBySearching, notificationTime: $notificationTime, completedSchedulesShown: $completedSchedulesShown, pendingSchedulesShown: $pendingSchedulesShown, completedSchedules: $completedSchedules)';
   }
 
   @override
@@ -419,6 +436,8 @@ class _$ScheduleStateImpl extends _ScheduleState {
                 .equals(other._waitingSchedules, _waitingSchedules) &&
             (identical(other.showTillWhen, showTillWhen) ||
                 other.showTillWhen == showTillWhen) &&
+            (identical(other.qrLoading, qrLoading) ||
+                other.qrLoading == qrLoading) &&
             (identical(other.plusState, plusState) ||
                 other.plusState == plusState) &&
             const DeepCollectionEquality()
@@ -451,6 +470,7 @@ class _$ScheduleStateImpl extends _ScheduleState {
       const DeepCollectionEquality().hash(_listOfuserSchedules),
       const DeepCollectionEquality().hash(_waitingSchedules),
       showTillWhen,
+      qrLoading,
       plusState,
       const DeepCollectionEquality().hash(_daysFromLastWeek),
       isLocationButtonActivated,
@@ -476,6 +496,7 @@ abstract class _ScheduleState extends ScheduleState {
       final List<UserSchedulesResponse> listOfuserSchedules,
       final List<CompletedSchedule> waitingSchedules,
       final bool showTillWhen,
+      final bool qrLoading,
       final bool plusState,
       final List<String> daysFromLastWeek,
       final bool isLocationButtonActivated,
@@ -498,6 +519,8 @@ abstract class _ScheduleState extends ScheduleState {
   List<CompletedSchedule> get waitingSchedules;
   @override
   bool get showTillWhen;
+  @override
+  bool get qrLoading;
   @override
   bool get plusState;
   @override

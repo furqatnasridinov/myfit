@@ -49,15 +49,15 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 
   Future<void> requestNotificationPermissions() async {
-   final PermissionStatus status = await Permission.notification.request();
-   if (status.isGranted) {
+    final PermissionStatus status = await Permission.notification.request();
+    if (status.isGranted) {
       // Notification permissions granted
-   } else if (status.isDenied) {
+    } else if (status.isDenied) {
       // Notification permissions denied
-   } else if (status.isPermanentlyDenied) {
+    } else if (status.isPermanentlyDenied) {
       // Notification permissions permanently denied, open app settings
       //await openAppSettings();
-   }
+    }
   }
 
   Future<void> getListOfCities(BuildContext context) async {
@@ -86,6 +86,70 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           state = state.copyWith(isCitiesLoading: false);
         },
       );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> getCompletedLessonTypes(BuildContext context) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response =
+          await _settingsRepositoryInterface.getCompletedLessonTypes();
+      response.when(success: (data) {
+        if (data["operationResult"] == "OK") {
+          final listFromServer = data["object"] as List;
+          if (listFromServer.isNotEmpty) {
+            final knownActivities = <String>[];
+            knownActivities.addAll(state.knownActivities);
+            for (var element in listFromServer) {
+              try {
+                if (!knownActivities.contains(element)) {
+                  knownActivities.add(element.toString());
+                }
+              } catch (e) {
+                throw e;
+              }
+            }
+            state = state.copyWith(knownActivities: knownActivities);
+          }
+        }
+      }, failure: (error, statusCode, operationInfo) {
+        AppHelpers.showErrorSnack(
+            context, NetworkExceptions.getErrorMessage(error));
+      });
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> getWaitingLessonTypes(BuildContext context) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response =
+          await _settingsRepositoryInterface.getWaitingLessonTypes();
+      response.when(success: (data) {
+        if (data["operationResult"] == "OK") {
+          final listFromServer = data["object"] as List;
+          if (listFromServer.isNotEmpty) {
+            final knownActivities = <String>[];
+            knownActivities.addAll(state.knownActivities);
+            for (var element in listFromServer) {
+              try {
+                if (!knownActivities.contains(element)) {
+                  knownActivities.add(element.toString());
+                }
+              } catch (e) {
+                throw e;
+              }
+            }
+            state = state.copyWith(knownActivities: knownActivities);
+          }
+        }
+      }, failure: (error, statusCode, operationInfo) {
+        AppHelpers.showErrorSnack(
+            context, NetworkExceptions.getErrorMessage(error));
+      });
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }

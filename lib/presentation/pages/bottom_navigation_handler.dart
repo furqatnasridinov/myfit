@@ -1,4 +1,5 @@
 import 'package:activity/application/map/map_provider.dart';
+import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
@@ -14,6 +15,7 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return AutoTabsRouter(
       routes: const [
         Main2Route(),
@@ -32,7 +34,7 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
                 final event = ref.read(mapProvider.notifier);
                 return NavigationBar(
                   backgroundColor: Colors.white,
-                  height: mapPageBottomCardShown ? 0 : 75.h,
+                  height: mapPageBottomCardShown ? 0 : height * 0.09,
                   elevation: 10,
                   shadowColor: Colors.black,
                   selectedIndex: tabsRouter.activeIndex,
@@ -63,7 +65,7 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
                         tabsRouter.setActiveIndex(2);
                         if (showOnlyKnownOnMap) {
                           event.setShowOnlyKnown(false).then((value) async {
-                            await event.getGymsList(context);
+                            await event.getGymsList(context, ref.watch(settingsProvider).knownActivities);
                             await event.getGetListOfGymsFromDiapozone();
                             await event.setFlexes();
                             await event.getAllMarkers();

@@ -1,4 +1,5 @@
 import 'package:activity/application/main2/main2_provider.dart';
+import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/presentation/components/custom_button.dart';
 import 'package:activity/presentation/components/custom_text.dart';

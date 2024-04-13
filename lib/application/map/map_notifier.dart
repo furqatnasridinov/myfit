@@ -284,12 +284,13 @@ class MapNotifier extends StateNotifier<MapState> {
     );
   }
 
-  Future<void> setShowOnlyKnown(bool value) async{
+  Future<void> setShowOnlyKnown(bool value) async {
     state = state.copyWith(showOnlyKnown: value);
   }
 
   Future<void> getGymsList(
     BuildContext context,
+    List<String> knownActivities,
   ) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
@@ -301,7 +302,6 @@ class MapNotifier extends StateNotifier<MapState> {
           final gymsMapFromServer = data["object"] as Map<String, dynamic>;
           final listToCollectActivitiesWithGyms = <LessonTypeWithGymsInside>[];
           if (state.showOnlyKnown) {
-            List<String> knownActivities = LocalStorage.getKnownActivities();
             for (var element in knownActivities) {
               gymsMapFromServer.forEach((key, value) {
                 if (element == key) {
@@ -390,12 +390,12 @@ class MapNotifier extends StateNotifier<MapState> {
   }
 
   void showMapOnly() {
-    state = state.copyWith(topFlex: 0);
+    state = state.copyWith(topFlexValue: 0.07, bottomFlexValue: 0.74);
     state = state.copyWith(showMapOnly: true);
   }
 
   void reduceMap() {
-    state = state.copyWith(topFlex: 4);
+    state = state.copyWith(topFlexValue: 0.3, bottomFlexValue: 0.49);
     state = state.copyWith(showMapOnly: false);
   }
 
@@ -405,91 +405,132 @@ class MapNotifier extends StateNotifier<MapState> {
     bool isAnyOpened = list.any((element) => element.isOpened);
     if (state.isloading) {
       state = state.copyWith(
-        topFlex: 3,
-        bottomFlex: 8,
+        topFlexValue: 0.16,
+        bottomFlexValue: 0.64,
       );
     }
-    if (list.isEmpty) {
+
+    if (list.isEmpty && !state.isloading) {
       state = state.copyWith(
-        topFlex: 3,
-        bottomFlex: 10,
+        topFlexValue: 0.17,
+        bottomFlexValue: 0.63,
       );
     }
-    if (list.length == 1 && !state.isloading && !isAnyOpened) {
-      state = state.copyWith(
-        topFlex: 2,
-        bottomFlex: 9,
-      );
+
+    if (list.length == 1 && !state.isloading) {
+      if (!isAnyOpened) {
+        state = state.copyWith(
+          topFlexValue: 0.17,
+          bottomFlexValue: 0.63,
+        );
+      } else {
+        state = state.copyWith(
+          topFlexValue: 0.21,
+          bottomFlexValue: 0.59,
+        );
+      }
     }
-    if (list.length == 1 && isAnyOpened) {
-      state = state.copyWith(
-        topFlex: 4,
-        bottomFlex: 6,
-      );
-    }
+
     if (list.length == 2) {
-      state = state.copyWith(
-        topFlex: 3,
-        bottomFlex: 8,
-      );
+      if (!isAnyOpened) {
+        state = state.copyWith(
+          topFlexValue: 0.21,
+          bottomFlexValue: 0.59,
+        );
+      } else {
+        state = state.copyWith(
+          topFlexValue: 0.24,
+          bottomFlexValue: 0.56,
+        );
+      }
     }
+
     if (list.length == 3) {
-      state = state.copyWith(
-        topFlex: 4,
-        bottomFlex: 8,
-      );
+      if (!isAnyOpened) {
+        state = state.copyWith(
+          topFlexValue: 0.24,
+          bottomFlexValue: 0.56,
+        );
+      } else {
+        state = state.copyWith(
+          topFlexValue: 0.27,
+          bottomFlexValue: 0.53,
+        );
+      }
     }
+
     if (list.length == 4) {
-      state = state.copyWith(
-        topFlex: 5,
-        bottomFlex: 9,
-      );
+      if (!isAnyOpened) {
+        state = state.copyWith(
+          topFlexValue: 0.27,
+          bottomFlexValue: 0.53,
+        );
+      } else {
+        state = state.copyWith(
+          topFlexValue: 0.3,
+          bottomFlexValue: 0.5,
+        );
+      }
     }
+
     if (list.length > 4 && !state.isloading) {
-      state = state.copyWith(topFlex: 6, bottomFlex: 8);
+      if (!isAnyOpened) {
+        state = state.copyWith(
+          topFlexValue: 0.3,
+          bottomFlexValue: 0.5,
+        );
+      } else {
+        state = state.copyWith(
+          topFlexValue: 0.34,
+          bottomFlexValue: 0.48,
+        );
+      }
     }
+
     if ((list.isNotEmpty && list.length <= 2) &&
         (state.locationPermissionDenied || state.locationServiceIsNotEnabled)) {
-      state = state.copyWith(
-        topFlex: 4,
-        bottomFlex: 6,
-      );
+      if (!isAnyOpened) {
+        state = state.copyWith(
+          topFlexValue: 0.21,
+          bottomFlexValue: 0.59,
+        );
+      } else {
+        state = state.copyWith(
+          topFlexValue: 0.24,
+          bottomFlexValue: 0.56,
+        );
+      }
     }
+
     if ((list.length >= 3 && list.length <= 4) &&
         (state.locationPermissionDenied || state.locationServiceIsNotEnabled)) {
-      state = state.copyWith(
-        topFlex: 5,
-        bottomFlex: 6,
-      );
+      if (!isAnyOpened) {
+        state = state.copyWith(
+          topFlexValue: 0.33,
+          bottomFlexValue: 0.47,
+        );
+      } else {
+        state = state.copyWith(
+          topFlexValue: 0.36,
+          bottomFlexValue: 0.44,
+        );
+      }
     }
+
     if (list.length >= 5 &&
         (state.locationPermissionDenied || state.locationServiceIsNotEnabled)) {
-      state = state.copyWith(
-        topFlex: 7,
-        bottomFlex: 5,
-      );
-    }
-  }
-
-  void openGymslist() {
-    final list = state.activitiesWithGymsInsideFromSelectedDiapozone;
-    if (!state.locationPermissionDenied) {
-      if (list.length == 1) {
-        state = state.copyWith(topFlex: 3);
-        state = state.copyWith(bottomFlex: 8);
-      }
-      if (list.length == 2) {
-        state = state.copyWith(topFlex: 4);
-        state = state.copyWith(bottomFlex: 5);
-      }
-      if (list.length > 2) {
-        state = state.copyWith(topFlex: 7);
-        state = state.copyWith(bottomFlex: 8);
+      if (!isAnyOpened) {
+        state = state.copyWith(
+          topFlexValue: 0.5,
+          bottomFlexValue: 0.3,
+        );
+      } else {
+        state = state.copyWith(
+          topFlexValue: 0.53,
+          bottomFlexValue: 0.27,
+        );
       }
     }
-
-    /* state = state.copyWith(topFlex: 7);
-    state = state.copyWith(bottomFlex: 6); */
   }
 
   void closeGymslist() {
@@ -531,14 +572,15 @@ class MapNotifier extends StateNotifier<MapState> {
     state = state.copyWith(isLocationIconHidden: false);
   }
 
-  void showPopUpOnMap(BuildContext context) {
+  void showPopUpOnMap(BuildContext context, String lesson) {
     // remove prvious pop up first
     if (state.activeMarker != null && state.activeMarker?.name != "user") {
       removePopUp(); // if there is a pop up remove it
       if (!state.isLocationIconHidden) {
         hideLocationIcon();
       }
-      state = state.copyWith(isGymsPopupShown: true);
+      state = state.copyWith(
+          isGymsPopupShown: true, selectedLessonTypeFromMap: lesson);
     }
   }
 

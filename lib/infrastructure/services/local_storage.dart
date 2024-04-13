@@ -356,6 +356,7 @@ class LocalStorage {
     removeAvatar();
     removeGender();
     removeReminderTime();
+    removeKnownActivities();
     // ...
   }
 }

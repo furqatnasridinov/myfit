@@ -57,14 +57,14 @@ class PopUpMap extends StatelessWidget {
                   height: 26.h,
                   child: Consumer(
                     builder: (context, ref, child) {
-                      final activityState = ref.watch(activityProvider);
+                      final activityTypes = ref.watch(activityProvider).activityTypes;
                       //final activityEvent = ref.read(activityProvider.notifier);
                       return ListView.builder(
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
-                        itemCount: activityState.activityTypes?.length,
+                        itemCount: activityTypes?.length,
                         itemBuilder: (context, index) {
-                          final name = activityState.activityTypes?[index];
+                          final name = activityTypes?[index];
                           return Container(
                             margin: EdgeInsets.only(right: 10.w),
                             width: 24.w,

@@ -4,7 +4,6 @@ import 'package:activity/application/activity/activity_state.dart';
 import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/activity.dart';
-import 'package:activity/infrastructure/local_notifications/notification_service.dart';
 import 'package:activity/infrastructure/models/data/description_and_peculiarities.dart';
 import 'package:activity/infrastructure/models/data/lesson.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
@@ -45,8 +44,9 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
-  Future<void> getActivityTypes(BuildContext context, bool selectFirst,
-      {required int gymId}) async {
+  Future<void> getActivityTypes(
+      BuildContext context, bool selectFirst, String selectedActivityFromMap,
+      {bool isFromMap = false, required int gymId}) async {
     await Future.delayed(const Duration(milliseconds: 10));
     final connected = await AppConnectivity().connectivity();
     if (connected) {
@@ -60,7 +60,10 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
               activityTypes: data.object,
               isActivitiesListLoading: false,
             );
-            if (selectFirst) {
+            if (selectedActivityFromMap.isNotEmpty) {
+              state = state.copyWith(selectedActivity: selectedActivityFromMap);
+            }
+            if (selectFirst && selectedActivityFromMap.isEmpty) {
               state = state.copyWith(selectedActivity: data.object!.first);
             }
           }
@@ -287,9 +290,9 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
               lessonState: el["lessonState"] ?? false,
               showInCalendar: DateTime.now()
                   .isBefore(startTime.subtract(const Duration(minutes: 30))),
-              isDeleted: el["isDeleted"] ?? false,
+              isDeleted: el["deleteLesson"] ?? false,
             );
-            if (lesson.showInCalendar! &&
+            if (/* lesson.showInCalendar! && */
                 !lesson.isDeleted! &&
                 lesson.canSignUp!) {
               listToCollectLessons.add(lesson);
@@ -327,7 +330,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       (data) async {
         // convert the incoming data to json
         Map<String, dynamic> lessonData = jsonDecode(data);
-        if (lessonData["lessonState"] == "CANCELED_GYM") {
+        /* if (lessonData["lessonState"] == "CANCELED_GYM") {
           // push notification for canceled lesson
           LocalNotificationService().showDefaultNotification(
             "MyFit App",
@@ -342,7 +345,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
             "MyFit App",
             "Ваша заявка на ${lessonData["lessonType"]} подтверждена.Дата посещания $calendarDate в $startTime",
           );
-        }
+        } */
         // get all lessons again && get lessons of selected activity
         await getAllLessons(context, id: lessonData["gymId"]);
         await getLessonsOfSelectedActivity(state.selectedActivity ?? "", false);

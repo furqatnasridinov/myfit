@@ -19,4 +19,5 @@ abstract class ScheduleRepositoryInterface {
   Future<ApiResult<CancelellationResponse>> cancelActivity(int id);
   Future<ApiResult<Map<String, dynamic>>> searchingForSchedules(
       {required String schedule});
+  Future<ApiResult<Map<String, dynamic>>> makeLessonInProgress({required int gymId, required int lessonId});
 }

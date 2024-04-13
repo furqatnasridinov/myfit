@@ -29,10 +29,11 @@ class MapState with _$MapState {
         activitiesWithGymsInsideFromSelectedDiapozone,
     @Default(false) bool showMapOnly,
     @Default(null) Uint8List? mapScreenShot,
-    @Default(2) int topFlex,
-    @Default(6) int bottomFlex,
+    @Default(0.3) double topFlexValue,
+    @Default(0.49) double bottomFlexValue,
     @Default(false) bool isLocationIconHidden,
     @Default(false) bool isGymsPopupShown,
+    @Default("") String selectedLessonTypeFromMap,
   }) = _MapState;
   const MapState._();
 }

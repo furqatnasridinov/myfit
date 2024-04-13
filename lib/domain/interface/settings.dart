@@ -13,4 +13,8 @@ abstract class SetttingsRepositoryInterface {
   Future<ApiResult<Map<String, dynamic>>> changePhoneSendConfirmationCode(
       {required SendConfirmationCodeRequest request});
   Future<ApiResult<Map<String, dynamic>>> addPicture({required File image});
+
+  // запросы котрорые возвращают какие уроки посещал юзер
+  Future<ApiResult<Map<String, dynamic>>> getCompletedLessonTypes();
+  Future<ApiResult<Map<String, dynamic>>> getWaitingLessonTypes();
 }

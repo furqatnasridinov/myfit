@@ -125,6 +125,37 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     }
   }
 
+  Future<void>makeLessonInProgress(BuildContext context, {required int gymId, required int lessonId}) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response = await _scheduleRepositoryInterface.makeLessonInProgress(
+        gymId: gymId,
+        lessonId: lessonId,
+      );
+      response.when(
+        success: (data) {
+          if (data["operationResult"] == "OK") {
+            //AppHelpers.showSnack(context, data["operationInfo"]);
+          }
+        },
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  } 
+
+  void setQrLoading(){
+    state = state.copyWith(qrLoading: true);
+  }
+
+  void setQrNotLoading(){
+    state = state.copyWith(qrLoading: false);
+  }
+
   Future<void> getCompletedSchedules(BuildContext context) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {

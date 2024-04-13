@@ -22,6 +22,7 @@ mixin _$SettingsState {
   String get phoneNumber => throw _privateConstructorUsedError;
   String? get selectedCity => throw _privateConstructorUsedError;
   List<City> get listOfCities => throw _privateConstructorUsedError;
+  List<String> get knownActivities => throw _privateConstructorUsedError;
   String get userName => throw _privateConstructorUsedError;
   String get userLastName => throw _privateConstructorUsedError;
   String get age => throw _privateConstructorUsedError;
@@ -52,6 +53,7 @@ abstract class $SettingsStateCopyWith<$Res> {
       String phoneNumber,
       String? selectedCity,
       List<City> listOfCities,
+      List<String> knownActivities,
       String userName,
       String userLastName,
       String age,
@@ -84,6 +86,7 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     Object? phoneNumber = null,
     Object? selectedCity = freezed,
     Object? listOfCities = null,
+    Object? knownActivities = null,
     Object? userName = null,
     Object? userLastName = null,
     Object? age = null,
@@ -121,6 +124,10 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.listOfCities
           : listOfCities // ignore: cast_nullable_to_non_nullable
               as List<City>,
+      knownActivities: null == knownActivities
+          ? _value.knownActivities
+          : knownActivities // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       userName: null == userName
           ? _value.userName
           : userName // ignore: cast_nullable_to_non_nullable
@@ -184,6 +191,7 @@ abstract class _$$SettingsStateImplCopyWith<$Res>
       String phoneNumber,
       String? selectedCity,
       List<City> listOfCities,
+      List<String> knownActivities,
       String userName,
       String userLastName,
       String age,
@@ -214,6 +222,7 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     Object? phoneNumber = null,
     Object? selectedCity = freezed,
     Object? listOfCities = null,
+    Object? knownActivities = null,
     Object? userName = null,
     Object? userLastName = null,
     Object? age = null,
@@ -251,6 +260,10 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value._listOfCities
           : listOfCities // ignore: cast_nullable_to_non_nullable
               as List<City>,
+      knownActivities: null == knownActivities
+          ? _value._knownActivities
+          : knownActivities // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       userName: null == userName
           ? _value.userName
           : userName // ignore: cast_nullable_to_non_nullable
@@ -309,6 +322,7 @@ class _$SettingsStateImpl extends _SettingsState {
       this.phoneNumber = "",
       this.selectedCity = null,
       final List<City> listOfCities = const [],
+      final List<String> knownActivities = const [],
       this.userName = "",
       this.userLastName = "",
       this.age = "",
@@ -321,6 +335,7 @@ class _$SettingsStateImpl extends _SettingsState {
       this.isReminderDisabled = false,
       this.qrcodeValue = ""})
       : _listOfCities = listOfCities,
+        _knownActivities = knownActivities,
         super._();
 
   @override
@@ -345,6 +360,15 @@ class _$SettingsStateImpl extends _SettingsState {
     if (_listOfCities is EqualUnmodifiableListView) return _listOfCities;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_listOfCities);
+  }
+
+  final List<String> _knownActivities;
+  @override
+  @JsonKey()
+  List<String> get knownActivities {
+    if (_knownActivities is EqualUnmodifiableListView) return _knownActivities;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_knownActivities);
   }
 
   @override
@@ -383,7 +407,7 @@ class _$SettingsStateImpl extends _SettingsState {
 
   @override
   String toString() {
-    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue)';
+    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue)';
   }
 
   @override
@@ -403,6 +427,8 @@ class _$SettingsStateImpl extends _SettingsState {
                 other.selectedCity == selectedCity) &&
             const DeepCollectionEquality()
                 .equals(other._listOfCities, _listOfCities) &&
+            const DeepCollectionEquality()
+                .equals(other._knownActivities, _knownActivities) &&
             (identical(other.userName, userName) ||
                 other.userName == userName) &&
             (identical(other.userLastName, userLastName) ||
@@ -432,6 +458,7 @@ class _$SettingsStateImpl extends _SettingsState {
       phoneNumber,
       selectedCity,
       const DeepCollectionEquality().hash(_listOfCities),
+      const DeepCollectionEquality().hash(_knownActivities),
       userName,
       userLastName,
       age,
@@ -459,6 +486,7 @@ abstract class _SettingsState extends SettingsState {
       final String phoneNumber,
       final String? selectedCity,
       final List<City> listOfCities,
+      final List<String> knownActivities,
       final String userName,
       final String userLastName,
       final String age,
@@ -484,6 +512,8 @@ abstract class _SettingsState extends SettingsState {
   String? get selectedCity;
   @override
   List<City> get listOfCities;
+  @override
+  List<String> get knownActivities;
   @override
   String get userName;
   @override

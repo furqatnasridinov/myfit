@@ -27,6 +27,16 @@ class AppHelpers {
     );
   }
 
+  static showSuccessSnack(BuildContext context, String text) {
+    return showTopSnackBar(
+      Overlay.of(context),
+      CustomSnackBar.info(
+        message: text,
+        maxLines: 3,
+      ),
+    );
+  }
+
   static showErrorSnack(BuildContext context, String text) {
     return showTopSnackBar(
       Overlay.of(context),

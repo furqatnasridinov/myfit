@@ -3,6 +3,7 @@ import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/application/schedule/schedule_state.dart';
+import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/models/response/user_schedules_response.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
@@ -52,7 +53,7 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: const ScheduleHeader(
+      appBar: ScheduleHeader(
         showNavigationButton: true,
         showBackButton: false,
       ),
@@ -212,14 +213,16 @@ Widget itemListBuilder(
             physics: const NeverScrollableScrollPhysics(),
             itemCount: listOfuserSchedules.length,
             itemBuilder: (context, index) {
+            listOfuserSchedules.sort((a, b) => DateTime.parse(a.date.toString().replaceAll("@", " "))
+             .compareTo(DateTime.parse(b.date.toString().replaceAll("@", " "))));
               final current = listOfuserSchedules[index];
               return Consumer(builder: (context, ref, child) {
                 final event = ref.read(scheduleProvider.notifier);
-                final state = ref.watch(scheduleProvider);
+                final showTillWhen = ref.watch(scheduleProvider).showTillWhen;
                 return listOfActivitiesEachItem(
                   context,
                   event,
-                  state,
+                  showTillWhen,
                   current.gym?.id ?? 0,
                   current.date ?? '',
                   current.description ?? "",
@@ -281,28 +284,14 @@ Widget _plusButton(
       final event = ref.read(mapProvider.notifier);
       final showOnlyKnownOnMap = ref.watch(mapProvider).showOnlyKnown;
       return UiDropDownMenu(
-        width: double.maxFinite,
-        maxWidth: 255.w,
-        customOffset: [-45.0.w, -40.0.h],
-        dropDownItemsList: [
-          {
-            'title': 'Найти что то новое',
-            'icon': SvgPicture.asset(
-              "assets/svg/search.svg",
-              colorFilter: const ColorFilter.mode(
-                Color.fromRGBO(62, 134, 245, 1),
-                BlendMode.srcIn,
-              ),
-              height: 18.h,
-              width: 18.w,
-            ),
-            'action': () => {context.router.push(const MapRoute())}
-          },
-          if (LocalStorage.getKnownActivities().isNotEmpty)
+          width: double.maxFinite,
+          maxWidth: 255.w,
+          customOffset: [-45.0.w, -40.0.h],
+          dropDownItemsList: [
             {
-              'title': 'Выбрать из уже знакомых занятий',
+              'title': 'Найти что то новое',
               'icon': SvgPicture.asset(
-                "assets/svg/copy.svg",
+                "assets/svg/search.svg",
                 colorFilter: const ColorFilter.mode(
                   Color.fromRGBO(62, 134, 245, 1),
                   BlendMode.srcIn,
@@ -310,49 +299,63 @@ Widget _plusButton(
                 height: 18.h,
                 width: 18.w,
               ),
-              'action': () => {
-                    if (showOnlyKnownOnMap) {
-                        tabsRouter.setActiveIndex(2)
-                      }else{
-                        context.router.push(const MapRoute()),
-                        event.setShowOnlyKnown(true),
-                      }
-                   
-                  }
-            }
-        ],
-        onOpenedAction: () => {
-          isplusState = true,
-          setstate(() {}),
-        },
-        onClosedAction: () => {
-          isplusState = false,
-          setstate(() {}),
-        },
-        dropDownChild: AnimationButtonEffect(
-          child: SizedBox(
-            width: 40.w,
+              'action': () => {context.router.push(const MapRoute())}
+            },
+            if (ref.watch(settingsProvider).knownActivities.isNotEmpty)
+              {
+                'title': 'Выбрать из уже знакомых занятий',
+                'icon': SvgPicture.asset(
+                  "assets/svg/copy.svg",
+                  colorFilter: const ColorFilter.mode(
+                    Color.fromRGBO(62, 134, 245, 1),
+                    BlendMode.srcIn,
+                  ),
+                  height: 18.h,
+                  width: 18.w,
+                ),
+                'action': () => {
+                      if (showOnlyKnownOnMap)
+                        {tabsRouter.setActiveIndex(2)}
+                      else
+                        {
+                          context.router.push(const MapRoute()),
+                          event.setShowOnlyKnown(true),
+                        }
+                    }
+              }
+          ],
+          onOpenedAction: () => {
+                isplusState = true,
+                setstate(() {}),
+              },
+          onClosedAction: () => {
+                isplusState = false,
+                setstate(() {}),
+              },
+          dropDownChild: AnimationButtonEffect(
+            child: SizedBox(
+              width: 40.w,
               height: 40.h,
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.r),
-                border: Border.all(
-                  width: 1.w,
+                  borderRadius: BorderRadius.circular(8.r),
+                  border: Border.all(
+                    width: 1.w,
+                    color: AppColors.blueColor,
+                  ),
                   color: AppColors.blueColor,
                 ),
-                color: AppColors.blueColor,
-              ),
-            child: Transform.rotate(
-              angle: isplusState == true ? (45 * pi / 180) : (0 * pi / 180),
-              child: Icon(
-                Icons.add,
-                color: Colors.white,
-                size: 18.r,
+                child: Transform.rotate(
+                  angle: isplusState == true ? (45 * pi / 180) : (0 * pi / 180),
+                  child: Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 18.r,
+                  ),
+                ),
               ),
             ),
-          ),
-                ),
-        ));
+          ));
     });
   });
 }
@@ -360,7 +363,7 @@ Widget _plusButton(
 Widget listOfActivitiesEachItem(
   BuildContext context,
   ScheduleNotifier event,
-  final ScheduleState state,
+  final bool showTillWhen,
   final int gymId,
   final String time,
   final String description,
@@ -475,9 +478,7 @@ Widget listOfActivitiesEachItem(
                               ),
                               4.horizontalSpace,
                               InterText(
-                                text: state.showTillWhen
-                                    ? "до $tillWhen"
-                                    : duration,
+                                text: showTillWhen ? "до $tillWhen" : duration,
                                 color: AppColors.greyText,
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w400,

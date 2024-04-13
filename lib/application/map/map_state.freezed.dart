@@ -36,10 +36,11 @@ mixin _$MapState {
           throw _privateConstructorUsedError;
   bool get showMapOnly => throw _privateConstructorUsedError;
   Uint8List? get mapScreenShot => throw _privateConstructorUsedError;
-  int get topFlex => throw _privateConstructorUsedError;
-  int get bottomFlex => throw _privateConstructorUsedError;
+  double get topFlexValue => throw _privateConstructorUsedError;
+  double get bottomFlexValue => throw _privateConstructorUsedError;
   bool get isLocationIconHidden => throw _privateConstructorUsedError;
   bool get isGymsPopupShown => throw _privateConstructorUsedError;
+  String get selectedLessonTypeFromMap => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $MapStateCopyWith<MapState> get copyWith =>
@@ -69,10 +70,11 @@ abstract class $MapStateCopyWith<$Res> {
           activitiesWithGymsInsideFromSelectedDiapozone,
       bool showMapOnly,
       Uint8List? mapScreenShot,
-      int topFlex,
-      int bottomFlex,
+      double topFlexValue,
+      double bottomFlexValue,
       bool isLocationIconHidden,
-      bool isGymsPopupShown});
+      bool isGymsPopupShown,
+      String selectedLessonTypeFromMap});
 }
 
 /// @nodoc
@@ -104,10 +106,11 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
     Object? activitiesWithGymsInsideFromSelectedDiapozone = null,
     Object? showMapOnly = null,
     Object? mapScreenShot = freezed,
-    Object? topFlex = null,
-    Object? bottomFlex = null,
+    Object? topFlexValue = null,
+    Object? bottomFlexValue = null,
     Object? isLocationIconHidden = null,
     Object? isGymsPopupShown = null,
+    Object? selectedLessonTypeFromMap = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -175,14 +178,14 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
           ? _value.mapScreenShot
           : mapScreenShot // ignore: cast_nullable_to_non_nullable
               as Uint8List?,
-      topFlex: null == topFlex
-          ? _value.topFlex
-          : topFlex // ignore: cast_nullable_to_non_nullable
-              as int,
-      bottomFlex: null == bottomFlex
-          ? _value.bottomFlex
-          : bottomFlex // ignore: cast_nullable_to_non_nullable
-              as int,
+      topFlexValue: null == topFlexValue
+          ? _value.topFlexValue
+          : topFlexValue // ignore: cast_nullable_to_non_nullable
+              as double,
+      bottomFlexValue: null == bottomFlexValue
+          ? _value.bottomFlexValue
+          : bottomFlexValue // ignore: cast_nullable_to_non_nullable
+              as double,
       isLocationIconHidden: null == isLocationIconHidden
           ? _value.isLocationIconHidden
           : isLocationIconHidden // ignore: cast_nullable_to_non_nullable
@@ -191,6 +194,10 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
           ? _value.isGymsPopupShown
           : isGymsPopupShown // ignore: cast_nullable_to_non_nullable
               as bool,
+      selectedLessonTypeFromMap: null == selectedLessonTypeFromMap
+          ? _value.selectedLessonTypeFromMap
+          : selectedLessonTypeFromMap // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -221,10 +228,11 @@ abstract class _$$MapStateImplCopyWith<$Res>
           activitiesWithGymsInsideFromSelectedDiapozone,
       bool showMapOnly,
       Uint8List? mapScreenShot,
-      int topFlex,
-      int bottomFlex,
+      double topFlexValue,
+      double bottomFlexValue,
       bool isLocationIconHidden,
-      bool isGymsPopupShown});
+      bool isGymsPopupShown,
+      String selectedLessonTypeFromMap});
 }
 
 /// @nodoc
@@ -254,10 +262,11 @@ class __$$MapStateImplCopyWithImpl<$Res>
     Object? activitiesWithGymsInsideFromSelectedDiapozone = null,
     Object? showMapOnly = null,
     Object? mapScreenShot = freezed,
-    Object? topFlex = null,
-    Object? bottomFlex = null,
+    Object? topFlexValue = null,
+    Object? bottomFlexValue = null,
     Object? isLocationIconHidden = null,
     Object? isGymsPopupShown = null,
+    Object? selectedLessonTypeFromMap = null,
   }) {
     return _then(_$MapStateImpl(
       isloading: null == isloading
@@ -325,14 +334,14 @@ class __$$MapStateImplCopyWithImpl<$Res>
           ? _value.mapScreenShot
           : mapScreenShot // ignore: cast_nullable_to_non_nullable
               as Uint8List?,
-      topFlex: null == topFlex
-          ? _value.topFlex
-          : topFlex // ignore: cast_nullable_to_non_nullable
-              as int,
-      bottomFlex: null == bottomFlex
-          ? _value.bottomFlex
-          : bottomFlex // ignore: cast_nullable_to_non_nullable
-              as int,
+      topFlexValue: null == topFlexValue
+          ? _value.topFlexValue
+          : topFlexValue // ignore: cast_nullable_to_non_nullable
+              as double,
+      bottomFlexValue: null == bottomFlexValue
+          ? _value.bottomFlexValue
+          : bottomFlexValue // ignore: cast_nullable_to_non_nullable
+              as double,
       isLocationIconHidden: null == isLocationIconHidden
           ? _value.isLocationIconHidden
           : isLocationIconHidden // ignore: cast_nullable_to_non_nullable
@@ -341,6 +350,10 @@ class __$$MapStateImplCopyWithImpl<$Res>
           ? _value.isGymsPopupShown
           : isGymsPopupShown // ignore: cast_nullable_to_non_nullable
               as bool,
+      selectedLessonTypeFromMap: null == selectedLessonTypeFromMap
+          ? _value.selectedLessonTypeFromMap
+          : selectedLessonTypeFromMap // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -367,10 +380,11 @@ class _$MapStateImpl extends _MapState {
           activitiesWithGymsInsideFromSelectedDiapozone = const [],
       this.showMapOnly = false,
       this.mapScreenShot = null,
-      this.topFlex = 2,
-      this.bottomFlex = 6,
+      this.topFlexValue = 0.3,
+      this.bottomFlexValue = 0.49,
       this.isLocationIconHidden = false,
-      this.isGymsPopupShown = false})
+      this.isGymsPopupShown = false,
+      this.selectedLessonTypeFromMap = ""})
       : _listOfMarkers = listOfMarkers,
         _distances = distances,
         _listOfBool = listOfBool,
@@ -473,20 +487,23 @@ class _$MapStateImpl extends _MapState {
   final Uint8List? mapScreenShot;
   @override
   @JsonKey()
-  final int topFlex;
+  final double topFlexValue;
   @override
   @JsonKey()
-  final int bottomFlex;
+  final double bottomFlexValue;
   @override
   @JsonKey()
   final bool isLocationIconHidden;
   @override
   @JsonKey()
   final bool isGymsPopupShown;
+  @override
+  @JsonKey()
+  final String selectedLessonTypeFromMap;
 
   @override
   String toString() {
-    return 'MapState(isloading: $isloading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, activeMarker: $activeMarker, distances: $distances, selectedDiapozone: $selectedDiapozone, locationPermissionDenied: $locationPermissionDenied, locationServiceIsNotEnabled: $locationServiceIsNotEnabled, listOfBool: $listOfBool, gymFoundBySearching: $gymFoundBySearching, isSearchbarOpened: $isSearchbarOpened, showOnlyKnown: $showOnlyKnown, activitiesWithGymsInsideAll: $activitiesWithGymsInsideAll, activitiesWithGymsInsideFromSelectedDiapozone: $activitiesWithGymsInsideFromSelectedDiapozone, showMapOnly: $showMapOnly, mapScreenShot: $mapScreenShot, topFlex: $topFlex, bottomFlex: $bottomFlex, isLocationIconHidden: $isLocationIconHidden, isGymsPopupShown: $isGymsPopupShown)';
+    return 'MapState(isloading: $isloading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, activeMarker: $activeMarker, distances: $distances, selectedDiapozone: $selectedDiapozone, locationPermissionDenied: $locationPermissionDenied, locationServiceIsNotEnabled: $locationServiceIsNotEnabled, listOfBool: $listOfBool, gymFoundBySearching: $gymFoundBySearching, isSearchbarOpened: $isSearchbarOpened, showOnlyKnown: $showOnlyKnown, activitiesWithGymsInsideAll: $activitiesWithGymsInsideAll, activitiesWithGymsInsideFromSelectedDiapozone: $activitiesWithGymsInsideFromSelectedDiapozone, showMapOnly: $showMapOnly, mapScreenShot: $mapScreenShot, topFlexValue: $topFlexValue, bottomFlexValue: $bottomFlexValue, isLocationIconHidden: $isLocationIconHidden, isGymsPopupShown: $isGymsPopupShown, selectedLessonTypeFromMap: $selectedLessonTypeFromMap)';
   }
 
   @override
@@ -506,8 +523,7 @@ class _$MapStateImpl extends _MapState {
                 .equals(other._distances, _distances) &&
             (identical(other.selectedDiapozone, selectedDiapozone) ||
                 other.selectedDiapozone == selectedDiapozone) &&
-            (identical(
-                    other.locationPermissionDenied, locationPermissionDenied) ||
+            (identical(other.locationPermissionDenied, locationPermissionDenied) ||
                 other.locationPermissionDenied == locationPermissionDenied) &&
             (identical(other.locationServiceIsNotEnabled,
                     locationServiceIsNotEnabled) ||
@@ -531,13 +547,17 @@ class _$MapStateImpl extends _MapState {
                 other.showMapOnly == showMapOnly) &&
             const DeepCollectionEquality()
                 .equals(other.mapScreenShot, mapScreenShot) &&
-            (identical(other.topFlex, topFlex) || other.topFlex == topFlex) &&
-            (identical(other.bottomFlex, bottomFlex) ||
-                other.bottomFlex == bottomFlex) &&
+            (identical(other.topFlexValue, topFlexValue) ||
+                other.topFlexValue == topFlexValue) &&
+            (identical(other.bottomFlexValue, bottomFlexValue) ||
+                other.bottomFlexValue == bottomFlexValue) &&
             (identical(other.isLocationIconHidden, isLocationIconHidden) ||
                 other.isLocationIconHidden == isLocationIconHidden) &&
             (identical(other.isGymsPopupShown, isGymsPopupShown) ||
-                other.isGymsPopupShown == isGymsPopupShown));
+                other.isGymsPopupShown == isGymsPopupShown) &&
+            (identical(
+                    other.selectedLessonTypeFromMap, selectedLessonTypeFromMap) ||
+                other.selectedLessonTypeFromMap == selectedLessonTypeFromMap));
   }
 
   @override
@@ -560,10 +580,11 @@ class _$MapStateImpl extends _MapState {
             .hash(_activitiesWithGymsInsideFromSelectedDiapozone),
         showMapOnly,
         const DeepCollectionEquality().hash(mapScreenShot),
-        topFlex,
-        bottomFlex,
+        topFlexValue,
+        bottomFlexValue,
         isLocationIconHidden,
-        isGymsPopupShown
+        isGymsPopupShown,
+        selectedLessonTypeFromMap
       ]);
 
   @JsonKey(ignore: true)
@@ -592,10 +613,11 @@ abstract class _MapState extends MapState {
           activitiesWithGymsInsideFromSelectedDiapozone,
       final bool showMapOnly,
       final Uint8List? mapScreenShot,
-      final int topFlex,
-      final int bottomFlex,
+      final double topFlexValue,
+      final double bottomFlexValue,
       final bool isLocationIconHidden,
-      final bool isGymsPopupShown}) = _$MapStateImpl;
+      final bool isGymsPopupShown,
+      final String selectedLessonTypeFromMap}) = _$MapStateImpl;
   const _MapState._() : super._();
 
   @override
@@ -632,13 +654,15 @@ abstract class _MapState extends MapState {
   @override
   Uint8List? get mapScreenShot;
   @override
-  int get topFlex;
+  double get topFlexValue;
   @override
-  int get bottomFlex;
+  double get bottomFlexValue;
   @override
   bool get isLocationIconHidden;
   @override
   bool get isGymsPopupShown;
+  @override
+  String get selectedLessonTypeFromMap;
   @override
   @JsonKey(ignore: true)
   _$$MapStateImplCopyWith<_$MapStateImpl> get copyWith =>

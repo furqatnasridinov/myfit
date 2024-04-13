@@ -189,13 +189,13 @@ class Main2Notifier extends StateNotifier<Main2State> {
       final response = await _scheduleRepositoryInterface.getNearestLesson();
       response.when(
         success: (data) {
-          if (data.bodyData != null) {
+          if (data.bodyData != null && data.bodyData?.lessonState == "CONFIRMED") {
             final startTime = data.bodyData?.date?.replaceAll('@', 'T');
             DateTime startingTimeInDTFormat = DateTime.parse(startTime ?? "");
             DateTime endTime = getEndTime(
                 startingTimeInDTFormat, data.bodyData?.duration ?? "");
             determineWhenActivityStarts(startingTimeInDTFormat, endTime);
-            state = state.copyWith(
+            state = state.copyWith( 
               nearestLesson: data,
               nearestLessonIsLoading: false,
             );
@@ -260,7 +260,7 @@ class Main2Notifier extends StateNotifier<Main2State> {
               listToCollectActivityNames.add(element.lessonType ?? "");
             }
           }
-          LocalStorage.setKnownActivities(listToCollectActivityNames);
+         // LocalStorage.setKnownActivities(listToCollectActivityNames);
 
           list?.sort(
             (a, b) => a.count!.compareTo(b.count!),
@@ -281,6 +281,30 @@ class Main2Notifier extends StateNotifier<Main2State> {
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
+
+  /* Future<void>makeLessonCompleted(BuildContext context, {required int gymId, required int lessonId}) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response = await _scheduleRepositoryInterface.makeLessonCompleted(
+        gymId: gymId,
+        lessonId: lessonId,
+      );
+      response.when(
+        success: (data) {
+          if (data["operationResult"] == "OK") {
+            AppHelpers.showSnack(context, "Занятие завершено");
+          }
+        },
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
+        },
+      );
+    } else {
+      // ignore: use_build_context_synchronously
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  } */
 
   Future<void> searchingSchedules(BuildContext context,
       {required String schedule}) async {
@@ -348,3 +372,4 @@ class Main2Notifier extends StateNotifier<Main2State> {
     }
   }
 }
+

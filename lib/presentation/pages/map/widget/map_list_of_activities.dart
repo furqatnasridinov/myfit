@@ -2,6 +2,7 @@
 
 import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/application/map/map_notifier.dart';
+import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/application/map/map_state.dart';
 import 'package:activity/infrastructure/models/data/lessontype_with_gyms_inside.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
@@ -208,7 +209,12 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                                       !gymsList[index].isSelected;
                                   setState(() {});
                                   //
-                                  activityEvent.getActivityTypes(context,false,
+                                  activityEvent.getActivityTypes(
+                                      context,
+                                      false,
+                                      ref
+                                          .watch(mapProvider)
+                                          .selectedLessonTypeFromMap,
                                       gymId: gymsList[index].id!);
                                   widget.event.changeCameraPosition(
                                     widget.controller!,
@@ -226,8 +232,8 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                                             .longitude
                                             .toString()),
                                       )
-                                      .then((value) =>
-                                          widget.event.showPopUpOnMap(context));
+                                      .then((value) => widget.event
+                                          .showPopUpOnMap(context, title));
                                 },
                               );
                             });

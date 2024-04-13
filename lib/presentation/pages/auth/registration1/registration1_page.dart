@@ -28,27 +28,33 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
     phoneController = TextEditingController();
     super.initState();
     phoneController.addListener(() {
-      String currentText = phoneController.text;
-      if (!currentText.startsWith('+7')) {
-        // Reset to '+7' if the user tries to delete it
-        phoneController.value = const TextEditingValue(
-          text: '+7 ',
-          selection: TextSelection.collapsed(offset: 3),
+  String currentText = phoneController.text;
+  if (!currentText.startsWith('+7 ')) {
+    // Reset to '+7' if the user tries to delete it
+    phoneController.value = const TextEditingValue(
+      text: '+7 ',
+      selection: TextSelection.collapsed(offset: 3),
+    );
+  } else if (currentText.length > 3) {
+    // Check if the cursor is at the end of the text
+    if (phoneController.selection.start != currentText.length) {
+      // If not, move it to the end
+      phoneController.selection = TextSelection.collapsed(offset: currentText.length);
+    } else {
+      // Remove mask characters from the input
+      String input =
+          currentText.substring(3).replaceAll(RegExp(r'[^0-9]'), '');
+      // Apply the mask only if there is more text beyond '+7'
+      String newText = '+7 ${applyMask(input, '(###) ###-##-##')}';
+      if (newText != currentText) {
+        phoneController.value = TextEditingValue(
+          text: newText,
+          selection: TextSelection.collapsed(offset: newText.length),
         );
-      } else if (currentText.length > 3) {
-        // Remove mask characters from the input
-        String input =
-            currentText.substring(3).replaceAll(RegExp(r'[^0-9]'), '');
-        // Apply the mask only if there is more text beyond '+7'
-        String newText = '+7 ${applyMask(input, '(###) ###-##-##')}';
-        if (newText != currentText) {
-          phoneController.value = TextEditingValue(
-            text: newText,
-            selection: TextSelection.collapsed(offset: newText.length),
-          );
-        }
       }
-    });
+    }
+  }
+});
   }
 
   String applyMask(String input, String mask) {

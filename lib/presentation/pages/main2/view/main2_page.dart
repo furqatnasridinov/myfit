@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
+import 'dart:convert';
 import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/application/main2/main2_provider.dart';
 import 'package:activity/application/map/map_provider.dart';
@@ -38,7 +39,9 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(settingsProvider.notifier)
         ..requestNotificationPermissions()
-        ..setUserInfos();
+        ..setUserInfos()
+        ..getCompletedLessonTypes(context)
+        ..getWaitingLessonTypes(context);
       ref.read(mapProvider.notifier).getUserLocation().then((value) {
         ref.read(mapProvider.notifier).getYandexMapImage(
               context,
@@ -47,6 +50,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
       ref.read(main2Provider.notifier)
         ..getNearestLesson(context)
         ..getUserStatsMonth(context);
+        
 
       // web socket for updating lesson states
       channel = IOWebSocketChannel.connect(
@@ -68,9 +72,9 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
   Widget build(BuildContext context) {
     final nearestLesson = ref.watch(main2Provider).nearestLesson;
     final event = ref.read(main2Provider.notifier);
-
     debugPrint("user id ${LocalStorage.getUserId()}");
     debugPrint("token ${LocalStorage.getToken()}");
+    debugPrint("known activities ${ref.watch(settingsProvider).knownActivities}");
     //LocalStorage.removeToken();
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,

@@ -14,6 +14,7 @@ class ScheduleState with _$ScheduleState {
     @Default([]) List<UserSchedulesResponse> listOfuserSchedules,
     @Default([]) List<CompletedSchedule> waitingSchedules,
     @Default(true) bool showTillWhen,
+    @Default(false) bool qrLoading,
     @Default(false) bool plusState,
     @Default([]) List<String> daysFromLastWeek,
     @Default(false) bool isLocationButtonActivated,

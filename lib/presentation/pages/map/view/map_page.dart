@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 import 'package:activity/application/map/map_provider.dart';
+import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/animation_button_effect.dart';
@@ -19,7 +20,7 @@ import '../widget/widget.dart';
 
 @RoutePage()
 class MapScreen extends ConsumerStatefulWidget {
-  const MapScreen( {super.key});
+  const MapScreen({super.key});
 
   @override
   ConsumerState<MapScreen> createState() => _MapScreenState();
@@ -102,9 +103,11 @@ class _MapScreenState extends ConsumerState<MapScreen>
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("KnownActivities >> ${LocalStorage.getKnownActivities()}");
+    final height = MediaQuery.of(context).size.height;
     final state = ref.watch(mapProvider);
     final event = ref.read(mapProvider.notifier);
+    bool isAnyOpened = state.activitiesWithGymsInsideFromSelectedDiapozone
+        .any((element) => element.isOpened);
     return PopScope(
       onPopInvoked: (didPop) {
         if (state.showMapOnly) {
@@ -113,15 +116,19 @@ class _MapScreenState extends ConsumerState<MapScreen>
       },
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        appBar:  ScheduleHeader(
-          showNavigationButton: false,
-          showBackButton: state.showOnlyKnown,
-        ),
-        body: Column(
+        appBar: ScheduleHeader(
+            showNavigationButton: false,
+            showBackButton: state.showOnlyKnown,
+            height: height * 0.07 //12
+            ),
+        body: ListView(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
           children: [
             // top section
-            Flexible(
-              flex: state.topFlex,
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              height: height * state.topFlexValue,
               child: SizedBox(
                 child: state.showMapOnly
                     ? Padding(
@@ -161,18 +168,26 @@ class _MapScreenState extends ConsumerState<MapScreen>
                           ]),
               ),
             ),
-            // map
-            Flexible(
-              //fit: FlexFit.tight,
-              flex: state.bottomFlex,
+
+            // bottom section
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              height: state.isGymsPopupShown
+                  ? height * (state.bottomFlexValue + 0.09)
+                  : height * state.bottomFlexValue,
               child: Stack(
                 children: [
                   // map itself
                   DecoratedBox(
                     decoration: BoxDecoration(
-                      boxShadow: state.activitiesWithGymsInsideFromSelectedDiapozone.length > 5 &&
-                      (state.activitiesWithGymsInsideFromSelectedDiapozone.length > 2 ||
-                      state.locationPermissionDenied) && !state.showMapOnly
+                      boxShadow: state.activitiesWithGymsInsideFromSelectedDiapozone
+                                      .length >
+                                  5 &&
+                              (state.activitiesWithGymsInsideFromSelectedDiapozone
+                                          .length >
+                                      2 ||
+                                  state.locationPermissionDenied) &&
+                              !state.showMapOnly
                           ? const [
                               BoxShadow(
                                 color: Color.fromRGBO(0, 0, 0, 0.15),
@@ -210,7 +225,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                           controller: yandexMapController!,
                         );
                         // ignore: use_build_context_synchronously
-                        await event.getGymsList(context);
+                        await event.getGymsList(context, ref.watch(settingsProvider).knownActivities);
                         await event.getGetListOfGymsFromDiapozone();
                         await event.setFlexes();
                         await event.getAllMarkers();
@@ -227,11 +242,12 @@ class _MapScreenState extends ConsumerState<MapScreen>
                                       placemarkMapObject.point.longitude,
                                     )
                                     .then(
-                                      (value) => event.showPopUpOnMap(context),
+                                      (value) =>
+                                          event.showPopUpOnMap(context, ""),
                                     );
                               },
                             ),
-                     /*  onCameraPositionChanged:
+                      /*  onCameraPositionChanged:
                           (cameraPosition, reason, finished) {
                         if (state.isGymsPopupShown &&
                             reason == CameraUpdateReason.gestures) {
@@ -263,6 +279,10 @@ class _MapScreenState extends ConsumerState<MapScreen>
                           } else {
                             event.showMapOnly();
                             event.closeOpenedActivities();
+                            if (state.isGymsPopupShown) {
+                              event.removePopUp();
+                              event.showLocationButton();
+                            }
                           }
                         },
                         child: AnimationButtonEffect(
@@ -304,7 +324,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                   // center location icon
                   Positioned(
                     right: 0.w,
-                    bottom: state.isLocationIconHidden ? 155.h : 10.h,
+                    bottom: state.isLocationIconHidden ? 160.h : 30.h,
                     child: Padding(
                       padding: EdgeInsets.only(right: 10.w),
                       child: GestureDetector(
@@ -330,7 +350,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                   // here we show bottom card of gyms
                   if (state.isGymsPopupShown)
                     Positioned(
-                      bottom: 0,
+                      bottom: isAnyOpened ? height * 0.012 : 0.007,
                       child: PopUpMap(
                         name: state.activeMarker?.name ?? "??",
                         address: state.activeMarker?.address ?? "??",
@@ -338,10 +358,12 @@ class _MapScreenState extends ConsumerState<MapScreen>
                           //event.removePopUp();
                           event.showLocationButton();
                           context.router.push(
-                            ActivityRoute(gymId: state.activeMarker?.id ?? 0),
+                            ActivityRoute(
+                                gymId: state.activeMarker?.id ?? 0,
+                                isFromMap: true),
                           );
                         },
-                        onCancel: (){
+                        onCancel: () {
                           event.removePopUp();
                           event.showLocationButton();
                         },

@@ -21,6 +21,8 @@ class AppConstants {
   static const String changePhoneSendConfirmationCode = "api/user/changePhoneCodeConfirmation/2";
   static const String changePhoneSendPhoneNumber = "api/user/changePhone/2";
   static const String addPicture = "api/user/addPicture";
+  static const String getCompletedLessonTypes = "api/user/lessons/similar/confirmed"; // maybe will change to completed
+  static const String getWaitingLessonTypes = "api/user/lessons/similar/waiting";
 
 
   static const String sendPhoneNumber = "api/user/loginCode";

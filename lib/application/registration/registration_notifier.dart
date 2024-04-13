@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:activity/application/registration/registration_state.dart';
@@ -12,6 +13,7 @@ import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -94,8 +96,9 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
   Future<void> sendPhoneNumber(String phoneNumber, BuildContext context) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
-      final response =
-          await _registerRepositoryInterface.sendPhoneNumber(phoneNumber);
+      String? fcmToken = Platform.isIOS  ? "" : await FirebaseMessaging.instance.getToken();
+      final response = await _registerRepositoryInterface.sendPhoneNumber(
+          phoneNumber, fcmToken);
       response.when(
         success: (data) {
           if (data["operationResult"] == "OK") {

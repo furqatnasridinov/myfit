@@ -8,10 +8,10 @@ import 'package:activity/infrastructure/services/app_constants.dart';
 
 class RegisterRepository implements RegisterRepositoryInterface {
   @override
-  Future<ApiResult<Map<String,dynamic>>> sendPhoneNumber(String phoneNumber) async {
+  Future<ApiResult<Map<String,dynamic>>> sendPhoneNumber(String phoneNumber,String? fcmToken) async {
     try {
       final client = inject<HttpService>().clientDio();
-      final dataToSend = {"login": phoneNumber};
+      final dataToSend = {"login": phoneNumber, "fcmToken" : fcmToken};
       final response = await client.post(
         AppConstants.sendPhoneNumber,
         data: dataToSend,
