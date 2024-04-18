@@ -18,6 +18,8 @@ class Main2State with _$Main2State {
     @Default([]) List<ScheduleAndGym> schedulesFoundBySearching,
     @Default(false) bool showScanButton,
     @Default(false) bool lessonIsAlreadyStarted,
+    @Default(null) DateTime? lessonStartsAt,
+    @Default(null) DateTime? lessonEndsAt,
   }) = _Main2State;
   const Main2State._();
 }

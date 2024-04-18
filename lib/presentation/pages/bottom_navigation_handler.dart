@@ -34,12 +34,17 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
                 final event = ref.read(mapProvider.notifier);
                 return NavigationBar(
                   backgroundColor: Colors.white,
-                  height: mapPageBottomCardShown ? 0 : height * 0.09,
+                  height: (mapPageBottomCardShown && tabsRouter.activeIndex == 2) ? 0 : height * 0.09,
                   elevation: 10,
                   shadowColor: Colors.black,
                   selectedIndex: tabsRouter.activeIndex,
                   indicatorColor: AppColors.fadedPrimary3,
                   surfaceTintColor: Colors.transparent,
+                  onDestinationSelected: (int index) {
+                    if (index != 2 && showOnlyKnownOnMap) {
+                      ref.read(mapProvider.notifier).removePopUp();
+                    }
+                  },
                   indicatorShape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14.r),
                   ),
@@ -65,12 +70,18 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
                         tabsRouter.setActiveIndex(2);
                         if (showOnlyKnownOnMap) {
                           event.setShowOnlyKnown(false).then((value) async {
-                            await event.getGymsList(context, ref.watch(settingsProvider).knownActivities);
+                            await event.getGymsList(context,
+                                ref.watch(settingsProvider).knownActivities);
                             await event.getGetListOfGymsFromDiapozone();
                             await event.setFlexes();
                             await event.getAllMarkers();
-                             event.addUserLocationMarker();
+                            event.addUserLocationMarker();
                           });
+                        }
+                        if (mapPageBottomCardShown) {
+                          ref.read(mapProvider.notifier)
+                          ..removePopUp()
+                          ..showLocationButton();
                         }
                       },
                       "assets/svg/map.svg",

@@ -5,7 +5,6 @@ import 'package:activity/infrastructure/models/data/schedule_and_gym.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
-import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -115,12 +114,12 @@ class Main2Notifier extends StateNotifier<Main2State> {
 
     String daysWord = getDayWord(days);
     String hoursWord = getHourWord(hours);
-    String minutesWord = getMinuteWord(minutes);
+    String minutesWord = getMinuteWord(minutes+1);
 
     List<String> parts = [
       if (days > 0) '$days $daysWord',
       if (hours > 0) '$hours $hoursWord',
-      if (minutes > 0) '$minutes $minutesWord',
+      if (minutes > 0) '${minutes+1} $minutesWord',
       if ((days == 0 && hours == 0 && minutes == 0) && seconds > 0)
         '$seconds секунд'
     ];
@@ -189,19 +188,17 @@ class Main2Notifier extends StateNotifier<Main2State> {
       final response = await _scheduleRepositoryInterface.getNearestLesson();
       response.when(
         success: (data) {
-          if (data.bodyData != null && data.bodyData?.lessonState == "CONFIRMED") {
-            final startTime = data.bodyData?.date?.replaceAll('@', 'T');
-            DateTime startingTimeInDTFormat = DateTime.parse(startTime ?? "");
-            DateTime endTime = getEndTime(
-                startingTimeInDTFormat, data.bodyData?.duration ?? "");
+          if (data.bodyData !=
+              null  && data.bodyData?.lessonState == "CONFIRMED") {
+            DateTime startingTimeInDTFormat =DateTime.parse(data.bodyData?.date?.replaceAll('@', 'T') ?? "");
+            DateTime endTime = getEndTime(startingTimeInDTFormat, data.bodyData?.duration ?? "");
             determineWhenActivityStarts(startingTimeInDTFormat, endTime);
-            state = state.copyWith( 
+            state = state.copyWith(
               nearestLesson: data,
               nearestLessonIsLoading: false,
-            );
-            if (DateTime.now().isAfter(endTime)) {
-              state = state.copyWith(nearestLesson: null);
-            }
+              lessonStartsAt: startingTimeInDTFormat,
+              lessonEndsAt: endTime,
+            );           
           }
         },
         failure: (error, statusCode, operationInfo) {
@@ -225,8 +222,7 @@ class Main2Notifier extends StateNotifier<Main2State> {
 
   void determineWhenActivityStarts(DateTime start, DateTime end) {
     DateTime now = DateTime.now();
-    final fifteenMinutesBeforeStart =
-        start.subtract(const Duration(minutes: 15));
+    final fifteenMinutesBeforeStart = start.subtract(const Duration(minutes: 15));
     if (isBetween(fifteenMinutesBeforeStart, end, now)) {
       state = state.copyWith(showScanButton: true);
     }
@@ -260,7 +256,7 @@ class Main2Notifier extends StateNotifier<Main2State> {
               listToCollectActivityNames.add(element.lessonType ?? "");
             }
           }
-         // LocalStorage.setKnownActivities(listToCollectActivityNames);
+          // LocalStorage.setKnownActivities(listToCollectActivityNames);
 
           list?.sort(
             (a, b) => a.count!.compareTo(b.count!),
@@ -282,29 +278,7 @@ class Main2Notifier extends StateNotifier<Main2State> {
     }
   }
 
-  /* Future<void>makeLessonCompleted(BuildContext context, {required int gymId, required int lessonId}) async {
-    final connect = await AppConnectivity().connectivity();
-    if (connect) {
-      final response = await _scheduleRepositoryInterface.makeLessonCompleted(
-        gymId: gymId,
-        lessonId: lessonId,
-      );
-      response.when(
-        success: (data) {
-          if (data["operationResult"] == "OK") {
-            AppHelpers.showSnack(context, "Занятие завершено");
-          }
-        },
-        failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(
-              context, NetworkExceptions.getErrorMessage(error));
-        },
-      );
-    } else {
-      // ignore: use_build_context_synchronously
-      AppHelpers.showCheckTopSnackBar(context);
-    }
-  } */
+  
 
   Future<void> searchingSchedules(BuildContext context,
       {required String schedule}) async {
@@ -352,6 +326,14 @@ class Main2Notifier extends StateNotifier<Main2State> {
     state = state.copyWith(isSearchbarOpened: false);
   }
 
+  void hideBottomScanContainer() {
+    state = state.copyWith(showScanButton: false);
+  }
+
+  void removeNearestLesson() {
+    state = state.copyWith(nearestLesson: null);
+  }
+
   Future<void> cleanSearchList() async {
     await Future.delayed(const Duration(milliseconds: 200));
     final listcha = <ScheduleAndGym>[];
@@ -372,4 +354,3 @@ class Main2Notifier extends StateNotifier<Main2State> {
     }
   }
 }
-

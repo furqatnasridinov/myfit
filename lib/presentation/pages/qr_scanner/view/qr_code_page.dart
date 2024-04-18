@@ -1,7 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'dart:convert';
-
 import 'package:activity/application/main2/main2_provider.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/application/settings/settings_provider.dart';
@@ -21,7 +19,6 @@ class QrCodeScreen extends StatelessWidget {
       body: Consumer(builder: (context, ref, child) {
         final event = ref.read(scheduleProvider.notifier);
         final nearestLesson = ref.watch(main2Provider).nearestLesson;
-        final loading = ref.watch(scheduleProvider).qrLoading;
         return MobileScanner(
           onDetect: (capture) async {
             if (capture.barcodes.isNotEmpty)  {
@@ -32,8 +29,7 @@ class QrCodeScreen extends StatelessWidget {
               final List<String> parts = barcode.displayValue.toString().split("myfit.com/");
               String b64Decoded = parts[1];
               Codec<String, String> stringToBase64 = utf8.fuse(base64);
-              String decoded =
-                  stringToBase64.decode(b64Decoded); //id=13name=Abdullo ako
+              String decoded = stringToBase64.decode(b64Decoded); //id=13name=Abdullo ako
               final List<String> parts2 = decoded.split("name=");
               final String gymId = parts2[0].split("=")[1];
               if (nearestLesson?.bodyData?.gym?.id == int.parse(gymId)) {
@@ -43,7 +39,10 @@ class QrCodeScreen extends StatelessWidget {
                   gymId: nearestLesson?.bodyData?.gym?.id ?? 0,
                   lessonId: nearestLesson?.bodyData?.id ?? 0,
                 );
-              await ref.read(main2Provider.notifier).getNearestLesson(context);
+              ref.read(main2Provider.notifier)
+              ..hideBottomScanContainer()
+              ..removeNearestLesson();
+              //await ref.read(main2Provider.notifier).getNearestLesson(context);
               context.router.pop();
               AppHelpers.showSuccessSnack(context, "QR code validated successfully.");
               }else{
@@ -51,7 +50,7 @@ class QrCodeScreen extends StatelessWidget {
                 context.router.pop();
               }
               } catch (e) {
-                AppHelpers.showErrorSnack(context, e.toString());
+               AppHelpers.showErrorSnack(context, e.toString());
                context.router.pop();
               }
               //context.router.pop();

@@ -160,6 +160,8 @@ class MainNotifier extends StateNotifier<MainState> {
     state = state.copyWith(listOfMarkers: markers);
   }
 
+
+
   List<PlacemarkMapObject> getPlacemarkObjects() {
     List<EachMarkersModel> allMarkers = state.listOfMarkers;
     List<PlacemarkMapObject> listofPlaceMarks = [];

@@ -72,6 +72,7 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                     itemCount: widget.state
                         .activitiesWithGymsInsideFromSelectedDiapozone.length,
                     shrinkWrap: true,
+                    
                     itemBuilder: (context, index) {
                       final currentActivity = widget.state
                           .activitiesWithGymsInsideFromSelectedDiapozone[index];
@@ -82,16 +83,22 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                           currentActivity.listOfGyms!,
                           // ontap of gyms below
                           () {
-                        for (var element in widget.state
-                            .activitiesWithGymsInsideFromSelectedDiapozone) {
-                          if (element.isOpened == true &&
-                              element != currentActivity) {
-                            element.isOpened = false;
-                            setState(() {});
+                        currentActivity.isOpened = !currentActivity.isOpened;
+                        if (!currentActivity.isOpened) {
+                          widget.event.removePopUp();
+                          widget.event.showLocationButton();
+                          for (var element in currentActivity.listOfGyms!) {
+                            if (element.isSelected == true) {
+                              element.isSelected = false;
+                            }
+                          }
+                        }else{
+                          for (var el in widget.state.activitiesWithGymsInsideFromSelectedDiapozone) {
+                            if (el.isOpened && el != currentActivity) {
+                              el.isOpened = false;
+                            }
                           }
                         }
-                        currentActivity.isOpened = !currentActivity.isOpened;
-                        setState(() {});
                         widget.event.setFlexes();
                       });
                     },

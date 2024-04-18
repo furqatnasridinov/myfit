@@ -24,7 +24,8 @@ class PendingSchedules extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final event = ref.watch(scheduleProvider.notifier);
     final waitingSchedules = ref.watch(scheduleProvider).waitingSchedules;
-    final pendingSchedulesShown = ref.watch(scheduleProvider).pendingSchedulesShown;
+    final pendingSchedulesShown =
+        ref.watch(scheduleProvider).pendingSchedulesShown;
     return waitingSchedules.isEmpty
         ? const SizedBox.shrink()
         : Padding(
@@ -61,17 +62,17 @@ class PendingSchedules extends ConsumerWidget {
                             height: 40.h,
                             width: 135.w,
                             child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 5.w),
+                              padding: EdgeInsets.symmetric(horizontal: 10.w),
                               child: Row(
-                                //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
                                   SizedBox(
-                                    width: 95.w,
                                     child: AnimatedCrossFade(
                                       firstCurve: Curves.easeInOut,
                                       secondCurve: Curves.easeInOut,
                                       //secondCurve: Curves.easeIn,
-                                      duration: const Duration(milliseconds: 300),
+                                      duration:
+                                          const Duration(milliseconds: 300),
                                       firstChild: CustomText(
                                         text: "Свернуть",
                                         fontSize: 14.sp,
@@ -87,16 +88,14 @@ class PendingSchedules extends ConsumerWidget {
                                           : CrossFadeState.showSecond,
                                     ),
                                   ),
-                                  4.horizontalSpace,
+                                  2.horizontalSpace,
                                   TweenAnimationBuilder<double>(
                                     duration: const Duration(milliseconds: 300),
                                     tween: Tween(
                                         begin: 0,
-                                        end: pendingSchedulesShown
-                                            ? 1.0
-                                            : 0),
-                                    builder: (BuildContext context, double angle,
-                                        Widget? child) {
+                                        end: pendingSchedulesShown ? 1.0 : 0),
+                                    builder: (BuildContext context,
+                                        double angle, Widget? child) {
                                       return Transform.rotate(
                                         angle: angle * pi,
                                         child: Icon(
@@ -121,11 +120,12 @@ class PendingSchedules extends ConsumerWidget {
                 // body
                 if (pendingSchedulesShown)
                   Consumer(builder: (context, ref, child) {
-                    final waitingSchedules = ref.watch(scheduleProvider).waitingSchedules;
+                    final waitingSchedules =
+                        ref.watch(scheduleProvider).waitingSchedules;
                     return ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount:waitingSchedules.length,
+                      itemCount: waitingSchedules.length,
                       itemBuilder: (context, index) {
                         return listOfActivitiesEachItem2(
                           context,

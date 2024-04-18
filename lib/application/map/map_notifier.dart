@@ -390,12 +390,12 @@ class MapNotifier extends StateNotifier<MapState> {
   }
 
   void showMapOnly() {
-    state = state.copyWith(topFlexValue: 0.07, bottomFlexValue: 0.74);
+    state = state.copyWith(topFlexValue: 0.065, bottomFlexValue: 0.74);
     state = state.copyWith(showMapOnly: true);
   }
 
   void reduceMap() {
-    state = state.copyWith(topFlexValue: 0.3, bottomFlexValue: 0.49);
+    //state = state.copyWith(topFlexValue: 0.3, bottomFlexValue: 0.51);
     state = state.copyWith(showMapOnly: false);
   }
 
@@ -405,14 +405,14 @@ class MapNotifier extends StateNotifier<MapState> {
     bool isAnyOpened = list.any((element) => element.isOpened);
     if (state.isloading) {
       state = state.copyWith(
-        topFlexValue: 0.16,
-        bottomFlexValue: 0.64,
+        topFlexValue: 0.21,
+        bottomFlexValue: 0.6,
       );
     }
 
     if (list.isEmpty && !state.isloading) {
       state = state.copyWith(
-        topFlexValue: 0.17,
+        topFlexValue: 0.18,
         bottomFlexValue: 0.63,
       );
     }
@@ -420,13 +420,13 @@ class MapNotifier extends StateNotifier<MapState> {
     if (list.length == 1 && !state.isloading) {
       if (!isAnyOpened) {
         state = state.copyWith(
-          topFlexValue: 0.17,
-          bottomFlexValue: 0.63,
+          topFlexValue: 0.16,
+          bottomFlexValue: 0.645,
         );
       } else {
         state = state.copyWith(
-          topFlexValue: 0.21,
-          bottomFlexValue: 0.59,
+          topFlexValue: 0.215, // + 0.055
+          bottomFlexValue: 0.59, // - 0.055
         );
       }
     }
@@ -434,13 +434,13 @@ class MapNotifier extends StateNotifier<MapState> {
     if (list.length == 2) {
       if (!isAnyOpened) {
         state = state.copyWith(
-          topFlexValue: 0.21,
-          bottomFlexValue: 0.59,
+          topFlexValue: 0.215,
+          bottomFlexValue: 0.590,
         );
       } else {
         state = state.copyWith(
-          topFlexValue: 0.24,
-          bottomFlexValue: 0.56,
+          topFlexValue: 0.27,
+          bottomFlexValue: 0.535,
         );
       }
     }
@@ -448,13 +448,13 @@ class MapNotifier extends StateNotifier<MapState> {
     if (list.length == 3) {
       if (!isAnyOpened) {
         state = state.copyWith(
-          topFlexValue: 0.24,
-          bottomFlexValue: 0.56,
+          topFlexValue: 0.270,
+          bottomFlexValue: 0.535,
         );
       } else {
         state = state.copyWith(
-          topFlexValue: 0.27,
-          bottomFlexValue: 0.53,
+          topFlexValue: 0.325,
+          bottomFlexValue: 0.480,
         );
       }
     }
@@ -462,13 +462,13 @@ class MapNotifier extends StateNotifier<MapState> {
     if (list.length == 4) {
       if (!isAnyOpened) {
         state = state.copyWith(
-          topFlexValue: 0.27,
-          bottomFlexValue: 0.53,
+          topFlexValue: 0.325,
+          bottomFlexValue: 0.480,
         );
       } else {
         state = state.copyWith(
-          topFlexValue: 0.3,
-          bottomFlexValue: 0.5,
+          topFlexValue: 0.380,
+          bottomFlexValue: 0.425,
         );
       }
     }
@@ -476,13 +476,13 @@ class MapNotifier extends StateNotifier<MapState> {
     if (list.length > 4 && !state.isloading) {
       if (!isAnyOpened) {
         state = state.copyWith(
-          topFlexValue: 0.3,
-          bottomFlexValue: 0.5,
+          topFlexValue: 0.335,
+          bottomFlexValue: 0.47, 
         );
       } else {
         state = state.copyWith(
-          topFlexValue: 0.34,
-          bottomFlexValue: 0.48,
+          topFlexValue:  0.39,
+          bottomFlexValue: 0.415,
         );
       }
     }
@@ -492,12 +492,12 @@ class MapNotifier extends StateNotifier<MapState> {
       if (!isAnyOpened) {
         state = state.copyWith(
           topFlexValue: 0.21,
-          bottomFlexValue: 0.59,
+          bottomFlexValue: 0.6,
         );
       } else {
         state = state.copyWith(
           topFlexValue: 0.24,
-          bottomFlexValue: 0.56,
+          bottomFlexValue: 0.57,
         );
       }
     }
@@ -507,12 +507,12 @@ class MapNotifier extends StateNotifier<MapState> {
       if (!isAnyOpened) {
         state = state.copyWith(
           topFlexValue: 0.33,
-          bottomFlexValue: 0.47,
+          bottomFlexValue: 0.48,
         );
       } else {
         state = state.copyWith(
           topFlexValue: 0.36,
-          bottomFlexValue: 0.44,
+          bottomFlexValue: 0.45,
         );
       }
     }
@@ -522,12 +522,12 @@ class MapNotifier extends StateNotifier<MapState> {
       if (!isAnyOpened) {
         state = state.copyWith(
           topFlexValue: 0.5,
-          bottomFlexValue: 0.3,
+          bottomFlexValue: 0.31,
         );
       } else {
         state = state.copyWith(
           topFlexValue: 0.53,
-          bottomFlexValue: 0.27,
+          bottomFlexValue: 0.28,
         );
       }
     }

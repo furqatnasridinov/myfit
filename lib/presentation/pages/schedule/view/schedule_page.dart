@@ -2,11 +2,9 @@ import 'dart:math';
 import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
-import 'package:activity/application/schedule/schedule_state.dart';
 import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/models/response/user_schedules_response.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/animation_button_effect.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_text.dart';
@@ -50,6 +48,7 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     final event = ref.read(scheduleProvider.notifier);
+    //event.makeLessonCompleted(context,gymId: 35,lessonId: 833);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
@@ -213,8 +212,10 @@ Widget itemListBuilder(
             physics: const NeverScrollableScrollPhysics(),
             itemCount: listOfuserSchedules.length,
             itemBuilder: (context, index) {
-            listOfuserSchedules.sort((a, b) => DateTime.parse(a.date.toString().replaceAll("@", " "))
-             .compareTo(DateTime.parse(b.date.toString().replaceAll("@", " "))));
+              listOfuserSchedules.sort((a, b) => DateTime.parse(
+                      a.date.toString().replaceAll("@", " "))
+                  .compareTo(
+                      DateTime.parse(b.date.toString().replaceAll("@", " "))));
               final current = listOfuserSchedules[index];
               return Consumer(builder: (context, ref, child) {
                 final event = ref.read(scheduleProvider.notifier);
@@ -232,6 +233,201 @@ Widget itemListBuilder(
               });
             }),
       ],
+    ),
+  );
+}
+
+Widget listOfActivitiesEachItem(
+  BuildContext context,
+  ScheduleNotifier event,
+  final bool showTillWhen,
+  final int gymId,
+  final String time,
+  final String description,
+  final String duration,
+  final String name,
+) {
+  final DateTime startTime = event.getDateTime(time);
+  final String formattedTime = time.substring(time.length - 5);
+  final String tillWhen = event.durationToTillWhen(formattedTime, duration);
+  final DateTime finishTime = event.getFinishTime(time, tillWhen);
+
+  return SizedBox(
+    child: IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // time
+          Column(
+            children: [
+              InterText(
+                text: formattedTime,
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w400,
+              ),
+              5.verticalSpace,
+              (DateTime.now().isAfter(startTime)/*  &&
+                      DateTime.now().isBefore(finishTime) */)
+                  ? SvgPicture.asset(
+                     width: 21.w,
+                      "assets/svg/clock.svg",
+                      colorFilter: const ColorFilter.mode(
+                                AppColors.blueColor,
+                                BlendMode.srcIn,
+                              ),
+                    )
+                  : DecoratedBox(
+                      decoration: BoxDecoration(
+                        border:Border.all(color: AppColors.blueColor, width: 1.w),
+                        shape: BoxShape.circle,
+                      ),
+                      child: SizedBox(
+                        width: 16.w,
+                        height: 16.h,
+                      ),
+                    ),
+              /* SizedBox(
+                //color: Colors.red,
+                //width: 20.w,
+                //height: 20.h,
+                child: Padding(
+                  padding: EdgeInsets.all(2.r),
+                  child: SvgPicture.asset(
+                    // width: 16.w,
+                    // height: 16.h,
+                    DateTime.now().isAfter(finishTime)
+                        ? "assets/svg/completed.svg"
+                        : (DateTime.now().isAfter(startTime) &&
+                                DateTime.now().isBefore(finishTime))
+                            ? "assets/svg/clock.svg"
+                            : "assets/svg/round.svg",
+                    // fit: BoxFit.cover,
+                  ),
+                ),
+              ), */
+              5.verticalSpace,
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: 8.h),
+                  child: VerticalDivider(
+                    color: AppColors.blueColor,
+                    thickness: 1.w,
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          // custom card datas about schedules
+          CustomCard(
+            //color: Colors.green,
+            marginBottom: 5.h,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // top part
+                SizedBox(
+                  width: 265.w,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // describtion
+                      SizedBox(
+                        width: 220.w,
+                        child: InterText(
+                          text: description,
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      10.horizontalSpace,
+                      // three dots
+                      DropDownMenuInsideCard(
+                        onTap: () => context.router.push(
+                          NotesRoute(
+                            gymName: name,
+                          ),
+                        ),
+                        onTap2: () => context.router.push(
+                          ActivityRoute(gymId: gymId),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                16.verticalSpace,
+
+                // bottom part
+                SizedBox(
+                  width: 265.w,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // duration
+                      SizedBox(
+                        //color: Colors.red,
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(
+                              width: 14.w,
+                              "assets/svg/clock.svg",
+                              colorFilter: const ColorFilter.mode(
+                                AppColors.blueColor,
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                            4.horizontalSpace,
+                            InterText(
+                              text: showTillWhen ? "до $tillWhen" : duration,
+                              color: AppColors.greyText,
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ],
+                        ),
+                      ),
+                      5.horizontalSpace,
+                      // location
+                      Flexible(
+                        child: SizedBox(
+                          //width: 200.w,
+                          //color: Colors.red,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              SvgPicture.asset("assets/svg/location.svg"),
+                              4.horizontalSpace,
+                              Flexible(
+                                child: SizedBox(
+                                  //width: 160.w,
+                                  //color: Colors.green,
+                                  child: InterText(
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    //text: "cmdkcmdkcmdkcmdkcmkdcmdmckmd,lcdl,cl,d,cd,lcdlc,,cl,dl,cdl,c",
+                                    text: name,
+                                    color: AppColors.greyText,
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }
@@ -358,178 +554,4 @@ Widget _plusButton(
           ));
     });
   });
-}
-
-Widget listOfActivitiesEachItem(
-  BuildContext context,
-  ScheduleNotifier event,
-  final bool showTillWhen,
-  final int gymId,
-  final String time,
-  final String description,
-  final String duration,
-  final String name,
-) {
-  final DateTime timeFromServerCastedToDateTime = event.getDateTime(time);
-  final String formattedTime = time.substring(time.length - 5);
-  final String tillWhen = event.durationToTillWhen(formattedTime, duration);
-  return SizedBox(
-    child: IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // time
-          Column(
-            children: [
-              InterText(
-                text: formattedTime,
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w400,
-              ),
-              9.verticalSpace,
-              SizedBox(
-                width: 16.w,
-                height: 16.h,
-                child: SvgPicture.asset(
-                  DateTime.now().isAfter(timeFromServerCastedToDateTime)
-                      ? "assets/svg/completed.svg"
-                      : "assets/svg/clock.svg",
-                  fit: BoxFit.cover,
-                ),
-              ),
-              7.verticalSpace,
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: 8.h),
-                  child: VerticalDivider(
-                    color: AppColors.blueColor,
-                    thickness: 1.w,
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          // custom card datas about schedules
-          CustomCard(
-            //color: Colors.green,
-            marginBottom: 5.h,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // top part
-                SizedBox(
-                  width: 265.w,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // describtion
-                      SizedBox(
-                        width: 220.w,
-                        child: InterText(
-                          text: description,
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      10.horizontalSpace,
-                      // three dots
-                      DropDownMenuInsideCard(
-                        onTap: () => context.router.push(
-                          NotesRoute(
-                            gymName: name,
-                          ),
-                        ),
-                        onTap2: () => context.router.push(
-                          ActivityRoute(gymId: gymId),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                16.verticalSpace,
-
-                // bottom part
-                SizedBox(
-                  width: 265.w,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // duration
-                      InkWell(
-                        /* onTap: () {
-                          if (state.showTillWhen) {
-                            event.hideTilWhen();
-                          } else {
-                            event.showTilWhen();
-                          }
-                        }, */
-                        child: SizedBox(
-                          //color: Colors.red,
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.watch_later_outlined,
-                                color: AppColors.blueColor,
-                                size: 16.r,
-                              ),
-                              4.horizontalSpace,
-                              InterText(
-                                text: showTillWhen ? "до $tillWhen" : duration,
-                                color: AppColors.greyText,
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      5.horizontalSpace,
-                      // location
-                      Flexible(
-                        child: SizedBox(
-                          //width: 200.w,
-                          //color: Colors.red,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            //mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Icon(
-                                Icons.location_on_outlined,
-                                color: AppColors.blueColor,
-                                size: 16.r,
-                              ),
-                              4.horizontalSpace,
-                              Flexible(
-                                child: SizedBox(
-                                  //width: 160.w,
-                                  //color: Colors.green,
-                                  child: InterText(
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    //text: "cmdkcmdkcmdkcmdkcmkdcmdmckmd,lcdl,cl,d,cd,lcdlc,,cl,dl,cdl,c",
-                                    text: name,
-                                    color: AppColors.greyText,
-                                    fontSize: 11.5.sp,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
 }

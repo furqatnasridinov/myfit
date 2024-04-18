@@ -229,4 +229,22 @@ class ScheduleRepository implements ScheduleRepositoryInterface {
       ); */
     }
   }
+  
+  @override
+  Future<ApiResult<Map<String, dynamic>>> makeLessonCompleted({required int gymId, required int lessonId}) async{
+    try {
+      final client = inject<HttpService>().clientDio();
+      final response =
+          await client.patch("api/schedule/gyms/$gymId/$lessonId/completed");
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      throw e;
+      /* return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      ); */
+    }
+  }
 }

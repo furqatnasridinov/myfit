@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:convert';
 import 'package:activity/application/activity/activity_state.dart';
+import 'package:activity/application/main2/main2_notifier.dart';
 import 'package:activity/application/schedule/schedule_notifier.dart';
 import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/activity.dart';
@@ -15,10 +16,11 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class ActivityNotifier extends StateNotifier<ActivityState> {
-  ActivityNotifier(this._activityRepositoryInterface, this.scheduleNotifier)
+  ActivityNotifier(this._activityRepositoryInterface, this.scheduleNotifier, this.main2Notifier)
       : super(const ActivityState());
   final ActivityRepositoryInterface _activityRepositoryInterface;
   final ScheduleNotifier scheduleNotifier;
+  final Main2Notifier main2Notifier;
 
   Future<void> getGymInfo(BuildContext context, {required int gymId}) async {
     final connected = await AppConnectivity().connectivity();
@@ -351,6 +353,9 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         await getLessonsOfSelectedActivity(state.selectedActivity ?? "", false);
         // get users schedules to show in schedule page
         scheduleNotifier.getUsersSchedules(context);
+        // add here get nearest lesson
+        main2Notifier.getNearestLesson(context);
+
       },
       onError: (error) {
         AppHelpers.showErrorSnack(context, "WebSocket1 ${error.message}");

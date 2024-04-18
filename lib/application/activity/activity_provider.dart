@@ -1,9 +1,10 @@
 import 'package:activity/application/activity/activity_notifier.dart';
 import 'package:activity/application/activity/activity_state.dart';
+import 'package:activity/application/main2/main2_provider.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/domain/di/dependency_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final activityProvider = StateNotifierProvider<ActivityNotifier, ActivityState>(
-  (ref) => ActivityNotifier(gymRepo, ref.read(scheduleProvider.notifier)),
+  (ref) => ActivityNotifier(gymRepo, ref.read(scheduleProvider.notifier), ref.read(main2Provider.notifier)),
 );

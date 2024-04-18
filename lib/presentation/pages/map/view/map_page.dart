@@ -109,10 +109,15 @@ class _MapScreenState extends ConsumerState<MapScreen>
     bool isAnyOpened = state.activitiesWithGymsInsideFromSelectedDiapozone
         .any((element) => element.isOpened);
     return PopScope(
-      onPopInvoked: (didPop) {
+      onPopInvoked: (didPop) async{
         if (state.showMapOnly) {
           event.reduceMap();
         }
+        if (state.isGymsPopupShown) {
+          event.removePopUp();
+          event.showLocationButton();
+        }
+        return ;
       },
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
@@ -121,258 +126,266 @@ class _MapScreenState extends ConsumerState<MapScreen>
             showBackButton: state.showOnlyKnown,
             height: height * 0.07 //12
             ),
-        body: ListView(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            // top section
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              height: height * state.topFlexValue,
-              child: SizedBox(
-                child: state.showMapOnly
-                    ? Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.h),
-                        child: MapPageTopSection(
-                          event: event,
-                          state: state,
-                        ),
-                      )
-                    : CustomScrollView(
-                        controller: activitiesListController,
-                        slivers: [
-                            SliverAppBar(
-                              scrolledUnderElevation: 0,
-                              automaticallyImplyLeading: false,
-                              backgroundColor: AppColors.backgroundColor,
-                              pinned: true,
-                              elevation: 0,
-                              floating: false,
-                              flexibleSpace: FlexibleSpaceBar(
-                                background: MapPageTopSection(
+        body: SafeArea(
+          child: ListView(
+            //shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              // top section
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                height: height * state.topFlexValue,
+                child: SizedBox(
+                  child: state.showMapOnly
+                      ? Padding(
+                          padding: EdgeInsets.symmetric(vertical: 10.h),
+                          child: MapPageTopSection(
+                            event: event,
+                            state: state,
+                          ),
+                        )
+                      : CustomScrollView(
+                          controller: activitiesListController,
+                          slivers: [
+                              SliverAppBar(
+                                scrolledUnderElevation: 0,
+                                automaticallyImplyLeading: false,
+                                backgroundColor: AppColors.backgroundColor,
+                                pinned: true,
+                                elevation: 0,
+                                floating: false,
+                                flexibleSpace: FlexibleSpaceBar(
+                                  background: MapPageTopSection(
+                                    event: event,
+                                    state: state,
+                                  ),
+                                ),
+                              ),
+                              SliverPadding(
+                                  padding: EdgeInsets.only(bottom: 10.h)),
+                              SliverToBoxAdapter(
+                                child: MapListOfActivities(
+                                  activitiesListController,
+                                  yandexMapController,
                                   event: event,
                                   state: state,
                                 ),
-                              ),
-                            ),
-                            SliverPadding(
-                                padding: EdgeInsets.only(bottom: 10.h)),
-                            SliverToBoxAdapter(
-                              child: MapListOfActivities(
-                                activitiesListController,
-                                yandexMapController,
-                                event: event,
-                                state: state,
-                              ),
-                            )
-                          ]),
+                              )
+                            ]),
+                ),
               ),
-            ),
 
-            // bottom section
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              height: state.isGymsPopupShown
-                  ? height * (state.bottomFlexValue + 0.09)
-                  : height * state.bottomFlexValue,
-              child: Stack(
-                children: [
-                  // map itself
-                  DecoratedBox(
-                    decoration: BoxDecoration(
-                      boxShadow: state.activitiesWithGymsInsideFromSelectedDiapozone
-                                      .length >
-                                  5 &&
-                              (state.activitiesWithGymsInsideFromSelectedDiapozone
-                                          .length >
-                                      2 ||
-                                  state.locationPermissionDenied) &&
-                              !state.showMapOnly
-                          ? const [
-                              BoxShadow(
-                                color: Color.fromRGBO(0, 0, 0, 0.15),
-                                offset: Offset(0, 2),
-                                blurRadius: 5,
-                                spreadRadius: 0,
-                              ),
-                              BoxShadow(
-                                color: Color(0xFF6D96D4),
-                                offset: Offset(0, 15),
-                                blurRadius: 18,
-                                spreadRadius: -15,
-                              ),
-                              BoxShadow(
-                                color: Color.fromRGBO(0, 0, 0, 0.39),
-                                offset: Offset(0, -1),
-                                blurRadius: 20.4,
-                                spreadRadius: -2,
-                              ),
-                            ]
-                          : [],
-                    ),
-                    child: YandexMap(
-                      // on map created
-                      onMapCreated: (controller) async {
-                        debugPrint("onMapCreated called");
-                        yandexMapController = controller;
-                        //setState(() {});
-                        if (state.userPosition == null) {
-                          await event.getUserLocation();
-                          // if permissions not granted
-                          await event.setLocationFromSelectedCity();
-                        }
-                        event.setInitialCameraPosition(
-                          controller: yandexMapController!,
-                        );
-                        // ignore: use_build_context_synchronously
-                        await event.getGymsList(context, ref.watch(settingsProvider).knownActivities);
-                        await event.getGetListOfGymsFromDiapozone();
-                        await event.setFlexes();
-                        await event.getAllMarkers();
-                        await event.addUserLocationMarker();
-                      },
-                      // map objects
-                      mapObjects: state.listOfMarkers.isEmpty
-                          ? []
-                          : event.getPlacemarkObjects(
-                              onTap: (placemarkMapObject, point) {
-                                event
-                                    .setMarkerAsOpened(
-                                      placemarkMapObject.point.latitude,
-                                      placemarkMapObject.point.longitude,
-                                    )
-                                    .then(
-                                      (value) =>
-                                          event.showPopUpOnMap(context, ""),
-                                    );
-                              },
-                            ),
-                      /*  onCameraPositionChanged:
-                          (cameraPosition, reason, finished) {
-                        if (state.isGymsPopupShown &&
-                            reason == CameraUpdateReason.gestures) {
-                          event.removePopUp();
-                          event.showLocationButton();
-                        }
-                        // when stops moving show pop up
-                        if (finished) {
-                          event.showPopUpOnMap(context);
-                        }
-                      }, */
-                      logoAlignment: const MapAlignment(
-                        horizontal: HorizontalAlignment.left,
-                        vertical: VerticalAlignment.bottom,
-                      ),
-                    ),
-                  ),
-
-                  // show map only button
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 10.h),
-                      child: GestureDetector(
-                        onTap: () {
-                          if (state.showMapOnly) {
-                            event.reduceMap();
-                            event.setFlexes();
-                          } else {
-                            event.showMapOnly();
-                            event.closeOpenedActivities();
-                            if (state.isGymsPopupShown) {
-                              event.removePopUp();
-                              event.showLocationButton();
-                            }
-                          }
-                        },
-                        child: AnimationButtonEffect(
-                          child: CustomCard(
-                              radius: 8.r,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  15.horizontalSpace,
-                                  CustomText(
-                                    text: state.showMapOnly
-                                        ? "Показать список активностей"
-                                        : "Карта на весь экран",
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  10.horizontalSpace,
-                                  SizedBox(
-                                    width: 18.w,
-                                    height: 18.h,
-                                    child: Center(
-                                      child: SvgPicture.asset(
-                                        state.showMapOnly
-                                            ? "assets/svg/arrow_down.svg"
-                                            : "assets/svg/arrow_up.svg",
-                                        width: 18.w,
-                                        height: 18.h,
-                                      ),
+              // bottom section
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                height: state.isGymsPopupShown
+                    ? height * (state.bottomFlexValue + 0.09)
+                    : height * state.bottomFlexValue,
+                child: Stack(
+                  children: [
+                    // map itself
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        boxShadow:
+                            state.activitiesWithGymsInsideFromSelectedDiapozone
+                                            .length >
+                                        5 &&
+                                    (state.activitiesWithGymsInsideFromSelectedDiapozone
+                                                .length >
+                                            2 ||
+                                        state.locationPermissionDenied) &&
+                                    !state.showMapOnly
+                                ? const [
+                                    BoxShadow(
+                                      color: Color.fromRGBO(0, 0, 0, 0.15),
+                                      offset: Offset(0, 2),
+                                      blurRadius: 5,
+                                      spreadRadius: 0,
                                     ),
-                                  ),
-                                  15.horizontalSpace,
-                                ],
-                              )),
+                                    BoxShadow(
+                                      color: Color(0xFF6D96D4),
+                                      offset: Offset(0, 15),
+                                      blurRadius: 18,
+                                      spreadRadius: -15,
+                                    ),
+                                    BoxShadow(
+                                      color: Color.fromRGBO(0, 0, 0, 0.39),
+                                      offset: Offset(0, -1),
+                                      blurRadius: 20.4,
+                                      spreadRadius: -2,
+                                    ),
+                                  ]
+                                : [],
+                      ),
+                      child: YandexMap(
+                        // on map created
+                        onMapCreated: (controller) async {
+                          debugPrint("onMapCreated called");
+                          yandexMapController = controller;
+                          //setState(() {});
+                          if (state.userPosition == null) {
+                            await event.getUserLocation();
+                            // if permissions not granted
+                            await event.setLocationFromSelectedCity();
+                          }
+                          event.setInitialCameraPosition(
+                            controller: yandexMapController!,
+                          );
+                          // ignore: use_build_context_synchronously
+                          await event.getGymsList(context,
+                              ref.watch(settingsProvider).knownActivities);
+                          await event.getGetListOfGymsFromDiapozone();
+                          await event.setFlexes();
+                          await event.getAllMarkers();
+                          await event.addUserLocationMarker();
+                        },
+                        // map objects
+                        mapObjects: state.listOfMarkers.isEmpty
+                            ? []
+                            : event.getPlacemarkObjects(
+                                onTap: (placemarkMapObject, point) {
+                                  event
+                                      .setMarkerAsOpened(
+                                        placemarkMapObject.point.latitude,
+                                        placemarkMapObject.point.longitude,
+                                      )
+                                      .then(
+                                        (value) =>
+                                            event.showPopUpOnMap(context, ""),
+                                      );
+                                },
+                              ),
+                        /*  onCameraPositionChanged:
+                            (cameraPosition, reason, finished) {
+                          if (state.isGymsPopupShown &&
+                              reason == CameraUpdateReason.gestures) {
+                            event.removePopUp();
+                            event.showLocationButton();
+                          }
+                          // when stops moving show pop up
+                          if (finished) {
+                            event.showPopUpOnMap(context);
+                          }
+                        }, */
+                        logoAlignment: const MapAlignment(
+                          horizontal: HorizontalAlignment.left,
+                          vertical: VerticalAlignment.bottom,
                         ),
                       ),
                     ),
-                  ),
 
-                  // center location icon
-                  Positioned(
-                    right: 0.w,
-                    bottom: state.isLocationIconHidden ? 160.h : 30.h,
-                    child: Padding(
-                      padding: EdgeInsets.only(right: 10.w),
-                      child: GestureDetector(
-                        onTap: () {
-                          event.locationButtonFunction(yandexMapController);
-                        },
-                        child: AnimationButtonEffect(
-                          child: CustomCard(
-                            height: 40.h,
-                            width: 40.w,
-                            radius: 8.r,
-                            paddingAll: 8.r,
-                            child: SvgPicture.asset(
-                              "assets/svg/location_icon.svg",
-                              fit: BoxFit.scaleDown,
+                    // show map only button
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 10.h),
+                        child: GestureDetector(
+                          onTap: () {
+                            if (state.showMapOnly) {
+                              event.reduceMap();
+                              event.setFlexes();
+                            } else {
+                              event.showMapOnly();
+                              event.closeOpenedActivities();
+                              if (state.isGymsPopupShown) {
+                                event.removePopUp();
+                                event.showLocationButton();
+                              }
+                            }
+                          },
+                          child: AnimationButtonEffect(
+                            child: CustomCard(
+                                radius: 8.r,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    15.horizontalSpace,
+                                    CustomText(
+                                      text: state.showMapOnly
+                                          ? "Показать список активностей"
+                                          : "Карта на весь экран",
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    10.horizontalSpace,
+                                    SizedBox(
+                                      width: 18.w,
+                                      height: 18.h,
+                                      child: Center(
+                                        child: SvgPicture.asset(
+                                          state.showMapOnly
+                                              ? "assets/svg/arrow_down.svg"
+                                              : "assets/svg/arrow_up.svg",
+                                          width: 18.w,
+                                          height: 18.h,
+                                        ),
+                                      ),
+                                    ),
+                                    15.horizontalSpace,
+                                  ],
+                                )),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // center location icon
+                    Positioned(
+                      right: 0.w,
+                      bottom: (isAnyOpened && state.isLocationIconHidden)
+                          ? 170.h
+                          : state.isLocationIconHidden
+                              ? 160.h
+                              : 20.h,
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 10.w),
+                        child: GestureDetector(
+                          onTap: () {
+                            event.locationButtonFunction(yandexMapController);
+                          },
+                          child: AnimationButtonEffect(
+                            child: CustomCard(
+                              height: 40.h,
+                              width: 40.w,
+                              radius: 8.r,
+                              paddingAll: 8.r,
+                              child: SvgPicture.asset(
+                                "assets/svg/location_icon.svg",
+                                fit: BoxFit.scaleDown,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
 
-                  // here we show bottom card of gyms
-                  if (state.isGymsPopupShown)
-                    Positioned(
-                      bottom: isAnyOpened ? height * 0.012 : 0.007,
-                      child: PopUpMap(
-                        name: state.activeMarker?.name ?? "??",
-                        address: state.activeMarker?.address ?? "??",
-                        onNavigate: () {
-                          //event.removePopUp();
-                          event.showLocationButton();
-                          context.router.push(
-                            ActivityRoute(
-                                gymId: state.activeMarker?.id ?? 0,
-                                isFromMap: true),
-                          );
-                        },
-                        onCancel: () {
-                          event.removePopUp();
-                          event.showLocationButton();
-                        },
+                    // here we show bottom card of gyms
+                    if (state.isGymsPopupShown)
+                      Positioned(
+                        bottom: 0,
+                        child: PopUpMap(
+                          name: state.activeMarker?.name ?? "??",
+                          address: state.activeMarker?.address ?? "??",
+                          onNavigate: () {
+                            //event.removePopUp();
+                            event.showLocationButton();
+                            context.router.push(
+                              ActivityRoute(
+                                  gymId: state.activeMarker?.id ?? 0,
+                                  isFromMap: true),
+                            );
+                          },
+                          onCancel: () {
+                            event.removePopUp();
+                            event.showLocationButton();
+                          },
+                        ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

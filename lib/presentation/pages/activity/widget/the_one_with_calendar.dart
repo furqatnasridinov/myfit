@@ -203,7 +203,7 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                       currentSchedule.description ?? "??",
                       currentSchedule.lessonState ?? "",
                       () async {
-                        await widget.event.enrollToGym(
+                        await widget.event.enrollToGym( 
                           context,
                           currentSchedule.id ?? 0,
                         );
@@ -214,9 +214,7 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                         scheduleEvent.getUsersSchedules(context);
 
                         // to add this lessontype to known lessontypes if it's not there
-                        ref
-                            .read(settingsProvider.notifier)
-                            .getWaitingLessonTypes(context);
+                        ref.read(settingsProvider.notifier).getWaitingLessonTypes(context);
                       },
                     );
                   },

@@ -1,7 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'dart:async';
-import 'dart:convert';
 import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/application/main2/main2_provider.dart';
 import 'package:activity/application/map/map_provider.dart';
@@ -11,6 +9,7 @@ import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/pages/main2/widget/main2_header.dart';
 import 'package:activity/presentation/pages/main2/widget/widget.dart';
+import 'package:activity/presentation/pages/schedule/widget/bottom_scan_container.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,11 +30,15 @@ class Main2Screen extends ConsumerStatefulWidget {
 class _LoginScreen extends ConsumerState<Main2Screen> {
   final mapControllerCompleter = Completer<YandexMapController>();
   late final WebSocketChannel channel;
+  Timer? _timer;
   late RefreshController refreshController = RefreshController();
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    refreshController = RefreshController(initialRefresh: false);
+    _scrollController = ScrollController();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(settingsProvider.notifier)
         ..requestNotificationPermissions()
@@ -50,7 +53,6 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
       ref.read(main2Provider.notifier)
         ..getNearestLesson(context)
         ..getUserStatsMonth(context);
-        
 
       // web socket for updating lesson states
       channel = IOWebSocketChannel.connect(
@@ -68,6 +70,18 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     super.dispose();
   }
 
+  void startUpdatingNearestLesson() {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(minutes: 1), (timer) async {
+      ref.read(main2Provider.notifier).determineWhenActivityStarts(ref.watch(main2Provider).lessonStartsAt!, ref.watch(main2Provider).lessonEndsAt!,);
+    });
+  }
+
+  void stopUpdatingNearestLesson() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final nearestLesson = ref.watch(main2Provider).nearestLesson;
@@ -76,6 +90,17 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     debugPrint("token ${LocalStorage.getToken()}");
     debugPrint("known activities ${ref.watch(settingsProvider).knownActivities}");
     //LocalStorage.removeToken();
+    ref.listen(main2Provider, (previous, next) {
+      if (previous!.lessonEndsAt !=
+          next.lessonEndsAt && next.lessonEndsAt != next.lessonStartsAt && !next.lessonIsAlreadyStarted) {
+        if (next.lessonStartsAt != null &&
+            next.lessonEndsAt != null) {
+          startUpdatingNearestLesson();
+        } else {
+          stopUpdatingNearestLesson();
+        }
+      }
+    });
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
@@ -96,84 +121,119 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
         },
         child: SafeArea(
           bottom: false,
-          child: Stack(
+          child: Column(
             children: [
-              SingleChildScrollView(
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    10.verticalSpace,
-                    Padding(
-                      padding: EdgeInsets.only(left: 26.w),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: CustomText(
-                          text: LocalStorage.getUserName().isNotEmpty
-                              ? "Привет, ${LocalStorage.getUserName()}!"
-                              : 'Привет, George!',
-                          fontWeight: FontWeight.w600,
-                          fontSize: 20.sp,
+              Expanded(
+                child: GestureDetector(
+                  /* onVerticalDragDown: (onVerticalDragStart) {
+                    if (_scrollController.position.atEdge) {
+                      if (_scrollController.position.pixels == 0) {
+                        // You're at the top.
+                        refreshController.requestRefresh();
+                        debugPrint("_scrollController top");
+                      } else {
+                        // You're at the bottom.
+                        debugPrint("_scrollController bottom");
+                      }
+                    }
+                  }, */
+                  child: CustomScrollView(
+                    controller: _scrollController,
+                    slivers: [
+                      // Приветствие
+                      SliverPadding(
+                        padding:
+                            EdgeInsets.only(left: 26.w).copyWith(top: 10.h),
+                        sliver: SliverToBoxAdapter(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: CustomText(
+                              text: LocalStorage.getUserName().isNotEmpty
+                                  ? "Привет, ${LocalStorage.getUserName()}!"
+                                  : 'Привет, George!',
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20.sp,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                    10.verticalSpace,
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: FirstTwoCards(
-                        event: event,
+
+                      // Статистика и обоненмент
+                      SliverPadding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w)
+                            .copyWith(top: 10.h),
+                        sliver: SliverToBoxAdapter(
+                          child: FirstTwoCards(
+                            event: event,
+                          ),
+                        ),
                       ),
-                    ),
-                    32.verticalSpace,
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: nearestLesson == null
-                          ? const PlaceholderComingActivity() //button "Найти себе занятие"
-                          : ComingActivity(
-                              nearestLesson: nearestLesson,
-                              event: event,
-                            ),
-                    ),
-                    32.verticalSpace,
-                    Padding(
-                      padding: EdgeInsets.only(left: 25.w),
-                      child: CustomText(
-                        text: 'Бассейны поблизости',
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    10.verticalSpace,
-                    Consumer(builder: (context, ref, child) {
-                      final mapScreenShot =
-                          ref.watch(mapProvider).mapScreenShot;
-                      return Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        child: mapScreenShot == null
-                            ? const Main2MapPlaceHolder()
-                            : Main2Map(
-                                child: Image.memory(
-                                  mapScreenShot,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return const Main2MapPlaceHolder();
-                                  },
+
+                      // Ближайшее занятие
+                      SliverPadding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w)
+                            .copyWith(top: 32.h),
+                        sliver: SliverToBoxAdapter(
+                          child: nearestLesson == null
+                              ? const PlaceholderComingActivity() //button "Найти себе занятие"
+                              : ComingActivity(
+                                  nearestLesson: nearestLesson,
+                                  event: event,
                                 ),
-                              ),
-                      );
-                    }),
-                    32.verticalSpace,
-                    const DecoratedTextOne(),
-                  ],
+                        ),
+                      ),
+
+                      // Бассейны поблизости
+                      SliverPadding(
+                        padding:
+                            EdgeInsets.only(left: 25.w).copyWith(top: 32.h),
+                        sliver: SliverToBoxAdapter(
+                          child: CustomText(
+                            text: 'Бассейны поблизости',
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+
+                      // Карта 
+                      SliverPadding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w)
+                            .copyWith(top: 10.h),
+                        sliver: SliverToBoxAdapter(
+                          child: Consumer(builder: (context, ref, child) {
+                            final mapScreenShot =
+                                ref.watch(mapProvider).mapScreenShot;
+                            return mapScreenShot == null
+                                ? const Main2MapPlaceHolder()
+                                : Main2Map(
+                                    child: Image.memory(
+                                      mapScreenShot,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return const Main2MapPlaceHolder();
+                                      },
+                                    ),
+                                  );
+                          }),
+                        ),
+                      ),
+
+                      // Декоративный текст
+                      SliverPadding(
+                        padding: EdgeInsets.only(top: 32.h),
+                        sliver: const SliverToBoxAdapter(
+                          child: DecoratedTextOne(),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
 
-              // scan bottom container
-              /* const Positioned(
-            bottom: 0,
-            child: BottomScanContainer(),
-          ), */
+              // Кнопка сканирования
+              const BottomScanContainer(),
             ],
           ),
         ),

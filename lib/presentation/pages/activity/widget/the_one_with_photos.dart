@@ -68,8 +68,7 @@ class TheOneWithPhotos extends StatelessWidget {
                           width: 47.w,
                           height: 47.h,
                           child: CachedNetworkImage(
-                            imageUrl:
-                                "http://77.222.53.122/image/$linkToCompressedPhoto",
+                            imageUrl:"http://77.222.53.122/image/$linkToCompressedPhoto",
                             fit: BoxFit.cover,
                             errorWidget: (context, url, error) {
                               return Image.asset(AppConstants.cristianBale);

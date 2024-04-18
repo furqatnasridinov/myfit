@@ -35,7 +35,8 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
               final completedAndConfirmedSchedules = allSchedules
                   .where((schedule) =>
                       schedule.lessonState == "COMPLETED" ||
-                      schedule.lessonState == "CONFIRMED")
+                      schedule.lessonState == "CONFIRMED" || 
+                      schedule.lessonState == "PROGRESS")
                   .toList();
 
               final waitingSchedules = allSchedules
@@ -147,6 +148,29 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       AppHelpers.showCheckTopSnackBar(context);
     }
   } 
+
+  Future<void>makeLessonCompleted(BuildContext context, {required int gymId, required int lessonId}) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response = await _scheduleRepositoryInterface.makeLessonCompleted(
+        gymId: gymId,
+        lessonId: lessonId,
+      );
+      response.when(
+        success: (data) {
+          if (data["operationResult"] == "OK") {
+            AppHelpers.showSnack(context, "Занятие завершено");
+          }
+        },
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
 
   void setQrLoading(){
     state = state.copyWith(qrLoading: true);
@@ -425,5 +449,12 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       int.parse(hour),
       int.parse(minute),
     );
+  }
+
+  DateTime getFinishTime(String time, String tillWhen){
+    final parts = time.split("@");
+    String _tillwhen = tillWhen.length == 4 ? "0$tillWhen" : tillWhen;
+    final DateTime result = DateTime.parse("${parts[0]}" " $_tillwhen");
+    return result;
   }
 }

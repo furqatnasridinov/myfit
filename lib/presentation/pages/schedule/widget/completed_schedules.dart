@@ -62,12 +62,12 @@ class CompletedSchedules extends ConsumerWidget {
                             height: 40.h,
                             width: 135.w,
                             child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 5.w),
+                              padding: EdgeInsets.symmetric(horizontal: 10.w),
                               child: Row(
-                                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
                                   SizedBox(
-                                    width: 95.w,
+                                    //width: 95.w,
                                     child: AnimatedCrossFade(
                                       firstCurve: Curves.easeInOut,
                                       secondCurve: Curves.easeInOut,

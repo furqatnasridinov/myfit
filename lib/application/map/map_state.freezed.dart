@@ -380,8 +380,8 @@ class _$MapStateImpl extends _MapState {
           activitiesWithGymsInsideFromSelectedDiapozone = const [],
       this.showMapOnly = false,
       this.mapScreenShot = null,
-      this.topFlexValue = 0.3,
-      this.bottomFlexValue = 0.49,
+      this.topFlexValue = 0.21,
+      this.bottomFlexValue = 0.6,
       this.isLocationIconHidden = false,
       this.isGymsPopupShown = false,
       this.selectedLessonTypeFromMap = ""})

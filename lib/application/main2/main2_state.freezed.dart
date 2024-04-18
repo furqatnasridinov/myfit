@@ -27,6 +27,8 @@ mixin _$Main2State {
       throw _privateConstructorUsedError;
   bool get showScanButton => throw _privateConstructorUsedError;
   bool get lessonIsAlreadyStarted => throw _privateConstructorUsedError;
+  DateTime? get lessonStartsAt => throw _privateConstructorUsedError;
+  DateTime? get lessonEndsAt => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $Main2StateCopyWith<Main2State> get copyWith =>
@@ -49,7 +51,9 @@ abstract class $Main2StateCopyWith<$Res> {
       List<UserStats> statsForMonth,
       List<ScheduleAndGym> schedulesFoundBySearching,
       bool showScanButton,
-      bool lessonIsAlreadyStarted});
+      bool lessonIsAlreadyStarted,
+      DateTime? lessonStartsAt,
+      DateTime? lessonEndsAt});
 }
 
 /// @nodoc
@@ -75,6 +79,8 @@ class _$Main2StateCopyWithImpl<$Res, $Val extends Main2State>
     Object? schedulesFoundBySearching = null,
     Object? showScanButton = null,
     Object? lessonIsAlreadyStarted = null,
+    Object? lessonStartsAt = freezed,
+    Object? lessonEndsAt = freezed,
   }) {
     return _then(_value.copyWith(
       nearestLessonIsLoading: null == nearestLessonIsLoading
@@ -117,6 +123,14 @@ class _$Main2StateCopyWithImpl<$Res, $Val extends Main2State>
           ? _value.lessonIsAlreadyStarted
           : lessonIsAlreadyStarted // ignore: cast_nullable_to_non_nullable
               as bool,
+      lessonStartsAt: freezed == lessonStartsAt
+          ? _value.lessonStartsAt
+          : lessonStartsAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      lessonEndsAt: freezed == lessonEndsAt
+          ? _value.lessonEndsAt
+          : lessonEndsAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ) as $Val);
   }
 }
@@ -139,7 +153,9 @@ abstract class _$$Main2StateImplCopyWith<$Res>
       List<UserStats> statsForMonth,
       List<ScheduleAndGym> schedulesFoundBySearching,
       bool showScanButton,
-      bool lessonIsAlreadyStarted});
+      bool lessonIsAlreadyStarted,
+      DateTime? lessonStartsAt,
+      DateTime? lessonEndsAt});
 }
 
 /// @nodoc
@@ -163,6 +179,8 @@ class __$$Main2StateImplCopyWithImpl<$Res>
     Object? schedulesFoundBySearching = null,
     Object? showScanButton = null,
     Object? lessonIsAlreadyStarted = null,
+    Object? lessonStartsAt = freezed,
+    Object? lessonEndsAt = freezed,
   }) {
     return _then(_$Main2StateImpl(
       nearestLessonIsLoading: null == nearestLessonIsLoading
@@ -205,6 +223,14 @@ class __$$Main2StateImplCopyWithImpl<$Res>
           ? _value.lessonIsAlreadyStarted
           : lessonIsAlreadyStarted // ignore: cast_nullable_to_non_nullable
               as bool,
+      lessonStartsAt: freezed == lessonStartsAt
+          ? _value.lessonStartsAt
+          : lessonStartsAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      lessonEndsAt: freezed == lessonEndsAt
+          ? _value.lessonEndsAt
+          : lessonEndsAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 }
@@ -222,7 +248,9 @@ class _$Main2StateImpl extends _Main2State {
       final List<UserStats> statsForMonth = const [],
       final List<ScheduleAndGym> schedulesFoundBySearching = const [],
       this.showScanButton = false,
-      this.lessonIsAlreadyStarted = false})
+      this.lessonIsAlreadyStarted = false,
+      this.lessonStartsAt = null,
+      this.lessonEndsAt = null})
       : _statsForMonth = statsForMonth,
         _schedulesFoundBySearching = schedulesFoundBySearching,
         super._();
@@ -270,10 +298,16 @@ class _$Main2StateImpl extends _Main2State {
   @override
   @JsonKey()
   final bool lessonIsAlreadyStarted;
+  @override
+  @JsonKey()
+  final DateTime? lessonStartsAt;
+  @override
+  @JsonKey()
+  final DateTime? lessonEndsAt;
 
   @override
   String toString() {
-    return 'Main2State(nearestLessonIsLoading: $nearestLessonIsLoading, statsMonthIsloading: $statsMonthIsloading, isSearchbarOpened: $isSearchbarOpened, showTillWhen: $showTillWhen, nearestLesson: $nearestLesson, whenActivityStarts: $whenActivityStarts, statsForMonth: $statsForMonth, schedulesFoundBySearching: $schedulesFoundBySearching, showScanButton: $showScanButton, lessonIsAlreadyStarted: $lessonIsAlreadyStarted)';
+    return 'Main2State(nearestLessonIsLoading: $nearestLessonIsLoading, statsMonthIsloading: $statsMonthIsloading, isSearchbarOpened: $isSearchbarOpened, showTillWhen: $showTillWhen, nearestLesson: $nearestLesson, whenActivityStarts: $whenActivityStarts, statsForMonth: $statsForMonth, schedulesFoundBySearching: $schedulesFoundBySearching, showScanButton: $showScanButton, lessonIsAlreadyStarted: $lessonIsAlreadyStarted, lessonStartsAt: $lessonStartsAt, lessonEndsAt: $lessonEndsAt)';
   }
 
   @override
@@ -300,7 +334,11 @@ class _$Main2StateImpl extends _Main2State {
             (identical(other.showScanButton, showScanButton) ||
                 other.showScanButton == showScanButton) &&
             (identical(other.lessonIsAlreadyStarted, lessonIsAlreadyStarted) ||
-                other.lessonIsAlreadyStarted == lessonIsAlreadyStarted));
+                other.lessonIsAlreadyStarted == lessonIsAlreadyStarted) &&
+            (identical(other.lessonStartsAt, lessonStartsAt) ||
+                other.lessonStartsAt == lessonStartsAt) &&
+            (identical(other.lessonEndsAt, lessonEndsAt) ||
+                other.lessonEndsAt == lessonEndsAt));
   }
 
   @override
@@ -315,7 +353,9 @@ class _$Main2StateImpl extends _Main2State {
       const DeepCollectionEquality().hash(_statsForMonth),
       const DeepCollectionEquality().hash(_schedulesFoundBySearching),
       showScanButton,
-      lessonIsAlreadyStarted);
+      lessonIsAlreadyStarted,
+      lessonStartsAt,
+      lessonEndsAt);
 
   @JsonKey(ignore: true)
   @override
@@ -335,7 +375,9 @@ abstract class _Main2State extends Main2State {
       final List<UserStats> statsForMonth,
       final List<ScheduleAndGym> schedulesFoundBySearching,
       final bool showScanButton,
-      final bool lessonIsAlreadyStarted}) = _$Main2StateImpl;
+      final bool lessonIsAlreadyStarted,
+      final DateTime? lessonStartsAt,
+      final DateTime? lessonEndsAt}) = _$Main2StateImpl;
   const _Main2State._() : super._();
 
   @override
@@ -358,6 +400,10 @@ abstract class _Main2State extends Main2State {
   bool get showScanButton;
   @override
   bool get lessonIsAlreadyStarted;
+  @override
+  DateTime? get lessonStartsAt;
+  @override
+  DateTime? get lessonEndsAt;
   @override
   @JsonKey(ignore: true)
   _$$Main2StateImplCopyWith<_$Main2StateImpl> get copyWith =>
