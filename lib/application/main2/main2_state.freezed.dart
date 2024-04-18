@@ -29,6 +29,7 @@ mixin _$Main2State {
   bool get lessonIsAlreadyStarted => throw _privateConstructorUsedError;
   DateTime? get lessonStartsAt => throw _privateConstructorUsedError;
   DateTime? get lessonEndsAt => throw _privateConstructorUsedError;
+  bool get lessonStartsWithin40Minutes => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $Main2StateCopyWith<Main2State> get copyWith =>
@@ -53,7 +54,8 @@ abstract class $Main2StateCopyWith<$Res> {
       bool showScanButton,
       bool lessonIsAlreadyStarted,
       DateTime? lessonStartsAt,
-      DateTime? lessonEndsAt});
+      DateTime? lessonEndsAt,
+      bool lessonStartsWithin40Minutes});
 }
 
 /// @nodoc
@@ -81,6 +83,7 @@ class _$Main2StateCopyWithImpl<$Res, $Val extends Main2State>
     Object? lessonIsAlreadyStarted = null,
     Object? lessonStartsAt = freezed,
     Object? lessonEndsAt = freezed,
+    Object? lessonStartsWithin40Minutes = null,
   }) {
     return _then(_value.copyWith(
       nearestLessonIsLoading: null == nearestLessonIsLoading
@@ -131,6 +134,10 @@ class _$Main2StateCopyWithImpl<$Res, $Val extends Main2State>
           ? _value.lessonEndsAt
           : lessonEndsAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      lessonStartsWithin40Minutes: null == lessonStartsWithin40Minutes
+          ? _value.lessonStartsWithin40Minutes
+          : lessonStartsWithin40Minutes // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -155,7 +162,8 @@ abstract class _$$Main2StateImplCopyWith<$Res>
       bool showScanButton,
       bool lessonIsAlreadyStarted,
       DateTime? lessonStartsAt,
-      DateTime? lessonEndsAt});
+      DateTime? lessonEndsAt,
+      bool lessonStartsWithin40Minutes});
 }
 
 /// @nodoc
@@ -181,6 +189,7 @@ class __$$Main2StateImplCopyWithImpl<$Res>
     Object? lessonIsAlreadyStarted = null,
     Object? lessonStartsAt = freezed,
     Object? lessonEndsAt = freezed,
+    Object? lessonStartsWithin40Minutes = null,
   }) {
     return _then(_$Main2StateImpl(
       nearestLessonIsLoading: null == nearestLessonIsLoading
@@ -231,6 +240,10 @@ class __$$Main2StateImplCopyWithImpl<$Res>
           ? _value.lessonEndsAt
           : lessonEndsAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      lessonStartsWithin40Minutes: null == lessonStartsWithin40Minutes
+          ? _value.lessonStartsWithin40Minutes
+          : lessonStartsWithin40Minutes // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -250,7 +263,8 @@ class _$Main2StateImpl extends _Main2State {
       this.showScanButton = false,
       this.lessonIsAlreadyStarted = false,
       this.lessonStartsAt = null,
-      this.lessonEndsAt = null})
+      this.lessonEndsAt = null,
+      this.lessonStartsWithin40Minutes = false})
       : _statsForMonth = statsForMonth,
         _schedulesFoundBySearching = schedulesFoundBySearching,
         super._();
@@ -304,10 +318,13 @@ class _$Main2StateImpl extends _Main2State {
   @override
   @JsonKey()
   final DateTime? lessonEndsAt;
+  @override
+  @JsonKey()
+  final bool lessonStartsWithin40Minutes;
 
   @override
   String toString() {
-    return 'Main2State(nearestLessonIsLoading: $nearestLessonIsLoading, statsMonthIsloading: $statsMonthIsloading, isSearchbarOpened: $isSearchbarOpened, showTillWhen: $showTillWhen, nearestLesson: $nearestLesson, whenActivityStarts: $whenActivityStarts, statsForMonth: $statsForMonth, schedulesFoundBySearching: $schedulesFoundBySearching, showScanButton: $showScanButton, lessonIsAlreadyStarted: $lessonIsAlreadyStarted, lessonStartsAt: $lessonStartsAt, lessonEndsAt: $lessonEndsAt)';
+    return 'Main2State(nearestLessonIsLoading: $nearestLessonIsLoading, statsMonthIsloading: $statsMonthIsloading, isSearchbarOpened: $isSearchbarOpened, showTillWhen: $showTillWhen, nearestLesson: $nearestLesson, whenActivityStarts: $whenActivityStarts, statsForMonth: $statsForMonth, schedulesFoundBySearching: $schedulesFoundBySearching, showScanButton: $showScanButton, lessonIsAlreadyStarted: $lessonIsAlreadyStarted, lessonStartsAt: $lessonStartsAt, lessonEndsAt: $lessonEndsAt, lessonStartsWithin40Minutes: $lessonStartsWithin40Minutes)';
   }
 
   @override
@@ -338,7 +355,11 @@ class _$Main2StateImpl extends _Main2State {
             (identical(other.lessonStartsAt, lessonStartsAt) ||
                 other.lessonStartsAt == lessonStartsAt) &&
             (identical(other.lessonEndsAt, lessonEndsAt) ||
-                other.lessonEndsAt == lessonEndsAt));
+                other.lessonEndsAt == lessonEndsAt) &&
+            (identical(other.lessonStartsWithin40Minutes,
+                    lessonStartsWithin40Minutes) ||
+                other.lessonStartsWithin40Minutes ==
+                    lessonStartsWithin40Minutes));
   }
 
   @override
@@ -355,7 +376,8 @@ class _$Main2StateImpl extends _Main2State {
       showScanButton,
       lessonIsAlreadyStarted,
       lessonStartsAt,
-      lessonEndsAt);
+      lessonEndsAt,
+      lessonStartsWithin40Minutes);
 
   @JsonKey(ignore: true)
   @override
@@ -377,7 +399,8 @@ abstract class _Main2State extends Main2State {
       final bool showScanButton,
       final bool lessonIsAlreadyStarted,
       final DateTime? lessonStartsAt,
-      final DateTime? lessonEndsAt}) = _$Main2StateImpl;
+      final DateTime? lessonEndsAt,
+      final bool lessonStartsWithin40Minutes}) = _$Main2StateImpl;
   const _Main2State._() : super._();
 
   @override
@@ -404,6 +427,8 @@ abstract class _Main2State extends Main2State {
   DateTime? get lessonStartsAt;
   @override
   DateTime? get lessonEndsAt;
+  @override
+  bool get lessonStartsWithin40Minutes;
   @override
   @JsonKey(ignore: true)
   _$$Main2StateImplCopyWith<_$Main2StateImpl> get copyWith =>

@@ -453,8 +453,8 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
 
   DateTime getFinishTime(String time, String tillWhen){
     final parts = time.split("@");
-    String _tillwhen = tillWhen.length == 4 ? "0$tillWhen" : tillWhen;
-    final DateTime result = DateTime.parse("${parts[0]}" " $_tillwhen");
+    String tillwhenModified = tillWhen.length == 4 ? "0$tillWhen" : tillWhen;
+    final DateTime result = DateTime.parse("${parts[0]}" " $tillwhenModified");
     return result;
   }
 }

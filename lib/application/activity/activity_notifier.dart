@@ -303,7 +303,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
               }
             }
           } catch (e) {
-            throw e;
+            rethrow;
           }
         }
       });

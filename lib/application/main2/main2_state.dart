@@ -20,6 +20,7 @@ class Main2State with _$Main2State {
     @Default(false) bool lessonIsAlreadyStarted,
     @Default(null) DateTime? lessonStartsAt,
     @Default(null) DateTime? lessonEndsAt,
+    @Default(false) bool lessonStartsWithin40Minutes,
   }) = _Main2State;
   const Main2State._();
 }

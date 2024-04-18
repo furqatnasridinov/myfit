@@ -49,6 +49,7 @@ abstract class $AppRouter extends _i18.RootStackRouter {
       return _i18.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: _i1.ActivityScreen(
+          key: args.key,
           isFromMap: args.isFromMap,
           gymId: args.gymId,
         ),
@@ -166,12 +167,14 @@ abstract class $AppRouter extends _i18.RootStackRouter {
 /// [_i1.ActivityScreen]
 class ActivityRoute extends _i18.PageRouteInfo<ActivityRouteArgs> {
   ActivityRoute({
+    _i19.Key? key,
     bool? isFromMap = false,
     required int gymId,
     List<_i18.PageRouteInfo>? children,
   }) : super(
           ActivityRoute.name,
           args: ActivityRouteArgs(
+            key: key,
             isFromMap: isFromMap,
             gymId: gymId,
           ),
@@ -186,9 +189,12 @@ class ActivityRoute extends _i18.PageRouteInfo<ActivityRouteArgs> {
 
 class ActivityRouteArgs {
   const ActivityRouteArgs({
+    this.key,
     this.isFromMap = false,
     required this.gymId,
   });
+
+  final _i19.Key? key;
 
   final bool? isFromMap;
 
@@ -196,7 +202,7 @@ class ActivityRouteArgs {
 
   @override
   String toString() {
-    return 'ActivityRouteArgs{isFromMap: $isFromMap, gymId: $gymId}';
+    return 'ActivityRouteArgs{key: $key, isFromMap: $isFromMap, gymId: $gymId}';
   }
 }
 

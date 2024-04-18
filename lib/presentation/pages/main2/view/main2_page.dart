@@ -73,7 +73,10 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
   void startUpdatingNearestLesson() {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(minutes: 1), (timer) async {
-      ref.read(main2Provider.notifier).determineWhenActivityStarts(ref.watch(main2Provider).lessonStartsAt!, ref.watch(main2Provider).lessonEndsAt!,);
+      ref.read(main2Provider.notifier).determineWhenActivityStarts(
+            ref.watch(main2Provider).lessonStartsAt!,
+            ref.watch(main2Provider).lessonEndsAt!,
+          );
     });
   }
 
@@ -84,22 +87,27 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
 
   @override
   Widget build(BuildContext context) {
-    final nearestLesson = ref.watch(main2Provider).nearestLesson;
+    //final nearestLesson = ref.watch(main2Provider).nearestLesson;
     final event = ref.read(main2Provider.notifier);
     debugPrint("user id ${LocalStorage.getUserId()}");
     debugPrint("token ${LocalStorage.getToken()}");
-    debugPrint("known activities ${ref.watch(settingsProvider).knownActivities}");
+    debugPrint(
+        "known activities ${ref.watch(settingsProvider).knownActivities}");
     //LocalStorage.removeToken();
     ref.listen(main2Provider, (previous, next) {
-      if (previous!.lessonEndsAt !=
-          next.lessonEndsAt && next.lessonEndsAt != next.lessonStartsAt && !next.lessonIsAlreadyStarted) {
-        if (next.lessonStartsAt != null &&
-            next.lessonEndsAt != null) {
+      if (previous!.lessonEndsAt != next.lessonEndsAt &&
+          next.lessonEndsAt != next.lessonStartsAt &&
+          !next.lessonIsAlreadyStarted) {
+        if (next.lessonStartsAt != null && next.lessonEndsAt != null) {
           startUpdatingNearestLesson();
         } else {
           stopUpdatingNearestLesson();
+        }}
+      // Если урок начинается в ближайшие 40 минут запускаем stream observable
+        if (previous.lessonStartsWithin40Minutes != next.lessonStartsWithin40Minutes &&
+            next.lessonStartsWithin40Minutes) {
+            event.streamToListenDateTime();
         }
-      }
     });
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
@@ -170,18 +178,21 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                       ),
 
                       // Ближайшее занятие
-                      SliverPadding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w)
-                            .copyWith(top: 32.h),
-                        sliver: SliverToBoxAdapter(
-                          child: nearestLesson == null
-                              ? const PlaceholderComingActivity() //button "Найти себе занятие"
-                              : ComingActivity(
-                                  nearestLesson: nearestLesson,
-                                  event: event,
-                                ),
-                        ),
-                      ),
+                      Consumer(builder: (context, ref, child) {
+                        final nearestLesson = ref.watch(main2Provider).nearestLesson;
+                        return SliverPadding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w)
+                              .copyWith(top: 32.h),
+                          sliver: SliverToBoxAdapter(
+                            child: nearestLesson == null
+                                ? const PlaceholderComingActivity() //button "Найти себе занятие"
+                                : ComingActivity(
+                                    nearestLesson: nearestLesson,
+                                    event: event,
+                                  ),
+                          ),
+                        );
+                      }),
 
                       // Бассейны поблизости
                       SliverPadding(
@@ -196,7 +207,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                         ),
                       ),
 
-                      // Карта 
+                      // Карта
                       SliverPadding(
                         padding: EdgeInsets.symmetric(horizontal: 16.w)
                             .copyWith(top: 10.h),

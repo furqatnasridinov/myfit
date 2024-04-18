@@ -25,7 +25,8 @@ class CompletedSchedules extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final event = ref.watch(scheduleProvider.notifier);
     final completedSchedules = ref.watch(scheduleProvider).completedSchedules;
-    final completedSchedulesShown = ref.watch(scheduleProvider).completedSchedulesShown;
+    final completedSchedulesShown =
+        ref.watch(scheduleProvider).completedSchedulesShown;
     return completedSchedules.isEmpty
         ? const SizedBox.shrink()
         : Padding(
@@ -64,11 +65,19 @@ class CompletedSchedules extends ConsumerWidget {
                             child: Padding(
                               padding: EdgeInsets.symmetric(horizontal: 10.w),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   SizedBox(
                                     //width: 95.w,
-                                    child: AnimatedCrossFade(
+                                    child: CustomText(
+                                      text: completedSchedulesShown
+                                          ? "Свернуть"
+                                          : "Развернуть",
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    /* AnimatedCrossFade(
                                       firstCurve: Curves.easeInOut,
                                       secondCurve: Curves.easeInOut,
                                       //secondCurve: Curves.easeIn,
@@ -87,18 +96,16 @@ class CompletedSchedules extends ConsumerWidget {
                                           completedSchedulesShown
                                               ? CrossFadeState.showFirst
                                               : CrossFadeState.showSecond,
-                                    ),
+                                    ), */
                                   ),
                                   4.horizontalSpace,
                                   TweenAnimationBuilder<double>(
                                     duration: const Duration(milliseconds: 300),
                                     tween: Tween(
                                         begin: 0,
-                                        end: completedSchedulesShown
-                                            ? 1.0
-                                            : 0),
-                                    builder: (BuildContext context, double angle,
-                                        Widget? child) {
+                                        end: completedSchedulesShown ? 1.0 : 0),
+                                    builder: (BuildContext context,
+                                        double angle, Widget? child) {
                                       return Transform.rotate(
                                         angle: angle * pi,
                                         child: Icon(
@@ -123,7 +130,8 @@ class CompletedSchedules extends ConsumerWidget {
                 // body
                 if (completedSchedulesShown)
                   Consumer(builder: (context, watch, child) {
-                    final completedSchedules = ref.watch(scheduleProvider).completedSchedules;
+                    final completedSchedules =
+                        ref.watch(scheduleProvider).completedSchedules;
                     return ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),

@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
@@ -15,7 +17,7 @@ import '../widget/widget.dart';
 class ActivityScreen extends ConsumerStatefulWidget {
   final int gymId;
   bool? isFromMap = false;
-  ActivityScreen({this.isFromMap = false, required this.gymId}) : super();
+  ActivityScreen({super.key, this.isFromMap = false, required this.gymId});
 
   @override
   ConsumerState<ActivityScreen> createState() => _ActivityPageState();

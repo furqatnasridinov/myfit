@@ -1,13 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
-import 'dart:async';
-
 import 'package:activity/application/activity/activity_notifier.dart';
 import 'package:activity/application/activity/activity_provider.dart';
 import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
 import 'package:activity/infrastructure/services/apphelpers.dart';
-import 'package:activity/infrastructure/services/local_storage.dart';
 import 'package:activity/presentation/components/animation_button_effect.dart';
 import 'package:activity/presentation/components/components.dart';
 import 'package:activity/presentation/components/custom_card.dart';

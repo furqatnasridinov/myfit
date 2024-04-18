@@ -114,12 +114,12 @@ class Main2Notifier extends StateNotifier<Main2State> {
 
     String daysWord = getDayWord(days);
     String hoursWord = getHourWord(hours);
-    String minutesWord = getMinuteWord(minutes+1);
+    String minutesWord = getMinuteWord(minutes + 1);
 
     List<String> parts = [
       if (days > 0) '$days $daysWord',
       if (hours > 0) '$hours $hoursWord',
-      if (minutes > 0) '${minutes+1} $minutesWord',
+      if (minutes > 0) '${minutes + 1} $minutesWord',
       if ((days == 0 && hours == 0 && minutes == 0) && seconds > 0)
         '$seconds секунд'
     ];
@@ -188,17 +188,27 @@ class Main2Notifier extends StateNotifier<Main2State> {
       final response = await _scheduleRepositoryInterface.getNearestLesson();
       response.when(
         success: (data) {
-          if (data.bodyData !=
-              null  && data.bodyData?.lessonState == "CONFIRMED") {
-            DateTime startingTimeInDTFormat =DateTime.parse(data.bodyData?.date?.replaceAll('@', 'T') ?? "");
-            DateTime endTime = getEndTime(startingTimeInDTFormat, data.bodyData?.duration ?? "");
+          if (data.bodyData != null &&
+              data.bodyData?.lessonState == "CONFIRMED") {
+            DateTime startingTimeInDTFormat =
+                DateTime.parse(data.bodyData?.date?.replaceAll('@', 'T') ?? "");
+            DateTime endTime = getEndTime(
+                startingTimeInDTFormat, data.bodyData?.duration ?? "");
+            DateTime fortyMinutesBeforeStart =
+                startingTimeInDTFormat.subtract(const Duration(minutes: 40));
+            bool lessonStartsWithin40Minutes =
+                DateTime.now().isAfter(fortyMinutesBeforeStart) &&
+                    DateTime.now().isBefore(startingTimeInDTFormat);
             determineWhenActivityStarts(startingTimeInDTFormat, endTime);
             state = state.copyWith(
               nearestLesson: data,
               nearestLessonIsLoading: false,
               lessonStartsAt: startingTimeInDTFormat,
               lessonEndsAt: endTime,
-            );           
+            );
+            if (lessonStartsWithin40Minutes) {
+              state = state.copyWith(lessonStartsWithin40Minutes: true);
+            }
           }
         },
         failure: (error, statusCode, operationInfo) {
@@ -213,6 +223,8 @@ class Main2Notifier extends StateNotifier<Main2State> {
     }
   }
 
+  
+
   DateTime getEndTime(DateTime dateTime, String duration) {
     final durationParts = duration.split(':');
     final hours = int.parse(durationParts[0]);
@@ -222,7 +234,8 @@ class Main2Notifier extends StateNotifier<Main2State> {
 
   void determineWhenActivityStarts(DateTime start, DateTime end) {
     DateTime now = DateTime.now();
-    final fifteenMinutesBeforeStart = start.subtract(const Duration(minutes: 15));
+    final fifteenMinutesBeforeStart =
+        start.subtract(const Duration(minutes: 15));
     if (isBetween(fifteenMinutesBeforeStart, end, now)) {
       state = state.copyWith(showScanButton: true);
     }
@@ -238,6 +251,23 @@ class Main2Notifier extends StateNotifier<Main2State> {
 
   bool isBetween(DateTime start, DateTime end, DateTime now) {
     return now.isAfter(start) && now.isBefore(end);
+  }
+
+  void streamToListenDateTime() {
+    if (state.lessonStartsWithin40Minutes && DateTime.now().
+      isBefore(state.lessonStartsAt!.subtract(const Duration(minutes: 15)))) {
+    final myDateTime = state.lessonStartsAt?.subtract(const Duration(minutes: 15));
+    final timerStream = Stream.periodic(const Duration(seconds: 1), (i) => DateTime.now());
+    timerStream.listen((now) {
+    if (now.year == myDateTime?.year &&
+        now.month == myDateTime?.month &&
+        now.day == myDateTime?.day &&
+        now.hour == myDateTime?.hour &&
+        now.minute == myDateTime?.minute &&
+        now.second == myDateTime?.second) {
+      determineWhenActivityStarts(state.lessonStartsAt!, state.lessonEndsAt!);
+    }
+  });}
   }
 
   Future<void> getUserStatsMonth(BuildContext context) async {
@@ -277,8 +307,6 @@ class Main2Notifier extends StateNotifier<Main2State> {
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
-
-  
 
   Future<void> searchingSchedules(BuildContext context,
       {required String schedule}) async {

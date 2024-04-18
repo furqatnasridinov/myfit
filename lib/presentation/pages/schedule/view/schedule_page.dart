@@ -250,7 +250,6 @@ Widget listOfActivitiesEachItem(
   final DateTime startTime = event.getDateTime(time);
   final String formattedTime = time.substring(time.length - 5);
   final String tillWhen = event.durationToTillWhen(formattedTime, duration);
-  final DateTime finishTime = event.getFinishTime(time, tillWhen);
 
   return SizedBox(
     child: IntrinsicHeight(

@@ -108,7 +108,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
                   knownActivities.add(element.toString());
                 }
               } catch (e) {
-                throw e;
+                rethrow;
               }
             }
             state = state.copyWith(knownActivities: knownActivities);
@@ -140,7 +140,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
                   knownActivities.add(element.toString());
                 }
               } catch (e) {
-                throw e;
+                rethrow;
               }
             }
             state = state.copyWith(knownActivities: knownActivities);
@@ -422,7 +422,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       }, failure: (error, statusCode, operationInfo) {
         AppHelpers.showErrorSnack(
             context, NetworkExceptions.getErrorMessage(error));
-        ;
+        
       });
     } else {
       AppHelpers.showCheckTopSnackBar(context);

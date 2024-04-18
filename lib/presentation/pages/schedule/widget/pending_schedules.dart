@@ -66,27 +66,12 @@ class PendingSchedules extends ConsumerWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
-                                  SizedBox(
-                                    child: AnimatedCrossFade(
-                                      firstCurve: Curves.easeInOut,
-                                      secondCurve: Curves.easeInOut,
-                                      //secondCurve: Curves.easeIn,
-                                      duration:
-                                          const Duration(milliseconds: 300),
-                                      firstChild: CustomText(
-                                        text: "Свернуть",
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      secondChild: CustomText(
-                                        text: "Развернуть",
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      crossFadeState: pendingSchedulesShown
-                                          ? CrossFadeState.showFirst
-                                          : CrossFadeState.showSecond,
-                                    ),
+                                  CustomText(
+                                    text: pendingSchedulesShown
+                                        ? "Свернуть"
+                                        : "Развернуть",
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                   2.horizontalSpace,
                                   TweenAnimationBuilder<double>(
