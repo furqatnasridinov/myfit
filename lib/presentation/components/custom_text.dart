@@ -14,6 +14,7 @@ class CustomText extends StatelessWidget {
   Color? color;
   bool? isUppercase;
   double? opacity;
+  double? height;
   CustomText({
     Key? key,
     this.isUppercase = false,
@@ -21,6 +22,7 @@ class CustomText extends StatelessWidget {
     this.maxLines,
     this.overflow,
     this.textAlign,
+    this.height,
     this.fontSize = 18,
     this.fontWeight,
     this.color = Colors.black,
@@ -36,6 +38,7 @@ class CustomText extends StatelessWidget {
       textAlign: textAlign,
       style: GoogleFonts.raleway(
         fontSize: fontSize,
+        height: height,
         fontWeight: fontWeight,
         color: color?.withOpacity(opacity!),
         fontFeatures: const [FontFeature.liningFigures()],

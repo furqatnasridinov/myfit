@@ -21,6 +21,7 @@ class CustomTextFormField extends StatelessWidget {
   FocusNode? focusNode;
   bool dontShowBorders;
   Widget? suffixIcon;
+  TextStyle? style;
   void Function()? onTap;
   void Function(String)? onChanged;
   void Function()? onEditingComplete;
@@ -39,6 +40,7 @@ class CustomTextFormField extends StatelessWidget {
     this.focusNode,
     this.maxLength,
     this.maxLines,
+    this.style,
     this.keyboardType,
     this.initialValue,
     this.controller,
@@ -61,11 +63,7 @@ class CustomTextFormField extends StatelessWidget {
       cursorColor: AppColors.greyText,
       onEditingComplete: onEditingComplete,
       onChanged: onChanged,
-      style: GoogleFonts.inter(
-        fontSize: 14.sp,
-        fontWeight: FontWeight.w400,
-        color: Colors.black,
-      ),
+      style: style,
       decoration: InputDecoration(
         counterStyle: const TextStyle(
           height: double.minPositive,

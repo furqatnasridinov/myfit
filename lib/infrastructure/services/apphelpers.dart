@@ -74,7 +74,7 @@ class AppHelpers {
   }
 
   String getIconSvg(String activityName) {
-    String path = "";
+    String path = "assets/svg/boxing.svg"; // будет по умолчанию
     switch (activityName) {
       case "Йога":
         path = "assets/svg/yoga.svg";
@@ -142,5 +142,30 @@ class AppHelpers {
       default:
         return Colors.black;
     }
+  }
+
+  String getFormattedLessonType(String? lessonType) {
+    String prefix = "Яхай";
+    switch (lessonType) {
+      case "Кардио-тренировки":
+        prefix = "на";
+      case "Секция бокса":
+        prefix = "на";
+      case "Смешанные единоборства":
+        prefix = "на";
+      case "Спортзал":
+        prefix = "на";
+      case "Силовые тренировки":
+        prefix = "на";
+      case "Массаж":
+        prefix = "на";
+      case "Бассейн":
+        prefix = "в";
+      case "Йога":
+        prefix = "в";
+      case "Медитации":
+        prefix = "на";
+    }
+    return prefix;
   }
 }

@@ -340,6 +340,42 @@ class LocalStorage {
     }
   }
 
+  // save login time
+  static Future<void> setLoginTime(String? time) async {
+    if (_preferences != null) {
+      await _preferences?.setString(
+        AppConstants.keyLoginTime,
+        time ?? "??",
+      );
+    }
+  }
+
+  // get login time
+  static String getLoginTime() =>
+      _preferences?.getString(AppConstants.keyLoginTime) ?? "";
+
+  // remove login time
+  static void removeLoginTime() =>
+      _preferences?.remove(AppConstants.keyLoginTime);
+
+  // save WhenUploadingPhotoOpens
+  static Future<void> setWhenUploadingPhotoOpens(String? time) async {
+    if (_preferences != null) {
+      await _preferences?.setString(
+        AppConstants.keyWhenUploadingPhotoAccessOpens,
+        time ?? "??",
+      );
+    }
+  }
+
+  // get WhenUploadingPhotoOpens
+  static String getWhenUploadingPhotoOpens() =>
+      _preferences?.getString(AppConstants.keyWhenUploadingPhotoAccessOpens) ?? "1999-01-01";
+
+  // remove WhenUploadingPhotoOpens
+  static void removeWhenUploadingPhotoOpens() =>
+      _preferences?.remove(AppConstants.keyWhenUploadingPhotoAccessOpens);
+
   // log out
   Future<void> logOut() async {
     removeToken();
@@ -357,6 +393,8 @@ class LocalStorage {
     removeGender();
     removeReminderTime();
     removeKnownActivities();
+    removeLoginTime();
+    removeWhenUploadingPhotoOpens();
     // ...
   }
 }

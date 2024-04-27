@@ -34,7 +34,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
 
               final completedAndConfirmedSchedules = allSchedules
                   .where((schedule) =>
-                      schedule.lessonState == "COMPLETED" ||
+                      //schedule.lessonState == "COMPLETED" ||
                       schedule.lessonState == "CONFIRMED" || 
                       schedule.lessonState == "PROGRESS")
                   .toList();
@@ -68,6 +68,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
                     time: formatTime(el.date ?? ""),
                     grade: 0,
                     gymId: el.gym?.id ?? 0,
+                    comment: "",
                   );
                   waitingListToCollect.add(lesson);
                 });
@@ -197,6 +198,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
               time: formatTime(element["date"]),
               grade: element["grade"],
               gymId: element["gymId"],
+              comment: element["commentMessage"] ?? "",
             );
             listToCollect.add(item);
           }

@@ -23,6 +23,7 @@ class MapState with _$MapState {
     @Default([]) List<GymData> gymFoundBySearching,
     @Default(false) bool isSearchbarOpened,
     @Default(false) bool showOnlyKnown,
+    @Default(false) bool showRecommended,
     @Default([]) List<LessonTypeWithGymsInside> activitiesWithGymsInsideAll,
     @Default([])
     List<LessonTypeWithGymsInside>

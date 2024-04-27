@@ -137,6 +137,7 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
                 32.verticalSpace,
                 TheOneWithCalendar(
                   event: event,
+                  gymId: widget.gymId,
                 ),
               ],
             ),

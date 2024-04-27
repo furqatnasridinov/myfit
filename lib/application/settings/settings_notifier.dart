@@ -8,6 +8,7 @@ import 'package:activity/infrastructure/models/request/send_phone_number_request
 import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/infrastructure/services/connectivity.dart';
 import 'package:activity/infrastructure/services/local_storage.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -28,6 +29,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     setWeight();
     setHeight();
     setAvatar();
+    getAccessPhotoUpload();
     if (!LocalStorage.isReminderDisabled()) {
       setNotificationTime(LocalStorage.getReminderTime());
     }
@@ -89,6 +91,12 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
+  }
+
+  void getAccessPhotoUpload() {
+    final DateTime whenAccessUploadingPhotoOpens =  DateTime.parse(LocalStorage.getWhenUploadingPhotoOpens());
+    final bool resultBool = DateTime.now().isBefore(whenAccessUploadingPhotoOpens);
+    state = state.copyWith(isNoAccessChangingPhoto: resultBool);
   }
 
   Future<void> getCompletedLessonTypes(BuildContext context) async {
@@ -420,9 +428,18 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       response.when(success: (data) {
         //
       }, failure: (error, statusCode, operationInfo) {
-        AppHelpers.showErrorSnack(
-            context, NetworkExceptions.getErrorMessage(error));
-        
+        //AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
+        final errorcha = error.toString();
+        debugPrint("errorcha $errorcha");
+        if (errorcha.contains("Смена фото не чаще 1 раза в неделю")) {
+          AppHelpers.showErrorSnack(context, "Фото не изменено.Сменить фото можно только один раз в неделью");
+          final String whenAccessOpens = errorcha.split("неделю/")[1].replaceAll(")", "");
+          LocalStorage.setWhenUploadingPhotoOpens(whenAccessOpens);
+          if (!state.isNoAccessChangingPhoto) {
+            state = state.copyWith(isNoAccessChangingPhoto: true);
+          }
+          //context.popRoute();
+        }
       });
     } else {
       AppHelpers.showCheckTopSnackBar(context);
@@ -476,6 +493,59 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       return const Duration(hours: 2);
     } else {
       return null;
+    }
+  }
+
+   String formatDuration(Duration duration) {
+    int days = duration.inDays;
+    int hours = duration.inHours % 24;
+
+
+    String daysWord = getDayWord(days);
+    String hoursWord = getHourWord(hours);
+
+
+    List<String> parts = [
+      if (days > 0) '$days $daysWord',
+      if (hours > 0) '$hours $hoursWord',
+    ];
+
+    return parts.join(' ');
+  }
+
+    String getDayWord(int number) {
+    number = number % 100;
+    if (number >= 11 && number <= 19) {
+      return 'дней';
+    } else {
+      switch (number % 10) {
+        case 1:
+          return 'день';
+        case 2:
+        case 3:
+        case 4:
+          return 'дня';
+        default:
+          return 'дней';
+      }
+    }
+  }
+
+  String getHourWord(int number) {
+    number = number % 100;
+    if (number >= 11 && number <= 19) {
+      return 'часов';
+    } else {
+      switch (number % 10) {
+        case 1:
+          return 'час';
+        case 2:
+        case 3:
+        case 4:
+          return 'часа';
+        default:
+          return 'часов';
+      }
     }
   }
 

@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:ui';
+
 import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/application/settings/settings_notifier.dart';
 import 'package:activity/application/settings/settings_provider.dart';
@@ -16,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../infrastructure/models/response/auth_response.dart';
 
@@ -170,6 +173,12 @@ class _PopupBodyState extends State<PopupBody> {
 
   @override
   Widget build(BuildContext context) {
+    //final loginTime = DateTime.parse(LocalStorage.getLoginTime());
+    //final bool loginTimeIsDayAfter = DateTime.now().isAfter(loginTime.add(const Duration(hours: 24)));
+    final DateTime whenAccessUploadingPhotoOpens =
+        DateTime.parse(LocalStorage.getWhenUploadingPhotoOpens());
+    final String formattedString = widget.event.formatDuration(
+        whenAccessUploadingPhotoOpens.difference(DateTime.now()));
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (widget.state.cityTextFieldHasFocus) {
         showOverlay(context);
@@ -200,6 +209,7 @@ class _PopupBodyState extends State<PopupBody> {
                       SizedBox(
                         height: 40.h,
                         child: CustomTextField(
+                          style: GoogleFonts.raleway(fontSize: 14.sp,fontWeight: FontWeight.w400),
                           isError: isNameEmpty,
                           hasFocus: true,
                           cursorColor: AppColors.greyText,
@@ -235,6 +245,7 @@ class _PopupBodyState extends State<PopupBody> {
                       SizedBox(
                         height: 40.h,
                         child: CustomTextField(
+                          style: GoogleFonts.raleway(fontSize: 14.sp,fontWeight: FontWeight.w400),
                           contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
                           controller: lastNameController,
                           hintText: LocalStorage.getUserLastName().isEmpty
@@ -264,6 +275,7 @@ class _PopupBodyState extends State<PopupBody> {
                   link: layerlink,
                   child: widget.state.isCitiesLoading
                       ? CustomTextFormField(
+                        style: GoogleFonts.raleway(fontSize: 14.sp,fontWeight: FontWeight.w400),
                           contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
                           suffixIcon: SvgPicture.asset(
                             !widget.state.cityTextFieldHasFocus
@@ -275,6 +287,7 @@ class _PopupBodyState extends State<PopupBody> {
                           initialValue: "Загружаем город",
                         )
                       : CustomTextFormField(
+                          style: GoogleFonts.raleway(fontSize: 14.sp,fontWeight: FontWeight.w400),
                           contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
                           hasFocus: widget.state.cityTextFieldHasFocus,
                           onTap: () {
@@ -312,6 +325,7 @@ class _PopupBodyState extends State<PopupBody> {
                       width: 93.w,
                       height: 40.h,
                       child: CustomTextField(
+                        style: GoogleFonts.raleway(fontSize: 14.sp, fontWeight: FontWeight.w400,fontFeatures: const [FontFeature.liningFigures()],),
                         keyboardType: TextInputType.number,
                         controller: ageController,
                         counterStyle: const TextStyle(
@@ -340,6 +354,7 @@ class _PopupBodyState extends State<PopupBody> {
                       width: 93.w,
                       height: 40.h,
                       child: CustomTextField(
+                        style: GoogleFonts.raleway(fontSize: 14.sp,fontWeight: FontWeight.w400,fontFeatures: const [FontFeature.liningFigures()],),
                         keyboardType: TextInputType.number,
                         controller: weightController,
                         counterStyle: const TextStyle(
@@ -368,6 +383,7 @@ class _PopupBodyState extends State<PopupBody> {
                       width: 93.w,
                       height: 40.h,
                       child: CustomTextField(
+                        style: GoogleFonts.raleway(fontSize: 14.sp,fontWeight: FontWeight.w400,fontFeatures: const [FontFeature.liningFigures()],),
                         keyboardType: TextInputType.number,
                         controller: heightController,
                         counterStyle: const TextStyle(
@@ -393,6 +409,7 @@ class _PopupBodyState extends State<PopupBody> {
             ),
             5.verticalSpace,
             SizedBox(
+              //color: Colors.red,
               height: widget.state.avatar.isEmpty ? null : 80.h,
               child: widget.state.avatar.isEmpty
                   ? Column(
@@ -440,50 +457,100 @@ class _PopupBodyState extends State<PopupBody> {
                             },
                           ),
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: CustomButton(
-                                width: 190.w,
-                                fontSize: 14.sp,
-                                borderColor: AppColors.fadedBlueBorder,
-                                onPressed: () async {
-                                  await widget.event
-                                      .pickImageFromGallery(context);
-                                },
-                                text: "Заменить",
+                        5.horizontalSpace,
+                        if (!widget.state.isNoAccessChangingPhoto)
+                          CustomButton(
+                            height: 36.h,
+                            width: 190.w,
+                            fontSize: 14.sp,
+                            borderColor: AppColors.fadedBlueBorder,
+                            onPressed: () async {
+                              await widget.event.pickImageFromGallery(context);
+                            },
+                            text: "Заменить",
+                          ),
+                        if (widget.state.isNoAccessChangingPhoto)
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                width: 220.w,
+                                //color: Colors.red,
+                                child: CustomText(
+                                  text:"Фотографию можно обновлять не чаще раза в неделю.",
+                                  fontSize: 16.sp,
+                                  height: 1.1,
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
-                            ),
-                            5.verticalSpace,
-                            Expanded(
-                              child: CustomButton(
-                                width: 190.w,
-                                fontSize: 14.sp,
-                                borderColor: AppColors.fadedBlueBorder,
-                                onPressed: () async {
-                                  if (widget.state.avatar.isEmpty) {
-                                    return;
-                                  } else {
-                                    showConfirmationDialog(
-                                      context,
-                                      () async {
-                                        await widget.event
-                                            .patchAvatar("", context);
-                                        widget.event.getUser(context);
-                                        context.router.pop();
-                                      },
-                                    );
-                                  }
-                                },
-                                text: "Удалить",
-                              ),
-                            ),
-                          ],
-                        ),
+                              2.verticalSpace,
+                              RichText(text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: "Осталось: ",
+                                    style: GoogleFonts.raleway(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black,
+                                      height: 1.1
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: formattedString,
+                                    style: GoogleFonts.raleway(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black,
+                                      height: 1.1,
+                                      fontFeatures: const [FontFeature.liningFigures()],
+                                    ),
+                                  ),
+                                ],
+                              )),
+                            ],
+                          ),
                       ],
                     ),
             ),
+            10.verticalSpace,
+            RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                      text: "Внимание!",
+                      style: GoogleFonts.raleway(
+                        color: Colors.black,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w700,
+                      )),
+                  WidgetSpan(
+                      child: SizedBox(
+                    width: 3.w,
+                  )),
+                  TextSpan(
+                      text:"Администратор на входе будет сверяться с этим фото, чтобы вас пропустить",
+                      style: GoogleFonts.raleway(
+                        color: Colors.black,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w400,
+                      )),
+                ],
+              ),
+            ),
+            !widget.state.isNoAccessChangingPhoto
+                ? Column(
+                    children: [
+                      10.verticalSpace,
+                      CustomText(
+                        text:"Фотографию можно обновлять не чаще раза в неделю",
+                        fontSize: 16.sp,
+                        height: 1.1,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ],
+                  )
+                : const SizedBox.shrink(),
             // buttons
             16.verticalSpace,
             Row(

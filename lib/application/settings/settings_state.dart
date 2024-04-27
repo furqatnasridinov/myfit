@@ -24,6 +24,7 @@ class SettingsState with _$SettingsState {
     @Default("30") String reminderTime,
     @Default(false) bool isReminderDisabled,
     @Default("") String? qrcodeValue,
+    @Default(false) bool isNoAccessChangingPhoto,
   }) = _SettingsState;
   const SettingsState._();
 }

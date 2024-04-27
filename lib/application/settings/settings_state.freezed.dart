@@ -34,6 +34,7 @@ mixin _$SettingsState {
   String get reminderTime => throw _privateConstructorUsedError;
   bool get isReminderDisabled => throw _privateConstructorUsedError;
   String? get qrcodeValue => throw _privateConstructorUsedError;
+  bool get isNoAccessChangingPhoto => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $SettingsStateCopyWith<SettingsState> get copyWith =>
@@ -64,7 +65,8 @@ abstract class $SettingsStateCopyWith<$Res> {
       bool isEmailEditModeEnabled,
       String reminderTime,
       bool isReminderDisabled,
-      String? qrcodeValue});
+      String? qrcodeValue,
+      bool isNoAccessChangingPhoto});
 }
 
 /// @nodoc
@@ -98,6 +100,7 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     Object? reminderTime = null,
     Object? isReminderDisabled = null,
     Object? qrcodeValue = freezed,
+    Object? isNoAccessChangingPhoto = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -172,6 +175,10 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.qrcodeValue
           : qrcodeValue // ignore: cast_nullable_to_non_nullable
               as String?,
+      isNoAccessChangingPhoto: null == isNoAccessChangingPhoto
+          ? _value.isNoAccessChangingPhoto
+          : isNoAccessChangingPhoto // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -202,7 +209,8 @@ abstract class _$$SettingsStateImplCopyWith<$Res>
       bool isEmailEditModeEnabled,
       String reminderTime,
       bool isReminderDisabled,
-      String? qrcodeValue});
+      String? qrcodeValue,
+      bool isNoAccessChangingPhoto});
 }
 
 /// @nodoc
@@ -234,6 +242,7 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     Object? reminderTime = null,
     Object? isReminderDisabled = null,
     Object? qrcodeValue = freezed,
+    Object? isNoAccessChangingPhoto = null,
   }) {
     return _then(_$SettingsStateImpl(
       isloading: null == isloading
@@ -308,6 +317,10 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value.qrcodeValue
           : qrcodeValue // ignore: cast_nullable_to_non_nullable
               as String?,
+      isNoAccessChangingPhoto: null == isNoAccessChangingPhoto
+          ? _value.isNoAccessChangingPhoto
+          : isNoAccessChangingPhoto // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -333,7 +346,8 @@ class _$SettingsStateImpl extends _SettingsState {
       this.isEmailEditModeEnabled = false,
       this.reminderTime = "30",
       this.isReminderDisabled = false,
-      this.qrcodeValue = ""})
+      this.qrcodeValue = "",
+      this.isNoAccessChangingPhoto = false})
       : _listOfCities = listOfCities,
         _knownActivities = knownActivities,
         super._();
@@ -404,10 +418,13 @@ class _$SettingsStateImpl extends _SettingsState {
   @override
   @JsonKey()
   final String? qrcodeValue;
+  @override
+  @JsonKey()
+  final bool isNoAccessChangingPhoto;
 
   @override
   String toString() {
-    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue)';
+    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue, isNoAccessChangingPhoto: $isNoAccessChangingPhoto)';
   }
 
   @override
@@ -446,30 +463,35 @@ class _$SettingsStateImpl extends _SettingsState {
             (identical(other.isReminderDisabled, isReminderDisabled) ||
                 other.isReminderDisabled == isReminderDisabled) &&
             (identical(other.qrcodeValue, qrcodeValue) ||
-                other.qrcodeValue == qrcodeValue));
+                other.qrcodeValue == qrcodeValue) &&
+            (identical(
+                    other.isNoAccessChangingPhoto, isNoAccessChangingPhoto) ||
+                other.isNoAccessChangingPhoto == isNoAccessChangingPhoto));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      isloading,
-      isCitiesLoading,
-      cityTextFieldHasFocus,
-      phoneNumber,
-      selectedCity,
-      const DeepCollectionEquality().hash(_listOfCities),
-      const DeepCollectionEquality().hash(_knownActivities),
-      userName,
-      userLastName,
-      age,
-      weight,
-      height,
-      avatar,
-      isPhoneEditModeEnabled,
-      isEmailEditModeEnabled,
-      reminderTime,
-      isReminderDisabled,
-      qrcodeValue);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        isloading,
+        isCitiesLoading,
+        cityTextFieldHasFocus,
+        phoneNumber,
+        selectedCity,
+        const DeepCollectionEquality().hash(_listOfCities),
+        const DeepCollectionEquality().hash(_knownActivities),
+        userName,
+        userLastName,
+        age,
+        weight,
+        height,
+        avatar,
+        isPhoneEditModeEnabled,
+        isEmailEditModeEnabled,
+        reminderTime,
+        isReminderDisabled,
+        qrcodeValue,
+        isNoAccessChangingPhoto
+      ]);
 
   @JsonKey(ignore: true)
   @override
@@ -497,7 +519,8 @@ abstract class _SettingsState extends SettingsState {
       final bool isEmailEditModeEnabled,
       final String reminderTime,
       final bool isReminderDisabled,
-      final String? qrcodeValue}) = _$SettingsStateImpl;
+      final String? qrcodeValue,
+      final bool isNoAccessChangingPhoto}) = _$SettingsStateImpl;
   const _SettingsState._() : super._();
 
   @override
@@ -536,6 +559,8 @@ abstract class _SettingsState extends SettingsState {
   bool get isReminderDisabled;
   @override
   String? get qrcodeValue;
+  @override
+  bool get isNoAccessChangingPhoto;
   @override
   @JsonKey(ignore: true)
   _$$SettingsStateImplCopyWith<_$SettingsStateImpl> get copyWith =>

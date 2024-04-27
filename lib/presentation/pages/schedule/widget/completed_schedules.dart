@@ -11,6 +11,7 @@ import 'package:activity/presentation/components/custom_text.dart';
 import 'package:activity/presentation/components/inter_text.dart';
 import 'package:activity/presentation/components/ui_dropdown_menu.dart';
 import 'package:activity/presentation/pages/schedule/widget/rate_dialog.dart';
+import 'package:activity/presentation/pages/schedule/widget/widget.dart';
 import 'package:activity/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -145,7 +146,8 @@ class CompletedSchedules extends ConsumerWidget {
                             completedSchedules[index].gymName,
                             completedSchedules[index].grade,
                             completedSchedules[index].gymId,
-                            event);
+                            completedSchedules[index].comment,
+                            event,);
                       },
                     );
                   }),
@@ -163,6 +165,7 @@ Widget listOfActivitiesEachItem(
   final String name,
   final int grade,
   final int gymId,
+  final String comment,
   final ScheduleNotifier event,
 ) {
   return SizedBox(
@@ -215,64 +218,92 @@ Widget listOfActivitiesEachItem(
         ),
 
         // custom card datas about schedules
-        CustomCard(
-          //color: Colors.green,
-          marginBottom: 5.h,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // top part
-              SizedBox(
-                width: 265.w,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // describtion
-                    SizedBox(
-                      width: 220.w,
-                      child: InterText(
-                        text: id.toString(),
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w400,
-                      ),
+        AnimationButtonEffect(
+          disabled: grade == 0,
+          child: GestureDetector(
+            onTap: (){
+              if (grade != 0) {
+                // open dialog to see how we rated before
+                 showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.r),
+                          ),
+                          elevation: 0,
+                          insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: RateHistoryDialog(
+                            id: id,
+                            gymName: name,
+                            describtion: description,
+                            comment: comment,
+                            rate: grade,
+                          ),
+                        );
+                      });
+              }
+            },
+            child: CustomCard(
+              //color: Colors.green,
+              marginBottom: 5.h,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // top part
+                  SizedBox(
+                    width: 265.w,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // describtion
+                        SizedBox(
+                          width: 220.w,
+                          child: InterText(
+                            text: description,
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        10.horizontalSpace,
+                        // three dots
+                        dropDownCompleted(
+                          // onRateClicked
+                          () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return Dialog(
+                                    backgroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16.r),
+                                    ),
+                                    elevation: 0,
+                                    insetPadding:
+                                        EdgeInsets.symmetric(horizontal: 16.w),
+                                    child: RateDialog(
+                                        id: id,
+                                        gymName: name,
+                                        describtion: description),
+                                  );
+                                });
+                          },
+                          // onNavigate
+                          () async {
+                            context.router.push(ActivityRoute(gymId: gymId));
+                          },
+                          grade == 0,
+                        ),
+                      ],
                     ),
-                    10.horizontalSpace,
-                    // three dots
-                    dropDownCompleted(
-                      // onRateClicked
-                      () {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return Dialog(
-                                backgroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16.r),
-                                ),
-                                elevation: 0,
-                                insetPadding:
-                                    EdgeInsets.symmetric(horizontal: 16.w),
-                                child: RateDialog(
-                                    id: id,
-                                    gymName: name,
-                                    describtion: description),
-                              );
-                            });
-                      },
-                      // onNavigate
-                      () async {
-                        context.router.push(ActivityRoute(gymId: gymId));
-                      },
-                      grade == 0,
-                    ),
-                  ],
-                ),
-              ),
-              16.verticalSpace,
-
-              // bottom part
-              SizedBox(
+                  ),
+                  16.verticalSpace,
+            
+                  // bottom part
+                SizedBox(
+                //color: Colors.green,
                 width: 265.w,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -282,16 +313,12 @@ Widget listOfActivitiesEachItem(
                       //color: Colors.red,
                       child: Row(
                         children: [
-                          Icon(
-                            Icons.watch_later_outlined,
-                            color: AppColors.blueColor,
-                            size: 16.r,
-                          ),
+                          SvgPicture.asset("assets/svg/clock.svg"),
                           4.horizontalSpace,
                           InterText(
                             text: time,
                             color: AppColors.greyText,
-                            fontSize: 12.sp,
+                            fontSize: 13.sp,
                             fontWeight: FontWeight.w400,
                           ),
                         ],
@@ -305,13 +332,9 @@ Widget listOfActivitiesEachItem(
                         //color: Colors.red,
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          //mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Icon(
-                              Icons.location_on_outlined,
-                              color: AppColors.blueColor,
-                              size: 16.r,
-                            ),
+                            SvgPicture.asset("assets/svg/location.svg"),
                             4.horizontalSpace,
                             Flexible(
                               child: SizedBox(
@@ -323,7 +346,7 @@ Widget listOfActivitiesEachItem(
                                   //text: "cmdkcmdkcmdkcmdkcmkdcmdmckmd,lcdl,cl,d,cd,lcdlc,,cl,dl,cdl,c",
                                   text: name,
                                   color: AppColors.greyText,
-                                  fontSize: 11.5.sp,
+                                  fontSize: 13.sp,
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
@@ -335,7 +358,9 @@ Widget listOfActivitiesEachItem(
                   ],
                 ),
               ),
-            ],
+                ],
+              ),
+            ),
           ),
         ),
       ],
@@ -350,7 +375,7 @@ Widget dropDownCompleted(
 ) {
   return UiDropDownMenu(
     maxWidth: 250.w,
-    customOffset: [-25.0.w, -39.h],
+    customOffset: [-25.0.w, -25.h],
     dropDownItemsList: showRate
         ? [
             {

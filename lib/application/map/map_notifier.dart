@@ -74,7 +74,7 @@ class MapNotifier extends StateNotifier<MapState> {
     final connected = await AppConnectivity().connectivity();
     //await getUserLocation();
     if (connected) {
-      state = state.copyWith(isloading: true);
+      //state = state.copyWith(isloading: true);
       final request = state.userPosition != null
           ? GetYandexMapImageRequest(
               latlon:
@@ -99,13 +99,13 @@ class MapNotifier extends StateNotifier<MapState> {
       response.when(
         success: (data) {
           if (data != null) {
-            state = state.copyWith(mapScreenShot: data, isloading: false);
+            state = state.copyWith(mapScreenShot: data, /* isloading: false */);
           }
         },
         failure: (error, statusCode, operationInfo) {
           AppHelpers.showErrorSnack(
               context, NetworkExceptions.getErrorMessage(error));
-          state = state.copyWith(isloading: false);
+         // state = state.copyWith(isloading: false);
         },
       );
     } else {
@@ -288,9 +288,14 @@ class MapNotifier extends StateNotifier<MapState> {
     state = state.copyWith(showOnlyKnown: value);
   }
 
+  Future<void> setShowRecommended(bool value) async {
+    state = state.copyWith(showRecommended: value);
+  }
+
   Future<void> getGymsList(
     BuildContext context,
     List<String> knownActivities,
+    Map<String, dynamic> recommended,
   ) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
@@ -316,6 +321,16 @@ class MapNotifier extends StateNotifier<MapState> {
                 }
               });
             }
+          } else if (state.showRecommended) {
+            // logic to show only recommended
+            final data = LessonTypeWithGymsInside(
+              false,
+              lessontype: recommended["lessonType"],
+              listOfGyms: (recommended["gyms"] as List)
+                  .map((gym) => Gymdata.fromJson(gym))
+                  .toList(),
+            );
+            listToCollectActivitiesWithGyms.add(data);
           } else {
             gymsMapFromServer.forEach((key, value) {
               final data = LessonTypeWithGymsInside(
@@ -477,11 +492,11 @@ class MapNotifier extends StateNotifier<MapState> {
       if (!isAnyOpened) {
         state = state.copyWith(
           topFlexValue: 0.335,
-          bottomFlexValue: 0.47, 
+          bottomFlexValue: 0.47,
         );
       } else {
         state = state.copyWith(
-          topFlexValue:  0.39,
+          topFlexValue: 0.39,
           bottomFlexValue: 0.415,
         );
       }

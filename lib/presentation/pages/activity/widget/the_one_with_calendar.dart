@@ -15,10 +15,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TheOneWithCalendar extends StatefulWidget {
   final ActivityNotifier event;
+  final int gymId;
 
   const TheOneWithCalendar({
     super.key,
     required this.event,
+    required this.gymId,
   });
 
   @override
@@ -199,17 +201,21 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                       currentSchedule.duration ?? "??",
                       currentSchedule.description ?? "??",
                       currentSchedule.lessonState ?? "",
+                      currentSchedule.isLoading,
                       () async {
-                        await widget.event.enrollToGym( 
+                        await widget.event.enrollToGym(
                           context,
                           currentSchedule.id ?? 0,
                         );
                         // временно до вебсокетов
-                        currentSchedule.lessonState = "WAITING";
-                        setState(() {});
+                        //currentSchedule.lessonState = "WAITING";
+                        //setState(() {});
+                        currentSchedule.isLoading = true;
                         // get the updated list of lessons
+                        await widget.event.getAllLessons(context, id: widget.gymId);
+                        await widget.event.getLessonsOfSelectedActivity(currentSchedule.lessonType ?? "", false);
+                        currentSchedule.isLoading = false;
                         scheduleEvent.getUsersSchedules(context);
-
                         // to add this lessontype to known lessontypes if it's not there
                         ref.read(settingsProvider.notifier).getWaitingLessonTypes(context);
                       },
@@ -235,9 +241,10 @@ Widget activityCard(
   String duration,
   String name,
   String? status,
+  bool? isloading,
   void Function()? enrollFunction,
 ) {
-  bool isButtonPressed = false;
+  
   if (canSignUp || (!canSignUp && status == "CONFIRMED")) {
     return Padding(
       padding: EdgeInsets.only(bottom: 10.h, left: 16.w, right: 16.w),
@@ -269,24 +276,20 @@ Widget activityCard(
                     ],
                   ),
                 ),
+                
                 // get status text
                 SizedBox(
                   child: GestureDetector(
-                    onTap: (status == "OPEN" ||
-                                status == "CANCELED_USER" ||
-                                status == "CANCELED_GYM") &&
-                            !isButtonPressed
-                        ? () {
-                            isButtonPressed = true;
-                            enrollFunction?.call();
-                          }
+                    onTap: (status == "OPEN" || status == "CANCELED_USER" || status == "CANCELED_GYM") 
+                      && isloading == false ? () {
+                          enrollFunction?.call();
+                      }
                         : null,
                     child: SizedBox(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 8.w, vertical: 2.h),
+                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                         child: CustomText(
-                          text: AppHelpers().getStatusText(status),
+                          text: isloading == true ? "Загрузка " :  AppHelpers().getStatusText(status),
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
                           color: AppHelpers().getStatusTextColor(status),

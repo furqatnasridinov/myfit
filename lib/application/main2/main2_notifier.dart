@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:activity/application/main2/main2_state.dart';
 import 'package:activity/domain/handlers/network_exceptions.dart';
 import 'package:activity/domain/interface/schedule.dart';
@@ -218,12 +220,30 @@ class Main2Notifier extends StateNotifier<Main2State> {
         },
       );
     } else {
-      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
 
-  
+  Future<void> getRecommendationForVisit(BuildContext context)async{
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      final response = await _scheduleRepositoryInterface.getRecommendationForVisiting();
+      response.when(success: (data){
+        if (data["operationResult"] == "OK") {
+          final operationObject = data["object"];
+          if (operationObject["lessonType"] != null) {
+             debugPrint(operationObject.toString());
+              state = state.copyWith(recommendedGyms: operationObject);
+          }
+        }
+      }, failure: (error, statusCode, operationInfo){
+        AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
+      });
+    }else{
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
 
   DateTime getEndTime(DateTime dateTime, String duration) {
     final durationParts = duration.split(':');
@@ -303,7 +323,6 @@ class Main2Notifier extends StateNotifier<Main2State> {
         },
       );
     } else {
-      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
@@ -341,7 +360,6 @@ class Main2Notifier extends StateNotifier<Main2State> {
         },
       );
     } else {
-      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }

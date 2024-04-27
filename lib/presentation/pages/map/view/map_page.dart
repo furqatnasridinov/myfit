@@ -1,4 +1,5 @@
 // ignore_for_file: must_be_immutable
+import 'package:activity/application/main2/main2_provider.dart';
 import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
@@ -108,7 +109,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
     bool isAnyOpened = state.activitiesWithGymsInsideFromSelectedDiapozone
         .any((element) => element.isOpened);
     return PopScope(
-      onPopInvoked: (didPop) async{
+      onPopInvoked: (didPop) async {
         if (state.showMapOnly) {
           event.reduceMap();
         }
@@ -116,13 +117,13 @@ class _MapScreenState extends ConsumerState<MapScreen>
           event.removePopUp();
           event.showLocationButton();
         }
-        return ;
+        return;
       },
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
         appBar: ScheduleHeader(
             showNavigationButton: false,
-            showBackButton: state.showOnlyKnown,
+            showBackButton: state.showOnlyKnown || state.showRecommended,
             height: height * 0.07 //12
             ),
         body: SafeArea(
@@ -231,8 +232,11 @@ class _MapScreenState extends ConsumerState<MapScreen>
                             controller: yandexMapController!,
                           );
                           // ignore: use_build_context_synchronously
-                          await event.getGymsList(context,
-                              ref.watch(settingsProvider).knownActivities);
+                          await event.getGymsList(
+                            context,
+                            ref.watch(settingsProvider).knownActivities,
+                            ref.watch(main2Provider).recommendedGyms,
+                          );
                           await event.getGetListOfGymsFromDiapozone();
                           await event.setFlexes();
                           await event.getAllMarkers();

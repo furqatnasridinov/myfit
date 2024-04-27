@@ -281,8 +281,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
               date: el["date"],
               calendarDate: formatOriginalToCalendar(el["date"]),
               startTime: returnOnlyTime(el["date"]),
-              endTime:
-                  getEndingTime(returnOnlyTime(el["date"]), el["duration"]),
+              endTime:getEndingTime(returnOnlyTime(el["date"]), el["duration"]),
               description: el["description"],
               duration: formatDuration(el["duration"]),
               lessonType: el["lessonType"],
@@ -293,6 +292,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
               showInCalendar: DateTime.now()
                   .isBefore(startTime.subtract(const Duration(minutes: 30))),
               isDeleted: el["deleteLesson"] ?? false,
+              isLoading: false
             );
             if (/* lesson.showInCalendar! && */
                 !lesson.isDeleted! &&
@@ -332,22 +332,6 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       (data) async {
         // convert the incoming data to json
         Map<String, dynamic> lessonData = jsonDecode(data);
-        /* if (lessonData["lessonState"] == "CANCELED_GYM") {
-          // push notification for canceled lesson
-          LocalNotificationService().showDefaultNotification(
-            "MyFit App",
-            "Ваша заявка на ${lessonData["lessonType"]} отменена",
-          );
-        }
-        if (lessonData["lessonState"] == "CONFIRMED") {
-          final calendarDate = formatOriginalToCalendar(lessonData["date"]);
-          final startTime = returnOnlyTime(lessonData["date"]);
-          // push notification for confirmed lesson
-          LocalNotificationService().showDefaultNotification(
-            "MyFit App",
-            "Ваша заявка на ${lessonData["lessonType"]} подтверждена.Дата посещания $calendarDate в $startTime",
-          );
-        } */
         // get all lessons again && get lessons of selected activity
         await getAllLessons(context, id: lessonData["gymId"]);
         await getLessonsOfSelectedActivity(state.selectedActivity ?? "", false);

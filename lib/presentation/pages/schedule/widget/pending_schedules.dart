@@ -183,7 +183,8 @@ Widget listOfActivitiesEachItem2(
 
           // bottom part
           SizedBox(
-            width: 265.w,
+            //color: Colors.green,
+            //width: 265.w,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -192,16 +193,12 @@ Widget listOfActivitiesEachItem2(
                   //color: Colors.red,
                   child: Row(
                     children: [
-                      Icon(
-                        Icons.watch_later_outlined,
-                        color: AppColors.blueColor,
-                        size: 16.r,
-                      ),
+                      SvgPicture.asset("assets/svg/clock.svg"),
                       4.horizontalSpace,
                       InterText(
                         text: time,
                         color: AppColors.greyText,
-                        fontSize: 12.sp,
+                        fontSize: 13.sp,
                         fontWeight: FontWeight.w400,
                       ),
                     ],
@@ -215,13 +212,9 @@ Widget listOfActivitiesEachItem2(
                     //color: Colors.red,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      //mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Icon(
-                          Icons.location_on_outlined,
-                          color: AppColors.blueColor,
-                          size: 16.r,
-                        ),
+                        SvgPicture.asset("assets/svg/location.svg"),
                         4.horizontalSpace,
                         Flexible(
                           child: SizedBox(
@@ -233,7 +226,7 @@ Widget listOfActivitiesEachItem2(
                               //text: "cmdkcmdkcmdkcmdkcmkdcmdmckmd,lcdl,cl,d,cd,lcdlc,,cl,dl,cdl,c",
                               text: name,
                               color: AppColors.greyText,
-                              fontSize: 11.5.sp,
+                              fontSize: 13.sp,
                               fontWeight: FontWeight.w400,
                             ),
                           ),

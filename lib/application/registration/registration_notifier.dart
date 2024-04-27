@@ -97,8 +97,8 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
       String? fcmToken = Platform.isIOS  ? "" : await FirebaseMessaging.instance.getToken();
-      final response = await _registerRepositoryInterface.sendPhoneNumber(
-          phoneNumber, fcmToken);
+      debugPrint("fcm token: $fcmToken");
+      final response = await _registerRepositoryInterface.sendPhoneNumber(phoneNumber, fcmToken);
       response.when(
         success: (data) {
           if (data["operationResult"] == "OK") {
@@ -147,6 +147,9 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
               LocalStorage.setWeight(data.user?.weight.toString() ?? ""),
             ]);
           }
+          // save login time locally
+          final String dateTimeToString = DateTime.now().toString();
+          LocalStorage.setLoginTime(dateTimeToString);
           moveClientToNextPage(context, nextRoute);
         },
         failure: (error, statusCode, operationInfo) {

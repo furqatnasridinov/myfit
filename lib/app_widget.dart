@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:activity/domain/di/dependency_manager.dart';
 import 'package:activity/presentation/router/app_router.dart';
+import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -24,7 +28,16 @@ class AppWidget extends StatelessWidget {
           designSize: const Size(375, 812),
           builder: (context, child) {
             return MaterialApp.router(
-              routerConfig: appRouter.config(),
+              routerConfig: appRouter.config(
+                  navigatorObservers: () => [AutoRouteObserver()],
+                  deepLinkBuilder: (link) {
+                    log(link.path);
+                    if (link.path.startsWith('/ru/qrcodepage')) {
+                      return const DeepLink([QrCodeRoute()]);
+                    } else {
+                      return DeepLink.defaultPath;
+                    }
+                  }),
               debugShowCheckedModeBanner: false,
             );
           },

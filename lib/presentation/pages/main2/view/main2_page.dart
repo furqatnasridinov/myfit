@@ -46,13 +46,11 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
         ..getCompletedLessonTypes(context)
         ..getWaitingLessonTypes(context);
       ref.read(mapProvider.notifier).getUserLocation().then((value) {
-        ref.read(mapProvider.notifier).getYandexMapImage(
-              context,
-            );
-      });
+        ref.read(mapProvider.notifier).getYandexMapImage(context);});
       ref.read(main2Provider.notifier)
         ..getNearestLesson(context)
-        ..getUserStatsMonth(context);
+        ..getUserStatsMonth(context)
+        ..getRecommendationForVisit(context);
 
       // web socket for updating lesson states
       channel = IOWebSocketChannel.connect(
@@ -89,10 +87,11 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
   Widget build(BuildContext context) {
     //final nearestLesson = ref.watch(main2Provider).nearestLesson;
     final event = ref.read(main2Provider.notifier);
+    debugPrint("login time ${LocalStorage.getLoginTime()}");
     debugPrint("user id ${LocalStorage.getUserId()}");
     debugPrint("token ${LocalStorage.getToken()}");
-    debugPrint(
-        "known activities ${ref.watch(settingsProvider).knownActivities}");
+    debugPrint("known activities ${ref.watch(settingsProvider).knownActivities}");
+    debugPrint("when photo access opens >> ${LocalStorage.getWhenUploadingPhotoOpens()}");
     //LocalStorage.removeToken();
     ref.listen(main2Provider, (previous, next) {
       if (previous!.lessonEndsAt != next.lessonEndsAt &&
@@ -102,12 +101,14 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
           startUpdatingNearestLesson();
         } else {
           stopUpdatingNearestLesson();
-        }}
-      // Если урок начинается в ближайшие 40 минут запускаем stream observable
-        if (previous.lessonStartsWithin40Minutes != next.lessonStartsWithin40Minutes &&
-            next.lessonStartsWithin40Minutes) {
-            event.streamToListenDateTime();
         }
+      }
+      // Если урок начинается в ближайшие 40 минут запускаем stream observable
+      if (previous.lessonStartsWithin40Minutes !=
+              next.lessonStartsWithin40Minutes &&
+          next.lessonStartsWithin40Minutes) {
+        event.streamToListenDateTime();
+      }
     });
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
@@ -179,7 +180,8 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
 
                       // Ближайшее занятие
                       Consumer(builder: (context, ref, child) {
-                        final nearestLesson = ref.watch(main2Provider).nearestLesson;
+                        final nearestLesson =
+                            ref.watch(main2Provider).nearestLesson;
                         return SliverPadding(
                           padding: EdgeInsets.symmetric(horizontal: 16.w)
                               .copyWith(top: 32.h),
@@ -199,13 +201,17 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                         padding:
                             EdgeInsets.only(left: 25.w).copyWith(top: 32.h),
                         sliver: SliverToBoxAdapter(
-                          child: CustomText(
-                            text: 'Бассейны поблизости',
+                          child: Consumer(builder: (context,ref,child){
+                            final recommendedGyms = ref.watch(main2Provider).recommendedGyms;
+                            return recommendedGyms.isEmpty ? const SizedBox.shrink() :
+                            CustomText(
+                            text: 'Рекоммендуемые занятия',
                             fontSize: 20.sp,
                             fontWeight: FontWeight.w600,
-                          ),
+                          );
+                          },
                         ),
-                      ),
+                      ),),
 
                       // Карта
                       SliverPadding(
@@ -213,11 +219,15 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                             .copyWith(top: 10.h),
                         sliver: SliverToBoxAdapter(
                           child: Consumer(builder: (context, ref, child) {
-                            final mapScreenShot =
-                                ref.watch(mapProvider).mapScreenShot;
-                            return mapScreenShot == null
+                            final mapScreenShot = ref.watch(mapProvider).mapScreenShot;
+                            final showRecommended = ref.watch(mapProvider).showRecommended;
+                            final recommendedGyms = ref.watch(main2Provider).recommendedGyms;
+                            return recommendedGyms.isEmpty ? const SizedBox.shrink() : mapScreenShot == null
                                 ? const Main2MapPlaceHolder()
                                 : Main2Map(
+                                    mapEvent: ref.read(mapProvider.notifier),
+                                    showRecommended: showRecommended,
+                                    showOnlyKnown: ref.watch(mapProvider).showOnlyKnown,
                                     child: Image.memory(
                                       mapScreenShot,
                                       fit: BoxFit.cover,
@@ -234,8 +244,16 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                       // Декоративный текст
                       SliverPadding(
                         padding: EdgeInsets.only(top: 32.h),
-                        sliver: const SliverToBoxAdapter(
-                          child: DecoratedTextOne(),
+                        sliver:  SliverToBoxAdapter(
+                          child: Consumer(builder: (context, ref,child){
+                            final recommendedGyms = ref.watch(main2Provider).recommendedGyms;
+                            return recommendedGyms.isEmpty ? const SizedBox() :
+                            DecoratedTextOne(
+                              lesson: recommendedGyms["lessonType"] ?? "",
+                              usersCount: recommendedGyms["countUsers"].toString(),
+                          );
+                          })
+                          
                         ),
                       ),
                     ],

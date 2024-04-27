@@ -1,12 +1,15 @@
 import 'dart:ui';
 
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DecoratedTextOne extends StatelessWidget {
-  const DecoratedTextOne({super.key});
+  final String lesson;
+  final String usersCount;
+  const DecoratedTextOne({super.key, required this.lesson, required this.usersCount});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +32,7 @@ class DecoratedTextOne extends StatelessWidget {
                 children: <Widget>[
                   // Stroked text as border.
                   Text(
-                    '15 324',
+                    usersCount,
                     style: GoogleFonts.exo2(
                       fontSize: 45.sp,
                       fontWeight: FontWeight.w700,
@@ -52,7 +55,7 @@ class DecoratedTextOne extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '15 324',
+                    usersCount,
                     style: GoogleFonts.exo2(
                       fontSize: 45.sp,
                       fontWeight: FontWeight.w700,
@@ -74,7 +77,7 @@ class DecoratedTextOne extends StatelessWidget {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: 'Наших пользователей сходят  на этой неделе ',
+                    text: 'Наших пользователей сходят  на этой неделе ${AppHelpers().getFormattedLessonType(lesson)} ',
                     style: GoogleFonts.raleway(
                       fontWeight: FontWeight.w600,
                       fontSize: 16.sp,
@@ -83,7 +86,7 @@ class DecoratedTextOne extends StatelessWidget {
                     ),
                   ),
                   TextSpan(
-                    text: 'в бассейн',
+                    text: lesson,
                     style: GoogleFonts.raleway(
                         fontWeight: FontWeight.w600,
                         fontSize: 16.sp,
@@ -130,7 +133,7 @@ class DecoratedTextOne extends StatelessWidget {
         ),
         Positioned(
           bottom: 110.h,
-          left: 33.w,
+          left: 13.w,
           child: Image(
             image: const AssetImage('assets/images/5.png'),
             height: 19.h,

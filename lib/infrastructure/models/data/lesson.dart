@@ -13,6 +13,7 @@ class Lesson {
   String? lessonState;
   bool? showInCalendar;
   bool? isDeleted;
+  bool? isLoading;
 
   Lesson({
     this.id,
@@ -29,6 +30,7 @@ class Lesson {
     this.lessonState,
     this.showInCalendar,
     this.isDeleted,
+    this.isLoading
   });
 
   Lesson.fromJson(Map<String, dynamic> json) {

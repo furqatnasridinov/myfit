@@ -1,3 +1,4 @@
+import 'package:activity/application/main2/main2_provider.dart';
 import 'package:activity/application/map/map_provider.dart';
 import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
@@ -31,10 +32,14 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
                 final mapPageBottomCardShown =
                     ref.watch(mapProvider).isGymsPopupShown;
                 final showOnlyKnownOnMap = ref.watch(mapProvider).showOnlyKnown;
+                final recommendedShown = ref.watch(mapProvider).showRecommended;
                 final event = ref.read(mapProvider.notifier);
                 return NavigationBar(
                   backgroundColor: Colors.white,
-                  height: (mapPageBottomCardShown && tabsRouter.activeIndex == 2) ? 0 : height * 0.09,
+                  height:
+                      (mapPageBottomCardShown && tabsRouter.activeIndex == 2)
+                          ? 0
+                          : height * 0.09,
                   elevation: 10,
                   shadowColor: Colors.black,
                   selectedIndex: tabsRouter.activeIndex,
@@ -68,10 +73,14 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
                     eachItem(
                       () async {
                         tabsRouter.setActiveIndex(2);
-                        if (showOnlyKnownOnMap) {
-                          event.setShowOnlyKnown(false).then((value) async {
-                            await event.getGymsList(context,
-                                ref.watch(settingsProvider).knownActivities);
+                        if (showOnlyKnownOnMap || recommendedShown) {
+                          event.setShowOnlyKnown(false).then((value) => event.setShowRecommended(false))
+                          .then((value) async {
+                            await event.getGymsList(
+                              context,
+                              ref.watch(settingsProvider).knownActivities,
+                              ref.watch(main2Provider).recommendedGyms,
+                            );
                             await event.getGetListOfGymsFromDiapozone();
                             await event.setFlexes();
                             await event.getAllMarkers();
@@ -80,8 +89,8 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
                         }
                         if (mapPageBottomCardShown) {
                           ref.read(mapProvider.notifier)
-                          ..removePopUp()
-                          ..showLocationButton();
+                            ..removePopUp()
+                            ..showLocationButton();
                         }
                       },
                       "assets/svg/map.svg",

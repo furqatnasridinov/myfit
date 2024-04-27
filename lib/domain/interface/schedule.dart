@@ -20,6 +20,6 @@ abstract class ScheduleRepositoryInterface {
   Future<ApiResult<Map<String, dynamic>>> searchingForSchedules(
       {required String schedule});
   Future<ApiResult<Map<String, dynamic>>> makeLessonInProgress({required int gymId, required int lessonId});
-    Future<ApiResult<Map<String, dynamic>>> makeLessonCompleted({required int gymId, required int lessonId});
-
+  Future<ApiResult<Map<String, dynamic>>> makeLessonCompleted({required int gymId, required int lessonId});
+  Future<ApiResult<Map<String, dynamic>>> getRecommendationForVisiting();
 }

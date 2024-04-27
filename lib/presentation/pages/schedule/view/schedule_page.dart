@@ -5,6 +5,7 @@ import 'package:activity/application/schedule/schedule_provider.dart';
 import 'package:activity/application/settings/settings_provider.dart';
 import 'package:activity/infrastructure/models/response/user_schedules_response.dart';
 import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:activity/infrastructure/services/apphelpers.dart';
 import 'package:activity/presentation/components/animation_button_effect.dart';
 import 'package:activity/presentation/components/custom_card.dart';
 import 'package:activity/presentation/components/custom_text.dart';
@@ -229,6 +230,7 @@ Widget itemListBuilder(
                   current.description ?? "",
                   current.duration ?? "",
                   current.gym?.name ?? "",
+                  current.lessonType ?? "",
                 );
               });
             }),
@@ -246,6 +248,7 @@ Widget listOfActivitiesEachItem(
   final String description,
   final String duration,
   final String name,
+  final String lessonType,
 ) {
   final DateTime startTime = event.getDateTime(time);
   final String formattedTime = time.substring(time.length - 5);
@@ -266,19 +269,22 @@ Widget listOfActivitiesEachItem(
                 fontWeight: FontWeight.w400,
               ),
               5.verticalSpace,
-              (DateTime.now().isAfter(startTime)/*  &&
-                      DateTime.now().isBefore(finishTime) */)
+              (DateTime.now().isAfter(
+                      startTime) /*  &&
+                      DateTime.now().isBefore(finishTime) */
+                  )
                   ? SvgPicture.asset(
-                     width: 21.w,
+                      width: 21.w,
                       "assets/svg/clock.svg",
                       colorFilter: const ColorFilter.mode(
-                                AppColors.blueColor,
-                                BlendMode.srcIn,
-                              ),
+                        AppColors.blueColor,
+                        BlendMode.srcIn,
+                      ),
                     )
                   : DecoratedBox(
                       decoration: BoxDecoration(
-                        border:Border.all(color: AppColors.blueColor, width: 1.w),
+                        border:
+                            Border.all(color: AppColors.blueColor, width: 1.w),
                         shape: BoxShape.circle,
                       ),
                       child: SizedBox(
@@ -286,25 +292,6 @@ Widget listOfActivitiesEachItem(
                         height: 16.h,
                       ),
                     ),
-              /* SizedBox(
-                //color: Colors.red,
-                //width: 20.w,
-                //height: 20.h,
-                child: Padding(
-                  padding: EdgeInsets.all(2.r),
-                  child: SvgPicture.asset(
-                    // width: 16.w,
-                    // height: 16.h,
-                    DateTime.now().isAfter(finishTime)
-                        ? "assets/svg/completed.svg"
-                        : (DateTime.now().isAfter(startTime) &&
-                                DateTime.now().isBefore(finishTime))
-                            ? "assets/svg/clock.svg"
-                            : "assets/svg/round.svg",
-                    // fit: BoxFit.cover,
-                  ),
-                ),
-              ), */
               5.verticalSpace,
               Expanded(
                 child: Padding(
@@ -326,6 +313,37 @@ Widget listOfActivitiesEachItem(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // top part
+                Padding(
+                  padding: EdgeInsets.only(bottom: 16.h),
+                  child: Row(
+                    children: [
+                      // icon
+                      SizedBox(
+                        width: 24.w,
+                        height: 24.h,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(6.r),
+                              color: AppColors.backgroundColor),
+                          child: Padding(
+                            padding: EdgeInsets.all(4.r),
+                           // child: SvgPicture.asset("assets/svg/boxing.svg"),
+                            child : SvgPicture.asset(AppHelpers().getIconSvg(lessonType)),
+                          ),
+                        ),
+                      ),
+                      6.horizontalSpace,
+                      // lesoontype
+                      InterText(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.blueText,
+                        text: lessonType,
+                      )
+                    ],
+                  ),
+                ),
+                // medium  part
                 SizedBox(
                   width: 265.w,
                   child: Row(
@@ -478,6 +496,7 @@ Widget _plusButton(
     return Consumer(builder: (context, ref, child) {
       final event = ref.read(mapProvider.notifier);
       final showOnlyKnownOnMap = ref.watch(mapProvider).showOnlyKnown;
+      final showRecommended = ref.watch(mapProvider).showRecommended;
       return UiDropDownMenu(
           width: double.maxFinite,
           maxWidth: 255.w,
@@ -509,13 +528,15 @@ Widget _plusButton(
                   width: 18.w,
                 ),
                 'action': () => {
-                      if (showOnlyKnownOnMap)
-                        {tabsRouter.setActiveIndex(2)}
-                      else
-                        {
-                          context.router.push(const MapRoute()),
-                          event.setShowOnlyKnown(true),
-                        }
+                      if(showRecommended){
+                        event.setShowRecommended(false),
+                      },
+                      if (showOnlyKnownOnMap){
+                        tabsRouter.setActiveIndex(2)
+                      }else{
+                        context.router.push(const MapRoute()),
+                        event.setShowOnlyKnown(true),
+                      }
                     }
               }
           ],
