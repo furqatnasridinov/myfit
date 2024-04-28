@@ -1,7 +1,7 @@
 import 'dart:io';
-import 'package:activity/domain/handlers/api_result.dart';
-import 'package:activity/infrastructure/models/request/send_confirmation_code_request.dart';
-import 'package:activity/infrastructure/models/request/send_phone_number_request.dart';
+import 'package:myfit/domain/handlers/api_result.dart';
+import 'package:myfit/infrastructure/models/request/send_confirmation_code_request.dart';
+import 'package:myfit/infrastructure/models/request/send_phone_number_request.dart';
 
 abstract class SetttingsRepositoryInterface {
   Future<ApiResult<Map<String, dynamic>>> patchUser(

@@ -1,13 +1,13 @@
-import 'package:activity/domain/di/injection.dart';
-import 'package:activity/domain/handlers/api_result.dart';
-import 'package:activity/domain/handlers/http_service.dart';
-import 'package:activity/domain/handlers/network_exceptions.dart';
-import 'package:activity/domain/interface/main.dart';
-import 'package:activity/infrastructure/models/request/get_yandex_map_image_request.dart';
-import 'package:activity/infrastructure/models/response/get_advantages_response.dart';
-import 'package:activity/infrastructure/models/response/get_comments_response.dart';
-import 'package:activity/infrastructure/models/response/get_subscribtions_response.dart';
-import 'package:activity/infrastructure/services/app_constants.dart';
+import 'package:myfit/domain/di/injection.dart';
+import 'package:myfit/domain/handlers/api_result.dart';
+import 'package:myfit/domain/handlers/http_service.dart';
+import 'package:myfit/domain/handlers/network_exceptions.dart';
+import 'package:myfit/domain/interface/main.dart';
+import 'package:myfit/infrastructure/models/request/get_yandex_map_image_request.dart';
+import 'package:myfit/infrastructure/models/response/get_advantages_response.dart';
+import 'package:myfit/infrastructure/models/response/get_comments_response.dart';
+import 'package:myfit/infrastructure/models/response/get_subscribtions_response.dart';
+import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:dio/dio.dart';
 
 class MainRepository implements MainRepositoryInterface {

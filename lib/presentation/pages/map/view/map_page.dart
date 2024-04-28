@@ -1,14 +1,14 @@
 // ignore_for_file: must_be_immutable
-import 'package:activity/application/main2/main2_provider.dart';
-import 'package:activity/application/map/map_provider.dart';
-import 'package:activity/application/settings/settings_provider.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/presentation/components/animation_button_effect.dart';
-import 'package:activity/presentation/components/components.dart';
-import 'package:activity/presentation/components/custom_card.dart';
-import 'package:activity/presentation/pages/map/widget/pop_up_map.dart';
-import 'package:activity/presentation/pages/schedule/widget/widget.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:myfit/application/main2/main2_provider.dart';
+import 'package:myfit/application/map/map_provider.dart';
+import 'package:myfit/application/settings/settings_provider.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/presentation/components/animation_button_effect.dart';
+import 'package:myfit/presentation/components/components.dart';
+import 'package:myfit/presentation/components/custom_card.dart';
+import 'package:myfit/presentation/pages/map/widget/pop_up_map.dart';
+import 'package:myfit/presentation/pages/schedule/widget/widget.dart';
+import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

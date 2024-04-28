@@ -1,4 +1,4 @@
-import 'package:activity/presentation/components/custom_text.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:flutter/material.dart';
 
 class NoActivitiesEnrolled extends StatelessWidget {

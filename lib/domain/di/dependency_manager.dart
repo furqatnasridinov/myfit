@@ -1,14 +1,14 @@
-import 'package:activity/domain/handlers/http_service.dart';
-import 'package:activity/domain/interface/activity.dart';
-import 'package:activity/domain/interface/main.dart';
-import 'package:activity/domain/interface/register.dart';
-import 'package:activity/domain/interface/schedule.dart';
-import 'package:activity/domain/interface/settings.dart';
-import 'package:activity/infrastructure/repository/activity_repository.dart';
-import 'package:activity/infrastructure/repository/main_repository.dart';
-import 'package:activity/infrastructure/repository/register_repository.dart';
-import 'package:activity/infrastructure/repository/schedule_repository.dart';
-import 'package:activity/infrastructure/repository/settings_respository.dart';
+import 'package:myfit/domain/handlers/http_service.dart';
+import 'package:myfit/domain/interface/activity.dart';
+import 'package:myfit/domain/interface/main.dart';
+import 'package:myfit/domain/interface/register.dart';
+import 'package:myfit/domain/interface/schedule.dart';
+import 'package:myfit/domain/interface/settings.dart';
+import 'package:myfit/infrastructure/repository/activity_repository.dart';
+import 'package:myfit/infrastructure/repository/main_repository.dart';
+import 'package:myfit/infrastructure/repository/register_repository.dart';
+import 'package:myfit/infrastructure/repository/schedule_repository.dart';
+import 'package:myfit/infrastructure/repository/settings_respository.dart';
 import 'package:get_it/get_it.dart';
 
 final GetIt getIt = GetIt.instance;

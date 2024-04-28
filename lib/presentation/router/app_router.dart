@@ -1,4 +1,4 @@
-import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 
 @AutoRouterConfig(replaceInRouteName: 'Screen,Route')

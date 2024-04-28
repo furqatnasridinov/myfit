@@ -1,9 +1,9 @@
-import 'package:activity/application/map/map_notifier.dart';
-import 'package:activity/application/map/map_provider.dart';
-import 'package:activity/application/map/map_state.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/apphelpers.dart';
-import 'package:activity/presentation/components/custom_card.dart';
+import 'package:myfit/application/map/map_notifier.dart';
+import 'package:myfit/application/map/map_provider.dart';
+import 'package:myfit/application/map/map_state.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
+import 'package:myfit/presentation/components/custom_card.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

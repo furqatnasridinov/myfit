@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:activity/infrastructure/services/app_constants.dart';
+import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorage {

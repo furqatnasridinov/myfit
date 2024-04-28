@@ -1,14 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:convert';
-import 'package:activity/application/activity/activity_state.dart';
-import 'package:activity/application/main2/main2_notifier.dart';
-import 'package:activity/application/schedule/schedule_notifier.dart';
-import 'package:activity/domain/handlers/network_exceptions.dart';
-import 'package:activity/domain/interface/activity.dart';
-import 'package:activity/infrastructure/models/data/description_and_peculiarities.dart';
-import 'package:activity/infrastructure/models/data/lesson.dart';
-import 'package:activity/infrastructure/services/apphelpers.dart';
-import 'package:activity/infrastructure/services/connectivity.dart';
+import 'package:myfit/application/activity/activity_state.dart';
+import 'package:myfit/application/main2/main2_notifier.dart';
+import 'package:myfit/application/schedule/schedule_notifier.dart';
+import 'package:myfit/domain/handlers/network_exceptions.dart';
+import 'package:myfit/domain/interface/activity.dart';
+import 'package:myfit/infrastructure/models/data/description_and_peculiarities.dart';
+import 'package:myfit/infrastructure/models/data/lesson.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
+import 'package:myfit/infrastructure/services/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';

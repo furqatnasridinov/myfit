@@ -1,16 +1,16 @@
 // ignore_for_file: must_be_immutable
 
-import 'package:activity/application/activity/activity_provider.dart';
-import 'package:activity/application/map/map_notifier.dart';
-import 'package:activity/application/map/map_provider.dart';
-import 'package:activity/application/map/map_state.dart';
-import 'package:activity/infrastructure/models/data/lessontype_with_gyms_inside.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/apphelpers.dart';
-import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/inter_text.dart';
-import 'package:activity/presentation/pages/map/widget/no_gyms_in_diapozone.dart';
-import 'package:activity/presentation/pages/map/widget/widget.dart';
+import 'package:myfit/application/activity/activity_provider.dart';
+import 'package:myfit/application/map/map_notifier.dart';
+import 'package:myfit/application/map/map_provider.dart';
+import 'package:myfit/application/map/map_state.dart';
+import 'package:myfit/infrastructure/models/data/lessontype_with_gyms_inside.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
+import 'package:myfit/presentation/components/inter_text.dart';
+import 'package:myfit/presentation/pages/map/widget/no_gyms_in_diapozone.dart';
+import 'package:myfit/presentation/pages/map/widget/widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

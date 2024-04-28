@@ -1,20 +1,20 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable, use_build_context_synchronously
 import 'dart:async';
 import 'dart:ui';
-import 'package:activity/application/settings/settings_provider.dart';
-import 'package:activity/infrastructure/models/request/send_confirmation_code_request.dart';
-import 'package:activity/infrastructure/services/local_storage.dart';
+import 'package:myfit/application/settings/settings_provider.dart';
+import 'package:myfit/infrastructure/models/request/send_confirmation_code_request.dart';
+import 'package:myfit/infrastructure/services/local_storage.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
-import 'package:activity/application/registration/registration_provider.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/presentation/components/custom_button.dart';
-import 'package:activity/presentation/components/custom_card.dart';
-import 'package:activity/presentation/components/custom_text.dart';
+import 'package:myfit/application/registration/registration_provider.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/presentation/components/custom_button.dart';
+import 'package:myfit/presentation/components/custom_card.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
 import '../../../components/inter_text.dart';
 
 class ChangingPhoneDialog extends ConsumerStatefulWidget {

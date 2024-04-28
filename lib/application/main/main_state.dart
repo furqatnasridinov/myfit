@@ -1,8 +1,8 @@
-import 'package:activity/infrastructure/models/data/activity_near_client.dart';
-import 'package:activity/infrastructure/models/data/each_markers_models.dart';
-import 'package:activity/infrastructure/models/response/get_advantages_response.dart';
-import 'package:activity/infrastructure/models/response/get_comments_response.dart';
-import 'package:activity/infrastructure/models/response/get_subscribtions_response.dart';
+import 'package:myfit/infrastructure/models/data/activity_near_client.dart';
+import 'package:myfit/infrastructure/models/data/each_markers_models.dart';
+import 'package:myfit/infrastructure/models/response/get_advantages_response.dart';
+import 'package:myfit/infrastructure/models/response/get_comments_response.dart';
+import 'package:myfit/infrastructure/models/response/get_subscribtions_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'main_state.freezed.dart';

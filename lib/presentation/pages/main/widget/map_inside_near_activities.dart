@@ -2,10 +2,10 @@
 
 import 'dart:typed_data';
 
-import 'package:activity/application/main/main_notifier.dart';
-import 'package:activity/application/map/map_provider.dart';
-import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/pages/main2/widget/main2_map_placeholder.dart';
+import 'package:myfit/application/main/main_notifier.dart';
+import 'package:myfit/application/map/map_provider.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
+import 'package:myfit/presentation/pages/main2/widget/main2_map_placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

@@ -1,5 +1,5 @@
-import 'package:activity/presentation/components/bottom_navigation.dart';
-import 'package:activity/presentation/components/components.dart';
+import 'package:myfit/presentation/components/bottom_navigation.dart';
+import 'package:myfit/presentation/components/components.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 

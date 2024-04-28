@@ -1,8 +1,8 @@
-import 'package:activity/application/settings/settings_provider.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/presentation/components/components.dart';
-import 'package:activity/presentation/pages/main2/widget/main2_header.dart';
-import 'package:activity/presentation/pages/settings/widget/widget.dart';
+import 'package:myfit/application/settings/settings_provider.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/presentation/components/components.dart';
+import 'package:myfit/presentation/pages/main2/widget/main2_header.dart';
+import 'package:myfit/presentation/pages/settings/widget/widget.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

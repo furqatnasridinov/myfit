@@ -2,17 +2,17 @@
 
 import 'dart:ui';
 
-import 'package:activity/application/map/map_provider.dart';
-import 'package:activity/application/settings/settings_notifier.dart';
-import 'package:activity/application/settings/settings_provider.dart';
-import 'package:activity/application/settings/settings_state.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/local_storage.dart';
-import 'package:activity/presentation/components/custom_button.dart';
-import 'package:activity/presentation/components/custom_card.dart';
-import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/custom_textfield.dart';
-import 'package:activity/presentation/components/custom_textformfield.dart';
+import 'package:myfit/application/map/map_provider.dart';
+import 'package:myfit/application/settings/settings_notifier.dart';
+import 'package:myfit/application/settings/settings_provider.dart';
+import 'package:myfit/application/settings/settings_state.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/local_storage.dart';
+import 'package:myfit/presentation/components/custom_button.dart';
+import 'package:myfit/presentation/components/custom_card.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
+import 'package:myfit/presentation/components/custom_textfield.dart';
+import 'package:myfit/presentation/components/custom_textformfield.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

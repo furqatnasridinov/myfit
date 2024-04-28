@@ -1,8 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:convert';
-import 'package:activity/application/main2/main2_provider.dart';
-import 'package:activity/application/schedule/schedule_provider.dart';
-import 'package:activity/infrastructure/services/apphelpers.dart';
+import 'package:myfit/application/main2/main2_provider.dart';
+import 'package:myfit/application/schedule/schedule_provider.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

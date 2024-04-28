@@ -1,5 +1,5 @@
-import 'package:activity/application/map/map_notifier.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:myfit/application/map/map_notifier.dart';
+import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

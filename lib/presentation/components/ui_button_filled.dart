@@ -1,4 +1,4 @@
-import 'package:activity/presentation/components/components.dart';
+import 'package:myfit/presentation/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

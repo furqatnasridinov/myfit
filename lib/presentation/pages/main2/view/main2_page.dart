@@ -1,15 +1,15 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:async';
-import 'package:activity/application/activity/activity_provider.dart';
-import 'package:activity/application/main2/main2_provider.dart';
-import 'package:activity/application/map/map_provider.dart';
-import 'package:activity/application/settings/settings_provider.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/local_storage.dart';
-import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/pages/main2/widget/main2_header.dart';
-import 'package:activity/presentation/pages/main2/widget/widget.dart';
-import 'package:activity/presentation/pages/schedule/widget/bottom_scan_container.dart';
+import 'package:myfit/application/activity/activity_provider.dart';
+import 'package:myfit/application/main2/main2_provider.dart';
+import 'package:myfit/application/map/map_provider.dart';
+import 'package:myfit/application/settings/settings_provider.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/local_storage.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
+import 'package:myfit/presentation/pages/main2/widget/main2_header.dart';
+import 'package:myfit/presentation/pages/main2/widget/widget.dart';
+import 'package:myfit/presentation/pages/schedule/widget/bottom_scan_container.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

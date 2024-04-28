@@ -1,10 +1,10 @@
-import 'package:activity/application/notes/notes_state.dart';
-import 'package:activity/domain/handlers/network_exceptions.dart';
-import 'package:activity/domain/interface/schedule.dart';
-import 'package:activity/infrastructure/models/data/gym_with_tags.dart';
-import 'package:activity/infrastructure/models/request/add_note_request.dart';
-import 'package:activity/infrastructure/services/apphelpers.dart';
-import 'package:activity/infrastructure/services/connectivity.dart';
+import 'package:myfit/application/notes/notes_state.dart';
+import 'package:myfit/domain/handlers/network_exceptions.dart';
+import 'package:myfit/domain/interface/schedule.dart';
+import 'package:myfit/infrastructure/models/data/gym_with_tags.dart';
+import 'package:myfit/infrastructure/models/request/add_note_request.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
+import 'package:myfit/infrastructure/services/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

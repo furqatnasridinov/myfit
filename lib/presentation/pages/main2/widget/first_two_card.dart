@@ -1,9 +1,9 @@
-import 'package:activity/application/main2/main2_notifier.dart';
-import 'package:activity/application/main2/main2_provider.dart';
-import 'package:activity/infrastructure/models/response/get_user_stats_month_response.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/presentation/components/custom_card.dart';
-import 'package:activity/presentation/components/custom_text.dart';
+import 'package:myfit/application/main2/main2_notifier.dart';
+import 'package:myfit/application/main2/main2_provider.dart';
+import 'package:myfit/infrastructure/models/response/get_user_stats_month_response.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/presentation/components/custom_card.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -1,15 +1,15 @@
-import 'package:activity/domain/di/injection.dart';
-import 'package:activity/domain/handlers/api_result.dart';
-import 'package:activity/domain/handlers/http_service.dart';
-import 'package:activity/domain/handlers/network_exceptions.dart';
-import 'package:activity/domain/interface/schedule.dart';
-import 'package:activity/infrastructure/models/request/add_note_request.dart';
-import 'package:activity/infrastructure/models/request/rate_request.dart';
-import 'package:activity/infrastructure/models/response/add_note_response.dart';
-import 'package:activity/infrastructure/models/response/cancel_response.dart';
-import 'package:activity/infrastructure/models/response/get_nearest_lesson_response.dart';
-import 'package:activity/infrastructure/models/response/get_user_stats_month_response.dart';
-import 'package:activity/infrastructure/services/app_constants.dart';
+import 'package:myfit/domain/di/injection.dart';
+import 'package:myfit/domain/handlers/api_result.dart';
+import 'package:myfit/domain/handlers/http_service.dart';
+import 'package:myfit/domain/handlers/network_exceptions.dart';
+import 'package:myfit/domain/interface/schedule.dart';
+import 'package:myfit/infrastructure/models/request/add_note_request.dart';
+import 'package:myfit/infrastructure/models/request/rate_request.dart';
+import 'package:myfit/infrastructure/models/response/add_note_response.dart';
+import 'package:myfit/infrastructure/models/response/cancel_response.dart';
+import 'package:myfit/infrastructure/models/response/get_nearest_lesson_response.dart';
+import 'package:myfit/infrastructure/models/response/get_user_stats_month_response.dart';
+import 'package:myfit/infrastructure/services/app_constants.dart';
 
 class ScheduleRepository implements ScheduleRepositoryInterface {
   @override

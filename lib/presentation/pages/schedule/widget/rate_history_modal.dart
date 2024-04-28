@@ -1,8 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/presentation/components/components.dart';
-import 'package:activity/presentation/components/custom_button.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/presentation/components/components.dart';
+import 'package:myfit/presentation/components/custom_button.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';

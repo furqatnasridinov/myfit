@@ -1,6 +1,6 @@
-import 'package:activity/infrastructure/models/data/description_and_peculiarities.dart';
-import 'package:activity/infrastructure/models/data/lesson.dart';
-import 'package:activity/infrastructure/models/response/gym_response.dart';
+import 'package:myfit/infrastructure/models/data/description_and_peculiarities.dart';
+import 'package:myfit/infrastructure/models/data/lesson.dart';
+import 'package:myfit/infrastructure/models/response/gym_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 part 'activity_state.freezed.dart';
 

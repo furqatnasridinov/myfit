@@ -2,12 +2,12 @@
 
 import 'dart:async';
 
-import 'package:activity/application/registration/registration_provider.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/presentation/components/components.dart';
-import 'package:activity/presentation/components/custom_card.dart';
-import 'package:activity/presentation/components/inter_text.dart';
-import 'package:activity/presentation/pages/auth/registration/custom_painter.dart';
+import 'package:myfit/application/registration/registration_provider.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/presentation/components/components.dart';
+import 'package:myfit/presentation/components/custom_card.dart';
+import 'package:myfit/presentation/components/inter_text.dart';
+import 'package:myfit/presentation/pages/auth/registration/custom_painter.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

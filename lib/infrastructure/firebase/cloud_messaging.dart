@@ -1,19 +1,16 @@
 // ignore_for_file: unused_local_variable
 
-import 'package:activity/infrastructure/local_notifications/notification_service.dart';
-import 'package:activity/presentation/router/app_router.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:myfit/infrastructure/local_notifications/notification_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
-import '../../domain/di/dependency_manager.dart';
 
 Future<void> handleBackgroundMessage(RemoteMessage message) async {
   debugPrint('Handling a background message: ${message.messageId}');
   final String textMessage = message.notification?.body ?? "";
     if (textMessage.isNotEmpty) {
       if (textMessage.contains("через 15 минут")) {
-        getIt<AppRouter>().push(const QrCodeRoute());
+       // getIt<AppRouter>().push(const QrCodeRoute());
       }
     }
 }
@@ -26,7 +23,7 @@ class CloudMessaging {
     final String textMessage = message.notification?.body ?? "";
     if (textMessage.isNotEmpty) {
       if (textMessage.contains("через 15 минут")) {
-        getIt<AppRouter>().push(const QrCodeRoute());
+       // getIt<AppRouter>().push(const QrCodeRoute());
       }
     }
   }

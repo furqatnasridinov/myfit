@@ -1,4 +1,4 @@
-import 'package:activity/infrastructure/models/response/auth_response.dart';
+import 'package:myfit/infrastructure/models/response/auth_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'settings_state.freezed.dart';

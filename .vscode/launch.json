@@ -5,18 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "activity",
+            "name": "myfit",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "activity (profile mode)",
+            "name": "myfit (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "activity (release mode)",
+            "name": "myfit (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"

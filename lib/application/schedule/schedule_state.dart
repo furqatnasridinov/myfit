@@ -1,5 +1,5 @@
-import 'package:activity/infrastructure/models/data/schedule_and_gym.dart';
-import 'package:activity/infrastructure/models/response/user_schedules_response.dart';
+import 'package:myfit/infrastructure/models/data/schedule_and_gym.dart';
+import 'package:myfit/infrastructure/models/response/user_schedules_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../infrastructure/models/data/completed_schedule.dart';

@@ -1,4 +1,4 @@
-import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';

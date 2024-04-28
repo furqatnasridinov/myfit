@@ -1,5 +1,5 @@
-import 'package:activity/application/splash/splash_state.dart';
-import 'package:activity/infrastructure/services/local_storage.dart';
+import 'package:myfit/application/splash/splash_state.dart';
+import 'package:myfit/infrastructure/services/local_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

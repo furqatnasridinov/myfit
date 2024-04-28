@@ -1,12 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
-import 'package:activity/application/schedule/schedule_state.dart';
-import 'package:activity/domain/handlers/network_exceptions.dart';
-import 'package:activity/domain/interface/schedule.dart';
-import 'package:activity/infrastructure/models/data/completed_schedule.dart';
-import 'package:activity/infrastructure/models/request/rate_request.dart';
-import 'package:activity/infrastructure/models/response/user_schedules_response.dart';
-import 'package:activity/infrastructure/services/apphelpers.dart';
-import 'package:activity/infrastructure/services/connectivity.dart';
+import 'package:myfit/application/schedule/schedule_state.dart';
+import 'package:myfit/domain/handlers/network_exceptions.dart';
+import 'package:myfit/domain/interface/schedule.dart';
+import 'package:myfit/infrastructure/models/data/completed_schedule.dart';
+import 'package:myfit/infrastructure/models/request/rate_request.dart';
+import 'package:myfit/infrastructure/models/response/user_schedules_response.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
+import 'package:myfit/infrastructure/services/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';

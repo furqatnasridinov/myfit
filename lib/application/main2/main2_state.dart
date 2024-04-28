@@ -1,6 +1,6 @@
-import 'package:activity/infrastructure/models/data/schedule_and_gym.dart';
-import 'package:activity/infrastructure/models/response/get_nearest_lesson_response.dart';
-import 'package:activity/infrastructure/models/response/get_user_stats_month_response.dart';
+import 'package:myfit/infrastructure/models/data/schedule_and_gym.dart';
+import 'package:myfit/infrastructure/models/response/get_nearest_lesson_response.dart';
+import 'package:myfit/infrastructure/models/response/get_user_stats_month_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'main2_state.freezed.dart';

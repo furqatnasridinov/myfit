@@ -1,19 +1,19 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, deprecated_member_use
 import 'dart:ui';
 
-import 'package:activity/application/notes/notes_notifer.dart';
-import 'package:activity/application/notes/notes_state.dart';
+import 'package:myfit/application/notes/notes_notifer.dart';
+import 'package:myfit/application/notes/notes_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:activity/infrastructure/models/data/gym_with_tags.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/presentation/components/custom_button.dart';
-import 'package:activity/presentation/components/custom_card.dart';
-import 'package:activity/presentation/components/custom_textfield.dart';
-import 'package:activity/presentation/components/custom_textformfield.dart';
-import 'package:activity/presentation/components/inter_text.dart';
+import 'package:myfit/infrastructure/models/data/gym_with_tags.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/presentation/components/custom_button.dart';
+import 'package:myfit/presentation/components/custom_card.dart';
+import 'package:myfit/presentation/components/custom_textfield.dart';
+import 'package:myfit/presentation/components/custom_textformfield.dart';
+import 'package:myfit/presentation/components/inter_text.dart';
 
 // ignore: must_be_immutable
 class NotesCardMaker extends StatefulWidget {

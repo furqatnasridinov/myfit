@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
-import 'package:activity/infrastructure/models/data/each_markers_models.dart';
-import 'package:activity/infrastructure/models/data/gym_data.dart';
-import 'package:activity/infrastructure/models/data/lessontype_with_gyms_inside.dart';
+import 'package:myfit/infrastructure/models/data/each_markers_models.dart';
+import 'package:myfit/infrastructure/models/data/gym_data.dart';
+import 'package:myfit/infrastructure/models/data/lessontype_with_gyms_inside.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:geolocator/geolocator.dart';
 

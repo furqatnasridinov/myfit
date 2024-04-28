@@ -1,10 +1,10 @@
 import 'dart:ui';
 
-import 'package:activity/application/main/main_notifier.dart';
-import 'package:activity/application/main/main_state.dart';
-import 'package:activity/presentation/components/custom_card.dart';
-import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/inter_text.dart';
+import 'package:myfit/application/main/main_notifier.dart';
+import 'package:myfit/application/main/main_state.dart';
+import 'package:myfit/presentation/components/custom_card.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
+import 'package:myfit/presentation/components/inter_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

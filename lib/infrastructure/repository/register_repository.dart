@@ -1,10 +1,10 @@
-import 'package:activity/domain/di/injection.dart';
-import 'package:activity/domain/handlers/api_result.dart';
-import 'package:activity/domain/handlers/http_service.dart';
-import 'package:activity/domain/handlers/network_exceptions.dart';
-import 'package:activity/domain/interface/register.dart';
-import 'package:activity/infrastructure/models/response/auth_response.dart';
-import 'package:activity/infrastructure/services/app_constants.dart';
+import 'package:myfit/domain/di/injection.dart';
+import 'package:myfit/domain/handlers/api_result.dart';
+import 'package:myfit/domain/handlers/http_service.dart';
+import 'package:myfit/domain/handlers/network_exceptions.dart';
+import 'package:myfit/domain/interface/register.dart';
+import 'package:myfit/infrastructure/models/response/auth_response.dart';
+import 'package:myfit/infrastructure/services/app_constants.dart';
 
 class RegisterRepository implements RegisterRepositoryInterface {
   @override

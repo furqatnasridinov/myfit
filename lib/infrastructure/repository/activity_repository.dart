@@ -1,10 +1,10 @@
-import 'package:activity/domain/di/injection.dart';
-import 'package:activity/domain/handlers/api_result.dart';
-import 'package:activity/domain/handlers/http_service.dart';
-import 'package:activity/domain/handlers/network_exceptions.dart';
-import 'package:activity/domain/interface/activity.dart';
-import 'package:activity/infrastructure/models/response/get_gym_activities_response.dart';
-import 'package:activity/infrastructure/models/response/gym_response.dart';
+import 'package:myfit/domain/di/injection.dart';
+import 'package:myfit/domain/handlers/api_result.dart';
+import 'package:myfit/domain/handlers/http_service.dart';
+import 'package:myfit/domain/handlers/network_exceptions.dart';
+import 'package:myfit/domain/interface/activity.dart';
+import 'package:myfit/infrastructure/models/response/get_gym_activities_response.dart';
+import 'package:myfit/infrastructure/models/response/gym_response.dart';
 
 class ActivityRepository implements ActivityRepositoryInterface {
   @override

@@ -8,36 +8,35 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:activity/presentation/pages/activity/view/activity_page.dart'
-    as _i1;
-import 'package:activity/presentation/pages/auth/registration/registration_page.dart'
-    as _i14;
-import 'package:activity/presentation/pages/auth/registration1/registration1_page.dart'
-    as _i10;
-import 'package:activity/presentation/pages/auth/registration2/registration2.dart'
-    as _i11;
-import 'package:activity/presentation/pages/auth/registration3/registration3.dart'
-    as _i12;
-import 'package:activity/presentation/pages/auth/registration4/registration4_page.dart'
-    as _i13;
-import 'package:activity/presentation/pages/bottom_navigation_handler.dart'
-    as _i2;
-import 'package:activity/presentation/pages/main/view/main_page.dart' as _i4;
-import 'package:activity/presentation/pages/main2/view/main2_page.dart' as _i3;
-import 'package:activity/presentation/pages/map/view/map_page.dart' as _i5;
-import 'package:activity/presentation/pages/notes/view/notes_page.dart' as _i6;
-import 'package:activity/presentation/pages/notification/view/notification_page.dart'
-    as _i7;
-import 'package:activity/presentation/pages/photo_view/photo_view.dart' as _i8;
-import 'package:activity/presentation/pages/qr_scanner/view/qr_code_page.dart'
-    as _i9;
-import 'package:activity/presentation/pages/schedule/view/schedule_page.dart'
-    as _i15;
-import 'package:activity/presentation/pages/settings/view/settings_page.dart'
-    as _i16;
-import 'package:activity/presentation/pages/splash/splash_screen.dart' as _i17;
 import 'package:auto_route/auto_route.dart' as _i18;
 import 'package:flutter/material.dart' as _i19;
+import 'package:myfit/presentation/pages/activity/view/activity_page.dart'
+    as _i1;
+import 'package:myfit/presentation/pages/auth/registration/registration_page.dart'
+    as _i14;
+import 'package:myfit/presentation/pages/auth/registration1/registration1_page.dart'
+    as _i10;
+import 'package:myfit/presentation/pages/auth/registration2/registration2.dart'
+    as _i11;
+import 'package:myfit/presentation/pages/auth/registration3/registration3.dart'
+    as _i12;
+import 'package:myfit/presentation/pages/auth/registration4/registration4_page.dart'
+    as _i13;
+import 'package:myfit/presentation/pages/bottom_navigation_handler.dart' as _i2;
+import 'package:myfit/presentation/pages/main/view/main_page.dart' as _i4;
+import 'package:myfit/presentation/pages/main2/view/main2_page.dart' as _i3;
+import 'package:myfit/presentation/pages/map/view/map_page.dart' as _i5;
+import 'package:myfit/presentation/pages/notes/view/notes_page.dart' as _i6;
+import 'package:myfit/presentation/pages/notification/view/notification_page.dart'
+    as _i7;
+import 'package:myfit/presentation/pages/photo_view/photo_view.dart' as _i8;
+import 'package:myfit/presentation/pages/qr_scanner/view/qr_code_page.dart'
+    as _i9;
+import 'package:myfit/presentation/pages/schedule/view/schedule_page.dart'
+    as _i15;
+import 'package:myfit/presentation/pages/settings/view/settings_page.dart'
+    as _i16;
+import 'package:myfit/presentation/pages/splash/splash_screen.dart' as _i17;
 
 abstract class $AppRouter extends _i18.RootStackRouter {
   $AppRouter({super.navigatorKey});
