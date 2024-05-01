@@ -21,6 +21,9 @@ class AppConstants {
   static const String changePhoneSendConfirmationCode = "api/user/changePhoneCodeConfirmation/2";
   static const String changePhoneSendPhoneNumber = "api/user/changePhone/2";
   static const String addPicture = "api/user/addPicture";
+  static const String getCompletedLessonTypes = "api/user/lessons/similar/confirmed"; // maybe will change to completed
+  static const String getWaitingLessonTypes = "api/user/lessons/similar/waiting";
+  static const String getRecommendationForVisit = "api/user/recommendationForVisiting";
 
 
   static const String sendPhoneNumber = "api/user/loginCode";
@@ -56,10 +59,11 @@ class AppConstants {
   static const String keyWeight = "key_weight";
   static const String keyHeight = "key_height";
   static const String keyAvatar = "key_avatar";
+  static const String keyLoginTime = "key_login_time";
   static const String keyKnownActivities = "key_activities";
-  static const String keyIsNotificationDisabled =
-      "key_is_notification_disabled";
+  static const String keyIsNotificationDisabled ="key_is_notification_disabled";
   static const String keyNotificationTime = "key_notification_time";
+  static const String keyWhenUploadingPhotoAccessOpens = "key_photo_access";
 
   // long texts
   static const String confirmationText =
@@ -76,6 +80,5 @@ class AppConstants {
 
   static const int scheduledNotificationId = 1308;
   static const String scheduledNotificationChannelId = "tmpScheduledChanelId";
-  static const String scheduledNotificationChannelName =
-      "tmpScheduledChanelName";
+  static const String scheduledNotificationChannelName ="tmpScheduledChanelName";
 }

@@ -1,14 +1,18 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:activity/application/schedule/schedule_notifier.dart';
-import 'package:activity/application/schedule/schedule_provider.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/presentation/components/custom_card.dart';
-import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/inter_text.dart';
-import 'package:activity/presentation/components/ui_dropdown_menu.dart';
-import 'package:activity/presentation/pages/schedule/widget/rate_dialog.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
+import 'dart:math';
+
+import 'package:myfit/application/schedule/schedule_notifier.dart';
+import 'package:myfit/application/schedule/schedule_provider.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/presentation/components/animation_button_effect.dart';
+import 'package:myfit/presentation/components/custom_card.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
+import 'package:myfit/presentation/components/inter_text.dart';
+import 'package:myfit/presentation/components/ui_dropdown_menu.dart';
+import 'package:myfit/presentation/pages/schedule/widget/rate_dialog.dart';
+import 'package:myfit/presentation/pages/schedule/widget/widget.dart';
+import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,8 +25,10 @@ class CompletedSchedules extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final event = ref.watch(scheduleProvider.notifier);
-    final state = ref.watch(scheduleProvider);
-    return state.completedSchedules.isEmpty
+    final completedSchedules = ref.watch(scheduleProvider).completedSchedules;
+    final completedSchedulesShown =
+        ref.watch(scheduleProvider).completedSchedulesShown;
+    return completedSchedules.isEmpty
         ? const SizedBox.shrink()
         : Padding(
             padding: EdgeInsets.only(top: 16.h),
@@ -38,43 +44,83 @@ class CompletedSchedules extends ConsumerWidget {
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
-                    InkWell(
-                      borderRadius: BorderRadius.circular(8.r),
+                    GestureDetector(
                       onTap: () {
-                        if (state.completedSchedulesShown) {
+                        if (completedSchedulesShown) {
                           event.hideCompletedSchedules();
                         } else {
                           event.showCompletedSchedules();
                         }
                       },
-                      child: Container(
-                        height: 40.h,
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8.r),
-                          border: Border.all(
-                            color: AppColors.blueBorder,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CustomText(
-                              text: state.completedSchedulesShown
-                                  ? "Свернуть"
-                                  : "Развернуть",
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
+                      child: AnimationButtonEffect(
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.r),
+                            border: Border.all(
+                              color: AppColors.blueBorder,
                             ),
-                            4.horizontalSpace,
-                            Icon(
-                              state.completedSchedulesShown
-                                  ? Icons.keyboard_arrow_up
-                                  : Icons.keyboard_arrow_down,
-                              size: 20.sp,
-                              color: Colors.black.withOpacity(0.7),
-                            )
-                          ],
+                          ),
+                          child: SizedBox(
+                            height: 40.h,
+                            width: 135.w,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10.w),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  SizedBox(
+                                    //width: 95.w,
+                                    child: CustomText(
+                                      text: completedSchedulesShown
+                                          ? "Свернуть"
+                                          : "Развернуть",
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    /* AnimatedCrossFade(
+                                      firstCurve: Curves.easeInOut,
+                                      secondCurve: Curves.easeInOut,
+                                      //secondCurve: Curves.easeIn,
+                                      duration: const Duration(milliseconds: 300),
+                                      firstChild: CustomText(
+                                        text: "Свернуть",
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      secondChild: CustomText(
+                                        text: "Развернуть",
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      crossFadeState:
+                                          completedSchedulesShown
+                                              ? CrossFadeState.showFirst
+                                              : CrossFadeState.showSecond,
+                                    ), */
+                                  ),
+                                  4.horizontalSpace,
+                                  TweenAnimationBuilder<double>(
+                                    duration: const Duration(milliseconds: 300),
+                                    tween: Tween(
+                                        begin: 0,
+                                        end: completedSchedulesShown ? 1.0 : 0),
+                                    builder: (BuildContext context,
+                                        double angle, Widget? child) {
+                                      return Transform.rotate(
+                                        angle: angle * pi,
+                                        child: Icon(
+                                          Icons.keyboard_arrow_down,
+                                          size: 20.sp,
+                                          color: Colors.black.withOpacity(0.7),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -83,23 +129,28 @@ class CompletedSchedules extends ConsumerWidget {
                 5.verticalSpace,
 
                 // body
-                if (state.completedSchedulesShown)
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: state.completedSchedules.length,
-                    itemBuilder: (context, index) {
-                      return listOfActivitiesEachItem(
-                          context,
-                          state.completedSchedules[index].id,
-                          state.completedSchedules[index].time,
-                          state.completedSchedules[index].describtion,
-                          state.completedSchedules[index].gymName,
-                          state.completedSchedules[index].grade,
-                          state.completedSchedules[index].gymId,
-                          event);
-                    },
-                  ),
+                if (completedSchedulesShown)
+                  Consumer(builder: (context, watch, child) {
+                    final completedSchedules =
+                        ref.watch(scheduleProvider).completedSchedules;
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: completedSchedules.length,
+                      itemBuilder: (context, index) {
+                        return listOfActivitiesEachItem(
+                            context,
+                            completedSchedules[index].id,
+                            completedSchedules[index].time,
+                            completedSchedules[index].describtion,
+                            completedSchedules[index].gymName,
+                            completedSchedules[index].grade,
+                            completedSchedules[index].gymId,
+                            completedSchedules[index].comment,
+                            event,);
+                      },
+                    );
+                  }),
               ],
             ),
           );
@@ -114,6 +165,7 @@ Widget listOfActivitiesEachItem(
   final String name,
   final int grade,
   final int gymId,
+  final String comment,
   final ScheduleNotifier event,
 ) {
   return SizedBox(
@@ -166,64 +218,92 @@ Widget listOfActivitiesEachItem(
         ),
 
         // custom card datas about schedules
-        CustomCard(
-          //color: Colors.green,
-          marginBottom: 5.h,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // top part
-              SizedBox(
-                width: 265.w,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // describtion
-                    SizedBox(
-                      width: 220.w,
-                      child: InterText(
-                        text: id.toString(),
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w400,
-                      ),
+        AnimationButtonEffect(
+          disabled: grade == 0,
+          child: GestureDetector(
+            onTap: (){
+              if (grade != 0) {
+                // open dialog to see how we rated before
+                 showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.r),
+                          ),
+                          elevation: 0,
+                          insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: RateHistoryDialog(
+                            id: id,
+                            gymName: name,
+                            describtion: description,
+                            comment: comment,
+                            rate: grade,
+                          ),
+                        );
+                      });
+              }
+            },
+            child: CustomCard(
+              //color: Colors.green,
+              marginBottom: 5.h,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // top part
+                  SizedBox(
+                    width: 265.w,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // describtion
+                        SizedBox(
+                          width: 220.w,
+                          child: InterText(
+                            text: description,
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        10.horizontalSpace,
+                        // three dots
+                        dropDownCompleted(
+                          // onRateClicked
+                          () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return Dialog(
+                                    backgroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16.r),
+                                    ),
+                                    elevation: 0,
+                                    insetPadding:
+                                        EdgeInsets.symmetric(horizontal: 16.w),
+                                    child: RateDialog(
+                                        id: id,
+                                        gymName: name,
+                                        describtion: description),
+                                  );
+                                });
+                          },
+                          // onNavigate
+                          () async {
+                            context.router.push(ActivityRoute(gymId: gymId));
+                          },
+                          grade == 0,
+                        ),
+                      ],
                     ),
-                    10.horizontalSpace,
-                    // three dots
-                    dropDownCompleted(
-                      // onRateClicked
-                      () {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return Dialog(
-                                backgroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16.r),
-                                ),
-                                elevation: 0,
-                                insetPadding:
-                                    EdgeInsets.symmetric(horizontal: 16.w),
-                                child: RateDialog(
-                                    id: id,
-                                    gymName: name,
-                                    describtion: description),
-                              );
-                            });
-                      },
-                      // onNavigate
-                      () async {
-                        context.router.push(ActivityRoute(gymId: gymId));
-                      },
-                      grade == 0,
-                    ),
-                  ],
-                ),
-              ),
-              16.verticalSpace,
-
-              // bottom part
-              SizedBox(
+                  ),
+                  16.verticalSpace,
+            
+                  // bottom part
+                SizedBox(
+                //color: Colors.green,
                 width: 265.w,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -233,16 +313,12 @@ Widget listOfActivitiesEachItem(
                       //color: Colors.red,
                       child: Row(
                         children: [
-                          Icon(
-                            Icons.watch_later_outlined,
-                            color: AppColors.blueColor,
-                            size: 16.r,
-                          ),
+                          SvgPicture.asset("assets/svg/clock.svg"),
                           4.horizontalSpace,
                           InterText(
                             text: time,
                             color: AppColors.greyText,
-                            fontSize: 12.sp,
+                            fontSize: 13.sp,
                             fontWeight: FontWeight.w400,
                           ),
                         ],
@@ -256,13 +332,9 @@ Widget listOfActivitiesEachItem(
                         //color: Colors.red,
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          //mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Icon(
-                              Icons.location_on_outlined,
-                              color: AppColors.blueColor,
-                              size: 16.r,
-                            ),
+                            SvgPicture.asset("assets/svg/location.svg"),
                             4.horizontalSpace,
                             Flexible(
                               child: SizedBox(
@@ -274,7 +346,7 @@ Widget listOfActivitiesEachItem(
                                   //text: "cmdkcmdkcmdkcmdkcmkdcmdmckmd,lcdl,cl,d,cd,lcdlc,,cl,dl,cdl,c",
                                   text: name,
                                   color: AppColors.greyText,
-                                  fontSize: 11.5.sp,
+                                  fontSize: 13.sp,
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
@@ -286,7 +358,9 @@ Widget listOfActivitiesEachItem(
                   ],
                 ),
               ),
-            ],
+                ],
+              ),
+            ),
           ),
         ),
       ],
@@ -301,7 +375,7 @@ Widget dropDownCompleted(
 ) {
   return UiDropDownMenu(
     maxWidth: 250.w,
-    customOffset: [-25.0.w, -39.h],
+    customOffset: [-25.0.w, -25.h],
     dropDownItemsList: showRate
         ? [
             {

@@ -1,7 +1,7 @@
-import 'package:activity/application/main/main_notifier.dart';
-import 'package:activity/application/main/main_state.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/presentation/components/custom_text.dart';
+import 'package:myfit/application/main/main_notifier.dart';
+import 'package:myfit/application/main/main_state.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';

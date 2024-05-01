@@ -1,15 +1,16 @@
 // ignore_for_file: must_be_immutable
 
-import 'package:activity/application/activity/activity_provider.dart';
-import 'package:activity/application/map/map_notifier.dart';
-import 'package:activity/application/map/map_state.dart';
-import 'package:activity/infrastructure/models/data/lessontype_with_gyms_inside.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/apphelpers.dart';
-import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/inter_text.dart';
-import 'package:activity/presentation/pages/map/widget/no_gyms_in_diapozone.dart';
-import 'package:activity/presentation/pages/map/widget/widget.dart';
+import 'package:myfit/application/activity/activity_provider.dart';
+import 'package:myfit/application/map/map_notifier.dart';
+import 'package:myfit/application/map/map_provider.dart';
+import 'package:myfit/application/map/map_state.dart';
+import 'package:myfit/infrastructure/models/data/lessontype_with_gyms_inside.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
+import 'package:myfit/presentation/components/inter_text.dart';
+import 'package:myfit/presentation/pages/map/widget/no_gyms_in_diapozone.dart';
+import 'package:myfit/presentation/pages/map/widget/widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -71,6 +72,7 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                     itemCount: widget.state
                         .activitiesWithGymsInsideFromSelectedDiapozone.length,
                     shrinkWrap: true,
+                    
                     itemBuilder: (context, index) {
                       final currentActivity = widget.state
                           .activitiesWithGymsInsideFromSelectedDiapozone[index];
@@ -81,16 +83,22 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                           currentActivity.listOfGyms!,
                           // ontap of gyms below
                           () {
-                        for (var element in widget.state
-                            .activitiesWithGymsInsideFromSelectedDiapozone) {
-                          if (element.isOpened == true &&
-                              element != currentActivity) {
-                            element.isOpened = false;
-                            setState(() {});
+                        currentActivity.isOpened = !currentActivity.isOpened;
+                        if (!currentActivity.isOpened) {
+                          widget.event.removePopUp();
+                          widget.event.showLocationButton();
+                          for (var element in currentActivity.listOfGyms!) {
+                            if (element.isSelected == true) {
+                              element.isSelected = false;
+                            }
+                          }
+                        }else{
+                          for (var el in widget.state.activitiesWithGymsInsideFromSelectedDiapozone) {
+                            if (el.isOpened && el != currentActivity) {
+                              el.isOpened = false;
+                            }
                           }
                         }
-                        currentActivity.isOpened = !currentActivity.isOpened;
-                        setState(() {});
                         widget.event.setFlexes();
                       });
                     },
@@ -107,6 +115,7 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
     void Function()? onTap,
   ) {
     return Container(
+      //duration: const Duration(milliseconds: 3000),
       height: isOpened ? null : 40.h,
       width: double.maxFinite,
       decoration: BoxDecoration(
@@ -181,11 +190,6 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.w),
                   child: SizedBox(
-                    /* height: gymsList.length == 1
-                        ? 50.h
-                        : gymsList.length == 2
-                            ? 100.h
-                            : 150.h, */
                     child: Consumer(
                       builder: (context, ref, child) {
                         final activityEvent =
@@ -212,7 +216,12 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                                       !gymsList[index].isSelected;
                                   setState(() {});
                                   //
-                                  activityEvent.getActivityTypes(context,false,
+                                  activityEvent.getActivityTypes(
+                                      context,
+                                      false,
+                                      ref
+                                          .watch(mapProvider)
+                                          .selectedLessonTypeFromMap,
                                       gymId: gymsList[index].id!);
                                   widget.event.changeCameraPosition(
                                     widget.controller!,
@@ -230,8 +239,8 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                                             .longitude
                                             .toString()),
                                       )
-                                      .then((value) =>
-                                          widget.event.showPopUpOnMap(context));
+                                      .then((value) => widget.event
+                                          .showPopUpOnMap(context, title));
                                 },
                               );
                             });

@@ -1,9 +1,9 @@
-import 'package:activity/application/main/main_notifier.dart';
-import 'package:activity/application/main/main_state.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/app_constants.dart';
-import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/inter_text.dart';
+import 'package:myfit/application/main/main_notifier.dart';
+import 'package:myfit/application/main/main_state.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/app_constants.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
+import 'package:myfit/presentation/components/inter_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

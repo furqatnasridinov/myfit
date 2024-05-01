@@ -1,9 +1,9 @@
-import 'package:activity/application/activity/activity_notifier.dart';
-import 'package:activity/application/activity/activity_provider.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/app_constants.dart';
-import 'package:activity/presentation/components/components.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:myfit/application/activity/activity_notifier.dart';
+import 'package:myfit/application/activity/activity_provider.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/app_constants.dart';
+import 'package:myfit/presentation/components/components.dart';
+import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -68,8 +68,7 @@ class TheOneWithPhotos extends StatelessWidget {
                           width: 47.w,
                           height: 47.h,
                           child: CachedNetworkImage(
-                            imageUrl:
-                                "http://77.222.53.122/image/$linkToCompressedPhoto",
+                            imageUrl:"http://77.222.53.122/image/$linkToCompressedPhoto",
                             fit: BoxFit.cover,
                             errorWidget: (context, url, error) {
                               return Image.asset(AppConstants.cristianBale);

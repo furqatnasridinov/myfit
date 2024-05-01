@@ -1,10 +1,10 @@
-import 'package:activity/application/main/main_state.dart';
-import 'package:activity/domain/handlers/network_exceptions.dart';
-import 'package:activity/domain/interface/main.dart';
-import 'package:activity/infrastructure/models/data/activity_near_client.dart';
-import 'package:activity/infrastructure/models/data/each_markers_models.dart';
-import 'package:activity/infrastructure/services/apphelpers.dart';
-import 'package:activity/infrastructure/services/connectivity.dart';
+import 'package:myfit/application/main/main_state.dart';
+import 'package:myfit/domain/handlers/network_exceptions.dart';
+import 'package:myfit/domain/interface/main.dart';
+import 'package:myfit/infrastructure/models/data/activity_near_client.dart';
+import 'package:myfit/infrastructure/models/data/each_markers_models.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
+import 'package:myfit/infrastructure/services/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -159,6 +159,8 @@ class MainNotifier extends StateNotifier<MainState> {
     }
     state = state.copyWith(listOfMarkers: markers);
   }
+
+
 
   List<PlacemarkMapObject> getPlacemarkObjects() {
     List<EachMarkersModel> allMarkers = state.listOfMarkers;

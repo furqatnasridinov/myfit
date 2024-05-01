@@ -1,13 +1,13 @@
-import 'package:activity/application/map/map_state.dart';
-import 'package:activity/domain/handlers/network_exceptions.dart';
-import 'package:activity/domain/interface/main.dart';
-import 'package:activity/infrastructure/models/data/each_markers_models.dart';
-import 'package:activity/infrastructure/models/data/gym_data.dart';
-import 'package:activity/infrastructure/models/data/lessontype_with_gyms_inside.dart';
-import 'package:activity/infrastructure/models/request/get_yandex_map_image_request.dart';
-import 'package:activity/infrastructure/services/apphelpers.dart';
-import 'package:activity/infrastructure/services/connectivity.dart';
-import 'package:activity/infrastructure/services/local_storage.dart';
+import 'package:myfit/application/map/map_state.dart';
+import 'package:myfit/domain/handlers/network_exceptions.dart';
+import 'package:myfit/domain/interface/main.dart';
+import 'package:myfit/infrastructure/models/data/each_markers_models.dart';
+import 'package:myfit/infrastructure/models/data/gym_data.dart';
+import 'package:myfit/infrastructure/models/data/lessontype_with_gyms_inside.dart';
+import 'package:myfit/infrastructure/models/request/get_yandex_map_image_request.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
+import 'package:myfit/infrastructure/services/connectivity.dart';
+import 'package:myfit/infrastructure/services/local_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -74,7 +74,7 @@ class MapNotifier extends StateNotifier<MapState> {
     final connected = await AppConnectivity().connectivity();
     //await getUserLocation();
     if (connected) {
-      state = state.copyWith(isloading: true);
+      //state = state.copyWith(isloading: true);
       final request = state.userPosition != null
           ? GetYandexMapImageRequest(
               latlon:
@@ -99,13 +99,13 @@ class MapNotifier extends StateNotifier<MapState> {
       response.when(
         success: (data) {
           if (data != null) {
-            state = state.copyWith(mapScreenShot: data, isloading: false);
+            state = state.copyWith(mapScreenShot: data, /* isloading: false */);
           }
         },
         failure: (error, statusCode, operationInfo) {
           AppHelpers.showErrorSnack(
               context, NetworkExceptions.getErrorMessage(error));
-          state = state.copyWith(isloading: false);
+         // state = state.copyWith(isloading: false);
         },
       );
     } else {
@@ -284,12 +284,18 @@ class MapNotifier extends StateNotifier<MapState> {
     );
   }
 
-  Future<void> setShowOnlyKnown(bool value) async{
+  Future<void> setShowOnlyKnown(bool value) async {
     state = state.copyWith(showOnlyKnown: value);
+  }
+
+  Future<void> setShowRecommended(bool value) async {
+    state = state.copyWith(showRecommended: value);
   }
 
   Future<void> getGymsList(
     BuildContext context,
+    List<String> knownActivities,
+    Map<String, dynamic> recommended,
   ) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
@@ -301,7 +307,6 @@ class MapNotifier extends StateNotifier<MapState> {
           final gymsMapFromServer = data["object"] as Map<String, dynamic>;
           final listToCollectActivitiesWithGyms = <LessonTypeWithGymsInside>[];
           if (state.showOnlyKnown) {
-            List<String> knownActivities = LocalStorage.getKnownActivities();
             for (var element in knownActivities) {
               gymsMapFromServer.forEach((key, value) {
                 if (element == key) {
@@ -316,6 +321,16 @@ class MapNotifier extends StateNotifier<MapState> {
                 }
               });
             }
+          } else if (state.showRecommended) {
+            // logic to show only recommended
+            final data = LessonTypeWithGymsInside(
+              false,
+              lessontype: recommended["lessonType"],
+              listOfGyms: (recommended["gyms"] as List)
+                  .map((gym) => Gymdata.fromJson(gym))
+                  .toList(),
+            );
+            listToCollectActivitiesWithGyms.add(data);
           } else {
             gymsMapFromServer.forEach((key, value) {
               final data = LessonTypeWithGymsInside(
@@ -390,12 +405,12 @@ class MapNotifier extends StateNotifier<MapState> {
   }
 
   void showMapOnly() {
-    state = state.copyWith(topFlex: 0);
+    state = state.copyWith(topFlexValue: 0.065, bottomFlexValue: 0.74);
     state = state.copyWith(showMapOnly: true);
   }
 
   void reduceMap() {
-    state = state.copyWith(topFlex: 4);
+    //state = state.copyWith(topFlexValue: 0.3, bottomFlexValue: 0.51);
     state = state.copyWith(showMapOnly: false);
   }
 
@@ -405,91 +420,132 @@ class MapNotifier extends StateNotifier<MapState> {
     bool isAnyOpened = list.any((element) => element.isOpened);
     if (state.isloading) {
       state = state.copyWith(
-        topFlex: 3,
-        bottomFlex: 8,
+        topFlexValue: 0.21,
+        bottomFlexValue: 0.6,
       );
     }
-    if (list.isEmpty) {
+
+    if (list.isEmpty && !state.isloading) {
       state = state.copyWith(
-        topFlex: 3,
-        bottomFlex: 10,
+        topFlexValue: 0.18,
+        bottomFlexValue: 0.63,
       );
     }
-    if (list.length == 1 && !state.isloading && !isAnyOpened) {
-      state = state.copyWith(
-        topFlex: 2,
-        bottomFlex: 9,
-      );
+
+    if (list.length == 1 && !state.isloading) {
+      if (!isAnyOpened) {
+        state = state.copyWith(
+          topFlexValue: 0.16,
+          bottomFlexValue: 0.645,
+        );
+      } else {
+        state = state.copyWith(
+          topFlexValue: 0.215, // + 0.055
+          bottomFlexValue: 0.59, // - 0.055
+        );
+      }
     }
-    if (list.length == 1 && isAnyOpened) {
-      state = state.copyWith(
-        topFlex: 4,
-        bottomFlex: 6,
-      );
-    }
+
     if (list.length == 2) {
-      state = state.copyWith(
-        topFlex: 3,
-        bottomFlex: 8,
-      );
+      if (!isAnyOpened) {
+        state = state.copyWith(
+          topFlexValue: 0.215,
+          bottomFlexValue: 0.590,
+        );
+      } else {
+        state = state.copyWith(
+          topFlexValue: 0.27,
+          bottomFlexValue: 0.535,
+        );
+      }
     }
+
     if (list.length == 3) {
-      state = state.copyWith(
-        topFlex: 4,
-        bottomFlex: 8,
-      );
+      if (!isAnyOpened) {
+        state = state.copyWith(
+          topFlexValue: 0.270,
+          bottomFlexValue: 0.535,
+        );
+      } else {
+        state = state.copyWith(
+          topFlexValue: 0.325,
+          bottomFlexValue: 0.480,
+        );
+      }
     }
+
     if (list.length == 4) {
-      state = state.copyWith(
-        topFlex: 5,
-        bottomFlex: 9,
-      );
+      if (!isAnyOpened) {
+        state = state.copyWith(
+          topFlexValue: 0.325,
+          bottomFlexValue: 0.480,
+        );
+      } else {
+        state = state.copyWith(
+          topFlexValue: 0.380,
+          bottomFlexValue: 0.425,
+        );
+      }
     }
+
     if (list.length > 4 && !state.isloading) {
-      state = state.copyWith(topFlex: 6, bottomFlex: 8);
+      if (!isAnyOpened) {
+        state = state.copyWith(
+          topFlexValue: 0.335,
+          bottomFlexValue: 0.47,
+        );
+      } else {
+        state = state.copyWith(
+          topFlexValue: 0.39,
+          bottomFlexValue: 0.415,
+        );
+      }
     }
+
     if ((list.isNotEmpty && list.length <= 2) &&
         (state.locationPermissionDenied || state.locationServiceIsNotEnabled)) {
-      state = state.copyWith(
-        topFlex: 4,
-        bottomFlex: 6,
-      );
+      if (!isAnyOpened) {
+        state = state.copyWith(
+          topFlexValue: 0.21,
+          bottomFlexValue: 0.6,
+        );
+      } else {
+        state = state.copyWith(
+          topFlexValue: 0.24,
+          bottomFlexValue: 0.57,
+        );
+      }
     }
+
     if ((list.length >= 3 && list.length <= 4) &&
         (state.locationPermissionDenied || state.locationServiceIsNotEnabled)) {
-      state = state.copyWith(
-        topFlex: 5,
-        bottomFlex: 6,
-      );
+      if (!isAnyOpened) {
+        state = state.copyWith(
+          topFlexValue: 0.33,
+          bottomFlexValue: 0.48,
+        );
+      } else {
+        state = state.copyWith(
+          topFlexValue: 0.36,
+          bottomFlexValue: 0.45,
+        );
+      }
     }
+
     if (list.length >= 5 &&
         (state.locationPermissionDenied || state.locationServiceIsNotEnabled)) {
-      state = state.copyWith(
-        topFlex: 7,
-        bottomFlex: 5,
-      );
-    }
-  }
-
-  void openGymslist() {
-    final list = state.activitiesWithGymsInsideFromSelectedDiapozone;
-    if (!state.locationPermissionDenied) {
-      if (list.length == 1) {
-        state = state.copyWith(topFlex: 3);
-        state = state.copyWith(bottomFlex: 8);
-      }
-      if (list.length == 2) {
-        state = state.copyWith(topFlex: 4);
-        state = state.copyWith(bottomFlex: 5);
-      }
-      if (list.length > 2) {
-        state = state.copyWith(topFlex: 7);
-        state = state.copyWith(bottomFlex: 8);
+      if (!isAnyOpened) {
+        state = state.copyWith(
+          topFlexValue: 0.5,
+          bottomFlexValue: 0.31,
+        );
+      } else {
+        state = state.copyWith(
+          topFlexValue: 0.53,
+          bottomFlexValue: 0.28,
+        );
       }
     }
-
-    /* state = state.copyWith(topFlex: 7);
-    state = state.copyWith(bottomFlex: 6); */
   }
 
   void closeGymslist() {
@@ -531,14 +587,15 @@ class MapNotifier extends StateNotifier<MapState> {
     state = state.copyWith(isLocationIconHidden: false);
   }
 
-  void showPopUpOnMap(BuildContext context) {
+  void showPopUpOnMap(BuildContext context, String lesson) {
     // remove prvious pop up first
     if (state.activeMarker != null && state.activeMarker?.name != "user") {
       removePopUp(); // if there is a pop up remove it
       if (!state.isLocationIconHidden) {
         hideLocationIcon();
       }
-      state = state.copyWith(isGymsPopupShown: true);
+      state = state.copyWith(
+          isGymsPopupShown: true, selectedLessonTypeFromMap: lesson);
     }
   }
 

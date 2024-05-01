@@ -1,15 +1,15 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:activity/application/settings/settings_provider.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/local_storage.dart';
-import 'package:activity/presentation/components/custom_button.dart';
-import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/custom_textfield.dart';
-import 'package:activity/presentation/pages/auth/registration3/widget/bottom_wave.dart';
-import 'package:activity/presentation/pages/auth/registration3/widget/medium_wave.dart';
-import 'package:activity/presentation/pages/auth/registration3/widget/top_wave.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:myfit/application/settings/settings_provider.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/local_storage.dart';
+import 'package:myfit/presentation/components/custom_button.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
+import 'package:myfit/presentation/components/custom_textfield.dart';
+import 'package:myfit/presentation/pages/auth/registration3/widget/bottom_wave.dart';
+import 'package:myfit/presentation/pages/auth/registration3/widget/medium_wave.dart';
+import 'package:myfit/presentation/pages/auth/registration3/widget/top_wave.dart';
+import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

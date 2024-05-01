@@ -1,12 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
-import 'package:activity/application/schedule/schedule_state.dart';
-import 'package:activity/domain/handlers/network_exceptions.dart';
-import 'package:activity/domain/interface/schedule.dart';
-import 'package:activity/infrastructure/models/data/completed_schedule.dart';
-import 'package:activity/infrastructure/models/request/rate_request.dart';
-import 'package:activity/infrastructure/models/response/user_schedules_response.dart';
-import 'package:activity/infrastructure/services/apphelpers.dart';
-import 'package:activity/infrastructure/services/connectivity.dart';
+import 'package:myfit/application/schedule/schedule_state.dart';
+import 'package:myfit/domain/handlers/network_exceptions.dart';
+import 'package:myfit/domain/interface/schedule.dart';
+import 'package:myfit/infrastructure/models/data/completed_schedule.dart';
+import 'package:myfit/infrastructure/models/request/rate_request.dart';
+import 'package:myfit/infrastructure/models/response/user_schedules_response.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
+import 'package:myfit/infrastructure/services/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -34,8 +34,9 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
 
               final completedAndConfirmedSchedules = allSchedules
                   .where((schedule) =>
-                      schedule.lessonState == "COMPLETED" ||
-                      schedule.lessonState == "CONFIRMED")
+                      //schedule.lessonState == "COMPLETED" ||
+                      schedule.lessonState == "CONFIRMED" || 
+                      schedule.lessonState == "PROGRESS")
                   .toList();
 
               final waitingSchedules = allSchedules
@@ -67,6 +68,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
                     time: formatTime(el.date ?? ""),
                     grade: 0,
                     gymId: el.gym?.id ?? 0,
+                    comment: "",
                   );
                   waitingListToCollect.add(lesson);
                 });
@@ -125,6 +127,60 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     }
   }
 
+  Future<void>makeLessonInProgress(BuildContext context, {required int gymId, required int lessonId}) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response = await _scheduleRepositoryInterface.makeLessonInProgress(
+        gymId: gymId,
+        lessonId: lessonId,
+      );
+      response.when(
+        success: (data) {
+          if (data["operationResult"] == "OK") {
+            //AppHelpers.showSnack(context, data["operationInfo"]);
+          }
+        },
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  } 
+
+  Future<void>makeLessonCompleted(BuildContext context, {required int gymId, required int lessonId}) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response = await _scheduleRepositoryInterface.makeLessonCompleted(
+        gymId: gymId,
+        lessonId: lessonId,
+      );
+      response.when(
+        success: (data) {
+          if (data["operationResult"] == "OK") {
+            AppHelpers.showSnack(context, "Занятие завершено");
+          }
+        },
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  void setQrLoading(){
+    state = state.copyWith(qrLoading: true);
+  }
+
+  void setQrNotLoading(){
+    state = state.copyWith(qrLoading: false);
+  }
+
   Future<void> getCompletedSchedules(BuildContext context) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
@@ -142,6 +198,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
               time: formatTime(element["date"]),
               grade: element["grade"],
               gymId: element["gymId"],
+              comment: element["commentMessage"] ?? "",
             );
             listToCollect.add(item);
           }
@@ -394,5 +451,12 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       int.parse(hour),
       int.parse(minute),
     );
+  }
+
+  DateTime getFinishTime(String time, String tillWhen){
+    final parts = time.split("@");
+    String tillwhenModified = tillWhen.length == 4 ? "0$tillWhen" : tillWhen;
+    final DateTime result = DateTime.parse("${parts[0]}" " $tillwhenModified");
+    return result;
   }
 }

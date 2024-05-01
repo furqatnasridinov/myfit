@@ -1,11 +1,11 @@
 // ignore_for_file: must_be_immutable
 
-import 'package:activity/application/activity/activity_provider.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/apphelpers.dart';
-import 'package:activity/presentation/components/custom_button.dart';
-import 'package:activity/presentation/components/custom_card.dart';
-import 'package:activity/presentation/components/inter_text.dart';
+import 'package:myfit/application/activity/activity_provider.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
+import 'package:myfit/presentation/components/custom_button.dart';
+import 'package:myfit/presentation/components/custom_card.dart';
+import 'package:myfit/presentation/components/inter_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -57,14 +57,14 @@ class PopUpMap extends StatelessWidget {
                   height: 26.h,
                   child: Consumer(
                     builder: (context, ref, child) {
-                      final activityState = ref.watch(activityProvider);
+                      final activityTypes = ref.watch(activityProvider).activityTypes;
                       //final activityEvent = ref.read(activityProvider.notifier);
                       return ListView.builder(
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
-                        itemCount: activityState.activityTypes?.length,
+                        itemCount: activityTypes?.length,
                         itemBuilder: (context, index) {
-                          final name = activityState.activityTypes?[index];
+                          final name = activityTypes?[index];
                           return Container(
                             margin: EdgeInsets.only(right: 10.w),
                             width: 24.w,

@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
-import 'package:activity/infrastructure/models/data/each_markers_models.dart';
-import 'package:activity/infrastructure/models/data/gym_data.dart';
-import 'package:activity/infrastructure/models/data/lessontype_with_gyms_inside.dart';
+import 'package:myfit/infrastructure/models/data/each_markers_models.dart';
+import 'package:myfit/infrastructure/models/data/gym_data.dart';
+import 'package:myfit/infrastructure/models/data/lessontype_with_gyms_inside.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -23,16 +23,18 @@ class MapState with _$MapState {
     @Default([]) List<GymData> gymFoundBySearching,
     @Default(false) bool isSearchbarOpened,
     @Default(false) bool showOnlyKnown,
+    @Default(false) bool showRecommended,
     @Default([]) List<LessonTypeWithGymsInside> activitiesWithGymsInsideAll,
     @Default([])
     List<LessonTypeWithGymsInside>
         activitiesWithGymsInsideFromSelectedDiapozone,
     @Default(false) bool showMapOnly,
     @Default(null) Uint8List? mapScreenShot,
-    @Default(2) int topFlex,
-    @Default(6) int bottomFlex,
+    @Default(0.21) double topFlexValue,
+    @Default(0.6) double bottomFlexValue,
     @Default(false) bool isLocationIconHidden,
     @Default(false) bool isGymsPopupShown,
+    @Default("") String selectedLessonTypeFromMap,
   }) = _MapState;
   const MapState._();
 }

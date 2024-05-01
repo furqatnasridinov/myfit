@@ -26,6 +26,8 @@ class BodyData {
   String? date;
   String? description;
   String? duration;
+  String? lessonType;
+  String? lessonState;
   Gym? gym;
 
   BodyData({this.id, this.date, this.description, this.duration, this.gym});
@@ -35,6 +37,8 @@ class BodyData {
     date = json['date'];
     description = json['description'];
     duration = json['duration'];
+    lessonType = json['lessonType'];
+    lessonState = json['lessonState'];
     gym = json['gym'] != null ? Gym.fromJson(json['gym']) : null;
   }
 

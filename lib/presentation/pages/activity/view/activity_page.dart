@@ -1,6 +1,9 @@
-import 'package:activity/application/activity/activity_provider.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/local_storage.dart';
+// ignore_for_file: must_be_immutable
+
+import 'package:myfit/application/activity/activity_provider.dart';
+import 'package:myfit/application/map/map_provider.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/local_storage.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,7 +16,8 @@ import '../widget/widget.dart';
 @RoutePage()
 class ActivityScreen extends ConsumerStatefulWidget {
   final int gymId;
-  const ActivityScreen({required this.gymId, super.key});
+  bool? isFromMap = false;
+  ActivityScreen({super.key, this.isFromMap = false, required this.gymId});
 
   @override
   ConsumerState<ActivityScreen> createState() => _ActivityPageState();
@@ -32,7 +36,9 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
         ref.read(activityProvider.notifier)
           ..getListOf15CalendarDatesFromToday()
           ..getGymInfo(context, gymId: widget.gymId)
-          ..getActivityTypes(context, true,
+          ..getActivityTypes(
+              context, true, ref.watch(mapProvider).selectedLessonTypeFromMap,
+              isFromMap: widget.isFromMap ?? false,
               gymId: widget.gymId) // and make first item as active
           ..getInfoForType(context, id: widget.gymId)
           ..getAllPhotos(context, widget.gymId)
@@ -92,7 +98,9 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
           ref.read(activityProvider.notifier)
             ..getListOf15CalendarDatesFromToday()
             ..getGymInfo(context, gymId: widget.gymId)
-            ..getActivityTypes(context, false, gymId: widget.gymId)
+            ..getActivityTypes(context, false,
+                ref.watch(mapProvider).selectedLessonTypeFromMap,
+                gymId: widget.gymId)
             ..getInfoForType(context, id: widget.gymId)
             ..getAllPhotos(context, widget.gymId)
             ..getAllLessons(context, id: widget.gymId)
@@ -106,7 +114,7 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
                 ..getLessonsOfSelectedActivity(
                     ref.watch(activityProvider).selectedActivity!, true);
             });
-            await Future.delayed(const Duration(seconds: 1));
+          await Future.delayed(const Duration(seconds: 1));
           refreshController.refreshCompleted();
         },
         child: SafeArea(
@@ -129,6 +137,7 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
                 32.verticalSpace,
                 TheOneWithCalendar(
                   event: event,
+                  gymId: widget.gymId,
                 ),
               ],
             ),

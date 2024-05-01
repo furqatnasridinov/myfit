@@ -1,13 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:io';
-import 'package:activity/application/settings/settings_state.dart';
-import 'package:activity/domain/handlers/network_exceptions.dart';
-import 'package:activity/domain/interface/settings.dart';
-import 'package:activity/infrastructure/models/request/send_confirmation_code_request.dart';
-import 'package:activity/infrastructure/models/request/send_phone_number_request.dart';
-import 'package:activity/infrastructure/services/apphelpers.dart';
-import 'package:activity/infrastructure/services/connectivity.dart';
-import 'package:activity/infrastructure/services/local_storage.dart';
+import 'package:myfit/application/settings/settings_state.dart';
+import 'package:myfit/domain/handlers/network_exceptions.dart';
+import 'package:myfit/domain/interface/settings.dart';
+import 'package:myfit/infrastructure/models/request/send_confirmation_code_request.dart';
+import 'package:myfit/infrastructure/models/request/send_phone_number_request.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
+import 'package:myfit/infrastructure/services/connectivity.dart';
+import 'package:myfit/infrastructure/services/local_storage.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -28,6 +28,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     setWeight();
     setHeight();
     setAvatar();
+    getAccessPhotoUpload();
     if (!LocalStorage.isReminderDisabled()) {
       setNotificationTime(LocalStorage.getReminderTime());
     }
@@ -49,15 +50,15 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 
   Future<void> requestNotificationPermissions() async {
-   final PermissionStatus status = await Permission.notification.request();
-   if (status.isGranted) {
+    final PermissionStatus status = await Permission.notification.request();
+    if (status.isGranted) {
       // Notification permissions granted
-   } else if (status.isDenied) {
+    } else if (status.isDenied) {
       // Notification permissions denied
-   } else if (status.isPermanentlyDenied) {
+    } else if (status.isPermanentlyDenied) {
       // Notification permissions permanently denied, open app settings
       //await openAppSettings();
-   }
+    }
   }
 
   Future<void> getListOfCities(BuildContext context) async {
@@ -86,6 +87,76 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           state = state.copyWith(isCitiesLoading: false);
         },
       );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  void getAccessPhotoUpload() {
+    final DateTime whenAccessUploadingPhotoOpens =  DateTime.parse(LocalStorage.getWhenUploadingPhotoOpens());
+    final bool resultBool = DateTime.now().isBefore(whenAccessUploadingPhotoOpens);
+    state = state.copyWith(isNoAccessChangingPhoto: resultBool);
+  }
+
+  Future<void> getCompletedLessonTypes(BuildContext context) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response =
+          await _settingsRepositoryInterface.getCompletedLessonTypes();
+      response.when(success: (data) {
+        if (data["operationResult"] == "OK") {
+          final listFromServer = data["object"] as List;
+          if (listFromServer.isNotEmpty) {
+            final knownActivities = <String>[];
+            knownActivities.addAll(state.knownActivities);
+            for (var element in listFromServer) {
+              try {
+                if (!knownActivities.contains(element)) {
+                  knownActivities.add(element.toString());
+                }
+              } catch (e) {
+                rethrow;
+              }
+            }
+            state = state.copyWith(knownActivities: knownActivities);
+          }
+        }
+      }, failure: (error, statusCode, operationInfo) {
+        AppHelpers.showErrorSnack(
+            context, NetworkExceptions.getErrorMessage(error));
+      });
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> getWaitingLessonTypes(BuildContext context) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response =
+          await _settingsRepositoryInterface.getWaitingLessonTypes();
+      response.when(success: (data) {
+        if (data["operationResult"] == "OK") {
+          final listFromServer = data["object"] as List;
+          if (listFromServer.isNotEmpty) {
+            final knownActivities = <String>[];
+            knownActivities.addAll(state.knownActivities);
+            for (var element in listFromServer) {
+              try {
+                if (!knownActivities.contains(element)) {
+                  knownActivities.add(element.toString());
+                }
+              } catch (e) {
+                rethrow;
+              }
+            }
+            state = state.copyWith(knownActivities: knownActivities);
+          }
+        }
+      }, failure: (error, statusCode, operationInfo) {
+        AppHelpers.showErrorSnack(
+            context, NetworkExceptions.getErrorMessage(error));
+      });
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
@@ -356,9 +427,18 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       response.when(success: (data) {
         //
       }, failure: (error, statusCode, operationInfo) {
-        AppHelpers.showErrorSnack(
-            context, NetworkExceptions.getErrorMessage(error));
-        ;
+        //AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
+        final errorcha = error.toString();
+        debugPrint("errorcha $errorcha");
+        if (errorcha.contains("Смена фото не чаще 1 раза в неделю")) {
+          AppHelpers.showErrorSnack(context, "Фото не изменено.Сменить фото можно только один раз в неделью");
+          final String whenAccessOpens = errorcha.split("неделю/")[1].replaceAll(")", "");
+          LocalStorage.setWhenUploadingPhotoOpens(whenAccessOpens);
+          if (!state.isNoAccessChangingPhoto) {
+            state = state.copyWith(isNoAccessChangingPhoto: true);
+          }
+          //context.popRoute();
+        }
       });
     } else {
       AppHelpers.showCheckTopSnackBar(context);
@@ -412,6 +492,59 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       return const Duration(hours: 2);
     } else {
       return null;
+    }
+  }
+
+   String formatDuration(Duration duration) {
+    int days = duration.inDays;
+    int hours = duration.inHours % 24;
+
+
+    String daysWord = getDayWord(days);
+    String hoursWord = getHourWord(hours);
+
+
+    List<String> parts = [
+      if (days > 0) '$days $daysWord',
+      if (hours > 0) '$hours $hoursWord',
+    ];
+
+    return parts.join(' ');
+  }
+
+    String getDayWord(int number) {
+    number = number % 100;
+    if (number >= 11 && number <= 19) {
+      return 'дней';
+    } else {
+      switch (number % 10) {
+        case 1:
+          return 'день';
+        case 2:
+        case 3:
+        case 4:
+          return 'дня';
+        default:
+          return 'дней';
+      }
+    }
+  }
+
+  String getHourWord(int number) {
+    number = number % 100;
+    if (number >= 11 && number <= 19) {
+      return 'часов';
+    } else {
+      switch (number % 10) {
+        case 1:
+          return 'час';
+        case 2:
+        case 3:
+        case 4:
+          return 'часа';
+        default:
+          return 'часов';
+      }
     }
   }
 

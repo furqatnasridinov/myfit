@@ -1,13 +1,16 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:activity/application/schedule/schedule_notifier.dart';
-import 'package:activity/application/schedule/schedule_provider.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/presentation/components/custom_card.dart';
-import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/inter_text.dart';
-import 'package:activity/presentation/components/ui_dropdown_menu.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
+import 'dart:math';
+
+import 'package:myfit/application/schedule/schedule_notifier.dart';
+import 'package:myfit/application/schedule/schedule_provider.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/presentation/components/animation_button_effect.dart';
+import 'package:myfit/presentation/components/custom_card.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
+import 'package:myfit/presentation/components/inter_text.dart';
+import 'package:myfit/presentation/components/ui_dropdown_menu.dart';
+import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,8 +23,10 @@ class PendingSchedules extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final event = ref.watch(scheduleProvider.notifier);
-    final state = ref.watch(scheduleProvider);
-    return state.waitingSchedules.isEmpty
+    final waitingSchedules = ref.watch(scheduleProvider).waitingSchedules;
+    final pendingSchedulesShown =
+        ref.watch(scheduleProvider).pendingSchedulesShown;
+    return waitingSchedules.isEmpty
         ? const SizedBox.shrink()
         : Padding(
             padding: EdgeInsets.only(top: 16.h),
@@ -37,43 +42,59 @@ class PendingSchedules extends ConsumerWidget {
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
-                    InkWell(
-                      borderRadius: BorderRadius.circular(8.r),
+                    GestureDetector(
                       onTap: () {
-                        if (state.pendingSchedulesShown) {
+                        if (pendingSchedulesShown) {
                           event.hidePendingSchedules();
                         } else {
                           event.showPendingSchedules();
                         }
                       },
-                      child: Container(
-                        height: 40.h,
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8.r),
-                          border: Border.all(
-                            color: AppColors.blueBorder,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CustomText(
-                              text: state.pendingSchedulesShown
-                                  ? "Свернуть"
-                                  : "Развернуть",
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
+                      child: AnimationButtonEffect(
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.r),
+                            border: Border.all(
+                              color: AppColors.blueBorder,
                             ),
-                            4.horizontalSpace,
-                            Icon(
-                              state.pendingSchedulesShown
-                                  ? Icons.keyboard_arrow_up
-                                  : Icons.keyboard_arrow_down,
-                              size: 20.sp,
-                              color: Colors.black.withOpacity(0.7),
-                            )
-                          ],
+                          ),
+                          child: SizedBox(
+                            height: 40.h,
+                            width: 135.w,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10.w),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  CustomText(
+                                    text: pendingSchedulesShown
+                                        ? "Свернуть"
+                                        : "Развернуть",
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  2.horizontalSpace,
+                                  TweenAnimationBuilder<double>(
+                                    duration: const Duration(milliseconds: 300),
+                                    tween: Tween(
+                                        begin: 0,
+                                        end: pendingSchedulesShown ? 1.0 : 0),
+                                    builder: (BuildContext context,
+                                        double angle, Widget? child) {
+                                      return Transform.rotate(
+                                        angle: angle * pi,
+                                        child: Icon(
+                                          Icons.keyboard_arrow_down,
+                                          size: 20.sp,
+                                          color: Colors.black.withOpacity(0.7),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -82,24 +103,28 @@ class PendingSchedules extends ConsumerWidget {
                 5.verticalSpace,
 
                 // body
-                if (state.pendingSchedulesShown)
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: state.waitingSchedules.length,
-                    itemBuilder: (context, index) {
-                      return listOfActivitiesEachItem2(
-                        context,
-                        state.waitingSchedules[index].id,
-                        state.waitingSchedules[index].time,
-                        state.waitingSchedules[index].describtion,
-                        state.waitingSchedules[index].gymName,
-                        state.waitingSchedules[index].grade,
-                        state.waitingSchedules[index].gymId,
-                        event,
-                      );
-                    },
-                  ),
+                if (pendingSchedulesShown)
+                  Consumer(builder: (context, ref, child) {
+                    final waitingSchedules =
+                        ref.watch(scheduleProvider).waitingSchedules;
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: waitingSchedules.length,
+                      itemBuilder: (context, index) {
+                        return listOfActivitiesEachItem2(
+                          context,
+                          waitingSchedules[index].id,
+                          waitingSchedules[index].time,
+                          waitingSchedules[index].describtion,
+                          waitingSchedules[index].gymName,
+                          waitingSchedules[index].grade,
+                          waitingSchedules[index].gymId,
+                          event,
+                        );
+                      },
+                    );
+                  }),
               ],
             ),
           );
@@ -158,7 +183,8 @@ Widget listOfActivitiesEachItem2(
 
           // bottom part
           SizedBox(
-            width: 265.w,
+            //color: Colors.green,
+            //width: 265.w,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -167,16 +193,12 @@ Widget listOfActivitiesEachItem2(
                   //color: Colors.red,
                   child: Row(
                     children: [
-                      Icon(
-                        Icons.watch_later_outlined,
-                        color: AppColors.blueColor,
-                        size: 16.r,
-                      ),
+                      SvgPicture.asset("assets/svg/clock.svg"),
                       4.horizontalSpace,
                       InterText(
                         text: time,
                         color: AppColors.greyText,
-                        fontSize: 12.sp,
+                        fontSize: 13.sp,
                         fontWeight: FontWeight.w400,
                       ),
                     ],
@@ -190,13 +212,9 @@ Widget listOfActivitiesEachItem2(
                     //color: Colors.red,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      //mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Icon(
-                          Icons.location_on_outlined,
-                          color: AppColors.blueColor,
-                          size: 16.r,
-                        ),
+                        SvgPicture.asset("assets/svg/location.svg"),
                         4.horizontalSpace,
                         Flexible(
                           child: SizedBox(
@@ -208,7 +226,7 @@ Widget listOfActivitiesEachItem2(
                               //text: "cmdkcmdkcmdkcmdkcmkdcmdmckmd,lcdl,cl,d,cd,lcdlc,,cl,dl,cdl,c",
                               text: name,
                               color: AppColors.greyText,
-                              fontSize: 11.5.sp,
+                              fontSize: 13.sp,
                               fontWeight: FontWeight.w400,
                             ),
                           ),

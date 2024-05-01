@@ -1,8 +1,8 @@
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/presentation/components/custom_button.dart';
-import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/inter_text.dart';
-import 'package:activity/presentation/components/ui_card.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/presentation/components/custom_button.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
+import 'package:myfit/presentation/components/inter_text.dart';
+import 'package:myfit/presentation/components/ui_card.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

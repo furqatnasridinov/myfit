@@ -1,6 +1,6 @@
-import 'package:activity/infrastructure/models/data/schedule_and_gym.dart';
-import 'package:activity/infrastructure/models/response/get_nearest_lesson_response.dart';
-import 'package:activity/infrastructure/models/response/get_user_stats_month_response.dart';
+import 'package:myfit/infrastructure/models/data/schedule_and_gym.dart';
+import 'package:myfit/infrastructure/models/response/get_nearest_lesson_response.dart';
+import 'package:myfit/infrastructure/models/response/get_user_stats_month_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'main2_state.freezed.dart';
@@ -18,6 +18,10 @@ class Main2State with _$Main2State {
     @Default([]) List<ScheduleAndGym> schedulesFoundBySearching,
     @Default(false) bool showScanButton,
     @Default(false) bool lessonIsAlreadyStarted,
+    @Default(null) DateTime? lessonStartsAt,
+    @Default(null) DateTime? lessonEndsAt,
+    @Default(false) bool lessonStartsWithin40Minutes,
+    @Default({}) Map<String,dynamic> recommendedGyms,
   }) = _Main2State;
   const Main2State._();
 }

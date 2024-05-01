@@ -1,12 +1,13 @@
-import 'package:activity/application/main2/main2_notifier.dart';
-import 'package:activity/application/main2/main2_provider.dart';
-import 'package:activity/infrastructure/models/response/get_nearest_lesson_response.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/ui_card.dart';
+import 'package:myfit/application/main2/main2_notifier.dart';
+import 'package:myfit/application/main2/main2_provider.dart';
+import 'package:myfit/infrastructure/models/response/get_nearest_lesson_response.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
+import 'package:myfit/presentation/components/ui_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 
 class ComingActivity extends StatelessWidget {
   final GetNearestLesson nearestLesson;
@@ -23,8 +24,10 @@ class ComingActivity extends StatelessWidget {
       cardValue: Column(
         children: [
           Consumer(builder: (context, ref, child) {
-            final lessonIsAlreadyStarted = ref.watch(main2Provider).lessonIsAlreadyStarted;
-            final whenActivityStarts = ref.watch(main2Provider).whenActivityStarts;
+            final lessonIsAlreadyStarted =
+                ref.watch(main2Provider).lessonIsAlreadyStarted;
+            final whenActivityStarts =
+                ref.watch(main2Provider).whenActivityStarts;
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -56,19 +59,17 @@ class ComingActivity extends StatelessWidget {
           SizedBox(height: 10.h),
           Column(children: [
             sectionBuilder(
-              Icons.flash_on_outlined,
+              SvgPicture.asset("assets/svg/flash.svg"),
               nearestLesson.bodyData?.description ?? "Empty",
             ),
             10.verticalSpace,
             sectionBuilder(
-              Icons.watch,
-              today == formattedDay
-                  ? "${parts[1]}, Сегодня"
-                  : "${parts[1]}, $formattedDay",
+              SvgPicture.asset("assets/svg/handwatch.svg"),
+              today == formattedDay ? "${parts[1]}, Сегодня" : "${parts[1]}, $formattedDay",
             ),
             10.verticalSpace,
             sectionBuilder(
-              Icons.location_on_outlined,
+              SvgPicture.asset("assets/svg/location.svg"),
               nearestLesson.bodyData?.gym?.address ?? "Empty",
             ),
           ]),
@@ -78,7 +79,7 @@ class ComingActivity extends StatelessWidget {
   }
 }
 
-Widget sectionBuilder(IconData icondata, String text) {
+Widget sectionBuilder(Widget icon, String text) {
   return Container(
     padding: const EdgeInsets.all(10.0),
     decoration: BoxDecoration(
@@ -87,7 +88,8 @@ Widget sectionBuilder(IconData icondata, String text) {
         border: Border.all(color: AppColors.fadedBlueBorder)),
     child: Row(
       children: [
-        Icon(icondata, size: 18.r, color: AppColors.blueColor),
+        icon,
+        //Icon(icondata, size: 18.r, color: AppColors.blueColor),
         7.horizontalSpace,
         Flexible(
           child: CustomText(

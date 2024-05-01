@@ -1,7 +1,7 @@
 import 'dart:io';
-import 'package:activity/domain/handlers/api_result.dart';
-import 'package:activity/infrastructure/models/request/send_confirmation_code_request.dart';
-import 'package:activity/infrastructure/models/request/send_phone_number_request.dart';
+import 'package:myfit/domain/handlers/api_result.dart';
+import 'package:myfit/infrastructure/models/request/send_confirmation_code_request.dart';
+import 'package:myfit/infrastructure/models/request/send_phone_number_request.dart';
 
 abstract class SetttingsRepositoryInterface {
   Future<ApiResult<Map<String, dynamic>>> patchUser(
@@ -13,4 +13,8 @@ abstract class SetttingsRepositoryInterface {
   Future<ApiResult<Map<String, dynamic>>> changePhoneSendConfirmationCode(
       {required SendConfirmationCodeRequest request});
   Future<ApiResult<Map<String, dynamic>>> addPicture({required File image});
+
+  // запросы котрорые возвращают какие уроки посещал юзер
+  Future<ApiResult<Map<String, dynamic>>> getCompletedLessonTypes();
+  Future<ApiResult<Map<String, dynamic>>> getWaitingLessonTypes();
 }

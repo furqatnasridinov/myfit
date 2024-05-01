@@ -1,6 +1,6 @@
 import 'dart:io';
-import 'package:activity/infrastructure/services/app_constants.dart';
-import 'package:activity/infrastructure/services/local_storage.dart';
+import 'package:myfit/infrastructure/services/app_constants.dart';
+import 'package:myfit/infrastructure/services/local_storage.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 

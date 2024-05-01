@@ -1,4 +1,4 @@
-# activity
+# myfit
 
 A new Flutter project.
 

@@ -1,9 +1,9 @@
-import 'package:activity/application/map/map_notifier.dart';
-import 'package:activity/application/map/map_state.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/presentation/components/custom_button.dart';
-import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/radio_button.dart';
+import 'package:myfit/application/map/map_notifier.dart';
+import 'package:myfit/application/map/map_state.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/presentation/components/custom_button.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
+import 'package:myfit/presentation/components/radio_button.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

@@ -1,5 +1,5 @@
-import 'package:activity/presentation/components/components.dart';
-import 'package:activity/presentation/components/custom_card.dart';
+import 'package:myfit/presentation/components/components.dart';
+import 'package:myfit/presentation/components/custom_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

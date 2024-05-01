@@ -1,4 +1,4 @@
-import 'package:activity/infrastructure/models/data/gym_with_tags.dart';
+import 'package:myfit/infrastructure/models/data/gym_with_tags.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 part 'notes_state.freezed.dart';
 

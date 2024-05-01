@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'package:activity/domain/di/injection.dart';
-import 'package:activity/domain/handlers/api_result.dart';
-import 'package:activity/domain/handlers/http_service.dart';
-import 'package:activity/domain/handlers/network_exceptions.dart';
-import 'package:activity/domain/interface/settings.dart';
-import 'package:activity/infrastructure/models/request/send_confirmation_code_request.dart';
-import 'package:activity/infrastructure/models/request/send_phone_number_request.dart';
-import 'package:activity/infrastructure/services/app_constants.dart';
+import 'package:myfit/domain/di/injection.dart';
+import 'package:myfit/domain/handlers/api_result.dart';
+import 'package:myfit/domain/handlers/http_service.dart';
+import 'package:myfit/domain/handlers/network_exceptions.dart';
+import 'package:myfit/domain/interface/settings.dart';
+import 'package:myfit/infrastructure/models/request/send_confirmation_code_request.dart';
+import 'package:myfit/infrastructure/models/request/send_phone_number_request.dart';
+import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:dio/dio.dart';
 
 class SettingsRepository implements SetttingsRepositoryInterface {
@@ -123,6 +123,42 @@ class SettingsRepository implements SetttingsRepositoryInterface {
       final client = inject<HttpService>().clientDio();
       final response = await client.get(
         AppConstants.getUser,
+      );
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      );
+    }
+  }
+  
+  @override
+  Future<ApiResult<Map<String, dynamic>>> getCompletedLessonTypes() async{
+   try {
+      final client = inject<HttpService>().clientDio();
+      final response = await client.get(
+        AppConstants.getCompletedLessonTypes,
+      );
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      );
+    }
+  }
+  
+  @override
+  Future<ApiResult<Map<String, dynamic>>> getWaitingLessonTypes() async{
+    try {
+      final client = inject<HttpService>().clientDio();
+      final response = await client.get(
+        AppConstants.getWaitingLessonTypes,
       );
       return ApiResult.success(
         data: response.data,

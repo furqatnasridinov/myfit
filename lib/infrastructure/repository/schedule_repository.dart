@@ -1,15 +1,15 @@
-import 'package:activity/domain/di/injection.dart';
-import 'package:activity/domain/handlers/api_result.dart';
-import 'package:activity/domain/handlers/http_service.dart';
-import 'package:activity/domain/handlers/network_exceptions.dart';
-import 'package:activity/domain/interface/schedule.dart';
-import 'package:activity/infrastructure/models/request/add_note_request.dart';
-import 'package:activity/infrastructure/models/request/rate_request.dart';
-import 'package:activity/infrastructure/models/response/add_note_response.dart';
-import 'package:activity/infrastructure/models/response/cancel_response.dart';
-import 'package:activity/infrastructure/models/response/get_nearest_lesson_response.dart';
-import 'package:activity/infrastructure/models/response/get_user_stats_month_response.dart';
-import 'package:activity/infrastructure/services/app_constants.dart';
+import 'package:myfit/domain/di/injection.dart';
+import 'package:myfit/domain/handlers/api_result.dart';
+import 'package:myfit/domain/handlers/http_service.dart';
+import 'package:myfit/domain/handlers/network_exceptions.dart';
+import 'package:myfit/domain/interface/schedule.dart';
+import 'package:myfit/infrastructure/models/request/add_note_request.dart';
+import 'package:myfit/infrastructure/models/request/rate_request.dart';
+import 'package:myfit/infrastructure/models/response/add_note_response.dart';
+import 'package:myfit/infrastructure/models/response/cancel_response.dart';
+import 'package:myfit/infrastructure/models/response/get_nearest_lesson_response.dart';
+import 'package:myfit/infrastructure/models/response/get_user_stats_month_response.dart';
+import 'package:myfit/infrastructure/services/app_constants.dart';
 
 class ScheduleRepository implements ScheduleRepositoryInterface {
   @override
@@ -204,6 +204,59 @@ class ScheduleRepository implements ScheduleRepositoryInterface {
       );
     } catch (e) {
       //throw e;
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      );
+    }
+  }
+
+  @override
+  Future<ApiResult<Map<String, dynamic>>> makeLessonInProgress(
+      {required int gymId, required int lessonId}) async {
+    try {
+      final client = inject<HttpService>().clientDio();
+      final response =
+          await client.patch("api/schedule/gyms/$gymId/$lessonId/progress");
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      //rethrow;
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      );
+    }
+  }
+  
+  @override
+  Future<ApiResult<Map<String, dynamic>>> makeLessonCompleted({required int gymId, required int lessonId}) async{
+    try {
+      final client = inject<HttpService>().clientDio();
+      final response = await client.patch("api/schedule/gyms/$gymId/$lessonId/completed");
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      //rethrow;
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      );
+    }
+  }
+  
+  @override
+  Future<ApiResult<Map<String, dynamic>>> getRecommendationForVisiting() async{
+    try {
+      final client = inject<HttpService>().clientDio();
+      final response = await client.get(AppConstants.getRecommendationForVisit);
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+       //rethrow;
       return ApiResult.failure(
         error: NetworkExceptions.getDioException(e),
         statusCode: NetworkExceptions.getDioStatus(e),

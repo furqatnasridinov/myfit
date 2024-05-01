@@ -1,4 +1,4 @@
-import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -18,6 +18,16 @@ class AppHelpers {
   }
 
   static showSnack(BuildContext context, String text) {
+    return showTopSnackBar(
+      Overlay.of(context),
+      CustomSnackBar.info(
+        message: text,
+        maxLines: 3,
+      ),
+    );
+  }
+
+  static showSuccessSnack(BuildContext context, String text) {
     return showTopSnackBar(
       Overlay.of(context),
       CustomSnackBar.info(
@@ -64,7 +74,7 @@ class AppHelpers {
   }
 
   String getIconSvg(String activityName) {
-    String path = "";
+    String path = "assets/svg/boxing.svg"; // будет по умолчанию
     switch (activityName) {
       case "Йога":
         path = "assets/svg/yoga.svg";
@@ -97,7 +107,8 @@ class AppHelpers {
       case "CONFIRMED":
         return "Вы записаны";
       case "CANCELED_GYM":
-        return "Отменено заведением";
+        //return "Отменено заведением";
+        return "Записаться";
       case "CANCELED_USER":
         //return "Отменено вами";
         return "Записаться";
@@ -119,7 +130,8 @@ class AppHelpers {
       case "CONFIRMED":
         return Colors.black;
       case "CANCELED_GYM":
-        return Colors.red;
+        //return Colors.red;
+        return AppColors.blueText;
       case "CANCELED_USER":
         return AppColors.blueText;
       //return Colors.red;
@@ -130,5 +142,30 @@ class AppHelpers {
       default:
         return Colors.black;
     }
+  }
+
+  String getFormattedLessonType(String? lessonType) {
+    String prefix = "Яхай";
+    switch (lessonType) {
+      case "Кардио-тренировки":
+        prefix = "на";
+      case "Секция бокса":
+        prefix = "на";
+      case "Смешанные единоборства":
+        prefix = "на";
+      case "Спортзал":
+        prefix = "на";
+      case "Силовые тренировки":
+        prefix = "на";
+      case "Массаж":
+        prefix = "на";
+      case "Бассейн":
+        prefix = "в";
+      case "Йога":
+        prefix = "в";
+      case "Медитации":
+        prefix = "на";
+    }
+    return prefix;
   }
 }

@@ -1,11 +1,12 @@
-import 'package:activity/application/main2/main2_state.dart';
-import 'package:activity/domain/handlers/network_exceptions.dart';
-import 'package:activity/domain/interface/schedule.dart';
-import 'package:activity/infrastructure/models/data/schedule_and_gym.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/apphelpers.dart';
-import 'package:activity/infrastructure/services/connectivity.dart';
-import 'package:activity/infrastructure/services/local_storage.dart';
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:myfit/application/main2/main2_state.dart';
+import 'package:myfit/domain/handlers/network_exceptions.dart';
+import 'package:myfit/domain/interface/schedule.dart';
+import 'package:myfit/infrastructure/models/data/schedule_and_gym.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
+import 'package:myfit/infrastructure/services/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -115,12 +116,12 @@ class Main2Notifier extends StateNotifier<Main2State> {
 
     String daysWord = getDayWord(days);
     String hoursWord = getHourWord(hours);
-    String minutesWord = getMinuteWord(minutes);
+    String minutesWord = getMinuteWord(minutes + 1);
 
     List<String> parts = [
       if (days > 0) '$days $daysWord',
       if (hours > 0) '$hours $hoursWord',
-      if (minutes > 0) '$minutes $minutesWord',
+      if (minutes > 0) '${minutes + 1} $minutesWord',
       if ((days == 0 && hours == 0 && minutes == 0) && seconds > 0)
         '$seconds секунд'
     ];
@@ -189,18 +190,26 @@ class Main2Notifier extends StateNotifier<Main2State> {
       final response = await _scheduleRepositoryInterface.getNearestLesson();
       response.when(
         success: (data) {
-          if (data.bodyData != null) {
-            final startTime = data.bodyData?.date?.replaceAll('@', 'T');
-            DateTime startingTimeInDTFormat = DateTime.parse(startTime ?? "");
+          if (data.bodyData != null &&
+              data.bodyData?.lessonState == "CONFIRMED") {
+            DateTime startingTimeInDTFormat =
+                DateTime.parse(data.bodyData?.date?.replaceAll('@', 'T') ?? "");
             DateTime endTime = getEndTime(
                 startingTimeInDTFormat, data.bodyData?.duration ?? "");
+            DateTime fortyMinutesBeforeStart =
+                startingTimeInDTFormat.subtract(const Duration(minutes: 40));
+            bool lessonStartsWithin40Minutes =
+                DateTime.now().isAfter(fortyMinutesBeforeStart) &&
+                    DateTime.now().isBefore(startingTimeInDTFormat);
             determineWhenActivityStarts(startingTimeInDTFormat, endTime);
             state = state.copyWith(
               nearestLesson: data,
               nearestLessonIsLoading: false,
+              lessonStartsAt: startingTimeInDTFormat,
+              lessonEndsAt: endTime,
             );
-            if (DateTime.now().isAfter(endTime)) {
-              state = state.copyWith(nearestLesson: null);
+            if (lessonStartsWithin40Minutes) {
+              state = state.copyWith(lessonStartsWithin40Minutes: true);
             }
           }
         },
@@ -211,7 +220,27 @@ class Main2Notifier extends StateNotifier<Main2State> {
         },
       );
     } else {
-      // ignore: use_build_context_synchronously
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> getRecommendationForVisit(BuildContext context)async{
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      final response = await _scheduleRepositoryInterface.getRecommendationForVisiting();
+      response.when(success: (data){
+        if (data["operationResult"] == "OK") {
+          final operationObject = data["object"];
+          if (operationObject["lessonType"] != null) {
+             debugPrint(operationObject.toString());
+              state = state.copyWith(recommendedGyms: operationObject);
+          }
+        }
+      }, failure: (error, statusCode, operationInfo){
+        AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
+      });
+    }else{
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
@@ -244,6 +273,23 @@ class Main2Notifier extends StateNotifier<Main2State> {
     return now.isAfter(start) && now.isBefore(end);
   }
 
+  void streamToListenDateTime() {
+    if (state.lessonStartsWithin40Minutes && DateTime.now().
+      isBefore(state.lessonStartsAt!.subtract(const Duration(minutes: 15)))) {
+    final myDateTime = state.lessonStartsAt?.subtract(const Duration(minutes: 15));
+    final timerStream = Stream.periodic(const Duration(seconds: 1), (i) => DateTime.now());
+    timerStream.listen((now) {
+    if (now.year == myDateTime?.year &&
+        now.month == myDateTime?.month &&
+        now.day == myDateTime?.day &&
+        now.hour == myDateTime?.hour &&
+        now.minute == myDateTime?.minute &&
+        now.second == myDateTime?.second) {
+      determineWhenActivityStarts(state.lessonStartsAt!, state.lessonEndsAt!);
+    }
+  });}
+  }
+
   Future<void> getUserStatsMonth(BuildContext context) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
@@ -260,7 +306,7 @@ class Main2Notifier extends StateNotifier<Main2State> {
               listToCollectActivityNames.add(element.lessonType ?? "");
             }
           }
-          LocalStorage.setKnownActivities(listToCollectActivityNames);
+          // LocalStorage.setKnownActivities(listToCollectActivityNames);
 
           list?.sort(
             (a, b) => a.count!.compareTo(b.count!),
@@ -277,7 +323,6 @@ class Main2Notifier extends StateNotifier<Main2State> {
         },
       );
     } else {
-      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
@@ -315,7 +360,6 @@ class Main2Notifier extends StateNotifier<Main2State> {
         },
       );
     } else {
-      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
@@ -326,6 +370,14 @@ class Main2Notifier extends StateNotifier<Main2State> {
 
   void closeSearchBar() {
     state = state.copyWith(isSearchbarOpened: false);
+  }
+
+  void hideBottomScanContainer() {
+    state = state.copyWith(showScanButton: false);
+  }
+
+  void removeNearestLesson() {
+    state = state.copyWith(nearestLesson: null);
   }
 
   Future<void> cleanSearchList() async {

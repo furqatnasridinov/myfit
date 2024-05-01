@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomTextFormField extends StatelessWidget {
@@ -21,6 +21,7 @@ class CustomTextFormField extends StatelessWidget {
   FocusNode? focusNode;
   bool dontShowBorders;
   Widget? suffixIcon;
+  TextStyle? style;
   void Function()? onTap;
   void Function(String)? onChanged;
   void Function()? onEditingComplete;
@@ -39,6 +40,7 @@ class CustomTextFormField extends StatelessWidget {
     this.focusNode,
     this.maxLength,
     this.maxLines,
+    this.style,
     this.keyboardType,
     this.initialValue,
     this.controller,
@@ -61,11 +63,7 @@ class CustomTextFormField extends StatelessWidget {
       cursorColor: AppColors.greyText,
       onEditingComplete: onEditingComplete,
       onChanged: onChanged,
-      style: GoogleFonts.inter(
-        fontSize: 14.sp,
-        fontWeight: FontWeight.w400,
-        color: Colors.black,
-      ),
+      style: style,
       decoration: InputDecoration(
         counterStyle: const TextStyle(
           height: double.minPositive,

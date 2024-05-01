@@ -1,4 +1,4 @@
-package com.example.activity
+package com.example.myfit
 import com.yandex.mapkit.MapKitFactory
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine

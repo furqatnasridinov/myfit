@@ -1,7 +1,9 @@
-import 'package:activity/application/map/map_provider.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:myfit/application/main2/main2_provider.dart';
+import 'package:myfit/application/map/map_provider.dart';
+import 'package:myfit/application/settings/settings_provider.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
+import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +16,7 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return AutoTabsRouter(
       routes: const [
         Main2Route(),
@@ -29,15 +32,24 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
                 final mapPageBottomCardShown =
                     ref.watch(mapProvider).isGymsPopupShown;
                 final showOnlyKnownOnMap = ref.watch(mapProvider).showOnlyKnown;
+                final recommendedShown = ref.watch(mapProvider).showRecommended;
                 final event = ref.read(mapProvider.notifier);
                 return NavigationBar(
                   backgroundColor: Colors.white,
-                  height: mapPageBottomCardShown ? 0 : 75.h,
+                  height:
+                      (mapPageBottomCardShown && tabsRouter.activeIndex == 2)
+                          ? 0
+                          : height * 0.09,
                   elevation: 10,
                   shadowColor: Colors.black,
                   selectedIndex: tabsRouter.activeIndex,
                   indicatorColor: AppColors.fadedPrimary3,
                   surfaceTintColor: Colors.transparent,
+                  onDestinationSelected: (int index) {
+                    if (index != 2 && showOnlyKnownOnMap) {
+                      ref.read(mapProvider.notifier).removePopUp();
+                    }
+                  },
                   indicatorShape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14.r),
                   ),
@@ -61,14 +73,24 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
                     eachItem(
                       () async {
                         tabsRouter.setActiveIndex(2);
-                        if (showOnlyKnownOnMap) {
-                          event.setShowOnlyKnown(false).then((value) async {
-                            await event.getGymsList(context);
+                        if (showOnlyKnownOnMap || recommendedShown) {
+                          event.setShowOnlyKnown(false).then((value) => event.setShowRecommended(false))
+                          .then((value) async {
+                            await event.getGymsList(
+                              context,
+                              ref.watch(settingsProvider).knownActivities,
+                              ref.watch(main2Provider).recommendedGyms,
+                            );
                             await event.getGetListOfGymsFromDiapozone();
                             await event.setFlexes();
                             await event.getAllMarkers();
-                             event.addUserLocationMarker();
+                            event.addUserLocationMarker();
                           });
+                        }
+                        if (mapPageBottomCardShown) {
+                          ref.read(mapProvider.notifier)
+                            ..removePopUp()
+                            ..showLocationButton();
                         }
                       },
                       "assets/svg/map.svg",

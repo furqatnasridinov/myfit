@@ -1,11 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/local_storage.dart';
-import 'package:activity/presentation/components/custom_button.dart';
-import 'package:activity/presentation/components/custom_card.dart';
-import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/local_storage.dart';
+import 'package:myfit/presentation/components/animation_button_effect.dart';
+import 'package:myfit/presentation/components/custom_button.dart';
+import 'package:myfit/presentation/components/custom_card.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
+import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -166,27 +167,28 @@ class ApplicationSettings extends StatelessWidget {
 }
 
 Widget eachBlock(String svgPath, String title, void Function()? onTap) {
-  return InkWell(
-    onTap: onTap,
-    borderRadius: BorderRadius.circular(8.r),
-    child: CustomCard(
-      bottomPadding: 8.h,
-      topPadding: 8.h,
-      height: 56.h,
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            svgPath,
-            //width: 24.w,
-            //height: 24.h,
-          ),
-          10.horizontalSpace,
-          CustomText(
-            text: title,
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w400,
-          ),
-        ],
+  return AnimationButtonEffect(
+    child: GestureDetector(
+      onTap: onTap,
+      child: CustomCard(
+        bottomPadding: 8.h,
+        topPadding: 8.h,
+        height: 56.h,
+        child: Row(
+          children: [
+            SvgPicture.asset(
+              svgPath,
+              //width: 24.w,
+              //height: 24.h,
+            ),
+            10.horizontalSpace,
+            CustomText(
+              text: title,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w400,
+            ),
+          ],
+        ),
       ),
     ),
   );

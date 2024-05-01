@@ -1,14 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:convert';
-import 'package:activity/application/activity/activity_state.dart';
-import 'package:activity/application/schedule/schedule_notifier.dart';
-import 'package:activity/domain/handlers/network_exceptions.dart';
-import 'package:activity/domain/interface/activity.dart';
-import 'package:activity/infrastructure/local_notifications/notification_service.dart';
-import 'package:activity/infrastructure/models/data/description_and_peculiarities.dart';
-import 'package:activity/infrastructure/models/data/lesson.dart';
-import 'package:activity/infrastructure/services/apphelpers.dart';
-import 'package:activity/infrastructure/services/connectivity.dart';
+import 'package:myfit/application/activity/activity_state.dart';
+import 'package:myfit/application/main2/main2_notifier.dart';
+import 'package:myfit/application/schedule/schedule_notifier.dart';
+import 'package:myfit/domain/handlers/network_exceptions.dart';
+import 'package:myfit/domain/interface/activity.dart';
+import 'package:myfit/infrastructure/models/data/description_and_peculiarities.dart';
+import 'package:myfit/infrastructure/models/data/lesson.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
+import 'package:myfit/infrastructure/services/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -16,10 +16,11 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class ActivityNotifier extends StateNotifier<ActivityState> {
-  ActivityNotifier(this._activityRepositoryInterface, this.scheduleNotifier)
+  ActivityNotifier(this._activityRepositoryInterface, this.scheduleNotifier, this.main2Notifier)
       : super(const ActivityState());
   final ActivityRepositoryInterface _activityRepositoryInterface;
   final ScheduleNotifier scheduleNotifier;
+  final Main2Notifier main2Notifier;
 
   Future<void> getGymInfo(BuildContext context, {required int gymId}) async {
     final connected = await AppConnectivity().connectivity();
@@ -45,8 +46,9 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
-  Future<void> getActivityTypes(BuildContext context, bool selectFirst,
-      {required int gymId}) async {
+  Future<void> getActivityTypes(
+      BuildContext context, bool selectFirst, String selectedActivityFromMap,
+      {bool isFromMap = false, required int gymId}) async {
     await Future.delayed(const Duration(milliseconds: 10));
     final connected = await AppConnectivity().connectivity();
     if (connected) {
@@ -60,7 +62,10 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
               activityTypes: data.object,
               isActivitiesListLoading: false,
             );
-            if (selectFirst) {
+            if (selectedActivityFromMap.isNotEmpty) {
+              state = state.copyWith(selectedActivity: selectedActivityFromMap);
+            }
+            if (selectFirst && selectedActivityFromMap.isEmpty) {
               state = state.copyWith(selectedActivity: data.object!.first);
             }
           }
@@ -276,8 +281,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
               date: el["date"],
               calendarDate: formatOriginalToCalendar(el["date"]),
               startTime: returnOnlyTime(el["date"]),
-              endTime:
-                  getEndingTime(returnOnlyTime(el["date"]), el["duration"]),
+              endTime:getEndingTime(returnOnlyTime(el["date"]), el["duration"]),
               description: el["description"],
               duration: formatDuration(el["duration"]),
               lessonType: el["lessonType"],
@@ -287,9 +291,10 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
               lessonState: el["lessonState"] ?? false,
               showInCalendar: DateTime.now()
                   .isBefore(startTime.subtract(const Duration(minutes: 30))),
-              isDeleted: el["isDeleted"] ?? false,
+              isDeleted: el["deleteLesson"] ?? false,
+              isLoading: false
             );
-            if (lesson.showInCalendar! &&
+            if (/* lesson.showInCalendar! && */
                 !lesson.isDeleted! &&
                 lesson.canSignUp!) {
               listToCollectLessons.add(lesson);
@@ -298,7 +303,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
               }
             }
           } catch (e) {
-            throw e;
+            rethrow;
           }
         }
       });
@@ -327,27 +332,14 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       (data) async {
         // convert the incoming data to json
         Map<String, dynamic> lessonData = jsonDecode(data);
-        if (lessonData["lessonState"] == "CANCELED_GYM") {
-          // push notification for canceled lesson
-          LocalNotificationService().showDefaultNotification(
-            "MyFit App",
-            "Ваша заявка на ${lessonData["lessonType"]} отменена",
-          );
-        }
-        if (lessonData["lessonState"] == "CONFIRMED") {
-          final calendarDate = formatOriginalToCalendar(lessonData["date"]);
-          final startTime = returnOnlyTime(lessonData["date"]);
-          // push notification for confirmed lesson
-          LocalNotificationService().showDefaultNotification(
-            "MyFit App",
-            "Ваша заявка на ${lessonData["lessonType"]} подтверждена.Дата посещания $calendarDate в $startTime",
-          );
-        }
         // get all lessons again && get lessons of selected activity
         await getAllLessons(context, id: lessonData["gymId"]);
         await getLessonsOfSelectedActivity(state.selectedActivity ?? "", false);
         // get users schedules to show in schedule page
         scheduleNotifier.getUsersSchedules(context);
+        // add here get nearest lesson
+        main2Notifier.getNearestLesson(context);
+
       },
       onError: (error) {
         AppHelpers.showErrorSnack(context, "WebSocket1 ${error.message}");

@@ -1,12 +1,14 @@
+// ignore_for_file: must_be_immutable
+
 import 'dart:ui';
-import 'package:activity/application/map/map_provider.dart';
-import 'package:activity/application/settings/settings_provider.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/app_constants.dart';
-import 'package:activity/presentation/components/custom_button.dart';
-import 'package:activity/presentation/components/custom_text.dart';
-import 'package:activity/presentation/components/inter_text.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:myfit/application/map/map_provider.dart';
+import 'package:myfit/application/settings/settings_provider.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/app_constants.dart';
+import 'package:myfit/presentation/components/custom_button.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
+import 'package:myfit/presentation/components/inter_text.dart';
+import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,16 +20,18 @@ class ScheduleHeader extends ConsumerStatefulWidget
     implements PreferredSizeWidget {
   final bool showNavigationButton;
   final bool showBackButton;
-  const ScheduleHeader(
+  double? height;
+  ScheduleHeader(
       {required this.showNavigationButton,
       required this.showBackButton,
+      this.height = 55,
       super.key});
 
   @override
   ConsumerState<ScheduleHeader> createState() => _MainHeaderState();
 
   @override
-  Size get preferredSize => Size.fromHeight(55.h);
+  Size get preferredSize => Size.fromHeight(height!);
 }
 
 class _MainHeaderState extends ConsumerState<ScheduleHeader> {
@@ -131,8 +135,7 @@ class _MainHeaderState extends ConsumerState<ScheduleHeader> {
                                   if (controller.text.length > 2 &&
                                       gymFoundBySearching.isNotEmpty &&
                                       widget.showNavigationButton) {
-                                    context.router
-                                        .push(const MapRoute());
+                                    context.router.push(const MapRoute());
                                     textfieldFocusnode.unfocus();
                                     controller.clear();
                                     setState(() {});
@@ -219,6 +222,7 @@ class _MainHeaderState extends ConsumerState<ScheduleHeader> {
 
   @override
   Widget build(BuildContext context) {
+     final tabsRouter = AutoTabsRouter.of(context);
     return AppBar(
       automaticallyImplyLeading: false,
       //backgroundColor: Colors.amber,
@@ -226,7 +230,6 @@ class _MainHeaderState extends ConsumerState<ScheduleHeader> {
       toolbarHeight: 40.h,
       backgroundColor: AppColors.backgroundColor,
       elevation: 0,
-
       centerTitle: false,
       titleSpacing: textfieldFocusnode.hasFocus ? 14.w : 5.0,
       shape: RoundedRectangleBorder(
@@ -253,7 +256,7 @@ class _MainHeaderState extends ConsumerState<ScheduleHeader> {
           ? null
           : GestureDetector(
               onTap: () {
-                context.popRoute();
+                tabsRouter.setActiveIndex(1);
               },
               child: Container(
                 margin: EdgeInsets.only(left: 10.5.w),

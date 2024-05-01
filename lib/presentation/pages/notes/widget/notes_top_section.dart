@@ -2,9 +2,9 @@
 
 import 'dart:ui';
 
-import 'package:activity/application/schedule/schedule_notifier.dart';
-import 'package:activity/application/schedule/schedule_state.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
+import 'package:myfit/application/schedule/schedule_notifier.dart';
+import 'package:myfit/application/schedule/schedule_state.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';

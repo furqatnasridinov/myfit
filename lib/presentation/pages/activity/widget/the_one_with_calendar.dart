@@ -1,22 +1,26 @@
 // ignore_for_file: use_build_context_synchronously
-import 'package:activity/application/activity/activity_notifier.dart';
-import 'package:activity/application/activity/activity_provider.dart';
-import 'package:activity/application/schedule/schedule_provider.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/apphelpers.dart';
-import 'package:activity/presentation/components/components.dart';
-import 'package:activity/presentation/components/custom_card.dart';
-import 'package:activity/presentation/components/inter_text.dart';
+import 'package:myfit/application/activity/activity_notifier.dart';
+import 'package:myfit/application/activity/activity_provider.dart';
+import 'package:myfit/application/schedule/schedule_provider.dart';
+import 'package:myfit/application/settings/settings_provider.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
+import 'package:myfit/presentation/components/animation_button_effect.dart';
+import 'package:myfit/presentation/components/components.dart';
+import 'package:myfit/presentation/components/custom_card.dart';
+import 'package:myfit/presentation/components/inter_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TheOneWithCalendar extends StatefulWidget {
   final ActivityNotifier event;
+  final int gymId;
 
   const TheOneWithCalendar({
     super.key,
     required this.event,
+    required this.gymId,
   });
 
   @override
@@ -79,75 +83,77 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                               await widget.event
                                   .setSelectedCalendarDay(currentDate);
                               widget.event.getLessonsToShowAfterSelectingADay(
-                                currentDate,
-                              );
+                                  currentDate);
                             }
                           },
                           child: Padding(
                             padding: EdgeInsets.only(right: 9.w),
-                            child: SizedBox(
-                              //color: Colors.red,
-                              width: 41.w,
-                              child: Card(
-                                margin: EdgeInsets.symmetric(
-                                    horizontal: 1.w, vertical: 2.h),
-                                shadowColor:
-                                    const Color.fromRGBO(123, 163, 225, 0.73),
-                                elevation: isSelected ? 2.1 : 0,
-                                color: isSelected
-                                    ? AppColors.blueColor
-                                    : Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.r),
-                                  side: BorderSide(
-                                      color: isSelected
-                                          ? AppColors.blueColor
-                                          : isAvailable
-                                              ? AppColors.greyBorder
-                                              : Colors.transparent,
-                                      width: 1.w),
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    InterText(
-                                      text: parts[0].toUpperCase(),
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: isSelected
-                                          ? Colors.white
-                                          : isAvailable
-                                              ? Colors.black
-                                              : const Color.fromRGBO(
-                                                  176, 176, 176, 1),
-                                    ),
-                                    3.verticalSpace,
-                                    CustomText(
-                                        fontSize: 10.sp,
-                                        fontWeight: FontWeight.w500,
-                                        text: parts[1],
+                            child: AnimationButtonEffect(
+                              disabled: isAvailable ? false : true,
+                              child: SizedBox(
+                                //color: Colors.red,
+                                width: 41.w,
+                                child: Card(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 1.w, vertical: 2.h),
+                                  shadowColor:
+                                      const Color.fromRGBO(123, 163, 225, 0.73),
+                                  elevation: isSelected ? 2.1 : 0,
+                                  color: isSelected
+                                      ? AppColors.blueColor
+                                      : Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.r),
+                                    side: BorderSide(
+                                        color: isSelected
+                                            ? AppColors.blueColor
+                                            : isAvailable
+                                                ? AppColors.greyBorder
+                                                : Colors.transparent,
+                                        width: 1.w),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      InterText(
+                                        text: parts[0].toUpperCase(),
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w600,
                                         color: isSelected
                                             ? Colors.white
                                             : isAvailable
                                                 ? Colors.black
                                                 : const Color.fromRGBO(
-                                                    176, 176, 176, 1)),
-                                    CustomText(
-                                      fontSize: 10.sp,
-                                      fontWeight: FontWeight.w500,
-                                      text: parts[2],
-                                      color: isSelected
-                                          ? Colors.white
-                                          : isAvailable
-                                              ? Colors.black
-                                              : const Color.fromRGBO(
-                                                  176,
-                                                  176,
-                                                  176,
-                                                  1,
-                                                ),
-                                    ),
-                                  ],
+                                                    176, 176, 176, 1),
+                                      ),
+                                      3.verticalSpace,
+                                      CustomText(
+                                          fontSize: 10.sp,
+                                          fontWeight: FontWeight.w500,
+                                          text: parts[1],
+                                          color: isSelected
+                                              ? Colors.white
+                                              : isAvailable
+                                                  ? Colors.black
+                                                  : const Color.fromRGBO(
+                                                      176, 176, 176, 1)),
+                                      CustomText(
+                                        fontSize: 10.sp,
+                                        fontWeight: FontWeight.w500,
+                                        text: parts[2],
+                                        color: isSelected
+                                            ? Colors.white
+                                            : isAvailable
+                                                ? Colors.black
+                                                : const Color.fromRGBO(
+                                                    176,
+                                                    176,
+                                                    176,
+                                                    1,
+                                                  ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -195,16 +201,23 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                       currentSchedule.duration ?? "??",
                       currentSchedule.description ?? "??",
                       currentSchedule.lessonState ?? "",
+                      currentSchedule.isLoading,
                       () async {
                         await widget.event.enrollToGym(
                           context,
                           currentSchedule.id ?? 0,
                         );
                         // временно до вебсокетов
-                        currentSchedule.lessonState = "WAITING";
-                        setState(() {});
+                        //currentSchedule.lessonState = "WAITING";
+                        //setState(() {});
+                        currentSchedule.isLoading = true;
                         // get the updated list of lessons
+                        await widget.event.getAllLessons(context, id: widget.gymId);
+                        await widget.event.getLessonsOfSelectedActivity(currentSchedule.lessonType ?? "", false);
+                        currentSchedule.isLoading = false;
                         scheduleEvent.getUsersSchedules(context);
+                        // to add this lessontype to known lessontypes if it's not there
+                        ref.read(settingsProvider.notifier).getWaitingLessonTypes(context);
                       },
                     );
                   },
@@ -228,8 +241,10 @@ Widget activityCard(
   String duration,
   String name,
   String? status,
+  bool? isloading,
   void Function()? enrollFunction,
 ) {
+  
   if (canSignUp || (!canSignUp && status == "CONFIRMED")) {
     return Padding(
       padding: EdgeInsets.only(bottom: 10.h, left: 16.w, right: 16.w),
@@ -261,17 +276,25 @@ Widget activityCard(
                     ],
                   ),
                 ),
+                
                 // get status text
                 SizedBox(
-                  child: InkWell(
-                    onTap: (status == "OPEN" || status == "CANCELED_USER")
-                        ? enrollFunction
+                  child: GestureDetector(
+                    onTap: (status == "OPEN" || status == "CANCELED_USER" || status == "CANCELED_GYM") 
+                      && isloading == false ? () {
+                          enrollFunction?.call();
+                      }
                         : null,
-                    child: CustomText(
-                      text: AppHelpers().getStatusText(status),
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                      color: AppHelpers().getStatusTextColor(status),
+                    child: SizedBox(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                        child: CustomText(
+                          text: isloading == true ? "Загрузка " :  AppHelpers().getStatusText(status),
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                          color: AppHelpers().getStatusTextColor(status),
+                        ),
+                      ),
                     ),
                   ),
                 ),

@@ -1,4 +1,4 @@
-import 'package:activity/infrastructure/models/data/addresses.dart';
+import 'package:myfit/infrastructure/models/data/addresses.dart';
 
 class DummyData {
   final List<Addresses> dummyAddresses = [

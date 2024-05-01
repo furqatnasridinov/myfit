@@ -1,17 +1,19 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
 import 'dart:ui';
 
-import 'package:activity/application/registration/registration_state.dart';
-import 'package:activity/domain/handlers/network_exceptions.dart';
-import 'package:activity/domain/interface/register.dart';
-import 'package:activity/infrastructure/services/app_colors.dart';
-import 'package:activity/infrastructure/services/app_validator.dart';
-import 'package:activity/infrastructure/services/apphelpers.dart';
-import 'package:activity/infrastructure/services/connectivity.dart';
-import 'package:activity/infrastructure/services/local_storage.dart';
-import 'package:activity/presentation/router/app_router.gr.dart';
+import 'package:myfit/application/registration/registration_state.dart';
+import 'package:myfit/domain/handlers/network_exceptions.dart';
+import 'package:myfit/domain/interface/register.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/app_validator.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
+import 'package:myfit/infrastructure/services/connectivity.dart';
+import 'package:myfit/infrastructure/services/local_storage.dart';
+import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -94,8 +96,9 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
   Future<void> sendPhoneNumber(String phoneNumber, BuildContext context) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
-      final response =
-          await _registerRepositoryInterface.sendPhoneNumber(phoneNumber);
+      String? fcmToken = Platform.isIOS  ? "" : await FirebaseMessaging.instance.getToken();
+      debugPrint("fcm token: $fcmToken");
+      final response = await _registerRepositoryInterface.sendPhoneNumber(phoneNumber, fcmToken);
       response.when(
         success: (data) {
           if (data["operationResult"] == "OK") {
@@ -144,6 +147,9 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
               LocalStorage.setWeight(data.user?.weight.toString() ?? ""),
             ]);
           }
+          // save login time locally
+          final String dateTimeToString = DateTime.now().toString();
+          LocalStorage.setLoginTime(dateTimeToString);
           moveClientToNextPage(context, nextRoute);
         },
         failure: (error, statusCode, operationInfo) {

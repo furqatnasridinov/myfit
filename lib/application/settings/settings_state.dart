@@ -1,4 +1,4 @@
-import 'package:activity/infrastructure/models/response/auth_response.dart';
+import 'package:myfit/infrastructure/models/response/auth_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'settings_state.freezed.dart';
@@ -12,6 +12,7 @@ class SettingsState with _$SettingsState {
     @Default("") String phoneNumber,
     @Default(null) String? selectedCity,
     @Default([]) List<City> listOfCities,
+    @Default([]) List<String> knownActivities,
     @Default("") String userName,
     @Default("") String userLastName,
     @Default("") String age,
@@ -23,6 +24,7 @@ class SettingsState with _$SettingsState {
     @Default("30") String reminderTime,
     @Default(false) bool isReminderDisabled,
     @Default("") String? qrcodeValue,
+    @Default(false) bool isNoAccessChangingPhoto,
   }) = _SettingsState;
   const SettingsState._();
 }
