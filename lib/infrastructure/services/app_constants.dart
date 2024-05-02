@@ -9,7 +9,7 @@ class AppConstants {
   static const String searchGym = "api/gym/search";
   static const String getSchedulesSearch = "api/schedule/search";
   static const String getCompletedSchedules = "api/schedule/user/last";
-  static const String getUserSchedules = "api/schedule/user";
+  static const String   getUserSchedules = "api/schedule/user";
   static const String getNearestLesson = "api/user/lessons/nearest";
   static const String getUserStatsMonth = "api/user/stat/month";
   static const String makeRate = "api/schedule/addComment";
@@ -65,14 +65,6 @@ class AppConstants {
   static const String keyNotificationTime = "key_notification_time";
   static const String keyWhenUploadingPhotoAccessOpens = "key_photo_access";
 
-  // long texts
-  static const String confirmationText =
-      "Нажимая на кнопку «Продолжить» - я даю согласие на обработку персональных данных и подтверждаю, что прочитал(а) ";
-  static const String userAgreement =
-      "к MyFIT (временно или навсегда). Будет не круто, поэтому используй приложение с умом и по правилам.  Третье правило: всякое бывает. Мы живём в непредсказуемом мире. Если случится какая-нибудь безумная хрень (войны, землетрясения, наводнения, порабощение человечества искусственным интеллектом… ну ладно, про интеллект я загнул, надеюсь), ни ты, ни компания не будете нести ответственности за невыполнение обязательств. Да, в жизни бывает всякая фигня. Мы постарались сделать соглашение максимально простым с юридической точки зрения, а также добавили пояснения нормальным человеческим языком (сами знаем, многим юридическим документам этого очень не хватает).";
-  static const String warningText =
-      "Если вы пропускаете регистрацию по номеру телефона - то при следующем входе система может вас не узнать, все данные удалятся а оплаченный период будет утерян.";
-
   // hero animations tags
   static const String registration3Hero = "registration_3_hero";
 
@@ -81,4 +73,16 @@ class AppConstants {
   static const int scheduledNotificationId = 1308;
   static const String scheduledNotificationChannelId = "tmpScheduledChanelId";
   static const String scheduledNotificationChannelName ="tmpScheduledChanelName";
+
+    // long texts
+  static const String confirmationText =
+      "Нажимая на кнопку «Продолжить» - я даю согласие на обработку персональных данных и подтверждаю, что прочитал(а) ";
+  static const String userAgreement =
+      "к MyFIT (временно или навсегда). Будет не круто, поэтому используй приложение с умом и по правилам.  Третье правило: всякое бывает. Мы живём в непредсказуемом мире. Если случится какая-нибудь безумная хрень (войны, землетрясения, наводнения, порабощение человечества искусственным интеллектом… ну ладно, про интеллект я загнул, надеюсь), ни ты, ни компания не будете нести ответственности за невыполнение обязательств. Да, в жизни бывает всякая фигня. Мы постарались сделать соглашение максимально простым с юридической точки зрения, а также добавили пояснения нормальным человеческим языком (сами знаем, многим юридическим документам этого очень не хватает).";
+  static const String warningText =
+      "Если вы пропускаете регистрацию по номеру телефона - то при следующем входе система может вас не узнать, все данные удалятся а оплаченный период будет утерян.";
+  static const String subscriptionText1 = "MyFit — это один абонемент на разные виды активностей. Вы можете выбрать занятия на каждый день и в любое время.";
+  static const String subscriptionText2 = "Можно записаться на несколько занятий в день: утром на йогу, в обед на фитнес и вечером в бассейн.";
+  static const String subscriptionText3 = "В абонементе нет ограничений по количеству посещений в месяц, но есть несколько правил, которые стоит помнить при посещении активностей MyFit:";
+  
 }

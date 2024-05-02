@@ -253,7 +253,6 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                               usersCount: recommendedGyms["countUsers"].toString(),
                           );
                           })
-                          
                         ),
                       ),
                     ],

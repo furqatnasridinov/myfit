@@ -24,6 +24,7 @@ class ScheduleState with _$ScheduleState {
     @Default("30") String notificationTime,
     @Default(false) bool completedSchedulesShown,
     @Default(false) bool pendingSchedulesShown,
+    @Default(false) bool completedLessonListAnimaion,
     @Default([]) List<CompletedSchedule> completedSchedules,
   }) = _ScheduleState;
   const ScheduleState._();

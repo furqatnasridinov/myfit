@@ -136,15 +136,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                 duration: const Duration(milliseconds: 300),
                 height: height * state.topFlexValue,
                 child: SizedBox(
-                  child: state.showMapOnly
-                      ? Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10.h),
-                          child: MapPageTopSection(
-                            event: event,
-                            state: state,
-                          ),
-                        )
-                      : CustomScrollView(
+                  child:  CustomScrollView(
                           controller: activitiesListController,
                           slivers: [
                               SliverAppBar(
@@ -162,7 +154,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                                 ),
                               ),
                               SliverPadding(
-                                  padding: EdgeInsets.only(bottom: 10.h)),
+                                  padding: EdgeInsets.only(bottom: 0.h)),
                               SliverToBoxAdapter(
                                 child: MapListOfActivities(
                                   activitiesListController,
@@ -177,6 +169,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
 
               // bottom section
               AnimatedContainer(
+                curve: Curves.easeInOut,
                 duration: const Duration(milliseconds: 300),
                 height: state.isGymsPopupShown
                     ? height * (state.bottomFlexValue + 0.09)

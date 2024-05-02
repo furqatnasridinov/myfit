@@ -80,7 +80,9 @@ class ApplicationSettings extends StatelessWidget {
         eachBlock(
           "assets/svg/call_us.svg",
           "Связь с разработчиками",
-          () {},
+          () {
+            
+          },
         ),
         10.verticalSpace,
         eachBlock(

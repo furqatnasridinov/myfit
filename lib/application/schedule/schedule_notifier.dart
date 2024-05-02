@@ -405,7 +405,8 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     state = state.copyWith(completedSchedulesShown: true);
   }
 
-  void hideCompletedSchedules() {
+  Future<void> hideCompletedSchedules() async{
+    await Future.delayed(const Duration(milliseconds: 450));
     state = state.copyWith(completedSchedulesShown: false);
   }
 
@@ -415,6 +416,11 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
 
   void hidePendingSchedules() {
     state = state.copyWith(pendingSchedulesShown: false);
+  }
+
+  Future<void> setAnimationCompletedLessons(bool val)async{
+    await Future.delayed(const Duration(milliseconds: 100));
+    state = state.copyWith(completedLessonListAnimaion: val);
   }
 
   Future<void> cancelActivity(int id, BuildContext context) async {

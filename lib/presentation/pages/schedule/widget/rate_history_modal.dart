@@ -181,7 +181,7 @@ class _RateDialogState extends State<RateHistoryDialog> {
             // buttons
             16.verticalSpace,
             CustomButton(
-              text: "Отменить",
+              text: "Назад",
               onPressed: () {
                 context.router.pop();
               },

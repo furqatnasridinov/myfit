@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:flutter/widgets.dart';
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_notifier.dart';
 import 'package:myfit/application/map/map_provider.dart';
@@ -69,10 +70,8 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                     //controller: widget.activitiesListController,
                     physics: const NeverScrollableScrollPhysics(),
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    itemCount: widget.state
-                        .activitiesWithGymsInsideFromSelectedDiapozone.length,
+                    itemCount: widget.state.activitiesWithGymsInsideFromSelectedDiapozone.length,
                     shrinkWrap: true,
-                    
                     itemBuilder: (context, index) {
                       final currentActivity = widget.state
                           .activitiesWithGymsInsideFromSelectedDiapozone[index];
@@ -114,81 +113,81 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
     List<Gymdata> gymsList,
     void Function()? onTap,
   ) {
-    return Container(
-      //duration: const Duration(milliseconds: 3000),
-      height: isOpened ? null : 40.h,
-      width: double.maxFinite,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: AppColors.greyBorder, width: 1.w),
-      ),
-      margin: EdgeInsets.only(bottom: 5.h),
-      child: isOpened
-          ? Column(
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        curve: Curves.easeInOut,
+        duration: const Duration(milliseconds: 300),
+        height: isOpened ? (50.h + (gymsList.length * 52.h + 3.h)) : 42.h,
+        width: double.maxFinite,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.r),
+          border: Border.all(color: AppColors.greyBorder, width: 1.w),
+        ),
+        margin: EdgeInsets.only(bottom: 5.h),
+        child: SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                InkWell(
-                  onTap: onTap,
-                  child: Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
-                    child: SizedBox(
-                      height: 40.h,
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            child: SvgPicture.asset(
-                              AppHelpers().getIconSvg(title),
-                              height: 15.h,
-                            ),
+                Padding(
+                  padding:EdgeInsets.symmetric(horizontal: 16.w),
+                  child: SizedBox(
+                    height: 40.h,
+                    //color: Colors.green,
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          child: SvgPicture.asset(
+                            AppHelpers().getIconSvg(title),
+                            height: 15.h,
                           ),
-                          10.horizontalSpace,
-                          CustomText(
-                            text: title,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
+                        ),
+                        10.horizontalSpace,
+                        CustomText(
+                          text: title,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        const Spacer(),
+                        SizedBox(
+                          //color: Colors.red.shade100,
+                          width: 100.w,
+                          child: Row(
+                            children: [
+                              // count of gyms
+                              CustomText(
+                                text: countOfGyms,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.blueColor,
+                              ),
+                              5.horizontalSpace,
+                              Icon(isOpened ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up, 
+                                color: AppColors.blueColor,
+                                size: 18.r,
+                              ),
+                              const Spacer(),
+                              CustomText(
+                                text:
+                                    "${gymsList.first.distanceFromClient} км",
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.greyText,
+                              ),
+                            ],
                           ),
-                          const Spacer(),
-                          SizedBox(
-                            //color: Colors.red.shade100,
-                            width: 100.w,
-                            child: Row(
-                              children: [
-                                // count of gyms
-                                CustomText(
-                                  text: countOfGyms,
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.blueColor,
-                                ),
-                                5.horizontalSpace,
-                                Icon(
-                                  isOpened
-                                      ? Icons.keyboard_arrow_up
-                                      : Icons.keyboard_arrow_down,
-                                  color: AppColors.blueColor,
-                                  size: 18.r,
-                                ),
-                                const Spacer(),
-                                CustomText(
-                                  text:
-                                      "${gymsList.first.distanceFromClient} км",
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.greyText,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                //10.verticalSpace,
+                
+                if (isOpened)
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 5.h),
                   child: SizedBox(
                     child: Consumer(
                       builder: (context, ref, child) {
@@ -219,28 +218,16 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                                   activityEvent.getActivityTypes(
                                       context,
                                       false,
-                                      ref
-                                          .watch(mapProvider)
-                                          .selectedLessonTypeFromMap,
+                                      ref.watch(mapProvider).selectedLessonTypeFromMap,
                                       gymId: gymsList[index].id!);
                                   widget.event.changeCameraPosition(
                                     widget.controller!,
-                                    double.parse(
-                                        gymsList[index].latitude.toString()),
-                                    double.parse(
-                                        gymsList[index].longitude.toString()),
-                                  );
-                                  widget.event
-                                      .setMarkerAsOpened(
-                                        double.parse(gymsList[index]
-                                            .latitude
-                                            .toString()),
-                                        double.parse(gymsList[index]
-                                            .longitude
-                                            .toString()),
-                                      )
-                                      .then((value) => widget.event
-                                          .showPopUpOnMap(context, title));
+                                    double.parse(gymsList[index].latitude.toString()),
+                                    double.parse(gymsList[index].longitude.toString()));
+                                  widget.event.setMarkerAsOpened(
+                                    double.parse(gymsList[index].latitude.toString()),
+                                    double.parse(gymsList[index].longitude.toString()))
+                                      .then((value) => widget.event.showPopUpOnMap(context, title));
                                 },
                               );
                             });
@@ -249,63 +236,10 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                   ),
                 ),
               ],
-            )
-          : InkWell(
-              onTap: onTap,
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
-                //color: Colors.red,
-                child: Row(
-                  children: [
-                    SizedBox(
-                      child: SvgPicture.asset(
-                        AppHelpers().getIconSvg(title).isEmpty
-                            ? "assets/svg/gym.svg"
-                            : AppHelpers().getIconSvg(title),
-                        height: 15.h,
-                      ),
-                    ),
-                    10.horizontalSpace,
-                    CustomText(
-                      text: title,
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    const Spacer(),
-                    SizedBox(
-                      //color: Colors.red.shade100,
-                      width: 100.w,
-                      child: Row(
-                        children: [
-                          // count of gyms
-                          CustomText(
-                            text: countOfGyms,
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.blueColor,
-                          ),
-                          5.horizontalSpace,
-                          Icon(
-                            isOpened
-                                ? Icons.keyboard_arrow_up
-                                : Icons.keyboard_arrow_down,
-                            color: AppColors.blueColor,
-                            size: 18.r,
-                          ),
-                          const Spacer(),
-                          CustomText(
-                            text: "${gymsList.first.distanceFromClient} км",
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.greyText,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             ),
+        )
+            
+      ),
     );
   }
 }
@@ -320,61 +254,67 @@ _listOfGymsBuilder(
 ) {
   return GestureDetector(
     onTap: onTap,
-    child: Container(
-        //height: 40.h,
-        width: double.maxFinite,
+    child: Padding(
+      padding: EdgeInsets.only(bottom: 5.h),
+      child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8.r),
-          border: Border.all(
-            color: isSelected ? AppColors.blueColor : AppColors.greyBorder,
-            width: 1.w,
-          ),
-        ),
-        margin: EdgeInsets.only(bottom: 5.h),
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
-          //color: Colors.red,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 210.w,
-                    //color: Colors.amber,
-                    child: InterText(
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      text: title ?? "",
-                      fontSize: 12.sp,
-                      fontWeight:
-                          isSelected ? FontWeight.w600 : FontWeight.w400,
+              //color: Colors.white,
+              borderRadius: BorderRadius.circular(8.r),
+              border: Border.all(
+                color: isSelected ? AppColors.blueColor : AppColors.greyBorder,
+                width: 1.w,
+              ),
+            ),
+        child: SizedBox(
+            height: 47.h,
+            width: double.maxFinite,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
+              child: SizedBox(
+                //color: Colors.purple,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 210.w,
+                          //color: Colors.amber,
+                          child: InterText(
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            text: title ?? "",
+                            fontSize: 12.sp,
+                            fontWeight:
+                                isSelected ? FontWeight.w600 : FontWeight.w400,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 210.w,
+                          //color: Colors.amber,
+                          child: CustomText(
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            text: subTitle ?? "",
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.greyText,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  SizedBox(
-                    width: 210.w,
-                    //color: Colors.amber,
-                    child: CustomText(
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      text: subTitle ?? "",
+                    CustomText(
+                      text: "${distance.toString()} km",
                       fontSize: 10.sp,
                       fontWeight: FontWeight.w500,
                       color: AppColors.greyText,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              CustomText(
-                text: "${distance.toString()} km",
-                fontSize: 10.sp,
-                fontWeight: FontWeight.w500,
-                color: AppColors.greyText,
-              ),
-            ],
-          ),
-        )),
+            )),
+      ),
+    ),
   );
 }
