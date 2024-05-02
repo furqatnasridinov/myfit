@@ -294,7 +294,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
               isDeleted: el["deleteLesson"] ?? false,
               isLoading: false
             );
-            if (/* lesson.showInCalendar! && */
+            if (lesson.showInCalendar! &&
                 !lesson.isDeleted! &&
                 lesson.canSignUp!) {
               listToCollectLessons.add(lesson);

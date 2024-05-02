@@ -1,10 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:math';
-
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:myfit/application/schedule/schedule_notifier.dart';
 import 'package:myfit/application/schedule/schedule_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:myfit/presentation/components/animation_button_effect.dart';
 import 'package:myfit/presentation/components/custom_card.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
@@ -28,6 +30,8 @@ class CompletedSchedules extends ConsumerWidget {
     final completedSchedules = ref.watch(scheduleProvider).completedSchedules;
     final completedSchedulesShown =
         ref.watch(scheduleProvider).completedSchedulesShown;
+    final completedLessonListAnimaion =
+        ref.watch(scheduleProvider).completedLessonListAnimaion;
     return completedSchedules.isEmpty
         ? const SizedBox.shrink()
         : Padding(
@@ -35,7 +39,6 @@ class CompletedSchedules extends ConsumerWidget {
             child: Column(
               children: [
                 // header
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -48,8 +51,14 @@ class CompletedSchedules extends ConsumerWidget {
                       onTap: () {
                         if (completedSchedulesShown) {
                           event.hideCompletedSchedules();
+                          if (completedLessonListAnimaion) {
+                            event.setAnimationCompletedLessons(false);
+                          }
                         } else {
                           event.showCompletedSchedules();
+                          if (!completedLessonListAnimaion) {
+                            event.setAnimationCompletedLessons(true);
+                          }
                         }
                       },
                       child: AnimationButtonEffect(
@@ -78,26 +87,6 @@ class CompletedSchedules extends ConsumerWidget {
                                       fontSize: 14.sp,
                                       fontWeight: FontWeight.w500,
                                     ),
-                                    /* AnimatedCrossFade(
-                                      firstCurve: Curves.easeInOut,
-                                      secondCurve: Curves.easeInOut,
-                                      //secondCurve: Curves.easeIn,
-                                      duration: const Duration(milliseconds: 300),
-                                      firstChild: CustomText(
-                                        text: "Свернуть",
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      secondChild: CustomText(
-                                        text: "Развернуть",
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      crossFadeState:
-                                          completedSchedulesShown
-                                              ? CrossFadeState.showFirst
-                                              : CrossFadeState.showSecond,
-                                    ), */
                                   ),
                                   4.horizontalSpace,
                                   TweenAnimationBuilder<double>(
@@ -129,17 +118,24 @@ class CompletedSchedules extends ConsumerWidget {
                 5.verticalSpace,
 
                 // body
-                if (completedSchedulesShown)
-                  Consumer(builder: (context, watch, child) {
-                    final completedSchedules =
-                        ref.watch(scheduleProvider).completedSchedules;
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: completedSchedules.length,
-                      itemBuilder: (context, index) {
-                        return listOfActivitiesEachItem(
+                //if (completedSchedulesShown)
+                Consumer(builder: (context, watch, child) {
+                  final completedSchedules =
+                      ref.watch(scheduleProvider).completedSchedules;
+                  return AnimatedSize(
+                    duration: const Duration(milliseconds: 350),
+                    curve: Curves.easeInOut,
+                    child: SizedBox(
+                      height: completedSchedulesShown ? (null) : 0,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: completedSchedules.length,
+                        itemBuilder: (context, index) {
+                          return listOfActivitiesEachItem(
                             context,
+                            completedLessonListAnimaion,
+                            index,
                             completedSchedules[index].id,
                             completedSchedules[index].time,
                             completedSchedules[index].describtion,
@@ -147,10 +143,13 @@ class CompletedSchedules extends ConsumerWidget {
                             completedSchedules[index].grade,
                             completedSchedules[index].gymId,
                             completedSchedules[index].comment,
-                            event,);
-                      },
-                    );
-                  }),
+                            event,
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                }),
               ],
             ),
           );
@@ -159,6 +158,8 @@ class CompletedSchedules extends ConsumerWidget {
 
 Widget listOfActivitiesEachItem(
   BuildContext context,
+  final bool animationStart,
+  final int index,
   final int id,
   final String time,
   final String description,
@@ -168,7 +169,17 @@ Widget listOfActivitiesEachItem(
   final String comment,
   final ScheduleNotifier event,
 ) {
-  return SizedBox(
+  return AnimatedContainer(
+    curve: Curves.easeInOut,
+    duration: animationStart
+        ? Duration(milliseconds: 350 + (index * 150))
+        : Duration(milliseconds: 650 - (index * 150)),
+    //height: 110.h,
+    transform: animationStart
+        ? Matrix4.translationValues(0, 0, 0)
+        : Matrix4.translationValues(400, 0, 0),
+    //color: Colors.purple,
+    margin: EdgeInsets.only(bottom: 5.h),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -221,38 +232,38 @@ Widget listOfActivitiesEachItem(
         AnimationButtonEffect(
           disabled: grade == 0,
           child: GestureDetector(
-            onTap: (){
+            onTap: () {
               if (grade != 0) {
                 // open dialog to see how we rated before
-                 showDialog(
-                      context: context,
-                      builder: (context) {
-                        return Dialog(
-                          backgroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16.r),
-                          ),
-                          elevation: 0,
-                          insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
-                          child: RateHistoryDialog(
-                            id: id,
-                            gymName: name,
-                            describtion: description,
-                            comment: comment,
-                            rate: grade,
-                          ),
-                        );
-                      });
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return Dialog(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.r),
+                        ),
+                        elevation: 0,
+                        insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
+                        child: RateHistoryDialog(
+                          id: id,
+                          gymName: name,
+                          describtion: description,
+                          comment: comment,
+                          rate: grade,
+                        ),
+                      );
+                    });
               }
             },
             child: CustomCard(
               //color: Colors.green,
-              marginBottom: 5.h,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // top part
                   SizedBox(
+                    //color: Colors.blue,
                     width: 265.w,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -262,6 +273,7 @@ Widget listOfActivitiesEachItem(
                         SizedBox(
                           width: 220.w,
                           child: InterText(
+                            //text: AppConstants.confirmationText,
                             text: description,
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w400,
@@ -299,65 +311,64 @@ Widget listOfActivitiesEachItem(
                       ],
                     ),
                   ),
-                  16.verticalSpace,
-            
+                  14.verticalSpace,
                   // bottom part
-                SizedBox(
-                //color: Colors.green,
-                width: 265.w,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      //color: Colors.red,
-                      child: Row(
-                        children: [
-                          SvgPicture.asset("assets/svg/clock.svg"),
-                          4.horizontalSpace,
-                          InterText(
-                            text: time,
-                            color: AppColors.greyText,
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ],
-                      ),
-                    ),
-                    5.horizontalSpace,
-                    // location
-                    Flexible(
-                      child: SizedBox(
-                        //width: 200.w,
-                        //color: Colors.red,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            SvgPicture.asset("assets/svg/location.svg"),
-                            4.horizontalSpace,
-                            Flexible(
-                              child: SizedBox(
-                                //width: 160.w,
-                                //color: Colors.green,
-                                child: InterText(
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  //text: "cmdkcmdkcmdkcmdkcmkdcmdmckmd,lcdl,cl,d,cd,lcdlc,,cl,dl,cdl,c",
-                                  text: name,
-                                  color: AppColors.greyText,
-                                  fontSize: 13.sp,
-                                  fontWeight: FontWeight.w400,
-                                ),
+                  SizedBox(
+                    //color: Colors.green,
+                    width: 265.w,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          //color: Colors.red,
+                          child: Row(
+                            children: [
+                              SvgPicture.asset("assets/svg/clock.svg"),
+                              4.horizontalSpace,
+                              InterText(
+                                text: time,
+                                color: AppColors.greyText,
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w400,
                               ),
-                            )
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
+                        5.horizontalSpace,
+                        // location
+                        Flexible(
+                          child: SizedBox(
+                            //width: 200.w,
+                            //color: Colors.red,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                SvgPicture.asset("assets/svg/location.svg"),
+                                4.horizontalSpace,
+                                Flexible(
+                                  child: SizedBox(
+                                    //width: 160.w,
+                                    //color: Colors.green,
+                                    child: InterText(
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      //text: AppConstants.confirmationText,
+                                      text: name,
+                                      color: AppColors.greyText,
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
+                  ),
                 ],
               ),
             ),

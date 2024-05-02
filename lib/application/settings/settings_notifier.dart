@@ -1,8 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
+import 'dart:ffi';
 import 'dart:io';
 import 'package:myfit/application/settings/settings_state.dart';
 import 'package:myfit/domain/handlers/network_exceptions.dart';
 import 'package:myfit/domain/interface/settings.dart';
+import 'package:myfit/infrastructure/models/data/subscribtion.dart';
 import 'package:myfit/infrastructure/models/request/send_confirmation_code_request.dart';
 import 'package:myfit/infrastructure/models/request/send_phone_number_request.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
@@ -93,8 +95,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 
   void getAccessPhotoUpload() {
-    final DateTime whenAccessUploadingPhotoOpens =  DateTime.parse(LocalStorage.getWhenUploadingPhotoOpens());
-    final bool resultBool = DateTime.now().isBefore(whenAccessUploadingPhotoOpens);
+    final DateTime whenAccessUploadingPhotoOpens =
+        DateTime.parse(LocalStorage.getWhenUploadingPhotoOpens());
+    final bool resultBool =
+        DateTime.now().isBefore(whenAccessUploadingPhotoOpens);
     state = state.copyWith(isNoAccessChangingPhoto: resultBool);
   }
 
@@ -431,8 +435,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         final errorcha = error.toString();
         debugPrint("errorcha $errorcha");
         if (errorcha.contains("Смена фото не чаще 1 раза в неделю")) {
-          AppHelpers.showErrorSnack(context, "Фото не изменено.Сменить фото можно только один раз в неделью");
-          final String whenAccessOpens = errorcha.split("неделю/")[1].replaceAll(")", "");
+          AppHelpers.showErrorSnack(context,
+              "Фото не изменено.Сменить фото можно только один раз в неделью");
+          final String whenAccessOpens =
+              errorcha.split("неделю/")[1].replaceAll(")", "");
           LocalStorage.setWhenUploadingPhotoOpens(whenAccessOpens);
           if (!state.isNoAccessChangingPhoto) {
             state = state.copyWith(isNoAccessChangingPhoto: true);
@@ -495,14 +501,28 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     }
   }
 
-   String formatDuration(Duration duration) {
+  void setSelectedSubscribtion(Subscribtion? subscribtion) {
+    state = state.copyWith(selectedSubscribtion: subscribtion);
+  }
+
+  void addCard(String number){
+    state = state.copyWith(cardNumber: number);
+  }
+
+  void deleteCard(){
+    state = state.copyWith(cardNumber: "");
+  }
+
+  void toggleAutoRenewal(bool val){
+    state = state.copyWith(autoRenewal: val);
+  }
+
+  String formatDuration(Duration duration) {
     int days = duration.inDays;
     int hours = duration.inHours % 24;
 
-
     String daysWord = getDayWord(days);
     String hoursWord = getHourWord(hours);
-
 
     List<String> parts = [
       if (days > 0) '$days $daysWord',
@@ -512,7 +532,9 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     return parts.join(' ');
   }
 
-    String getDayWord(int number) {
+  
+
+  String getDayWord(int number) {
     number = number % 100;
     if (number >= 11 && number <= 19) {
       return 'дней';

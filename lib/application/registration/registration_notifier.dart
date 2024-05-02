@@ -96,8 +96,13 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
   Future<void> sendPhoneNumber(String phoneNumber, BuildContext context) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
-      String? fcmToken = Platform.isIOS  ? "" : await FirebaseMessaging.instance.getToken();
-      debugPrint("fcm token: $fcmToken");
+      String? fcmToken = "";
+      try {
+        fcmToken = Platform.isIOS  ? "" : await FirebaseMessaging.instance.getToken();
+        debugPrint("fcm token: $fcmToken");
+      } catch (e) {
+         AppHelpers.showErrorSnack(context, "Ошибка при получении fcm token ${e.toString()}");
+      }
       final response = await _registerRepositoryInterface.sendPhoneNumber(phoneNumber, fcmToken);
       response.when(
         success: (data) {

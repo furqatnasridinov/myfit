@@ -1,3 +1,4 @@
+import 'package:myfit/presentation/pages/subscribtion_settings/subscribtion_settings.dart';
 import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 
@@ -28,11 +29,6 @@ class AppRouter extends $AppRouter {
           page: ActivityRoute.page,
           path: '/activity',
         ),
-        /* CustomRoute(
-          page: ScheduleRoute.page,
-          //transitionsBuilder: TransitionsBuilders.slideLeft,
-          path: '/schedule',
-        ), */
         AutoRoute(
           page: MainRoute.page,
           path: "/main",
@@ -41,15 +37,6 @@ class AppRouter extends $AppRouter {
           page: NotesRoute.page,
           path: "/notes",
         ),
-        /* AutoRoute(
-          page: Main2Route.page,
-          path: "/main2",
-        ), */
-        /*  CustomRoute(
-          page: MapRoute.page,
-          transitionsBuilder: TransitionsBuilders.slideLeft,
-          path: "/map",
-        ), */
         AutoRoute(
           page: RegistrationRoute.page,
           path: "/registration",
@@ -86,6 +73,9 @@ class AppRouter extends $AppRouter {
         AutoRoute(
           page: NotificationRoute.page,
           path: "/notification",
-        )
+        ),
+        AutoRoute(
+          page: SubscribtionSettingsRoute.page,
+          path: "/subscribtion_settings"),
       ];
 }

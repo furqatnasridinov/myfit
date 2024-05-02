@@ -149,23 +149,62 @@ class AppHelpers {
     switch (lessonType) {
       case "Кардио-тренировки":
         prefix = "на";
+        break;
       case "Секция бокса":
         prefix = "на";
+        break;
       case "Смешанные единоборства":
         prefix = "на";
+        break;
       case "Спортзал":
         prefix = "на";
+        break;
       case "Силовые тренировки":
         prefix = "на";
+        break;
       case "Массаж":
         prefix = "на";
+        break;
       case "Бассейн":
         prefix = "в";
+        break;
       case "Йога":
         prefix = "в";
+        break;
       case "Медитации":
         prefix = "на";
+        break;
     }
     return prefix;
   }
+
+  String getCorrectWordFromUsersCount(int usersCount) {
+    int lastDigit = usersCount % 10;
+    int lastTwoDigits = usersCount % 100;
+
+    if (lastDigit == 1 && lastTwoDigits != 11) {
+      return "пользователь";
+    } else if ([2, 3, 4].contains(lastDigit) &&
+        ![12, 13, 14].contains(lastTwoDigits)) {
+      return "пользователя";
+    } else {
+      return "пользователей";
+    }
+  }
+
+  String getMonthWord(int month) {
+  if (month < 1 || month > 12) {
+    throw ArgumentError('Invalid month value. Only numbers from 1 to 12 are allowed.');
+  }
+
+  if (month == 1) {
+    return "1 месяц";
+  } else if (month >= 2 && month <= 4) {
+    return "$month месяца";
+  } else if (month == 6) {
+    return "Пол года";
+  } else {
+    return "$month месяцев";
+  }
+}
 }

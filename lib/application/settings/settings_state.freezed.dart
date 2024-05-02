@@ -35,6 +35,9 @@ mixin _$SettingsState {
   bool get isReminderDisabled => throw _privateConstructorUsedError;
   String? get qrcodeValue => throw _privateConstructorUsedError;
   bool get isNoAccessChangingPhoto => throw _privateConstructorUsedError;
+  Subscribtion? get selectedSubscribtion => throw _privateConstructorUsedError;
+  String get cardNumber => throw _privateConstructorUsedError;
+  bool get autoRenewal => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $SettingsStateCopyWith<SettingsState> get copyWith =>
@@ -66,7 +69,10 @@ abstract class $SettingsStateCopyWith<$Res> {
       String reminderTime,
       bool isReminderDisabled,
       String? qrcodeValue,
-      bool isNoAccessChangingPhoto});
+      bool isNoAccessChangingPhoto,
+      Subscribtion? selectedSubscribtion,
+      String cardNumber,
+      bool autoRenewal});
 }
 
 /// @nodoc
@@ -101,6 +107,9 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     Object? isReminderDisabled = null,
     Object? qrcodeValue = freezed,
     Object? isNoAccessChangingPhoto = null,
+    Object? selectedSubscribtion = freezed,
+    Object? cardNumber = null,
+    Object? autoRenewal = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -179,6 +188,18 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.isNoAccessChangingPhoto
           : isNoAccessChangingPhoto // ignore: cast_nullable_to_non_nullable
               as bool,
+      selectedSubscribtion: freezed == selectedSubscribtion
+          ? _value.selectedSubscribtion
+          : selectedSubscribtion // ignore: cast_nullable_to_non_nullable
+              as Subscribtion?,
+      cardNumber: null == cardNumber
+          ? _value.cardNumber
+          : cardNumber // ignore: cast_nullable_to_non_nullable
+              as String,
+      autoRenewal: null == autoRenewal
+          ? _value.autoRenewal
+          : autoRenewal // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -210,7 +231,10 @@ abstract class _$$SettingsStateImplCopyWith<$Res>
       String reminderTime,
       bool isReminderDisabled,
       String? qrcodeValue,
-      bool isNoAccessChangingPhoto});
+      bool isNoAccessChangingPhoto,
+      Subscribtion? selectedSubscribtion,
+      String cardNumber,
+      bool autoRenewal});
 }
 
 /// @nodoc
@@ -243,6 +267,9 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     Object? isReminderDisabled = null,
     Object? qrcodeValue = freezed,
     Object? isNoAccessChangingPhoto = null,
+    Object? selectedSubscribtion = freezed,
+    Object? cardNumber = null,
+    Object? autoRenewal = null,
   }) {
     return _then(_$SettingsStateImpl(
       isloading: null == isloading
@@ -321,6 +348,18 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value.isNoAccessChangingPhoto
           : isNoAccessChangingPhoto // ignore: cast_nullable_to_non_nullable
               as bool,
+      selectedSubscribtion: freezed == selectedSubscribtion
+          ? _value.selectedSubscribtion
+          : selectedSubscribtion // ignore: cast_nullable_to_non_nullable
+              as Subscribtion?,
+      cardNumber: null == cardNumber
+          ? _value.cardNumber
+          : cardNumber // ignore: cast_nullable_to_non_nullable
+              as String,
+      autoRenewal: null == autoRenewal
+          ? _value.autoRenewal
+          : autoRenewal // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -347,7 +386,10 @@ class _$SettingsStateImpl extends _SettingsState {
       this.reminderTime = "30",
       this.isReminderDisabled = false,
       this.qrcodeValue = "",
-      this.isNoAccessChangingPhoto = false})
+      this.isNoAccessChangingPhoto = false,
+      this.selectedSubscribtion = null,
+      this.cardNumber = "",
+      this.autoRenewal = false})
       : _listOfCities = listOfCities,
         _knownActivities = knownActivities,
         super._();
@@ -421,10 +463,19 @@ class _$SettingsStateImpl extends _SettingsState {
   @override
   @JsonKey()
   final bool isNoAccessChangingPhoto;
+  @override
+  @JsonKey()
+  final Subscribtion? selectedSubscribtion;
+  @override
+  @JsonKey()
+  final String cardNumber;
+  @override
+  @JsonKey()
+  final bool autoRenewal;
 
   @override
   String toString() {
-    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue, isNoAccessChangingPhoto: $isNoAccessChangingPhoto)';
+    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue, isNoAccessChangingPhoto: $isNoAccessChangingPhoto, selectedSubscribtion: $selectedSubscribtion, cardNumber: $cardNumber, autoRenewal: $autoRenewal)';
   }
 
   @override
@@ -466,7 +517,13 @@ class _$SettingsStateImpl extends _SettingsState {
                 other.qrcodeValue == qrcodeValue) &&
             (identical(
                     other.isNoAccessChangingPhoto, isNoAccessChangingPhoto) ||
-                other.isNoAccessChangingPhoto == isNoAccessChangingPhoto));
+                other.isNoAccessChangingPhoto == isNoAccessChangingPhoto) &&
+            (identical(other.selectedSubscribtion, selectedSubscribtion) ||
+                other.selectedSubscribtion == selectedSubscribtion) &&
+            (identical(other.cardNumber, cardNumber) ||
+                other.cardNumber == cardNumber) &&
+            (identical(other.autoRenewal, autoRenewal) ||
+                other.autoRenewal == autoRenewal));
   }
 
   @override
@@ -490,7 +547,10 @@ class _$SettingsStateImpl extends _SettingsState {
         reminderTime,
         isReminderDisabled,
         qrcodeValue,
-        isNoAccessChangingPhoto
+        isNoAccessChangingPhoto,
+        selectedSubscribtion,
+        cardNumber,
+        autoRenewal
       ]);
 
   @JsonKey(ignore: true)
@@ -520,7 +580,10 @@ abstract class _SettingsState extends SettingsState {
       final String reminderTime,
       final bool isReminderDisabled,
       final String? qrcodeValue,
-      final bool isNoAccessChangingPhoto}) = _$SettingsStateImpl;
+      final bool isNoAccessChangingPhoto,
+      final Subscribtion? selectedSubscribtion,
+      final String cardNumber,
+      final bool autoRenewal}) = _$SettingsStateImpl;
   const _SettingsState._() : super._();
 
   @override
@@ -561,6 +624,12 @@ abstract class _SettingsState extends SettingsState {
   String? get qrcodeValue;
   @override
   bool get isNoAccessChangingPhoto;
+  @override
+  Subscribtion? get selectedSubscribtion;
+  @override
+  String get cardNumber;
+  @override
+  bool get autoRenewal;
   @override
   @JsonKey(ignore: true)
   _$$SettingsStateImplCopyWith<_$SettingsStateImpl> get copyWith =>

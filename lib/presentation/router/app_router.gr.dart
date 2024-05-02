@@ -8,8 +8,8 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i18;
-import 'package:flutter/material.dart' as _i19;
+import 'package:auto_route/auto_route.dart' as _i19;
+import 'package:flutter/material.dart' as _i20;
 import 'package:myfit/presentation/pages/activity/view/activity_page.dart'
     as _i1;
 import 'package:myfit/presentation/pages/auth/registration/registration_page.dart'
@@ -37,15 +37,17 @@ import 'package:myfit/presentation/pages/schedule/view/schedule_page.dart'
 import 'package:myfit/presentation/pages/settings/view/settings_page.dart'
     as _i16;
 import 'package:myfit/presentation/pages/splash/splash_screen.dart' as _i17;
+import 'package:myfit/presentation/pages/subscribtion_settings/view/subscribtion_settings_page.dart'
+    as _i18;
 
-abstract class $AppRouter extends _i18.RootStackRouter {
+abstract class $AppRouter extends _i19.RootStackRouter {
   $AppRouter({super.navigatorKey});
 
   @override
-  final Map<String, _i18.PageFactory> pagesMap = {
+  final Map<String, _i19.PageFactory> pagesMap = {
     ActivityRoute.name: (routeData) {
       final args = routeData.argsAs<ActivityRouteArgs>();
-      return _i18.AutoRoutePage<dynamic>(
+      return _i19.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: _i1.ActivityScreen(
           key: args.key,
@@ -55,32 +57,32 @@ abstract class $AppRouter extends _i18.RootStackRouter {
       );
     },
     BottomNavigationHandlerRoute.name: (routeData) {
-      return _i18.AutoRoutePage<dynamic>(
+      return _i19.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i2.BottomNavigationHandlerScreen(),
       );
     },
     Main2Route.name: (routeData) {
-      return _i18.AutoRoutePage<dynamic>(
+      return _i19.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i3.Main2Screen(),
       );
     },
     MainRoute.name: (routeData) {
-      return _i18.AutoRoutePage<dynamic>(
+      return _i19.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i4.MainScreen(),
       );
     },
     MapRoute.name: (routeData) {
-      return _i18.AutoRoutePage<dynamic>(
+      return _i19.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i5.MapScreen(),
       );
     },
     NotesRoute.name: (routeData) {
       final args = routeData.argsAs<NotesRouteArgs>();
-      return _i18.AutoRoutePage<dynamic>(
+      return _i19.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: _i6.NotesScreen(
           key: args.key,
@@ -89,14 +91,14 @@ abstract class $AppRouter extends _i18.RootStackRouter {
       );
     },
     NotificationRoute.name: (routeData) {
-      return _i18.AutoRoutePage<dynamic>(
+      return _i19.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i7.NotificationScreen(),
       );
     },
     PhotoViewRoute.name: (routeData) {
       final args = routeData.argsAs<PhotoViewRouteArgs>();
-      return _i18.AutoRoutePage<dynamic>(
+      return _i19.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: _i8.PhotoViewScreen(
           key: args.key,
@@ -106,57 +108,65 @@ abstract class $AppRouter extends _i18.RootStackRouter {
       );
     },
     QrCodeRoute.name: (routeData) {
-      return _i18.AutoRoutePage<dynamic>(
+      return _i19.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i9.QrCodeScreen(),
       );
     },
     Registration1Route.name: (routeData) {
-      return _i18.AutoRoutePage<dynamic>(
+      return _i19.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i10.Registration1Screen(),
       );
     },
     Registration2Route.name: (routeData) {
-      return _i18.AutoRoutePage<dynamic>(
+      return _i19.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i11.Registration2Screen(),
       );
     },
     Registration3Route.name: (routeData) {
-      return _i18.AutoRoutePage<dynamic>(
+      return _i19.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i12.Registration3Screen(),
       );
     },
     Registration4Route.name: (routeData) {
-      return _i18.AutoRoutePage<dynamic>(
+      return _i19.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i13.Registration4Screen(),
       );
     },
     RegistrationRoute.name: (routeData) {
-      return _i18.AutoRoutePage<dynamic>(
+      return _i19.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i14.RegistrationScreen(),
       );
     },
     ScheduleRoute.name: (routeData) {
-      return _i18.AutoRoutePage<dynamic>(
+      return _i19.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i15.ScheduleScreen(),
       );
     },
     SettingsRoute.name: (routeData) {
-      return _i18.AutoRoutePage<dynamic>(
+      return _i19.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i16.SettingsScreen(),
       );
     },
     SplashRoute.name: (routeData) {
-      return _i18.AutoRoutePage<dynamic>(
+      return _i19.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i17.SplashScreen(),
+      );
+    },
+    SubscribtionSettingsRoute.name: (routeData) {
+      final args = routeData.argsAs<SubscribtionSettingsRouteArgs>(
+          orElse: () => const SubscribtionSettingsRouteArgs());
+      return _i19.AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: _i18.SubscribtionSettingsScreen(key: args.key),
       );
     },
   };
@@ -164,12 +174,12 @@ abstract class $AppRouter extends _i18.RootStackRouter {
 
 /// generated route for
 /// [_i1.ActivityScreen]
-class ActivityRoute extends _i18.PageRouteInfo<ActivityRouteArgs> {
+class ActivityRoute extends _i19.PageRouteInfo<ActivityRouteArgs> {
   ActivityRoute({
-    _i19.Key? key,
+    _i20.Key? key,
     bool? isFromMap = false,
     required int gymId,
-    List<_i18.PageRouteInfo>? children,
+    List<_i19.PageRouteInfo>? children,
   }) : super(
           ActivityRoute.name,
           args: ActivityRouteArgs(
@@ -182,8 +192,8 @@ class ActivityRoute extends _i18.PageRouteInfo<ActivityRouteArgs> {
 
   static const String name = 'ActivityRoute';
 
-  static const _i18.PageInfo<ActivityRouteArgs> page =
-      _i18.PageInfo<ActivityRouteArgs>(name);
+  static const _i19.PageInfo<ActivityRouteArgs> page =
+      _i19.PageInfo<ActivityRouteArgs>(name);
 }
 
 class ActivityRouteArgs {
@@ -193,7 +203,7 @@ class ActivityRouteArgs {
     required this.gymId,
   });
 
-  final _i19.Key? key;
+  final _i20.Key? key;
 
   final bool? isFromMap;
 
@@ -207,8 +217,8 @@ class ActivityRouteArgs {
 
 /// generated route for
 /// [_i2.BottomNavigationHandlerScreen]
-class BottomNavigationHandlerRoute extends _i18.PageRouteInfo<void> {
-  const BottomNavigationHandlerRoute({List<_i18.PageRouteInfo>? children})
+class BottomNavigationHandlerRoute extends _i19.PageRouteInfo<void> {
+  const BottomNavigationHandlerRoute({List<_i19.PageRouteInfo>? children})
       : super(
           BottomNavigationHandlerRoute.name,
           initialChildren: children,
@@ -216,13 +226,13 @@ class BottomNavigationHandlerRoute extends _i18.PageRouteInfo<void> {
 
   static const String name = 'BottomNavigationHandlerRoute';
 
-  static const _i18.PageInfo<void> page = _i18.PageInfo<void>(name);
+  static const _i19.PageInfo<void> page = _i19.PageInfo<void>(name);
 }
 
 /// generated route for
 /// [_i3.Main2Screen]
-class Main2Route extends _i18.PageRouteInfo<void> {
-  const Main2Route({List<_i18.PageRouteInfo>? children})
+class Main2Route extends _i19.PageRouteInfo<void> {
+  const Main2Route({List<_i19.PageRouteInfo>? children})
       : super(
           Main2Route.name,
           initialChildren: children,
@@ -230,13 +240,13 @@ class Main2Route extends _i18.PageRouteInfo<void> {
 
   static const String name = 'Main2Route';
 
-  static const _i18.PageInfo<void> page = _i18.PageInfo<void>(name);
+  static const _i19.PageInfo<void> page = _i19.PageInfo<void>(name);
 }
 
 /// generated route for
 /// [_i4.MainScreen]
-class MainRoute extends _i18.PageRouteInfo<void> {
-  const MainRoute({List<_i18.PageRouteInfo>? children})
+class MainRoute extends _i19.PageRouteInfo<void> {
+  const MainRoute({List<_i19.PageRouteInfo>? children})
       : super(
           MainRoute.name,
           initialChildren: children,
@@ -244,13 +254,13 @@ class MainRoute extends _i18.PageRouteInfo<void> {
 
   static const String name = 'MainRoute';
 
-  static const _i18.PageInfo<void> page = _i18.PageInfo<void>(name);
+  static const _i19.PageInfo<void> page = _i19.PageInfo<void>(name);
 }
 
 /// generated route for
 /// [_i5.MapScreen]
-class MapRoute extends _i18.PageRouteInfo<void> {
-  const MapRoute({List<_i18.PageRouteInfo>? children})
+class MapRoute extends _i19.PageRouteInfo<void> {
+  const MapRoute({List<_i19.PageRouteInfo>? children})
       : super(
           MapRoute.name,
           initialChildren: children,
@@ -258,16 +268,16 @@ class MapRoute extends _i18.PageRouteInfo<void> {
 
   static const String name = 'MapRoute';
 
-  static const _i18.PageInfo<void> page = _i18.PageInfo<void>(name);
+  static const _i19.PageInfo<void> page = _i19.PageInfo<void>(name);
 }
 
 /// generated route for
 /// [_i6.NotesScreen]
-class NotesRoute extends _i18.PageRouteInfo<NotesRouteArgs> {
+class NotesRoute extends _i19.PageRouteInfo<NotesRouteArgs> {
   NotesRoute({
-    _i19.Key? key,
+    _i20.Key? key,
     required String gymName,
-    List<_i18.PageRouteInfo>? children,
+    List<_i19.PageRouteInfo>? children,
   }) : super(
           NotesRoute.name,
           args: NotesRouteArgs(
@@ -279,8 +289,8 @@ class NotesRoute extends _i18.PageRouteInfo<NotesRouteArgs> {
 
   static const String name = 'NotesRoute';
 
-  static const _i18.PageInfo<NotesRouteArgs> page =
-      _i18.PageInfo<NotesRouteArgs>(name);
+  static const _i19.PageInfo<NotesRouteArgs> page =
+      _i19.PageInfo<NotesRouteArgs>(name);
 }
 
 class NotesRouteArgs {
@@ -289,7 +299,7 @@ class NotesRouteArgs {
     required this.gymName,
   });
 
-  final _i19.Key? key;
+  final _i20.Key? key;
 
   final String gymName;
 
@@ -301,8 +311,8 @@ class NotesRouteArgs {
 
 /// generated route for
 /// [_i7.NotificationScreen]
-class NotificationRoute extends _i18.PageRouteInfo<void> {
-  const NotificationRoute({List<_i18.PageRouteInfo>? children})
+class NotificationRoute extends _i19.PageRouteInfo<void> {
+  const NotificationRoute({List<_i19.PageRouteInfo>? children})
       : super(
           NotificationRoute.name,
           initialChildren: children,
@@ -310,17 +320,17 @@ class NotificationRoute extends _i18.PageRouteInfo<void> {
 
   static const String name = 'NotificationRoute';
 
-  static const _i18.PageInfo<void> page = _i18.PageInfo<void>(name);
+  static const _i19.PageInfo<void> page = _i19.PageInfo<void>(name);
 }
 
 /// generated route for
 /// [_i8.PhotoViewScreen]
-class PhotoViewRoute extends _i18.PageRouteInfo<PhotoViewRouteArgs> {
+class PhotoViewRoute extends _i19.PageRouteInfo<PhotoViewRouteArgs> {
   PhotoViewRoute({
-    _i19.Key? key,
+    _i20.Key? key,
     required List<String> photos,
     required int index,
-    List<_i18.PageRouteInfo>? children,
+    List<_i19.PageRouteInfo>? children,
   }) : super(
           PhotoViewRoute.name,
           args: PhotoViewRouteArgs(
@@ -333,8 +343,8 @@ class PhotoViewRoute extends _i18.PageRouteInfo<PhotoViewRouteArgs> {
 
   static const String name = 'PhotoViewRoute';
 
-  static const _i18.PageInfo<PhotoViewRouteArgs> page =
-      _i18.PageInfo<PhotoViewRouteArgs>(name);
+  static const _i19.PageInfo<PhotoViewRouteArgs> page =
+      _i19.PageInfo<PhotoViewRouteArgs>(name);
 }
 
 class PhotoViewRouteArgs {
@@ -344,7 +354,7 @@ class PhotoViewRouteArgs {
     required this.index,
   });
 
-  final _i19.Key? key;
+  final _i20.Key? key;
 
   final List<String> photos;
 
@@ -358,8 +368,8 @@ class PhotoViewRouteArgs {
 
 /// generated route for
 /// [_i9.QrCodeScreen]
-class QrCodeRoute extends _i18.PageRouteInfo<void> {
-  const QrCodeRoute({List<_i18.PageRouteInfo>? children})
+class QrCodeRoute extends _i19.PageRouteInfo<void> {
+  const QrCodeRoute({List<_i19.PageRouteInfo>? children})
       : super(
           QrCodeRoute.name,
           initialChildren: children,
@@ -367,13 +377,13 @@ class QrCodeRoute extends _i18.PageRouteInfo<void> {
 
   static const String name = 'QrCodeRoute';
 
-  static const _i18.PageInfo<void> page = _i18.PageInfo<void>(name);
+  static const _i19.PageInfo<void> page = _i19.PageInfo<void>(name);
 }
 
 /// generated route for
 /// [_i10.Registration1Screen]
-class Registration1Route extends _i18.PageRouteInfo<void> {
-  const Registration1Route({List<_i18.PageRouteInfo>? children})
+class Registration1Route extends _i19.PageRouteInfo<void> {
+  const Registration1Route({List<_i19.PageRouteInfo>? children})
       : super(
           Registration1Route.name,
           initialChildren: children,
@@ -381,13 +391,13 @@ class Registration1Route extends _i18.PageRouteInfo<void> {
 
   static const String name = 'Registration1Route';
 
-  static const _i18.PageInfo<void> page = _i18.PageInfo<void>(name);
+  static const _i19.PageInfo<void> page = _i19.PageInfo<void>(name);
 }
 
 /// generated route for
 /// [_i11.Registration2Screen]
-class Registration2Route extends _i18.PageRouteInfo<void> {
-  const Registration2Route({List<_i18.PageRouteInfo>? children})
+class Registration2Route extends _i19.PageRouteInfo<void> {
+  const Registration2Route({List<_i19.PageRouteInfo>? children})
       : super(
           Registration2Route.name,
           initialChildren: children,
@@ -395,13 +405,13 @@ class Registration2Route extends _i18.PageRouteInfo<void> {
 
   static const String name = 'Registration2Route';
 
-  static const _i18.PageInfo<void> page = _i18.PageInfo<void>(name);
+  static const _i19.PageInfo<void> page = _i19.PageInfo<void>(name);
 }
 
 /// generated route for
 /// [_i12.Registration3Screen]
-class Registration3Route extends _i18.PageRouteInfo<void> {
-  const Registration3Route({List<_i18.PageRouteInfo>? children})
+class Registration3Route extends _i19.PageRouteInfo<void> {
+  const Registration3Route({List<_i19.PageRouteInfo>? children})
       : super(
           Registration3Route.name,
           initialChildren: children,
@@ -409,13 +419,13 @@ class Registration3Route extends _i18.PageRouteInfo<void> {
 
   static const String name = 'Registration3Route';
 
-  static const _i18.PageInfo<void> page = _i18.PageInfo<void>(name);
+  static const _i19.PageInfo<void> page = _i19.PageInfo<void>(name);
 }
 
 /// generated route for
 /// [_i13.Registration4Screen]
-class Registration4Route extends _i18.PageRouteInfo<void> {
-  const Registration4Route({List<_i18.PageRouteInfo>? children})
+class Registration4Route extends _i19.PageRouteInfo<void> {
+  const Registration4Route({List<_i19.PageRouteInfo>? children})
       : super(
           Registration4Route.name,
           initialChildren: children,
@@ -423,13 +433,13 @@ class Registration4Route extends _i18.PageRouteInfo<void> {
 
   static const String name = 'Registration4Route';
 
-  static const _i18.PageInfo<void> page = _i18.PageInfo<void>(name);
+  static const _i19.PageInfo<void> page = _i19.PageInfo<void>(name);
 }
 
 /// generated route for
 /// [_i14.RegistrationScreen]
-class RegistrationRoute extends _i18.PageRouteInfo<void> {
-  const RegistrationRoute({List<_i18.PageRouteInfo>? children})
+class RegistrationRoute extends _i19.PageRouteInfo<void> {
+  const RegistrationRoute({List<_i19.PageRouteInfo>? children})
       : super(
           RegistrationRoute.name,
           initialChildren: children,
@@ -437,13 +447,13 @@ class RegistrationRoute extends _i18.PageRouteInfo<void> {
 
   static const String name = 'RegistrationRoute';
 
-  static const _i18.PageInfo<void> page = _i18.PageInfo<void>(name);
+  static const _i19.PageInfo<void> page = _i19.PageInfo<void>(name);
 }
 
 /// generated route for
 /// [_i15.ScheduleScreen]
-class ScheduleRoute extends _i18.PageRouteInfo<void> {
-  const ScheduleRoute({List<_i18.PageRouteInfo>? children})
+class ScheduleRoute extends _i19.PageRouteInfo<void> {
+  const ScheduleRoute({List<_i19.PageRouteInfo>? children})
       : super(
           ScheduleRoute.name,
           initialChildren: children,
@@ -451,13 +461,13 @@ class ScheduleRoute extends _i18.PageRouteInfo<void> {
 
   static const String name = 'ScheduleRoute';
 
-  static const _i18.PageInfo<void> page = _i18.PageInfo<void>(name);
+  static const _i19.PageInfo<void> page = _i19.PageInfo<void>(name);
 }
 
 /// generated route for
 /// [_i16.SettingsScreen]
-class SettingsRoute extends _i18.PageRouteInfo<void> {
-  const SettingsRoute({List<_i18.PageRouteInfo>? children})
+class SettingsRoute extends _i19.PageRouteInfo<void> {
+  const SettingsRoute({List<_i19.PageRouteInfo>? children})
       : super(
           SettingsRoute.name,
           initialChildren: children,
@@ -465,13 +475,13 @@ class SettingsRoute extends _i18.PageRouteInfo<void> {
 
   static const String name = 'SettingsRoute';
 
-  static const _i18.PageInfo<void> page = _i18.PageInfo<void>(name);
+  static const _i19.PageInfo<void> page = _i19.PageInfo<void>(name);
 }
 
 /// generated route for
 /// [_i17.SplashScreen]
-class SplashRoute extends _i18.PageRouteInfo<void> {
-  const SplashRoute({List<_i18.PageRouteInfo>? children})
+class SplashRoute extends _i19.PageRouteInfo<void> {
+  const SplashRoute({List<_i19.PageRouteInfo>? children})
       : super(
           SplashRoute.name,
           initialChildren: children,
@@ -479,5 +489,35 @@ class SplashRoute extends _i18.PageRouteInfo<void> {
 
   static const String name = 'SplashRoute';
 
-  static const _i18.PageInfo<void> page = _i18.PageInfo<void>(name);
+  static const _i19.PageInfo<void> page = _i19.PageInfo<void>(name);
+}
+
+/// generated route for
+/// [_i18.SubscribtionSettingsScreen]
+class SubscribtionSettingsRoute
+    extends _i19.PageRouteInfo<SubscribtionSettingsRouteArgs> {
+  SubscribtionSettingsRoute({
+    _i20.Key? key,
+    List<_i19.PageRouteInfo>? children,
+  }) : super(
+          SubscribtionSettingsRoute.name,
+          args: SubscribtionSettingsRouteArgs(key: key),
+          initialChildren: children,
+        );
+
+  static const String name = 'SubscribtionSettingsRoute';
+
+  static const _i19.PageInfo<SubscribtionSettingsRouteArgs> page =
+      _i19.PageInfo<SubscribtionSettingsRouteArgs>(name);
+}
+
+class SubscribtionSettingsRouteArgs {
+  const SubscribtionSettingsRouteArgs({this.key});
+
+  final _i20.Key? key;
+
+  @override
+  String toString() {
+    return 'SubscribtionSettingsRouteArgs{key: $key}';
+  }
 }

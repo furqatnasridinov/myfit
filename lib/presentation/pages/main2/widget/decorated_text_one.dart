@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:flutter/material.dart';
@@ -77,7 +75,7 @@ class DecoratedTextOne extends StatelessWidget {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: 'Наших пользователей сходят  на этой неделе ${AppHelpers().getFormattedLessonType(lesson)} ',
+                    text: 'Наших ${AppHelpers().getCorrectWordFromUsersCount(int.parse(usersCount))} сходят на этой неделе ${AppHelpers().getFormattedLessonType(lesson)} ',
                     style: GoogleFonts.raleway(
                       fontWeight: FontWeight.w600,
                       fontSize: 16.sp,
@@ -91,8 +89,7 @@ class DecoratedTextOne extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                         fontSize: 16.sp,
                         color: AppColors.blueColor,
-                        fontFeatures: const [FontFeature.liningFigures()],
-                        ),
+                        fontFeatures: const [FontFeature.liningFigures()]),
                   ),
                 ],
               ),
