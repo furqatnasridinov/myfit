@@ -2,6 +2,8 @@ import 'package:myfit/infrastructure/models/data/description_and_peculiarities.d
 import 'package:myfit/infrastructure/models/data/lesson.dart';
 import 'package:myfit/infrastructure/models/response/gym_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+
+import '../../infrastructure/models/data/enrolling_error_message.dart';
 part 'activity_state.freezed.dart';
 
 @freezed
@@ -27,6 +29,7 @@ class ActivityState with _$ActivityState {
     @Default([]) List<String> photosOfSelectedActivity,
     @Default({}) Map<String, dynamic> infosForType,
     @Default([]) List<String> listOf15CalendarDaysFromNow,
+    @Default(null) EnrollingErrorMessage? enrollingError,
   }) = _ActivityState;
 
   const ActivityState._();

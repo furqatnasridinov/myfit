@@ -1,22 +1,32 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:convert';
+import 'package:auto_route/auto_route.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:myfit/application/activity/activity_state.dart';
 import 'package:myfit/application/main2/main2_notifier.dart';
 import 'package:myfit/application/schedule/schedule_notifier.dart';
 import 'package:myfit/domain/handlers/network_exceptions.dart';
 import 'package:myfit/domain/interface/activity.dart';
 import 'package:myfit/infrastructure/models/data/description_and_peculiarities.dart';
+import 'package:myfit/infrastructure/models/data/enrolling_error_message.dart';
 import 'package:myfit/infrastructure/models/data/lesson.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/infrastructure/services/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import '../../presentation/components/custom_button.dart';
+
 class ActivityNotifier extends StateNotifier<ActivityState> {
-  ActivityNotifier(this._activityRepositoryInterface, this.scheduleNotifier, this.main2Notifier)
+  ActivityNotifier(this._activityRepositoryInterface, this.scheduleNotifier,
+      this.main2Notifier)
       : super(const ActivityState());
   final ActivityRepositoryInterface _activityRepositoryInterface;
   final ScheduleNotifier scheduleNotifier;
@@ -277,23 +287,23 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
             final DateTime startTime =
                 DateTime.parse(el["date"].toString().replaceAll("@", " "));
             final lesson = Lesson(
-              id: el["id"],
-              date: el["date"],
-              calendarDate: formatOriginalToCalendar(el["date"]),
-              startTime: returnOnlyTime(el["date"]),
-              endTime:getEndingTime(returnOnlyTime(el["date"]), el["duration"]),
-              description: el["description"],
-              duration: formatDuration(el["duration"]),
-              lessonType: el["lessonType"],
-              owner: el["owner"] != null ? Owner.fromJson(el["owner"]) : null,
-              repeat: el["repeat"].cast<int>(),
-              canSignUp: el["canSignUp"],
-              lessonState: el["lessonState"] ?? false,
-              showInCalendar: DateTime.now()
-                  .isBefore(startTime.subtract(const Duration(minutes: 30))),
-              isDeleted: el["deleteLesson"] ?? false,
-              isLoading: false
-            );
+                id: el["id"],
+                date: el["date"],
+                calendarDate: formatOriginalToCalendar(el["date"]),
+                startTime: returnOnlyTime(el["date"]),
+                endTime:
+                    getEndingTime(returnOnlyTime(el["date"]), el["duration"]),
+                description: el["description"],
+                duration: formatDuration(el["duration"]),
+                lessonType: el["lessonType"],
+                owner: el["owner"] != null ? Owner.fromJson(el["owner"]) : null,
+                repeat: el["repeat"].cast<int>(),
+                canSignUp: el["canSignUp"],
+                lessonState: el["lessonState"] ?? false,
+                showInCalendar: DateTime.now()
+                    .isBefore(startTime.subtract(const Duration(minutes: 30))),
+                isDeleted: el["deleteLesson"] ?? false,
+                isLoading: false);
             if (lesson.showInCalendar! &&
                 !lesson.isDeleted! &&
                 lesson.canSignUp!) {
@@ -339,7 +349,6 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         scheduleNotifier.getUsersSchedules(context);
         // add here get nearest lesson
         main2Notifier.getNearestLesson(context);
-
       },
       onError: (error) {
         AppHelpers.showErrorSnack(context, "WebSocket1 ${error.message}");
@@ -584,9 +593,20 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         success: (data) {
           if (data["operationResult"] == "OK") {
             state = state.copyWith(isEnrollingLoading: false);
-          }else if(data["operationResult"] == "ERROR"){
+          } else if (data["operationResult"] == "ERROR") {
+            //final String? operationInfo = data["operationInfo"];
+            //final Map<String,dynamic> convertedToMap = jsonDecode(operationInfo ?? "");
+            //if (convertedToMap["errorType"] == "conflict") {}
+            // handle operation info and pass it to the dialog
+            final EnrollingErrorMessage error = EnrollingErrorMessage( 
+              date: "23 мая",
+              startTime: "13:00",
+              endTime: "16:00",
+              lessonType: "Массаж",
+              gymName: "Crystall"
+            );
+            showConflictDialog(error,context);
             state = state.copyWith(isEnrollingLoading: false);
-            AppHelpers.showErrorSnack(context, data["operationInfo"]);
           }
         },
         failure: (error, statusCode, operationInfo) {
@@ -609,5 +629,97 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     String nameWithoutExtension = fileName.substring(0, lastDotIndex);
     String extension = fileName.substring(lastDotIndex);
     return "${nameWithoutExtension}_icon$extension";
+  }
+
+  void showConflictDialog(EnrollingErrorMessage error, BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.r),
+                  side: const BorderSide(
+                    color: AppColors.blueBorder,
+                  )),
+              elevation: 0,
+              insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: Padding(
+                padding: EdgeInsets.all(16.r),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CustomText(
+                      text: "Невозможно записаться",
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    16.verticalSpace,
+                    Row(
+                      children: [
+                        SvgPicture.asset(
+                          "assets/svg/error.svg",
+                        ),
+                        10.horizontalSpace,
+                        Flexible(
+                          child: CustomText(
+                            text: "Нельзя записаться на два занятия в одно и то же время.",
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            height: 1.1,
+                          ),
+                        )
+                      ],
+                    ),
+                    16.verticalSpace,
+                    Row(
+                      children: [
+                        34.horizontalSpace,
+                        Flexible(
+                          child: RichText(
+                              text: TextSpan(children: [
+                            TextSpan(
+                              text: "${error.date} с ${error.startTime}-${error.endTime}",
+                              style: GoogleFonts.raleway(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.black,
+                                height: 1.1,
+                                fontFeatures: const [
+                                  FontFeature.liningFigures()
+                                ],
+                              ),
+                            ),
+                            WidgetSpan(child: 3.horizontalSpace),
+                            TextSpan(
+                              text:
+                                  "вы уже записаны на занятие: “${error.lessonType}” в ${error.gymName}.",
+                              style: GoogleFonts.raleway(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                                height: 1.1,
+                              ),
+                            ),
+                          ])),
+                        )
+                      ],
+                    ),
+                    16.verticalSpace,
+                    CustomButton(
+                      onPressed: () {
+                        context.popRoute();
+                      },
+                      text: "Понятно",
+                      height: 40.h,
+                      buttonColor: AppColors.blueColor,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      textColor: Colors.white,
+                    ),
+                  ],
+                ),
+              ));
+        });
   }
 }
