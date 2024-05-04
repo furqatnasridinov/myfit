@@ -69,6 +69,8 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
                     grade: 0,
                     gymId: el.gym?.id ?? 0,
                     comment: "",
+                    visitPerMonth: el.gym?.visitPerMonth ?? 0,
+                    visitedCount: el.gym?.visitedCount ?? 0,
                   );
                   waitingListToCollect.add(lesson);
                 });
@@ -199,6 +201,8 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
               grade: element["grade"],
               gymId: element["gymId"],
               comment: element["commentMessage"] ?? "",
+              visitedCount: element["visitedCount"] ?? 0,
+              visitPerMonth: element["visitPerMonth"] ?? 0,
             );
             listToCollect.add(item);
           }
@@ -414,13 +418,19 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     state = state.copyWith(pendingSchedulesShown: true);
   }
 
-  void hidePendingSchedules() {
+  Future<void> hidePendingSchedules() async{
+    await Future.delayed(const Duration(milliseconds: 450));
     state = state.copyWith(pendingSchedulesShown: false);
   }
 
   Future<void> setAnimationCompletedLessons(bool val)async{
     await Future.delayed(const Duration(milliseconds: 100));
     state = state.copyWith(completedLessonListAnimaion: val);
+  }
+
+  Future<void> setAnimationPendingLessons(bool val)async{
+    await Future.delayed(const Duration(milliseconds: 100));
+    state = state.copyWith(pendingLessonsListAnimation: val);
   }
 
   Future<void> cancelActivity(int id, BuildContext context) async {

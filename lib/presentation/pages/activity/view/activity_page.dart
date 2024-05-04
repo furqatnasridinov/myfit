@@ -129,6 +129,8 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
                 TheOneWithChips(
                   gymId: widget.gymId,
                 ),
+                32.verticalSpace,
+                const RemainingVisits(),
                 const Description(),
                 TheOneWithPhotos(
                   event: event,

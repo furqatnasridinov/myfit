@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,12 +7,14 @@ import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:myfit/presentation/components/dummy_data.dart';
 
 class InfosAboutSubscribtion extends StatelessWidget {
-  const InfosAboutSubscribtion({super.key});
+    GlobalKey blockKey = GlobalKey();
+   InfosAboutSubscribtion({required this.blockKey, super.key});
 
   @override
   Widget build(BuildContext context) {
     final List<SubscribtionCard> list = DummyData().dummySubscribtionCards;
     return Padding(
+      key: blockKey,
       padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 32.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

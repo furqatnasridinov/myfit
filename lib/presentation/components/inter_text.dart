@@ -11,6 +11,7 @@ class InterText extends StatelessWidget {
   FontWeight? fontWeight;
   Color? color;
   bool? isUppercase;
+  double? height;
   InterText({
     Key? key,
     this.isUppercase = false,
@@ -20,6 +21,7 @@ class InterText extends StatelessWidget {
     this.textAlign,
     this.fontSize = 18,
     this.fontWeight,
+    this.height,
     this.color = Colors.black,
   }) : super(key: key);
 
@@ -34,6 +36,7 @@ class InterText extends StatelessWidget {
         fontSize: fontSize,
         fontWeight: fontWeight,
         color: color,
+        height: height,
       ),
     );
   }

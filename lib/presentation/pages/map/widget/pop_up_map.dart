@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:google_fonts/google_fonts.dart';
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
@@ -14,12 +15,16 @@ import 'package:flutter_svg/svg.dart';
 class PopUpMap extends StatelessWidget {
   final String name;
   final String address;
+  final int? visitedCount;
+  final int? visitPerMonth;
   void Function()? onNavigate;
   void Function()? onCancel;
   PopUpMap({
     super.key,
     this.onNavigate,
     this.onCancel,
+    required this.visitedCount,
+    required this.visitPerMonth,
     required this.name,
     required this.address,
   });
@@ -27,6 +32,7 @@ class PopUpMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final int visitRemaining = (visitPerMonth ?? 0) - (visitedCount ?? 0);
 
     return Material(
       child: CustomCard(
@@ -41,13 +47,30 @@ class PopUpMap extends StatelessWidget {
                 Expanded(
                   child: SizedBox(
                     //color: Colors.green,
-                    child: InterText(
-                      text: name,
-                      fontSize: 12.sp,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      fontWeight: FontWeight.w400,
-                    ),
+                    child: RichText(text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: name,
+                          style: GoogleFonts.inter(
+                            fontSize: 14.sp,
+                            height : 1.1,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                        ),
+                        TextSpan(
+                          text: " $visitRemaining/$visitPerMonth)",
+                          style: GoogleFonts.inter(
+                            fontSize: 14.sp,
+                            height : 1.1,
+                            fontFeatures: const [FontFeature.liningFigures()],
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.greyText,
+                          ),
+                        ),
+                      ],
+
+                    ))
                   ),
                 ),
                 10.horizontalSpace,
@@ -90,10 +113,11 @@ class PopUpMap extends StatelessWidget {
             10.verticalSpace,
             InterText(
               text: address,
+              //text: AppConstants.confirmationText,
               fontSize: 12.sp,
               fontWeight: FontWeight.w400,
               color: AppColors.greyText,
-              maxLines: 1,
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
             10.verticalSpace,

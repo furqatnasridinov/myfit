@@ -36,6 +36,7 @@ mixin _$ScheduleState {
   bool get completedSchedulesShown => throw _privateConstructorUsedError;
   bool get pendingSchedulesShown => throw _privateConstructorUsedError;
   bool get completedLessonListAnimaion => throw _privateConstructorUsedError;
+  bool get pendingLessonsListAnimation => throw _privateConstructorUsedError;
   List<CompletedSchedule> get completedSchedules =>
       throw _privateConstructorUsedError;
 
@@ -67,6 +68,7 @@ abstract class $ScheduleStateCopyWith<$Res> {
       bool completedSchedulesShown,
       bool pendingSchedulesShown,
       bool completedLessonListAnimaion,
+      bool pendingLessonsListAnimation,
       List<CompletedSchedule> completedSchedules});
 }
 
@@ -99,6 +101,7 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
     Object? completedSchedulesShown = null,
     Object? pendingSchedulesShown = null,
     Object? completedLessonListAnimaion = null,
+    Object? pendingLessonsListAnimation = null,
     Object? completedSchedules = null,
   }) {
     return _then(_value.copyWith(
@@ -166,6 +169,10 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
           ? _value.completedLessonListAnimaion
           : completedLessonListAnimaion // ignore: cast_nullable_to_non_nullable
               as bool,
+      pendingLessonsListAnimation: null == pendingLessonsListAnimation
+          ? _value.pendingLessonsListAnimation
+          : pendingLessonsListAnimation // ignore: cast_nullable_to_non_nullable
+              as bool,
       completedSchedules: null == completedSchedules
           ? _value.completedSchedules
           : completedSchedules // ignore: cast_nullable_to_non_nullable
@@ -199,6 +206,7 @@ abstract class _$$ScheduleStateImplCopyWith<$Res>
       bool completedSchedulesShown,
       bool pendingSchedulesShown,
       bool completedLessonListAnimaion,
+      bool pendingLessonsListAnimation,
       List<CompletedSchedule> completedSchedules});
 }
 
@@ -229,6 +237,7 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
     Object? completedSchedulesShown = null,
     Object? pendingSchedulesShown = null,
     Object? completedLessonListAnimaion = null,
+    Object? pendingLessonsListAnimation = null,
     Object? completedSchedules = null,
   }) {
     return _then(_$ScheduleStateImpl(
@@ -296,6 +305,10 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
           ? _value.completedLessonListAnimaion
           : completedLessonListAnimaion // ignore: cast_nullable_to_non_nullable
               as bool,
+      pendingLessonsListAnimation: null == pendingLessonsListAnimation
+          ? _value.pendingLessonsListAnimation
+          : pendingLessonsListAnimation // ignore: cast_nullable_to_non_nullable
+              as bool,
       completedSchedules: null == completedSchedules
           ? _value._completedSchedules
           : completedSchedules // ignore: cast_nullable_to_non_nullable
@@ -324,6 +337,7 @@ class _$ScheduleStateImpl extends _ScheduleState {
       this.completedSchedulesShown = false,
       this.pendingSchedulesShown = false,
       this.completedLessonListAnimaion = false,
+      this.pendingLessonsListAnimation = false,
       final List<CompletedSchedule> completedSchedules = const []})
       : _schedulesInMapForm = schedulesInMapForm,
         _listOfuserSchedules = listOfuserSchedules,
@@ -423,6 +437,9 @@ class _$ScheduleStateImpl extends _ScheduleState {
   @override
   @JsonKey()
   final bool completedLessonListAnimaion;
+  @override
+  @JsonKey()
+  final bool pendingLessonsListAnimation;
   final List<CompletedSchedule> _completedSchedules;
   @override
   @JsonKey()
@@ -435,7 +452,7 @@ class _$ScheduleStateImpl extends _ScheduleState {
 
   @override
   String toString() {
-    return 'ScheduleState(isloading: $isloading, schedulesInMapForm: $schedulesInMapForm, listOfuserSchedules: $listOfuserSchedules, waitingSchedules: $waitingSchedules, showTillWhen: $showTillWhen, qrLoading: $qrLoading, plusState: $plusState, daysFromLastWeek: $daysFromLastWeek, isLocationButtonActivated: $isLocationButtonActivated, isFlashButtonActivated: $isFlashButtonActivated, notesMapData: $notesMapData, schedulesFoundBySearching: $schedulesFoundBySearching, notificationTime: $notificationTime, completedSchedulesShown: $completedSchedulesShown, pendingSchedulesShown: $pendingSchedulesShown, completedLessonListAnimaion: $completedLessonListAnimaion, completedSchedules: $completedSchedules)';
+    return 'ScheduleState(isloading: $isloading, schedulesInMapForm: $schedulesInMapForm, listOfuserSchedules: $listOfuserSchedules, waitingSchedules: $waitingSchedules, showTillWhen: $showTillWhen, qrLoading: $qrLoading, plusState: $plusState, daysFromLastWeek: $daysFromLastWeek, isLocationButtonActivated: $isLocationButtonActivated, isFlashButtonActivated: $isFlashButtonActivated, notesMapData: $notesMapData, schedulesFoundBySearching: $schedulesFoundBySearching, notificationTime: $notificationTime, completedSchedulesShown: $completedSchedulesShown, pendingSchedulesShown: $pendingSchedulesShown, completedLessonListAnimaion: $completedLessonListAnimaion, pendingLessonsListAnimation: $pendingLessonsListAnimation, completedSchedules: $completedSchedules)';
   }
 
   @override
@@ -479,6 +496,10 @@ class _$ScheduleStateImpl extends _ScheduleState {
                     completedLessonListAnimaion) ||
                 other.completedLessonListAnimaion ==
                     completedLessonListAnimaion) &&
+            (identical(other.pendingLessonsListAnimation,
+                    pendingLessonsListAnimation) ||
+                other.pendingLessonsListAnimation ==
+                    pendingLessonsListAnimation) &&
             const DeepCollectionEquality()
                 .equals(other._completedSchedules, _completedSchedules));
   }
@@ -502,6 +523,7 @@ class _$ScheduleStateImpl extends _ScheduleState {
       completedSchedulesShown,
       pendingSchedulesShown,
       completedLessonListAnimaion,
+      pendingLessonsListAnimation,
       const DeepCollectionEquality().hash(_completedSchedules));
 
   @JsonKey(ignore: true)
@@ -529,6 +551,7 @@ abstract class _ScheduleState extends ScheduleState {
       final bool completedSchedulesShown,
       final bool pendingSchedulesShown,
       final bool completedLessonListAnimaion,
+      final bool pendingLessonsListAnimation,
       final List<CompletedSchedule> completedSchedules}) = _$ScheduleStateImpl;
   const _ScheduleState._() : super._();
 
@@ -564,6 +587,8 @@ abstract class _ScheduleState extends ScheduleState {
   bool get pendingSchedulesShown;
   @override
   bool get completedLessonListAnimaion;
+  @override
+  bool get pendingLessonsListAnimation;
   @override
   List<CompletedSchedule> get completedSchedules;
   @override

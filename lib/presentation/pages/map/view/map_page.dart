@@ -1,4 +1,6 @@
 // ignore_for_file: must_be_immutable
+import 'dart:developer';
+
 import 'package:myfit/application/main2/main2_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
@@ -106,6 +108,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
     final height = MediaQuery.of(context).size.height;
     final state = ref.watch(mapProvider);
     final event = ref.read(mapProvider.notifier);
+    log("activemarker ${state.activeMarker}" );
     bool isAnyOpened = state.activitiesWithGymsInsideFromSelectedDiapozone
         .any((element) => element.isOpened);
     return PopScope(
@@ -362,6 +365,8 @@ class _MapScreenState extends ConsumerState<MapScreen>
                         child: PopUpMap(
                           name: state.activeMarker?.name ?? "??",
                           address: state.activeMarker?.address ?? "??",
+                          visitPerMonth: state.activeMarker?.visitPerMonth ?? 0,
+                          visitedCount: state.activeMarker?.visitedCount ?? 0,
                           onNavigate: () {
                             //event.removePopUp();
                             event.showLocationButton();

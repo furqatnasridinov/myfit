@@ -5,3 +5,4 @@ export 'the_one_with_calendar.dart';
 export 'contacts.dart';
 export 'description.dart';
 export 'speciality.dart';
+export 'remaining_visits.dart';

@@ -74,6 +74,8 @@ class Gym {
   String? telegram;
   String? email;
   String? vk;
+  int? visitedCount;
+  int? visitPerMonth;
 
   Gym(
       {this.id,
@@ -86,7 +88,9 @@ class Gym {
       this.phone,
       this.telegram,
       this.email,
-      this.vk});
+      this.vk,
+      this.visitedCount,
+      this.visitPerMonth});
 
   Gym.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -100,6 +104,8 @@ class Gym {
     telegram = json['telegram'];
     email = json['email'];
     vk = json['vk'];
+    visitedCount = json['visitedCount'];
+    visitPerMonth = json['visitPerMonth'];
   }
 }
 

@@ -151,6 +151,8 @@ class MainNotifier extends StateNotifier<MainState> {
           longitude: double.parse(e.longitude!),
           address: e.address ?? "?",
           id: e.id!,
+          visitedCount: 0,
+          visitPerMonth: 0,
         );
         if (!markers.any((element) => element.id == marker.id)) {
           markers.add(marker);

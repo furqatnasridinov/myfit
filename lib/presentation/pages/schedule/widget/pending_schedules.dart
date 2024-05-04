@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:myfit/application/schedule/schedule_notifier.dart';
 import 'package:myfit/application/schedule/schedule_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/presentation/components/animation_button_effect.dart';
 import 'package:myfit/presentation/components/custom_card.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
@@ -24,8 +25,8 @@ class PendingSchedules extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final event = ref.watch(scheduleProvider.notifier);
     final waitingSchedules = ref.watch(scheduleProvider).waitingSchedules;
-    final pendingSchedulesShown =
-        ref.watch(scheduleProvider).pendingSchedulesShown;
+    final pendingSchedulesShown = ref.watch(scheduleProvider).pendingSchedulesShown;
+    final pendingLessonsListAnimaion = ref.watch(scheduleProvider).pendingLessonsListAnimation;
     return waitingSchedules.isEmpty
         ? const SizedBox.shrink()
         : Padding(
@@ -46,8 +47,14 @@ class PendingSchedules extends ConsumerWidget {
                       onTap: () {
                         if (pendingSchedulesShown) {
                           event.hidePendingSchedules();
+                          if (pendingLessonsListAnimaion) {
+                            event.setAnimationPendingLessons(false);
+                          }
                         } else {
                           event.showPendingSchedules();
+                          if (!pendingLessonsListAnimaion) {
+                            event.setAnimationPendingLessons(true);
+                          }
                         }
                       },
                       child: AnimationButtonEffect(
@@ -103,26 +110,37 @@ class PendingSchedules extends ConsumerWidget {
                 5.verticalSpace,
 
                 // body
-                if (pendingSchedulesShown)
+                //if (pendingSchedulesShown)
                   Consumer(builder: (context, ref, child) {
                     final waitingSchedules =
                         ref.watch(scheduleProvider).waitingSchedules;
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: waitingSchedules.length,
-                      itemBuilder: (context, index) {
-                        return listOfActivitiesEachItem2(
-                          context,
-                          waitingSchedules[index].id,
-                          waitingSchedules[index].time,
-                          waitingSchedules[index].describtion,
-                          waitingSchedules[index].gymName,
-                          waitingSchedules[index].grade,
-                          waitingSchedules[index].gymId,
-                          event,
-                        );
-                      },
+                    return AnimatedSize(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      child: SizedBox(
+                        height: pendingSchedulesShown ? (null) : 0,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: waitingSchedules.length,
+                          itemBuilder: (context, index) {
+                            return listOfActivitiesEachItem2(
+                              context,
+                              pendingLessonsListAnimaion,
+                              index,
+                              waitingSchedules[index].id,
+                              waitingSchedules[index].time,
+                              waitingSchedules[index].describtion,
+                              waitingSchedules[index].gymName,
+                              waitingSchedules[index].grade,
+                              waitingSchedules[index].gymId,
+                              waitingSchedules[index].visitedCount,
+                              waitingSchedules[index].visitPerMonth,
+                              event,
+                            );
+                          },
+                        ),
+                      ),
                     );
                   }),
               ],
@@ -133,15 +151,29 @@ class PendingSchedules extends ConsumerWidget {
 
 Widget listOfActivitiesEachItem2(
   BuildContext context,
+  bool animationStart,
+  final int index,
   final int id,
   final String time,
   final String description,
   final String name,
   final int grade,
   final int gymId,
+  final int? visitedCount,
+  final int? visitPerMonth,
   final ScheduleNotifier event,
 ) {
-  return SizedBox(
+  return AnimatedContainer(
+    curve: Curves.easeInOut,
+    duration: animationStart
+        ? Duration(milliseconds: 350 + (index * 150))
+        : Duration(milliseconds: 650 - (index * 150)),
+    //height: 110.h,
+    transform: animationStart
+        ? Matrix4.translationValues(0, 0, 0)
+        : Matrix4.translationValues(400, 0, 0),
+    //color: Colors.purple,
+    margin: EdgeInsets.only(bottom: 5.h),
     child: CustomCard(
       //color: Colors.green,
       marginBottom: 5.h,
@@ -211,7 +243,7 @@ Widget listOfActivitiesEachItem2(
                     //width: 200.w,
                     //color: Colors.red,
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         SvgPicture.asset("assets/svg/location.svg"),
@@ -230,7 +262,9 @@ Widget listOfActivitiesEachItem2(
                               fontWeight: FontWeight.w400,
                             ),
                           ),
-                        )
+                        ),
+                        5.horizontalSpace,
+                        AppHelpers().getBatteryIcon(visitedCount ?? 0, visitPerMonth ?? 0),
                       ],
                     ),
                   ),

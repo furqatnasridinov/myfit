@@ -7,6 +7,8 @@ class CompletedSchedule {
     required this.grade,
     required this.gymId,
     required this.comment,
+    required this.visitedCount,
+    required this.visitPerMonth,
   });
 
   final int id;
@@ -16,4 +18,6 @@ class CompletedSchedule {
   final int grade;
   final int gymId;
   final String comment;
+  final int visitedCount;
+  final int visitPerMonth;
 }

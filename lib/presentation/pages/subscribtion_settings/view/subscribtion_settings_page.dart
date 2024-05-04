@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,13 +12,20 @@ import 'package:myfit/presentation/pages/subscribtion_settings/widget/widget.dar
 class SubscribtionSettingsScreen extends StatelessWidget {
   SubscribtionSettingsScreen({super.key});
   ScrollController? controller = ScrollController();
+  GlobalKey howSubscribtionWorksBlockKey = GlobalKey();
+  Offset position= Offset.zero;
+  
+
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final RenderBox renderBox = howSubscribtionWorksBlockKey.currentContext!.findRenderObject() as RenderBox;
+      position = renderBox.localToGlobal(Offset.zero);
+    });
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar:
-          const Main2Header(showBackButton: true, canNavigateToSettings: false),
+      appBar: const Main2Header(showBackButton: true, canNavigateToSettings: false),
       body: CustomScrollView(
         controller: controller,
         slivers: [
@@ -34,7 +43,13 @@ class SubscribtionSettingsScreen extends StatelessWidget {
           // Choose Subscribtion
           SliverToBoxAdapter(
             child: ChooseSubscribtion(
-              controller: controller,
+              onTap: (){
+                controller?.animateTo(
+                      position.dy - 60.h,
+                      duration: const Duration(milliseconds: 700),
+                      curve: Curves.easeInOut,
+                    );
+              },
             ),
           ),
 
@@ -44,8 +59,10 @@ class SubscribtionSettingsScreen extends StatelessWidget {
           ),
 
           // infos about Subscribtion
-          const SliverToBoxAdapter(
-            child: InfosAboutSubscribtion(),
+           SliverToBoxAdapter(
+            child: InfosAboutSubscribtion(
+              blockKey: howSubscribtionWorksBlockKey,
+            ),
           ),
         ],
       ),

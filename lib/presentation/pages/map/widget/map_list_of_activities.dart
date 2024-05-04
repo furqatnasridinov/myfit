@@ -201,6 +201,8 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                               return _listOfGymsBuilder(
                                 gymsList[index].name,
                                 gymsList[index].address,
+                                gymsList[index].visitedCount,
+                                gymsList[index].visitPerMonth,
                                 gymsList[index].distanceFromClient ?? 3469,
                                 "",
                                 gymsList[index].isSelected,
@@ -247,6 +249,8 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
 _listOfGymsBuilder(
   String? title,
   String? subTitle,
+  int? visitedCount,
+  int? visitPerMonth,
   double distance,
   String? icon,
   bool isSelected,
@@ -266,12 +270,12 @@ _listOfGymsBuilder(
               ),
             ),
         child: SizedBox(
+          //color: Colors.red,
             height: 47.h,
             width: double.maxFinite,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
-              child: SizedBox(
-                //color: Colors.purple,
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 7.h),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -306,10 +310,14 @@ _listOfGymsBuilder(
                     ),
                     CustomText(
                       text: "${distance.toString()} km",
+                      //text: "$visitedCount / $visitPerMonth",
                       fontSize: 10.sp,
                       fontWeight: FontWeight.w500,
                       color: AppColors.greyText,
                     ),
+                    const Spacer(),
+                    AppHelpers().getBatteryIcon(visitedCount ?? 0, visitPerMonth ?? 0),
+                    //AppHelpers().getBatteryIcon(10, 12),
                   ],
                 ),
               ),

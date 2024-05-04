@@ -1,8 +1,7 @@
-// ignore_for_file: division_optimization
+// ignore_for_file: division_optimization, must_be_immutable
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,8 +15,8 @@ import 'package:myfit/presentation/components/dummy_data.dart';
 import '../../../../infrastructure/models/data/subscribtion.dart';
 
 class ChooseSubscribtion extends StatelessWidget {
-  ScrollController? controller;
-  ChooseSubscribtion({super.key, required this.controller});
+  void Function()? onTap;
+  ChooseSubscribtion({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -35,28 +34,15 @@ class ChooseSubscribtion extends StatelessWidget {
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
               ),
-              Consumer(builder: (context, ref, child) {
-                final cardNumber = ref.watch(settingsProvider).cardNumber;
-                final Subscribtion? selectedSubscribtion =
-                    ref.watch(settingsProvider).selectedSubscribtion;
-                return GestureDetector(
-                  onTap: () {
-                    controller?.animateTo(
-                      selectedSubscribtion == null
-                          ? (cardNumber.isEmpty ? 595.h : 650.h)
-                          : (cardNumber.isEmpty ? 625.h : 680.h),
-                      duration: const Duration(milliseconds: 700),
-                      curve: Curves.easeInOut,
-                    );
-                  },
-                  child: CustomText(
-                    text: "Как работает подписка",
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.blueText,
-                  ),
-                );
-              })
+              GestureDetector(
+                onTap: onTap,
+                child: CustomText(
+                  text: "Как работает подписка",
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.blueText,
+                ),
+              ),
             ],
           ),
           16.verticalSpace,
@@ -121,20 +107,21 @@ Widget eachSubscription(
       onTap: () {
         if (cardNumber.isEmpty) {
           AppHelpers.showSnack(context, "Добавьте карту для смены тарифа");
-        }else{
+        } else {
           showDialog(
-            context: context,
-            builder: (context) {
-              return Dialog(
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
-                elevation: 0,
-                insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: dialogContent(context, month, price, cardNumber, onTap),
-              );
-            });
+              context: context,
+              builder: (context) {
+                return Dialog(
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.r),
+                  ),
+                  elevation: 0,
+                  insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
+                  child:
+                      dialogContent(context, month, price, cardNumber, onTap),
+                );
+              });
         }
       },
       child: Row(
@@ -371,7 +358,7 @@ Widget dialogContent(
         ),
         24.verticalSpace,
         CustomButton(
-          onPressed: (){
+          onPressed: () {
             onPressed?.call();
             context.popRoute();
           },

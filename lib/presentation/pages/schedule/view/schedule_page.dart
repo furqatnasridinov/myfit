@@ -231,6 +231,8 @@ Widget itemListBuilder(
                   current.duration ?? "",
                   current.gym?.name ?? "",
                   current.lessonType ?? "",
+                  current.gym?.visitedCount,
+                  current.gym?.visitPerMonth,
                 );
               });
             }),
@@ -249,6 +251,8 @@ Widget listOfActivitiesEachItem(
   final String duration,
   final String name,
   final String lessonType,
+  final int? visitedCount,
+  final int? visitPerMonth,
 ) {
   final DateTime startTime = event.getDateTime(time);
   final String formattedTime = time.substring(time.length - 5);
@@ -380,7 +384,7 @@ Widget listOfActivitiesEachItem(
                 SizedBox(
                   width: 265.w,
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       // duration
@@ -413,7 +417,7 @@ Widget listOfActivitiesEachItem(
                           //width: 200.w,
                           //color: Colors.red,
                           child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               SvgPicture.asset("assets/svg/location.svg"),
@@ -432,7 +436,9 @@ Widget listOfActivitiesEachItem(
                                     fontWeight: FontWeight.w400,
                                   ),
                                 ),
-                              )
+                              ),
+                              5.horizontalSpace,
+                              AppHelpers().getBatteryIcon(visitedCount ?? 0, visitPerMonth ?? 0),
                             ],
                           ),
                         ),

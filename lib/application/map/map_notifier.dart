@@ -212,6 +212,8 @@ class MapNotifier extends StateNotifier<MapState> {
           longitude: double.parse(gym.longitude!),
           address: gym.address ?? "",
           id: gym.id ?? 0,
+          visitedCount: gym.visitedCount ?? 0,
+          visitPerMonth: gym.visitPerMonth ?? 0,
         );
         markers.add(marker);
       });
@@ -229,6 +231,8 @@ class MapNotifier extends StateNotifier<MapState> {
         longitude: state.userPosition!.longitude,
         address: "",
         id: 0,
+        visitedCount: 0,
+        visitPerMonth: 0,
       ),
     );
     state = state.copyWith(listOfMarkers: allMarkers);
@@ -398,7 +402,7 @@ class MapNotifier extends StateNotifier<MapState> {
     double distanceInKm = distanceInMeter / 1000;
     double formattedDistance = double.parse(
       distanceInKm
-          .toStringAsFixed(2)
+          .toStringAsFixed(1)
           .replaceAll(RegExp(r"([.]*0)(?!.*\d)"), ""),
     );
     return formattedDistance; // in kilometer

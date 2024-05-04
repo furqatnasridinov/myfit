@@ -584,6 +584,9 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         success: (data) {
           if (data["operationResult"] == "OK") {
             state = state.copyWith(isEnrollingLoading: false);
+          }else if(data["operationResult"] == "ERROR"){
+            state = state.copyWith(isEnrollingLoading: false);
+            AppHelpers.showErrorSnack(context, data["operationInfo"]);
           }
         },
         failure: (error, statusCode, operationInfo) {
