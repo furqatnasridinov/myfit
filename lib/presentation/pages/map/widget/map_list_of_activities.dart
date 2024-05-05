@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
+import 'dart:async';
 
-import 'package:flutter/widgets.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_notifier.dart';
 import 'package:myfit/application/map/map_provider.dart';
@@ -16,20 +17,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class MapListOfActivities extends StatefulWidget {
   final MapState state;
   final MapNotifier event;
-  YandexMapController? controller;
+  final Completer<GoogleMapController> controller;
   ScrollController activitiesListController;
 
   MapListOfActivities(
     this.activitiesListController,
-    this.controller, {
+     {
     super.key,
     required this.state,
     required this.event,
+    required this.controller,
   });
 
   @override
@@ -210,7 +211,7 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                                   for (var element in gymsList) {
                                     if (element.isSelected == true) {
                                       element.isSelected = false;
-                                      setState(() {});
+                                      //setState(() {});
                                     }
                                   }
                                   gymsList[index].isSelected =
@@ -222,13 +223,24 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                                       false,
                                       ref.watch(mapProvider).selectedLessonTypeFromMap,
                                       gymId: gymsList[index].id!);
-                                  widget.event.changeCameraPosition(
-                                    widget.controller!,
-                                    double.parse(gymsList[index].latitude.toString()),
-                                    double.parse(gymsList[index].longitude.toString()));
-                                  widget.event.setMarkerAsOpened(
-                                    double.parse(gymsList[index].latitude.toString()),
-                                    double.parse(gymsList[index].longitude.toString()))
+                                      widget.controller.future.then((value) {
+                                        value.animateCamera(
+                                          CameraUpdate.newCameraPosition(
+                                          CameraPosition(
+                                            target: LatLng(double.parse(gymsList[index].latitude.toString()), 
+                                            double.parse(gymsList[index].longitude.toString())),
+                                            zoom: 15.0,
+                                          ),));
+                                      });
+                                  widget.event.setSelectedGym(
+                                    address: gymsList[index].address,
+                                    id: gymsList[index].id,
+                                    latitude: double.parse(gymsList[index].latitude ?? "0"),
+                                    longitude: double.parse(gymsList[index].longitude ?? "0"),
+                                    name: gymsList[index].name,
+                                    visitPerMonth: gymsList[index].visitPerMonth,
+                                    visitedCount: gymsList[index].visitedCount,
+                                  )
                                       .then((value) => widget.event.showPopUpOnMap(context, title));
                                 },
                               );

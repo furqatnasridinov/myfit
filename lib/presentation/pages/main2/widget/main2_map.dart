@@ -3,7 +3,6 @@ import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 // ignore: must_be_immutable
 class Main2Map extends StatelessWidget {
@@ -11,15 +10,13 @@ class Main2Map extends StatelessWidget {
   final bool showRecommended;
   final bool showOnlyKnown;
   final MapNotifier mapEvent;
-  Main2Map({
+  const Main2Map({
     super.key,
     required this.child,
     required this.showRecommended,
     required this.showOnlyKnown,
     required this.mapEvent,
   });
-  YandexMapController? yandexMapController;
-
   @override
   Widget build(BuildContext context) {
     final tabsRouter = AutoTabsRouter.of(context);

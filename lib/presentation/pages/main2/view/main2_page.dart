@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:async';
+import 'dart:developer';
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/main2/main2_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
@@ -17,7 +18,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 @RoutePage()
 class Main2Screen extends ConsumerStatefulWidget {
@@ -28,7 +28,6 @@ class Main2Screen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreen extends ConsumerState<Main2Screen> {
-  final mapControllerCompleter = Completer<YandexMapController>();
   late final WebSocketChannel channel;
   Timer? _timer;
   late RefreshController refreshController = RefreshController();
@@ -87,11 +86,13 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
   Widget build(BuildContext context) {
     //final nearestLesson = ref.watch(main2Provider).nearestLesson;
     final event = ref.read(main2Provider.notifier);
-    debugPrint("login time ${LocalStorage.getLoginTime()}");
-    debugPrint("user id ${LocalStorage.getUserId()}");
-    debugPrint("token ${LocalStorage.getToken()}");
-    debugPrint("known activities ${ref.watch(settingsProvider).knownActivities}");
-    debugPrint("when photo access opens >> ${LocalStorage.getWhenUploadingPhotoOpens()}");
+    log("login time ${LocalStorage.getLoginTime()}");
+    log("user id ${LocalStorage.getUserId()}");
+    log("token ${LocalStorage.getToken()}");
+    log("known activities ${ref.watch(settingsProvider).knownActivities}");
+    log("when photo access opens >> ${LocalStorage.getWhenUploadingPhotoOpens()}");
+    log("selected city lat >> ${LocalStorage.getSelectedCityLat()}");
+    log("selected city lon >> ${LocalStorage.getSelectedCityLon()}");
     //LocalStorage.removeToken();
     ref.listen(main2Provider, (previous, next) {
       if (previous!.lessonEndsAt != next.lessonEndsAt &&

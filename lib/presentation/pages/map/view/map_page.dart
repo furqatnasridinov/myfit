@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
+import 'dart:async';
 import 'dart:developer';
-
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:myfit/application/main2/main2_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
@@ -17,7 +18,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:yandex_mapkit/yandex_mapkit.dart';
 import '../widget/widget.dart';
 
 @RoutePage()
@@ -30,8 +30,9 @@ class MapScreen extends ConsumerStatefulWidget {
 
 class _MapScreenState extends ConsumerState<MapScreen>
     with WidgetsBindingObserver {
-  YandexMapController? yandexMapController;
   late ScrollController activitiesListController;
+  final Completer<GoogleMapController> _controller =
+      Completer<GoogleMapController>();
   bool wasLocationPermissionDenied = false;
   @override
   void initState() {
@@ -80,17 +81,19 @@ class _MapScreenState extends ConsumerState<MapScreen>
     if (permission == LocationPermission.always ||
         permission == LocationPermission.whileInUse) {
       ref.read(mapProvider.notifier).setUserPosition().then((value) async {
-        await yandexMapController?.moveCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(
-              target: Point(
-                latitude: ref.watch(mapProvider).userPosition!.latitude,
-                longitude: ref.watch(mapProvider).userPosition!.longitude,
+        _controller.future.then((controller) async {
+          await controller.animateCamera(
+            CameraUpdate.newCameraPosition(
+              CameraPosition(
+                target: LatLng(
+                  ref.watch(mapProvider).userPosition!.latitude,
+                  ref.watch(mapProvider).userPosition!.longitude,
+                ),
+                zoom: 14,
               ),
             ),
-          ),
-          animation: const MapAnimation(duration: 1),
-        );
+          );
+        });
       });
     }
   }
@@ -108,7 +111,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
     final height = MediaQuery.of(context).size.height;
     final state = ref.watch(mapProvider);
     final event = ref.read(mapProvider.notifier);
-    log("activemarker ${state.activeMarker}" );
+    log("activemarker ${state.activeMarker}");
     bool isAnyOpened = state.activitiesWithGymsInsideFromSelectedDiapozone
         .any((element) => element.isOpened);
     return PopScope(
@@ -139,34 +142,33 @@ class _MapScreenState extends ConsumerState<MapScreen>
                 duration: const Duration(milliseconds: 300),
                 height: height * state.topFlexValue,
                 child: SizedBox(
-                  child:  CustomScrollView(
-                          controller: activitiesListController,
-                          slivers: [
-                              SliverAppBar(
-                                scrolledUnderElevation: 0,
-                                automaticallyImplyLeading: false,
-                                backgroundColor: AppColors.backgroundColor,
-                                pinned: true,
-                                elevation: 0,
-                                floating: false,
-                                flexibleSpace: FlexibleSpaceBar(
-                                  background: MapPageTopSection(
-                                    event: event,
-                                    state: state,
-                                  ),
-                                ),
-                              ),
-                              SliverPadding(
-                                  padding: EdgeInsets.only(bottom: 0.h)),
-                              SliverToBoxAdapter(
-                                child: MapListOfActivities(
-                                  activitiesListController,
-                                  yandexMapController,
-                                  event: event,
-                                  state: state,
-                                ),
-                              )
-                            ]),
+                  child: CustomScrollView(
+                      controller: activitiesListController,
+                      slivers: [
+                        SliverAppBar(
+                          scrolledUnderElevation: 0,
+                          automaticallyImplyLeading: false,
+                          backgroundColor: AppColors.backgroundColor,
+                          pinned: true,
+                          elevation: 0,
+                          floating: false,
+                          flexibleSpace: FlexibleSpaceBar(
+                            background: MapPageTopSection(
+                              event: event,
+                              state: state,
+                            ),
+                          ),
+                        ),
+                        SliverPadding(padding: EdgeInsets.only(bottom: 0.h)),
+                        SliverToBoxAdapter(
+                          child: MapListOfActivities(
+                            activitiesListController,
+                            event: event,
+                            state: state,
+                            controller: _controller,
+                          ),
+                        )
+                      ]),
                 ),
               ),
 
@@ -175,100 +177,53 @@ class _MapScreenState extends ConsumerState<MapScreen>
                 curve: Curves.easeInOut,
                 duration: const Duration(milliseconds: 300),
                 height: state.isGymsPopupShown
-                    ? height * (state.bottomFlexValue + 0.09)
-                    : height * state.bottomFlexValue,
+                    ? height * (state.bottomFlexValue + 0.09) : height * state.bottomFlexValue,
                 child: Stack(
                   children: [
                     // map itself
                     DecoratedBox(
                       decoration: BoxDecoration(
                         boxShadow:
-                            state.activitiesWithGymsInsideFromSelectedDiapozone
-                                            .length >
-                                        5 &&
-                                    (state.activitiesWithGymsInsideFromSelectedDiapozone
-                                                .length >
-                                            2 ||
-                                        state.locationPermissionDenied) &&
-                                    !state.showMapOnly
-                                ? const [
-                                    BoxShadow(
-                                      color: Color.fromRGBO(0, 0, 0, 0.15),
-                                      offset: Offset(0, 2),
-                                      blurRadius: 5,
-                                      spreadRadius: 0,
-                                    ),
-                                    BoxShadow(
-                                      color: Color(0xFF6D96D4),
-                                      offset: Offset(0, 15),
-                                      blurRadius: 18,
-                                      spreadRadius: -15,
-                                    ),
-                                    BoxShadow(
-                                      color: Color.fromRGBO(0, 0, 0, 0.39),
-                                      offset: Offset(0, -1),
-                                      blurRadius: 20.4,
-                                      spreadRadius: -2,
-                                    ),
-                                  ]
-                                : [],
+                            state.activitiesWithGymsInsideFromSelectedDiapozone.length > 5 &&
+                              (state.activitiesWithGymsInsideFromSelectedDiapozone.length > 2 ||
+                                state.locationPermissionDenied) && !state.showMapOnly ? event.getShadows() : [],
                       ),
-                      child: YandexMap(
-                        // on map created
-                        onMapCreated: (controller) async {
-                          debugPrint("onMapCreated called");
-                          yandexMapController = controller;
-                          //setState(() {});
-                          if (state.userPosition == null) {
-                            await event.getUserLocation();
-                            // if permissions not granted
-                            await event.setLocationFromSelectedCity();
-                          }
-                          event.setInitialCameraPosition(
-                            controller: yandexMapController!,
-                          );
-                          // ignore: use_build_context_synchronously
-                          await event.getGymsList(
-                            context,
-                            ref.watch(settingsProvider).knownActivities,
-                            ref.watch(main2Provider).recommendedGyms,
-                          );
-                          await event.getGetListOfGymsFromDiapozone();
-                          await event.setFlexes();
-                          await event.getAllMarkers();
-                          await event.addUserLocationMarker();
-                        },
-                        // map objects
-                        mapObjects: state.listOfMarkers.isEmpty
-                            ? []
-                            : event.getPlacemarkObjects(
-                                onTap: (placemarkMapObject, point) {
-                                  event
-                                      .setMarkerAsOpened(
-                                        placemarkMapObject.point.latitude,
-                                        placemarkMapObject.point.longitude,
-                                      )
-                                      .then(
-                                        (value) =>
-                                            event.showPopUpOnMap(context, ""),
-                                      );
+                      child: SingleChildScrollView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                              child: GoogleMap(
+                                padding: EdgeInsets.only(bottom: height * (state.showMapOnly ? 0.5 : 0.7)),
+                                zoomControlsEnabled: false,
+                                compassEnabled: false,
+                                mapType: MapType.normal,
+                                myLocationButtonEnabled: false,
+                                //liteModeEnabled: true,
+                                initialCameraPosition: CameraPosition(
+                                  target: event.getInitialLatLon(),
+                                  zoom: 15,
+                                ),
+                                onMapCreated:
+                                    (GoogleMapController controller) async {
+                                  _controller.complete(controller);
+                                  await event.getGymsList(
+                                    context,
+                                    ref.watch(settingsProvider).knownActivities,
+                                    ref.watch(main2Provider).recommendedGyms,
+                                  );
+                                  await event.getGetListOfGymsFromDiapozone();
+                                  await event.setFlexes();
+                                  await event.getAllMarkers();
+                                  await event.addUserLocationMarker();
                                 },
+                                markers: state.listOfMarkers.isEmpty ? {} : state.listOfMarkers,
                               ),
-                        /*  onCameraPositionChanged:
-                            (cameraPosition, reason, finished) {
-                          if (state.isGymsPopupShown &&
-                              reason == CameraUpdateReason.gestures) {
-                            event.removePopUp();
-                            event.showLocationButton();
-                          }
-                          // when stops moving show pop up
-                          if (finished) {
-                            event.showPopUpOnMap(context);
-                          }
-                        }, */
-                        logoAlignment: const MapAlignment(
-                          horizontal: HorizontalAlignment.left,
-                          vertical: VerticalAlignment.bottom,
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -333,14 +288,14 @@ class _MapScreenState extends ConsumerState<MapScreen>
                       right: 0.w,
                       bottom: (isAnyOpened && state.isLocationIconHidden)
                           ? 170.h
-                          : state.isLocationIconHidden
+                          : (state.isLocationIconHidden && !isAnyOpened)
                               ? 160.h
                               : 20.h,
                       child: Padding(
                         padding: EdgeInsets.only(right: 10.w),
                         child: GestureDetector(
                           onTap: () {
-                            event.locationButtonFunction(yandexMapController);
+                            event.locationButtonFunction(_controller);
                           },
                           child: AnimationButtonEffect(
                             child: CustomCard(
@@ -363,16 +318,16 @@ class _MapScreenState extends ConsumerState<MapScreen>
                       Positioned(
                         bottom: 0,
                         child: PopUpMap(
-                          name: state.activeMarker?.name ?? "??",
-                          address: state.activeMarker?.address ?? "??",
-                          visitPerMonth: state.activeMarker?.visitPerMonth ?? 0,
-                          visitedCount: state.activeMarker?.visitedCount ?? 0,
+                          name: state.selectedGym?.name ?? "??",
+                          address: state.selectedGym?.address ?? "??",
+                          visitPerMonth: state.selectedGym?.visitPerMonth ?? 0,
+                          visitedCount: state.selectedGym?.visitedCount ?? 0,
                           onNavigate: () {
                             //event.removePopUp();
                             event.showLocationButton();
                             context.router.push(
                               ActivityRoute(
-                                  gymId: state.activeMarker?.id ?? 0,
+                                  gymId: state.selectedGym?.id ?? 0,
                                   isFromMap: true),
                             );
                           },

@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:convert';
+import 'dart:developer';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -562,9 +563,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
     var durationParts = duration.split(":");
     final durationToAdd = Duration(
-      hours: int.parse(
-        durationParts[0],
-      ),
+      hours: int.parse(durationParts[0]),
       minutes: int.parse(durationParts[1]),
     );
     final initialDuration =
@@ -594,18 +593,27 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
           if (data["operationResult"] == "OK") {
             state = state.copyWith(isEnrollingLoading: false);
           } else if (data["operationResult"] == "ERROR") {
-            //final String? operationInfo = data["operationInfo"];
-            //final Map<String,dynamic> convertedToMap = jsonDecode(operationInfo ?? "");
-            //if (convertedToMap["errorType"] == "conflict") {}
-            // handle operation info and pass it to the dialog
-            final EnrollingErrorMessage error = EnrollingErrorMessage( 
-              date: "23 мая",
-              startTime: "13:00",
-              endTime: "16:00",
-              lessonType: "Массаж",
-              gymName: "Crystall"
-            );
-            showConflictDialog(error,context);
+            try {
+              final operationInfo = data["operationInfo"];
+              final Map<String, dynamic> convertedToMap =
+                  jsonDecode(operationInfo ?? "");
+              if (convertedToMap["errorType"] == "conflict") {
+                final String date = convertedToMap["date"].toString();
+                // handle operation info and pass it to the dialog
+                final EnrollingErrorMessage error = EnrollingErrorMessage(
+                    date: getDate(date),
+                    startTime: date.substring(date.length - 5),
+                    endTime: getEndingTime(
+                        date.substring(date.length - 5), convertedToMap["duration"]),
+                    lessonType: convertedToMap["lessonType"],
+                    gymName: convertedToMap["gymName"]);
+                showConflictDialog(error, context);
+              }
+            } catch (e) {
+              log(e.toString());
+              throw e;
+            }
+
             state = state.copyWith(isEnrollingLoading: false);
           }
         },
@@ -617,6 +625,43 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       );
     } else {
       AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  String getDate(String inputDate){
+    // from 2024-05-07T17:00 to 7 мая
+    final parts = inputDate.split("T");
+    final date = parts[0];
+    final dateParts = date.split("-");
+    final day = dateParts[2];
+    final month = dateParts[1];
+    switch (month) {
+      case "01":
+        return "$day янв";
+      case "02":
+        return "$day фев";
+      case "03":
+        return "$day мар";
+      case "04":
+        return "$day апр";
+      case "05":
+        return "$day мая";
+      case "06":
+        return "$day июня";
+      case "07":
+        return "$day июля";
+      case "08":
+        return "$day авг";
+      case "09":
+        return "$day сен";
+      case "10":
+        return "$day окт";
+      case "11":
+        return "$day ноя";
+      case "12":
+        return "$day дек";
+      default:
+        return "error";
     }
   }
 
@@ -663,7 +708,8 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
                         10.horizontalSpace,
                         Flexible(
                           child: CustomText(
-                            text: "Нельзя записаться на два занятия в одно и то же время.",
+                            text:
+                                "Нельзя записаться на два занятия в одно и то же время.",
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w400,
                             height: 1.1,
@@ -679,7 +725,8 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
                           child: RichText(
                               text: TextSpan(children: [
                             TextSpan(
-                              text: "${error.date} с ${error.startTime}-${error.endTime}",
+                              text:
+                                  "${error.date} с ${error.startTime}-${error.endTime}",
                               style: GoogleFonts.raleway(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w700,

@@ -9,7 +9,6 @@ import 'package:myfit/presentation/pages/main2/widget/main2_map_placeholder.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class MapInsideNearActivities extends StatelessWidget {
   final MainNotifier event;
@@ -17,7 +16,6 @@ class MapInsideNearActivities extends StatelessWidget {
     super.key,
     required this.event,
   });
-  YandexMapController? yandexMapController;
 
   @override
   Widget build(BuildContext context) {
@@ -73,60 +71,6 @@ class MapInsideNearActivities extends StatelessWidget {
       ),
     );
 
-    /* Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          width: 3.w,
-          color: Colors.white,
-        ),
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: const [
-          BoxShadow(
-            color: Color.fromRGBO(0, 0, 0, 0.15),
-            spreadRadius: 0,
-            blurRadius: 5.0,
-            offset: Offset(0, 2),
-          ),
-          BoxShadow(
-            color: Color.fromRGBO(119, 170, 249, 1),
-            spreadRadius: -15,
-            blurRadius: 18.0,
-            offset: Offset(0, 15),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16.0),
-        child: SizedBox(
-          height: 147.w,
-          width: double.maxFinite,
-          child: YandexMap(
-            rotateGesturesEnabled: false,
-            scrollGesturesEnabled: false,
-            tiltGesturesEnabled: false,
-            zoomGesturesEnabled: false,
-            mapObjects: event.getPlacemarkObjects(),
-            onMapCreated: (controller) {
-              yandexMapController = controller;
-              yandexMapController?.moveCamera(
-                CameraUpdate.newCameraPosition(
-                  CameraPosition(
-                    zoom: 11,
-                    target: Point(
-                      latitude: mapState.userPosition!.latitude,
-                      longitude: mapState.userPosition!.longitude,
-                    ),
-                  ),
-                ),
-                animation: const MapAnimation(
-                  duration: 2,
-                  type: MapAnimationType.linear,
-                ),
-              );
-            },
-          ),
-        ),
-      ),
-    ); */
+
   }
 }

@@ -29,7 +29,7 @@ class AppWidget extends StatelessWidget {
           builder: (context, child) {
             return MaterialApp.router(
               routerConfig: appRouter.config(
-                  navigatorObservers: () => [MyRouteObserver()],
+                  //navigatorObservers: () => [MyRouteObserver()],
                   deepLinkBuilder: (link) {
                     log(link.path);
                     if (link.path.contains('/qrcode/page')) {
@@ -49,7 +49,7 @@ class AppWidget extends StatelessWidget {
   }
 }
 
-class MyRouteObserver extends AutoRouteObserver {
+/* class MyRouteObserver extends AutoRouteObserver {
   @override
   void didPush(Route route, Route? previousRoute) {
     super.didPush(route, previousRoute);
@@ -68,4 +68,4 @@ class MyRouteObserver extends AutoRouteObserver {
     super.didPop(route, previousRoute);
     log('didPop ${route.settings.name}');
   }
-}
+} */
