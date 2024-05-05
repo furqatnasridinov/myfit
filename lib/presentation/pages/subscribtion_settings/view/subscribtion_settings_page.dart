@@ -9,20 +9,33 @@ import 'package:myfit/presentation/pages/main2/widget/main2_header.dart';
 import 'package:myfit/presentation/pages/subscribtion_settings/widget/widget.dart';
 
 @RoutePage()
-class SubscribtionSettingsScreen extends StatelessWidget {
-  SubscribtionSettingsScreen({super.key});
+class SubscribtionSettingsScreen extends StatefulWidget {
+  const SubscribtionSettingsScreen({super.key});
+
+  @override
+  State<SubscribtionSettingsScreen> createState() => _SubscribtionSettingsScreenState();
+}
+
+class _SubscribtionSettingsScreenState extends State<SubscribtionSettingsScreen> {
   ScrollController? controller = ScrollController();
   GlobalKey howSubscribtionWorksBlockKey = GlobalKey();
   Offset position= Offset.zero;
-  
 
+  void getPostion() {
+    final RenderBox renderBox = howSubscribtionWorksBlockKey.currentContext!.findRenderObject() as RenderBox;
+    position = renderBox.localToGlobal(Offset.zero);
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getPostion();
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final RenderBox renderBox = howSubscribtionWorksBlockKey.currentContext!.findRenderObject() as RenderBox;
-      position = renderBox.localToGlobal(Offset.zero);
-    });
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar: const Main2Header(showBackButton: true, canNavigateToSettings: false),

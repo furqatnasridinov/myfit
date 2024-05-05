@@ -1,5 +1,5 @@
 import 'package:myfit/infrastructure/models/data/addresses.dart';
-import 'package:myfit/infrastructure/models/data/subscribtion.dart';
+import 'package:myfit/infrastructure/models/data/subscribtion_demo.dart';
 import 'package:myfit/infrastructure/models/data/subscribtion_card.dart';
 
 class DummyData {
@@ -26,20 +26,20 @@ class DummyData {
     ),
   ];
 
-  final List<Subscribtion> dummySubscribtions = [
-    Subscribtion(
+  final List<SubscribtionDemo> dummySubscribtions = [
+    SubscribtionDemo(
       id: 1,
       description: "Оплата раз в месяц и посещение сотен разных активностей",
       price: "10000",
       durationInMonths: "1",
     ),
-    Subscribtion(
+    SubscribtionDemo(
       id: 2,
       description: "Оплата раз в 3 месяца и посещение сотен разных активностей",
       price: "24000",
       durationInMonths: "3",
     ),
-    Subscribtion(
+    SubscribtionDemo(
       id: 3,
       description:
           "Оплата раз в 6 месяцев и посещение сотен разных активностей",

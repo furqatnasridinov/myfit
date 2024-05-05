@@ -99,7 +99,7 @@ class PaymentSection extends StatelessWidget {
                         value: autoRenewal,
                         activeColor: AppColors.blueColor,
                         onChanged: (val) {
-                          event.toggleAutoRenewal(val);
+                          event.toggleAutoRenewal(context, val: val);
                         },
                       );
                     }),

@@ -42,15 +42,16 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
       ref.read(settingsProvider.notifier)
         ..requestNotificationPermissions()
         ..setUserInfos()
-        ..getCompletedLessonTypes(context)
-        ..getWaitingLessonTypes(context);
-      ref.read(mapProvider.notifier).getUserLocation().then((value) {
-        ref.read(mapProvider.notifier).getYandexMapImage(context);});
-      ref.read(main2Provider.notifier)
+        ..getCompletedLessonTypes(context)// for known activities
+        ..getWaitingLessonTypes(context)// for known activities
+        ..getUserSubscribtions(context);
+        ref.read(main2Provider.notifier)
         ..getNearestLesson(context)
         ..getUserStatsMonth(context)
         ..getRecommendationForVisit(context);
-
+        ref.read(mapProvider.notifier).getUserLocation().then((value) {
+        ref.read(mapProvider.notifier).getYandexMapImage(context);});
+      
       // web socket for updating lesson states
       channel = IOWebSocketChannel.connect(
           Uri.parse(

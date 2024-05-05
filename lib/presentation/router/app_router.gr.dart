@@ -162,11 +162,9 @@ abstract class $AppRouter extends _i19.RootStackRouter {
       );
     },
     SubscribtionSettingsRoute.name: (routeData) {
-      final args = routeData.argsAs<SubscribtionSettingsRouteArgs>(
-          orElse: () => const SubscribtionSettingsRouteArgs());
       return _i19.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i18.SubscribtionSettingsScreen(key: args.key),
+        child: const _i18.SubscribtionSettingsScreen(),
       );
     },
   };
@@ -494,30 +492,14 @@ class SplashRoute extends _i19.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i18.SubscribtionSettingsScreen]
-class SubscribtionSettingsRoute
-    extends _i19.PageRouteInfo<SubscribtionSettingsRouteArgs> {
-  SubscribtionSettingsRoute({
-    _i20.Key? key,
-    List<_i19.PageRouteInfo>? children,
-  }) : super(
+class SubscribtionSettingsRoute extends _i19.PageRouteInfo<void> {
+  const SubscribtionSettingsRoute({List<_i19.PageRouteInfo>? children})
+      : super(
           SubscribtionSettingsRoute.name,
-          args: SubscribtionSettingsRouteArgs(key: key),
           initialChildren: children,
         );
 
   static const String name = 'SubscribtionSettingsRoute';
 
-  static const _i19.PageInfo<SubscribtionSettingsRouteArgs> page =
-      _i19.PageInfo<SubscribtionSettingsRouteArgs>(name);
-}
-
-class SubscribtionSettingsRouteArgs {
-  const SubscribtionSettingsRouteArgs({this.key});
-
-  final _i20.Key? key;
-
-  @override
-  String toString() {
-    return 'SubscribtionSettingsRouteArgs{key: $key}';
-  }
+  static const _i19.PageInfo<void> page = _i19.PageInfo<void>(name);
 }

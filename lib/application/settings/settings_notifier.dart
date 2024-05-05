@@ -1,10 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
+import 'dart:async';
+import 'dart:developer';
 import 'dart:ffi';
 import 'dart:io';
+import 'package:auto_route/auto_route.dart';
 import 'package:myfit/application/settings/settings_state.dart';
 import 'package:myfit/domain/handlers/network_exceptions.dart';
 import 'package:myfit/domain/interface/settings.dart';
-import 'package:myfit/infrastructure/models/data/subscribtion.dart';
+import 'package:myfit/infrastructure/models/data/subscribtion_demo.dart';
 import 'package:myfit/infrastructure/models/request/send_confirmation_code_request.dart';
 import 'package:myfit/infrastructure/models/request/send_phone_number_request.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
@@ -14,6 +17,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../../infrastructure/models/data/user_subscribtion.dart';
 import '../../infrastructure/models/response/auth_response.dart';
 
 class SettingsNotifier extends StateNotifier<SettingsState> {
@@ -483,6 +487,145 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     }
   }
 
+  Future<void> getAllAvailableSubscribtions(BuildContext context) async {
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      final response =
+          await _settingsRepositoryInterface.getAllAvailableSubscribtions();
+      response.when(success: (data) {
+        if (data["operationResult"] == "OK") {
+          final listFromServer = data["object"] as List;
+          if (listFromServer.isNotEmpty) {
+            final listToCollect = <Subscription>[];
+            for (var element in listFromServer) {
+              final subscription = Subscription.fromJson(element);
+              listToCollect.add(subscription);
+            }
+            state = state.copyWith(allAvailableSubscriptions: listToCollect);
+          }
+        }
+      }, failure: (error, statusCode, operationInfo) {
+        AppHelpers.showErrorSnack(
+            context, NetworkExceptions.getErrorMessage(error));
+      });
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> getUserSubscribtions(BuildContext contex) async {
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      final response =
+          await _settingsRepositoryInterface.getUserSubscribtions();
+      response.when(success: (data) {
+        if (data["operationResult"] == "OK") {
+          final listFromServer = data["object"] as List;
+          if (listFromServer.isNotEmpty) {
+            final userSubscription =
+                UserSubscription.fromJson(listFromServer[0]);
+            state = state.copyWith(
+              currentSubscribtion: userSubscription,
+              autoRenewal: userSubscription.autoRenewal ?? false,
+            );
+            if (listFromServer.length > 1) {
+              final nextSubscription =
+                  UserSubscription.fromJson(listFromServer[1]);
+              state = state.copyWith(nextSubscribtion: nextSubscription);
+            }
+          }
+        }
+      }, failure: (error, statusCode, operationInfo) {
+        AppHelpers.showErrorSnack(
+            contex, NetworkExceptions.getErrorMessage(error));
+      });
+    } else {
+      AppHelpers.showCheckTopSnackBar(contex);
+    }
+  }
+
+  Future<void> purchaseSubscription(BuildContext context, {required int id, required bool autoRenewal}) async{
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      final response = await _settingsRepositoryInterface.purchaseSubscription(id: id, autoRenewal: autoRenewal);
+      response.when(success: (data) async {
+        if (data["operationResult"] == "OK") {
+          // to get updated subscribtions
+          await getUserSubscribtions(context);
+          context.popRoute();
+          AppHelpers.showSuccessSnack(context, "Подписка успешно оформлена");
+        }
+      }, failure: (error, statusCode, operationInfo) {
+        AppHelpers.showErrorSnack(
+            context, NetworkExceptions.getErrorMessage(error));
+      });
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> changeNextSubscription(BuildContext context,
+      {required int id}) async {
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      state = state.copyWith(isChangeSubscribtionLoading: true);
+      final response =
+          await _settingsRepositoryInterface.changeNextSubscription(id: id);
+      response.when(success: (data) async {
+        if (data["operationResult"] == "OK") {
+          // to get updated subscribtions
+          await getUserSubscribtions(context);
+          state = state.copyWith(isChangeSubscribtionLoading: false);
+          context.popRoute();
+        }
+      }, failure: (error, statusCode, operationInfo) {
+        state = state.copyWith(isChangeSubscribtionLoading: false);
+        AppHelpers.showErrorSnack(
+            context, NetworkExceptions.getErrorMessage(error));
+      });
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> toggleAutoRenewal(BuildContext context,
+      {required bool val}) async {
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      state = state.copyWith(autoRenewal: val);
+      final response = await _settingsRepositoryInterface.toggleAutoRenewal(
+        val: val,
+      );
+      response.when(success: (data) {
+        if (data["operationResult"] == "OK") {
+          // nothing to do we already update autoRenewal
+        }else{
+          state = state.copyWith(autoRenewal: !val);
+          AppHelpers.showErrorSnack(
+            context, "Ошибка при изменении автопродления");
+        }
+      }, failure: (error, statusCode, operationInfo) {
+        state = state.copyWith(autoRenewal: !val);
+        AppHelpers.showErrorSnack(
+            context, NetworkExceptions.getErrorMessage(error));
+      });
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  String getEndDateOfCurrentSub() {
+    // from 2024-06-03T13:56:25 to 03.06.2024
+    final String? endDate = state.currentSubscribtion?.endData;
+    if (endDate != null) {
+      final List<String> parts = endDate.split("T");
+      final List<String> dateParts = parts[0].split("-");
+      return "${dateParts[2]}.${dateParts[1]}.${dateParts[0]}";
+    } else {
+      return "";
+    }
+  }
+
   void setQrCodeValue(String value) {
     state = state.copyWith(qrcodeValue: value);
   }
@@ -501,21 +644,19 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     }
   }
 
-  void setSelectedSubscribtion(Subscribtion? subscribtion) {
+  void setSelectedSubscribtion(SubscribtionDemo? subscribtion) {
     state = state.copyWith(selectedSubscribtion: subscribtion);
   }
 
-  void addCard(String number){
+  void addCard(String number) {
     state = state.copyWith(cardNumber: number);
   }
 
-  void deleteCard(){
+  void deleteCard() {
     state = state.copyWith(cardNumber: "");
   }
 
-  void toggleAutoRenewal(bool val){
-    state = state.copyWith(autoRenewal: val);
-  }
+
 
   String formatDuration(Duration duration) {
     int days = duration.inDays;
@@ -531,8 +672,6 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
 
     return parts.join(' ');
   }
-
-  
 
   String getDayWord(int number) {
     number = number % 100;

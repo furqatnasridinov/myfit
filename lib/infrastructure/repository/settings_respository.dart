@@ -134,10 +134,10 @@ class SettingsRepository implements SetttingsRepositoryInterface {
       );
     }
   }
-  
+
   @override
-  Future<ApiResult<Map<String, dynamic>>> getCompletedLessonTypes() async{
-   try {
+  Future<ApiResult<Map<String, dynamic>>> getCompletedLessonTypes() async {
+    try {
       final client = inject<HttpService>().clientDio();
       final response = await client.get(
         AppConstants.getCompletedLessonTypes,
@@ -152,13 +152,109 @@ class SettingsRepository implements SetttingsRepositoryInterface {
       );
     }
   }
-  
+
   @override
-  Future<ApiResult<Map<String, dynamic>>> getWaitingLessonTypes() async{
+  Future<ApiResult<Map<String, dynamic>>> getWaitingLessonTypes() async {
     try {
       final client = inject<HttpService>().clientDio();
       final response = await client.get(
         AppConstants.getWaitingLessonTypes,
+      );
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      );
+    }
+  }
+
+  @override
+  Future<ApiResult<Map<String, dynamic>>> getUserSubscribtions() async {
+    try {
+      final client = inject<HttpService>().clientDio();
+      final response = await client.get(
+        AppConstants.getUserSubscribtion,
+      );
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      );
+    }
+  }
+
+  @override
+  Future<ApiResult<Map<String, dynamic>>> getAllAvailableSubscribtions() async {
+    try {
+      final client = inject<HttpService>().clientDio();
+      final response = await client.get(
+        AppConstants.getAllAvailableSubscribtions,
+      );
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      );
+    }
+  }
+
+  
+  @override
+  Future<ApiResult<Map<String, dynamic>>> changeNextSubscription(
+      {required int id}) async {
+    try {
+      final client = inject<HttpService>().clientDio();
+      final response = await client.post(
+        "api/subscription/user/changeTariff/$id"
+      );
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      );
+    }
+  }
+  
+  @override
+  Future<ApiResult<Map<String, dynamic>>> toggleAutoRenewal({required bool val}) async{
+    try {
+      final client = inject<HttpService>().clientDio();
+      final Map<String, bool> sendingData = {"autoRenewal": val};
+      final response = await client.patch(
+        AppConstants.toggleAutoRenewal,
+        queryParameters: sendingData,
+      );
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      );
+    }
+}
+
+  @override
+  Future<ApiResult<Map<String, dynamic>>> purchaseSubscription({required int id,required bool autoRenewal}) async{
+    try {
+      final client = inject<HttpService>().clientDio();
+      final Map<String, bool> sendingData = {"autoRenewal": autoRenewal};
+      final response = await client.post(
+        "api/subscription/user/add/$id",
+        queryParameters: sendingData,
       );
       return ApiResult.success(
         data: response.data,

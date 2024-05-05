@@ -1,18 +1,14 @@
 // ignore_for_file: division_optimization, must_be_immutable
-
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
+import 'package:myfit/infrastructure/models/data/user_subscribtion.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/presentation/components/custom_button.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
-import 'package:myfit/presentation/components/dummy_data.dart';
-
-import '../../../../infrastructure/models/data/subscribtion.dart';
 
 class ChooseSubscribtion extends StatelessWidget {
   void Function()? onTap;
@@ -20,7 +16,7 @@ class ChooseSubscribtion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Subscribtion> dummyList = DummyData().dummySubscribtions;
+    //final List<SubscribtionDemo> dummyList = DummyData().dummySubscribtions;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 32.h),
       child: Column(
@@ -49,36 +45,48 @@ class ChooseSubscribtion extends StatelessWidget {
 
           // list of subscribtions
           Consumer(builder: (context, ref, child) {
-            final Subscribtion? selectedSubscribtion =
-                ref.watch(settingsProvider).selectedSubscribtion;
+            final List<Subscription> allSubs =
+                ref.watch(settingsProvider).allAvailableSubscriptions;
+            final UserSubscription? nextSub =
+                ref.watch(settingsProvider).nextSubscribtion;
+            final UserSubscription? currentSub =
+                ref.watch(settingsProvider).currentSubscribtion;
             final String cardNumber = ref.watch(settingsProvider).cardNumber;
             final notifier = ref.read(settingsProvider.notifier);
             return Column(
               children: [
                 ListView.builder(
                   itemBuilder: (context, index) {
+                    final current = allSubs[index];
                     return eachSubscription(
                       context,
-                      dummyList[index].durationInMonths,
-                      dummyList[index].price,
-                      (int.parse(dummyList[index].price) /
-                              int.parse(dummyList[index].durationInMonths))
+                      current.durationInMonth.toString(),
+                      current.price.toString(),
+                      ((current.price ?? 0) / (current.durationInMonth ?? 1))
                           .toInt()
                           .toString(),
-                      dummyList[index].description,
-                      selectedSubscribtion?.id == dummyList[index].id,
+                      "Оплата раз в ${AppHelpers().getMonthWord(int.parse(current.durationInMonth.toString()))} и посещение сотен разных активностей",
+                      nextSub?.subscription?.id == current.id,
                       cardNumber,
-                      () => notifier.setSelectedSubscribtion(dummyList[index]),
+                      ref.watch(settingsProvider).isChangeSubscribtionLoading,
+                      () {
+                        if (currentSub != null) {
+                          notifier.changeNextSubscription(context,id: current.id ?? 0);
+                        }else{
+                          notifier.purchaseSubscription(context, id: current.id ?? 0, 
+                            autoRenewal: ref.watch(settingsProvider).autoRenewal);
+                        }
+                      },
                     );
                   },
-                  itemCount: dummyList.length,
+                  itemCount: allSubs.length,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                 ),
-                if (selectedSubscribtion != null)
+                if (currentSub != null && nextSub != null)
                   CustomText(
                     text:
-                        "Ваш тариф: “Пол года” закончится 26.05.24, после чего подписка сменится на “${AppHelpers().getMonthWord(int.parse(selectedSubscribtion.durationInMonths ?? ""))}”.",
+                        "Ваш тариф: “${currentSub.subscription?.description}” закончится ${notifier.getEndDateOfCurrentSub()}, после чего подписка сменится на “${nextSub.subscription?.description}”.",
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
                     height: 1.1.h,
@@ -100,6 +108,7 @@ Widget eachSubscription(
     String description,
     bool isSelected,
     String cardNumber,
+    bool loading,
     void Function()? onTap) {
   return Padding(
     padding: EdgeInsets.only(bottom: 10.h),
@@ -191,6 +200,7 @@ Widget eachSubscription(
               child: Padding(
                 padding: EdgeInsets.all(16.r),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -357,17 +367,17 @@ Widget dialogContent(
           height: 1.1.h,
         ),
         24.verticalSpace,
-        CustomButton(
-          onPressed: () {
-            onPressed?.call();
-            context.popRoute();
-          },
-          text: 'Подтвердить',
+        Consumer(builder: (context, ref, child) {
+          final bool loading = ref.watch(settingsProvider).isChangeSubscribtionLoading;
+          return CustomButton(
+          onPressed: onPressed,
+          text:loading ? "Подтверждение..." : 'Подтвердить',
           height: 40.h,
           buttonColor: Colors.white,
           fontSize: 14.sp,
           fontWeight: FontWeight.w500,
-        )
+        );
+        },),
       ],
     ),
   );

@@ -20,16 +20,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      //ref.read(settingsProvider.notifier).setUserInfos();
-    });
+    ref.read(settingsProvider.notifier).getAllAvailableSubscribtions(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(settingsProvider);
     final event = ref.read(settingsProvider.notifier);
-    debugPrint("image ${state.avatar}");
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar:
@@ -49,9 +45,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             const MySubscribtion(),
             32.verticalSpace,
             /* Two containers */
-            PersonalInfo(
-              event: event,
-              state: state,
+            Consumer(
+              builder: (context, ref, child) {
+                final state = ref.watch(settingsProvider);
+                return PersonalInfo(
+                  event: event,
+                  state: state,
+                );
+              },
             ),
             32.verticalSpace,
             const ApplicationSettings(),
