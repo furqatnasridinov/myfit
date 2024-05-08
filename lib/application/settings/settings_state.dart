@@ -1,4 +1,3 @@
-import 'package:myfit/infrastructure/models/data/subscribtion_demo.dart';
 import 'package:myfit/infrastructure/models/data/user_subscribtion.dart';
 import 'package:myfit/infrastructure/models/response/auth_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -27,7 +26,6 @@ class SettingsState with _$SettingsState {
     @Default(false) bool isReminderDisabled,
     @Default("") String? qrcodeValue,
     @Default(false) bool isNoAccessChangingPhoto,
-    @Default(null) SubscribtionDemo? selectedSubscribtion,
     @Default(null) UserSubscription? currentSubscribtion,
     @Default(null) UserSubscription? nextSubscribtion,
     @Default([]) List<Subscription> allAvailableSubscriptions,

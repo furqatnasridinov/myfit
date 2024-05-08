@@ -180,7 +180,7 @@ class _MainHeaderState extends ConsumerState<NotesHeader> {
       }
     });
 
-    controller.addListener(() {
+   /*  controller.addListener(() {
       if (controller.text.length > 1 && controller.text != previousText) {
         ref.read(main2Provider.notifier).searchingSchedules(
               context,
@@ -193,7 +193,7 @@ class _MainHeaderState extends ConsumerState<NotesHeader> {
           controller.text.isNotEmpty) {
         _updateOverlay();
       }
-    });
+    }); */
   }
 
   @override

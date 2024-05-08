@@ -170,6 +170,9 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
               final lessonsToShowAfterSelectingADay =
                   ref.watch(activityProvider).lessonsToShowAfterSelectingADay;
               final scheduleEvent = ref.read(scheduleProvider.notifier);
+              final int visitPerMonth = ref.watch(activityProvider).gym?.visitPerMonth ?? 0;
+              final int visitedCount = ref.watch(activityProvider).gym?.visitedCount ?? 0;
+              final int visitRemaining = visitPerMonth - visitedCount;
               if (lessonsToShowAfterSelectingADay.isEmpty) {
                 return Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -202,6 +205,7 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                       currentSchedule.description ?? "??",
                       currentSchedule.lessonState ?? "",
                       currentSchedule.isLoading,
+                      visitRemaining <= 0,
                       () async {
                         await widget.event.enrollToGym(
                           context,
@@ -242,6 +246,7 @@ Widget activityCard(
   String name,
   String? status,
   bool? isloading,
+  cannotEnrollDueToVisitLimit,
   void Function()? enrollFunction,
 ) {
   
@@ -281,7 +286,7 @@ Widget activityCard(
                 SizedBox(
                   child: GestureDetector(
                     onTap: (status == "OPEN" || status == "CANCELED_USER" || status == "CANCELED_GYM") 
-                      && isloading == false ? () {
+                      && isloading == false && !cannotEnrollDueToVisitLimit ? () {
                           enrollFunction?.call();
                       }
                         : null,
@@ -289,10 +294,11 @@ Widget activityCard(
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                         child: CustomText(
-                          text: isloading == true ? "Загрузка " :  AppHelpers().getStatusText(status),
+                          text: isloading == true ? "Загрузка " :  cannotEnrollDueToVisitLimit ? 
+                          "Закончились посещения" : AppHelpers().getStatusText(status),
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
-                          color: AppHelpers().getStatusTextColor(status),
+                          color: cannotEnrollDueToVisitLimit ? AppColors.greyText : AppHelpers().getStatusTextColor(status),
                         ),
                       ),
                     ),

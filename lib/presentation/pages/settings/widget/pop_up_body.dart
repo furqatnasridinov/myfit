@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:ui';
 
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/settings/settings_notifier.dart';
@@ -121,13 +120,13 @@ class _PopupBodyState extends State<PopupBody> {
                       removeTop: true,
                       removeBottom: true,
                       child: Consumer(builder: (context, ref, child) {
-                        final state = ref.watch(settingsProvider);
+                        final listOfCities = ref.watch(settingsProvider).listOfCities;
 
                         return ListView.builder(
                           shrinkWrap: true,
-                          itemCount: state.listOfCities.length,
+                          itemCount: listOfCities.length,
                           itemBuilder: (context, index) {
-                            final currentCity = state.listOfCities[index];
+                            final currentCity = listOfCities[index];
                             return _listiles(
                               currentCity.name ?? "",
                               () {
@@ -184,7 +183,6 @@ class _PopupBodyState extends State<PopupBody> {
         showOverlay(context);
       }
     });
-    debugPrint("path ${context.router.current.path}");
     return SingleChildScrollView(
       child: CustomCard(
         borderColor: Colors.transparent,
@@ -601,7 +599,6 @@ class _PopupBodyState extends State<PopupBody> {
                               await widget.event
                                   .patchCity(selectedCity, context);
                               await mapEvent.setLocationFromSelectedCity();
-                              await mapEvent.getYandexMapImage(context);
                             }
                             if (LocalStorage.getAge() != ageController.text) {
                               await widget.event

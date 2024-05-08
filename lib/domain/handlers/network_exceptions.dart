@@ -89,7 +89,7 @@ class NetworkExceptions with _$NetworkExceptions {
         else {
             return const NetworkExceptions.unknown("Unknown from else caught");
         }
-        return const NetworkExceptions.unknown("abdu");
+        return const NetworkExceptions.unknown("Невозможно подключиться к серверу. Попробуйте позже.");
         
       } on FormatException catch (_) {
         return const NetworkExceptions.formatException();

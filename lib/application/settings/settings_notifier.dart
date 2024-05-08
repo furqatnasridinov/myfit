@@ -1,13 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:async';
-import 'dart:developer';
-import 'dart:ffi';
 import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:myfit/application/settings/settings_state.dart';
 import 'package:myfit/domain/handlers/network_exceptions.dart';
 import 'package:myfit/domain/interface/settings.dart';
-import 'package:myfit/infrastructure/models/data/subscribtion_demo.dart';
 import 'package:myfit/infrastructure/models/request/send_confirmation_code_request.dart';
 import 'package:myfit/infrastructure/models/request/send_phone_number_request.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
@@ -644,9 +641,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     }
   }
 
-  void setSelectedSubscribtion(SubscribtionDemo? subscribtion) {
-    state = state.copyWith(selectedSubscribtion: subscribtion);
-  }
+
 
   void addCard(String number) {
     state = state.copyWith(cardNumber: number);

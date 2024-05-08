@@ -16,7 +16,6 @@ class ChooseSubscribtion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //final List<SubscribtionDemo> dummyList = DummyData().dummySubscribtions;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 32.h),
       child: Column(

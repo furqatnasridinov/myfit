@@ -21,7 +21,6 @@ class Main2State with _$Main2State {
     @Default(null) DateTime? lessonStartsAt,
     @Default(null) DateTime? lessonEndsAt,
     @Default(false) bool lessonStartsWithin40Minutes,
-    @Default({}) Map<String,dynamic> recommendedGyms,
   }) = _Main2State;
   const Main2State._();
 }

@@ -59,7 +59,7 @@ class PopUpMap extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                          text: " $visitRemaining/$visitPerMonth)",
+                          text: " $visitRemaining/$visitPerMonth",
                           style: GoogleFonts.inter(
                             fontSize: 14.sp,
                             height : 1.1,

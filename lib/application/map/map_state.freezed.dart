@@ -30,6 +30,9 @@ mixin _$MapState {
   bool get showOnlyKnown => throw _privateConstructorUsedError;
   bool get showRecommended => throw _privateConstructorUsedError;
   Gym? get selectedGym => throw _privateConstructorUsedError;
+  List<GymData> get gymsFoundBySearch => throw _privateConstructorUsedError;
+  List<LessonFoundBySearch> get lessonsFoundBySearch =>
+      throw _privateConstructorUsedError;
   List<LessonTypeWithGymsInside> get activitiesWithGymsInsideAll =>
       throw _privateConstructorUsedError;
   List<LessonTypeWithGymsInside>
@@ -42,6 +45,8 @@ mixin _$MapState {
   bool get isLocationIconHidden => throw _privateConstructorUsedError;
   bool get isGymsPopupShown => throw _privateConstructorUsedError;
   String get selectedLessonTypeFromMap => throw _privateConstructorUsedError;
+  Map<String, dynamic> get recommendedGyms =>
+      throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $MapStateCopyWith<MapState> get copyWith =>
@@ -68,6 +73,8 @@ abstract class $MapStateCopyWith<$Res> {
       bool showOnlyKnown,
       bool showRecommended,
       Gym? selectedGym,
+      List<GymData> gymsFoundBySearch,
+      List<LessonFoundBySearch> lessonsFoundBySearch,
       List<LessonTypeWithGymsInside> activitiesWithGymsInsideAll,
       List<LessonTypeWithGymsInside>
           activitiesWithGymsInsideFromSelectedDiapozone,
@@ -77,7 +84,8 @@ abstract class $MapStateCopyWith<$Res> {
       double bottomFlexValue,
       bool isLocationIconHidden,
       bool isGymsPopupShown,
-      String selectedLessonTypeFromMap});
+      String selectedLessonTypeFromMap,
+      Map<String, dynamic> recommendedGyms});
 }
 
 /// @nodoc
@@ -107,6 +115,8 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
     Object? showOnlyKnown = null,
     Object? showRecommended = null,
     Object? selectedGym = freezed,
+    Object? gymsFoundBySearch = null,
+    Object? lessonsFoundBySearch = null,
     Object? activitiesWithGymsInsideAll = null,
     Object? activitiesWithGymsInsideFromSelectedDiapozone = null,
     Object? showMapOnly = null,
@@ -116,6 +126,7 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
     Object? isLocationIconHidden = null,
     Object? isGymsPopupShown = null,
     Object? selectedLessonTypeFromMap = null,
+    Object? recommendedGyms = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -174,6 +185,14 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
           ? _value.selectedGym
           : selectedGym // ignore: cast_nullable_to_non_nullable
               as Gym?,
+      gymsFoundBySearch: null == gymsFoundBySearch
+          ? _value.gymsFoundBySearch
+          : gymsFoundBySearch // ignore: cast_nullable_to_non_nullable
+              as List<GymData>,
+      lessonsFoundBySearch: null == lessonsFoundBySearch
+          ? _value.lessonsFoundBySearch
+          : lessonsFoundBySearch // ignore: cast_nullable_to_non_nullable
+              as List<LessonFoundBySearch>,
       activitiesWithGymsInsideAll: null == activitiesWithGymsInsideAll
           ? _value.activitiesWithGymsInsideAll
           : activitiesWithGymsInsideAll // ignore: cast_nullable_to_non_nullable
@@ -211,6 +230,10 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
           ? _value.selectedLessonTypeFromMap
           : selectedLessonTypeFromMap // ignore: cast_nullable_to_non_nullable
               as String,
+      recommendedGyms: null == recommendedGyms
+          ? _value.recommendedGyms
+          : recommendedGyms // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>,
     ) as $Val);
   }
 }
@@ -238,6 +261,8 @@ abstract class _$$MapStateImplCopyWith<$Res>
       bool showOnlyKnown,
       bool showRecommended,
       Gym? selectedGym,
+      List<GymData> gymsFoundBySearch,
+      List<LessonFoundBySearch> lessonsFoundBySearch,
       List<LessonTypeWithGymsInside> activitiesWithGymsInsideAll,
       List<LessonTypeWithGymsInside>
           activitiesWithGymsInsideFromSelectedDiapozone,
@@ -247,7 +272,8 @@ abstract class _$$MapStateImplCopyWith<$Res>
       double bottomFlexValue,
       bool isLocationIconHidden,
       bool isGymsPopupShown,
-      String selectedLessonTypeFromMap});
+      String selectedLessonTypeFromMap,
+      Map<String, dynamic> recommendedGyms});
 }
 
 /// @nodoc
@@ -275,6 +301,8 @@ class __$$MapStateImplCopyWithImpl<$Res>
     Object? showOnlyKnown = null,
     Object? showRecommended = null,
     Object? selectedGym = freezed,
+    Object? gymsFoundBySearch = null,
+    Object? lessonsFoundBySearch = null,
     Object? activitiesWithGymsInsideAll = null,
     Object? activitiesWithGymsInsideFromSelectedDiapozone = null,
     Object? showMapOnly = null,
@@ -284,6 +312,7 @@ class __$$MapStateImplCopyWithImpl<$Res>
     Object? isLocationIconHidden = null,
     Object? isGymsPopupShown = null,
     Object? selectedLessonTypeFromMap = null,
+    Object? recommendedGyms = null,
   }) {
     return _then(_$MapStateImpl(
       isloading: null == isloading
@@ -342,6 +371,14 @@ class __$$MapStateImplCopyWithImpl<$Res>
           ? _value.selectedGym
           : selectedGym // ignore: cast_nullable_to_non_nullable
               as Gym?,
+      gymsFoundBySearch: null == gymsFoundBySearch
+          ? _value._gymsFoundBySearch
+          : gymsFoundBySearch // ignore: cast_nullable_to_non_nullable
+              as List<GymData>,
+      lessonsFoundBySearch: null == lessonsFoundBySearch
+          ? _value._lessonsFoundBySearch
+          : lessonsFoundBySearch // ignore: cast_nullable_to_non_nullable
+              as List<LessonFoundBySearch>,
       activitiesWithGymsInsideAll: null == activitiesWithGymsInsideAll
           ? _value._activitiesWithGymsInsideAll
           : activitiesWithGymsInsideAll // ignore: cast_nullable_to_non_nullable
@@ -379,6 +416,10 @@ class __$$MapStateImplCopyWithImpl<$Res>
           ? _value.selectedLessonTypeFromMap
           : selectedLessonTypeFromMap // ignore: cast_nullable_to_non_nullable
               as String,
+      recommendedGyms: null == recommendedGyms
+          ? _value._recommendedGyms
+          : recommendedGyms // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>,
     ));
   }
 }
@@ -401,6 +442,8 @@ class _$MapStateImpl extends _MapState {
       this.showOnlyKnown = false,
       this.showRecommended = false,
       this.selectedGym = null,
+      final List<GymData> gymsFoundBySearch = const [],
+      final List<LessonFoundBySearch> lessonsFoundBySearch = const [],
       final List<LessonTypeWithGymsInside> activitiesWithGymsInsideAll =
           const [],
       final List<LessonTypeWithGymsInside>
@@ -411,14 +454,18 @@ class _$MapStateImpl extends _MapState {
       this.bottomFlexValue = 0.6,
       this.isLocationIconHidden = false,
       this.isGymsPopupShown = false,
-      this.selectedLessonTypeFromMap = ""})
+      this.selectedLessonTypeFromMap = "",
+      final Map<String, dynamic> recommendedGyms = const {}})
       : _listOfMarkers = listOfMarkers,
         _distances = distances,
         _listOfBool = listOfBool,
         _gymFoundBySearching = gymFoundBySearching,
+        _gymsFoundBySearch = gymsFoundBySearch,
+        _lessonsFoundBySearch = lessonsFoundBySearch,
         _activitiesWithGymsInsideAll = activitiesWithGymsInsideAll,
         _activitiesWithGymsInsideFromSelectedDiapozone =
             activitiesWithGymsInsideFromSelectedDiapozone,
+        _recommendedGyms = recommendedGyms,
         super._();
 
   @override
@@ -488,6 +535,26 @@ class _$MapStateImpl extends _MapState {
   @override
   @JsonKey()
   final Gym? selectedGym;
+  final List<GymData> _gymsFoundBySearch;
+  @override
+  @JsonKey()
+  List<GymData> get gymsFoundBySearch {
+    if (_gymsFoundBySearch is EqualUnmodifiableListView)
+      return _gymsFoundBySearch;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_gymsFoundBySearch);
+  }
+
+  final List<LessonFoundBySearch> _lessonsFoundBySearch;
+  @override
+  @JsonKey()
+  List<LessonFoundBySearch> get lessonsFoundBySearch {
+    if (_lessonsFoundBySearch is EqualUnmodifiableListView)
+      return _lessonsFoundBySearch;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_lessonsFoundBySearch);
+  }
+
   final List<LessonTypeWithGymsInside> _activitiesWithGymsInsideAll;
   @override
   @JsonKey()
@@ -533,10 +600,18 @@ class _$MapStateImpl extends _MapState {
   @override
   @JsonKey()
   final String selectedLessonTypeFromMap;
+  final Map<String, dynamic> _recommendedGyms;
+  @override
+  @JsonKey()
+  Map<String, dynamic> get recommendedGyms {
+    if (_recommendedGyms is EqualUnmodifiableMapView) return _recommendedGyms;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_recommendedGyms);
+  }
 
   @override
   String toString() {
-    return 'MapState(isloading: $isloading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, activeMarker: $activeMarker, distances: $distances, selectedDiapozone: $selectedDiapozone, locationPermissionDenied: $locationPermissionDenied, locationServiceIsNotEnabled: $locationServiceIsNotEnabled, listOfBool: $listOfBool, gymFoundBySearching: $gymFoundBySearching, isSearchbarOpened: $isSearchbarOpened, showOnlyKnown: $showOnlyKnown, showRecommended: $showRecommended, selectedGym: $selectedGym, activitiesWithGymsInsideAll: $activitiesWithGymsInsideAll, activitiesWithGymsInsideFromSelectedDiapozone: $activitiesWithGymsInsideFromSelectedDiapozone, showMapOnly: $showMapOnly, mapScreenShot: $mapScreenShot, topFlexValue: $topFlexValue, bottomFlexValue: $bottomFlexValue, isLocationIconHidden: $isLocationIconHidden, isGymsPopupShown: $isGymsPopupShown, selectedLessonTypeFromMap: $selectedLessonTypeFromMap)';
+    return 'MapState(isloading: $isloading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, activeMarker: $activeMarker, distances: $distances, selectedDiapozone: $selectedDiapozone, locationPermissionDenied: $locationPermissionDenied, locationServiceIsNotEnabled: $locationServiceIsNotEnabled, listOfBool: $listOfBool, gymFoundBySearching: $gymFoundBySearching, isSearchbarOpened: $isSearchbarOpened, showOnlyKnown: $showOnlyKnown, showRecommended: $showRecommended, selectedGym: $selectedGym, gymsFoundBySearch: $gymsFoundBySearch, lessonsFoundBySearch: $lessonsFoundBySearch, activitiesWithGymsInsideAll: $activitiesWithGymsInsideAll, activitiesWithGymsInsideFromSelectedDiapozone: $activitiesWithGymsInsideFromSelectedDiapozone, showMapOnly: $showMapOnly, mapScreenShot: $mapScreenShot, topFlexValue: $topFlexValue, bottomFlexValue: $bottomFlexValue, isLocationIconHidden: $isLocationIconHidden, isGymsPopupShown: $isGymsPopupShown, selectedLessonTypeFromMap: $selectedLessonTypeFromMap, recommendedGyms: $recommendedGyms)';
   }
 
   @override
@@ -573,6 +648,10 @@ class _$MapStateImpl extends _MapState {
                 other.showRecommended == showRecommended) &&
             (identical(other.selectedGym, selectedGym) ||
                 other.selectedGym == selectedGym) &&
+            const DeepCollectionEquality()
+                .equals(other._gymsFoundBySearch, _gymsFoundBySearch) &&
+            const DeepCollectionEquality()
+                .equals(other._lessonsFoundBySearch, _lessonsFoundBySearch) &&
             const DeepCollectionEquality().equals(
                 other._activitiesWithGymsInsideAll,
                 _activitiesWithGymsInsideAll) &&
@@ -591,9 +670,8 @@ class _$MapStateImpl extends _MapState {
                 other.isLocationIconHidden == isLocationIconHidden) &&
             (identical(other.isGymsPopupShown, isGymsPopupShown) ||
                 other.isGymsPopupShown == isGymsPopupShown) &&
-            (identical(
-                    other.selectedLessonTypeFromMap, selectedLessonTypeFromMap) ||
-                other.selectedLessonTypeFromMap == selectedLessonTypeFromMap));
+            (identical(other.selectedLessonTypeFromMap, selectedLessonTypeFromMap) || other.selectedLessonTypeFromMap == selectedLessonTypeFromMap) &&
+            const DeepCollectionEquality().equals(other._recommendedGyms, _recommendedGyms));
   }
 
   @override
@@ -613,6 +691,8 @@ class _$MapStateImpl extends _MapState {
         showOnlyKnown,
         showRecommended,
         selectedGym,
+        const DeepCollectionEquality().hash(_gymsFoundBySearch),
+        const DeepCollectionEquality().hash(_lessonsFoundBySearch),
         const DeepCollectionEquality().hash(_activitiesWithGymsInsideAll),
         const DeepCollectionEquality()
             .hash(_activitiesWithGymsInsideFromSelectedDiapozone),
@@ -622,7 +702,8 @@ class _$MapStateImpl extends _MapState {
         bottomFlexValue,
         isLocationIconHidden,
         isGymsPopupShown,
-        selectedLessonTypeFromMap
+        selectedLessonTypeFromMap,
+        const DeepCollectionEquality().hash(_recommendedGyms)
       ]);
 
   @JsonKey(ignore: true)
@@ -648,6 +729,8 @@ abstract class _MapState extends MapState {
       final bool showOnlyKnown,
       final bool showRecommended,
       final Gym? selectedGym,
+      final List<GymData> gymsFoundBySearch,
+      final List<LessonFoundBySearch> lessonsFoundBySearch,
       final List<LessonTypeWithGymsInside> activitiesWithGymsInsideAll,
       final List<LessonTypeWithGymsInside>
           activitiesWithGymsInsideFromSelectedDiapozone,
@@ -657,7 +740,8 @@ abstract class _MapState extends MapState {
       final double bottomFlexValue,
       final bool isLocationIconHidden,
       final bool isGymsPopupShown,
-      final String selectedLessonTypeFromMap}) = _$MapStateImpl;
+      final String selectedLessonTypeFromMap,
+      final Map<String, dynamic> recommendedGyms}) = _$MapStateImpl;
   const _MapState._() : super._();
 
   @override
@@ -689,6 +773,10 @@ abstract class _MapState extends MapState {
   @override
   Gym? get selectedGym;
   @override
+  List<GymData> get gymsFoundBySearch;
+  @override
+  List<LessonFoundBySearch> get lessonsFoundBySearch;
+  @override
   List<LessonTypeWithGymsInside> get activitiesWithGymsInsideAll;
   @override
   List<LessonTypeWithGymsInside>
@@ -707,6 +795,8 @@ abstract class _MapState extends MapState {
   bool get isGymsPopupShown;
   @override
   String get selectedLessonTypeFromMap;
+  @override
+  Map<String, dynamic> get recommendedGyms;
   @override
   @JsonKey(ignore: true)
   _$$MapStateImplCopyWith<_$MapStateImpl> get copyWith =>

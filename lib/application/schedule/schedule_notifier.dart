@@ -35,7 +35,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
               final completedAndConfirmedSchedules = allSchedules
                   .where((schedule) =>
                       //schedule.lessonState == "COMPLETED" ||
-                      schedule.lessonState == "CONFIRMED" || 
+                      schedule.lessonState == "CONFIRMED" ||
                       schedule.lessonState == "PROGRESS")
                   .toList();
 
@@ -129,7 +129,8 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     }
   }
 
-  Future<void>makeLessonInProgress(BuildContext context, {required int gymId, required int lessonId}) async {
+  Future<void> makeLessonInProgress(BuildContext context,
+      {required int gymId, required int lessonId}) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
       final response = await _scheduleRepositoryInterface.makeLessonInProgress(
@@ -150,9 +151,10 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
-  } 
+  }
 
-  Future<void>makeLessonCompleted(BuildContext context, {required int gymId, required int lessonId}) async {
+  Future<void> makeLessonCompleted(BuildContext context,
+      {required int gymId, required int lessonId}) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
       final response = await _scheduleRepositoryInterface.makeLessonCompleted(
@@ -175,11 +177,11 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     }
   }
 
-  void setQrLoading(){
+  void setQrLoading() {
     state = state.copyWith(qrLoading: true);
   }
 
-  void setQrNotLoading(){
+  void setQrNotLoading() {
     state = state.copyWith(qrLoading: false);
   }
 
@@ -206,11 +208,14 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
             );
             listToCollect.add(item);
           }
+          listToCollect.sort((a, b) => DateFormat("dd.MM.yy HH:mm")
+              .parse(a.time)
+              .compareTo(DateFormat("dd.MM.yy HH:mm").parse(b.time)));
           state = state.copyWith(completedSchedules: listToCollect);
         }
       }, failure: (error, statusCode, operationInfo) {
         AppHelpers.showErrorSnack(
-              context, NetworkExceptions.getErrorMessage(error));
+            context, NetworkExceptions.getErrorMessage(error));
       });
     } else {
       AppHelpers.showCheckTopSnackBar(context);
@@ -409,7 +414,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     state = state.copyWith(completedSchedulesShown: true);
   }
 
-  Future<void> hideCompletedSchedules() async{
+  Future<void> hideCompletedSchedules() async {
     await Future.delayed(const Duration(milliseconds: 450));
     state = state.copyWith(completedSchedulesShown: false);
   }
@@ -418,17 +423,17 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     state = state.copyWith(pendingSchedulesShown: true);
   }
 
-  Future<void> hidePendingSchedules() async{
+  Future<void> hidePendingSchedules() async {
     await Future.delayed(const Duration(milliseconds: 450));
     state = state.copyWith(pendingSchedulesShown: false);
   }
 
-  Future<void> setAnimationCompletedLessons(bool val)async{
+  Future<void> setAnimationCompletedLessons(bool val) async {
     await Future.delayed(const Duration(milliseconds: 100));
     state = state.copyWith(completedLessonListAnimaion: val);
   }
 
-  Future<void> setAnimationPendingLessons(bool val)async{
+  Future<void> setAnimationPendingLessons(bool val) async {
     await Future.delayed(const Duration(milliseconds: 100));
     state = state.copyWith(pendingLessonsListAnimation: val);
   }
@@ -442,7 +447,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
           AppHelpers.showSnack(context, "Запись отменена");
         },
         failure: (error, statusCode, operationInfo) {
-         AppHelpers.showErrorSnack(
+          AppHelpers.showErrorSnack(
               context, NetworkExceptions.getErrorMessage(error));
         },
       );
@@ -469,7 +474,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     );
   }
 
-  DateTime getFinishTime(String time, String tillWhen){
+  DateTime getFinishTime(String time, String tillWhen) {
     final parts = time.split("@");
     String tillwhenModified = tillWhen.length == 4 ? "0$tillWhen" : tillWhen;
     final DateTime result = DateTime.parse("${parts[0]}" " $tillwhenModified");

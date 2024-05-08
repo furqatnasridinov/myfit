@@ -117,6 +117,7 @@ class CompletedSchedules extends ConsumerWidget {
                 Consumer(builder: (context, watch, child) {
                   final completedSchedules =
                       ref.watch(scheduleProvider).completedSchedules;
+                  
                   return AnimatedSize(
                     duration: const Duration(milliseconds: 350),
                     curve: Curves.easeInOut,

@@ -4,6 +4,7 @@ import 'package:myfit/application/map/map_state.dart';
 import 'package:myfit/domain/handlers/network_exceptions.dart';
 import 'package:myfit/domain/interface/main.dart';
 import 'package:myfit/infrastructure/models/data/gym_data.dart';
+import 'package:myfit/infrastructure/models/data/lessons_found_by_search.dart';
 import 'package:myfit/infrastructure/models/data/lessontype_with_gyms_inside.dart';
 import 'package:myfit/infrastructure/models/request/get_yandex_map_image_request.dart';
 import 'package:myfit/infrastructure/models/response/user_schedules_response.dart';
@@ -15,7 +16,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
 class MapNotifier extends StateNotifier<MapState> {
-  MapNotifier(this._mainRepositoryInterface) : super(MapState());
+  MapNotifier(this._mainRepositoryInterface) : super(const MapState());
   final MainRepositoryInterface _mainRepositoryInterface;
 
   Future<void> getUserLocation() async {
@@ -24,6 +25,7 @@ class MapNotifier extends StateNotifier<MapState> {
     if (permission == LocationPermission.denied ||
         permission == LocationPermission.deniedForever) {
       state = state.copyWith(locationPermissionDenied: true);
+      setLocationFromSelectedCity();
       permission = await Geolocator.requestPermission();
     }
     if (permission == LocationPermission.always ||
@@ -35,6 +37,7 @@ class MapNotifier extends StateNotifier<MapState> {
         state = state.copyWith(locationPermissionDenied: false);
       } catch (e) {
         state = state.copyWith(locationServiceIsNotEnabled: true);
+        setLocationFromSelectedCity();
       }
     }
   }
@@ -117,6 +120,28 @@ class MapNotifier extends StateNotifier<MapState> {
     }
   }
 
+  Future<void> getRecommendationForVisit(BuildContext context) async {
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      final response =
+          await _mainRepositoryInterface.getRecommendationForVisiting();
+      response.when(success: (data) {
+        if (data["operationResult"] == "OK") {
+          final operationObject = data["object"];
+          if (operationObject["lessonType"] != null) {
+            debugPrint(operationObject.toString());
+            state = state.copyWith(recommendedGyms: operationObject);
+          }
+        }
+      }, failure: (error, statusCode, operationInfo) {
+        AppHelpers.showErrorSnack(
+            context, NetworkExceptions.getErrorMessage(error));
+      });
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+/* 
   Future<void> getYandexMapImage(
     BuildContext context,
   ) async {
@@ -163,7 +188,7 @@ class MapNotifier extends StateNotifier<MapState> {
       // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
-  }
+  } */
 
   Future<void> getYandexMapImageWithAllMarkers(
     BuildContext context,
@@ -255,9 +280,24 @@ class MapNotifier extends StateNotifier<MapState> {
   }
 
   LatLng getInitialLatLon() {
-    if (state.userPosition != null) {
-      return LatLng(
-          state.userPosition!.latitude, state.userPosition!.longitude);
+    if (state.showRecommended && state.recommendedGyms.isNotEmpty) {
+      return LatLng(double.parse(state.recommendedGyms["gyms"][0]["latitude"]),
+          double.parse(state.recommendedGyms["gyms"][0]["longitude"]));
+    } else {
+      if (state.userPosition != null) {
+        return LatLng(
+            state.userPosition!.latitude, state.userPosition!.longitude);
+      } else {
+        return LatLng(double.parse(LocalStorage.getSelectedCityLat()),
+            double.parse(LocalStorage.getSelectedCityLon()));
+      }
+    }
+  }
+
+  LatLng getInitialLatLonForSmallMap(List<dynamic> gyms) {
+    if (gyms.isNotEmpty) {
+      return LatLng(double.parse(gyms[0]["latitude"]),
+          double.parse(gyms[0]["longitude"]));
     } else {
       return LatLng(double.parse(LocalStorage.getSelectedCityLat()),
           double.parse(LocalStorage.getSelectedCityLon()));
@@ -309,7 +349,7 @@ class MapNotifier extends StateNotifier<MapState> {
         success: (data) {
           final gymsMapFromServer = data["object"] as Map<String, dynamic>;
           final listToCollectActivitiesWithGyms = <LessonTypeWithGymsInside>[];
-          if (state.showOnlyKnown) {
+          if (state.showOnlyKnown && knownActivities.isNotEmpty) {
             for (var element in knownActivities) {
               gymsMapFromServer.forEach((key, value) {
                 if (element == key) {
@@ -324,7 +364,7 @@ class MapNotifier extends StateNotifier<MapState> {
                 }
               });
             }
-          } else if (state.showRecommended) {
+          } else if (state.showRecommended && recommended.isNotEmpty) {
             // logic to show only recommended
             final data = LessonTypeWithGymsInside(
               false,
@@ -565,7 +605,6 @@ class MapNotifier extends StateNotifier<MapState> {
     }
   }
 
-
   Future<void> setSelectedGym({
     final String? name,
     final double? latitude,
@@ -575,7 +614,8 @@ class MapNotifier extends StateNotifier<MapState> {
     final int? visitedCount,
     final int? visitPerMonth,
   }) async {
-    state = state.copyWith(selectedGym: Gym(
+    state = state.copyWith(
+        selectedGym: Gym(
       address: address,
       id: id,
       latitude: latitude.toString(),
@@ -730,7 +770,7 @@ class MapNotifier extends StateNotifier<MapState> {
                   state.userPosition!.latitude,
                   state.userPosition!.longitude,
                 ),
-                zoom: 15,
+                zoom: 18,
               ),
             )));
   }
@@ -741,5 +781,68 @@ class MapNotifier extends StateNotifier<MapState> {
 
   void closeSearchBar() {
     state = state.copyWith(isSearchbarOpened: false);
+  }
+
+  Future<void> searchForGymAndLesson(BuildContext context,
+      {required String searchString}) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response = await _mainRepositoryInterface.searchForGymAndLesson(
+        searchString: searchString,
+      );
+      response.when(
+        success: (data) {
+          if (data["operationResult"] == "OK") {
+            final Map<String, dynamic> mapData = data["object"];
+            final List<GymData> listToCollectGyms = [];
+            final List<LessonFoundBySearch> listToCollectLessons = [];
+            final List listOfGymsFromServer = mapData["gymShortDtos"];
+            final List listOfLessonsFromServer = mapData["lessonShortInfoDtos"];
+            if (listOfGymsFromServer.isNotEmpty) {
+              for (var element in listOfGymsFromServer) {
+                final data = GymData(
+                  id: element["id"],
+                  name: element["name"],
+                  address: element["address"],
+                  distanceFromClient: calCulateDistanceSrazy(
+                    state.userPosition!.latitude,
+                    state.userPosition!.longitude,
+                    double.parse(element['latitude']),
+                    double.parse(element['longitude']),
+                  ),
+                );
+                listToCollectGyms.add(data);
+              }
+            }
+            if (listOfLessonsFromServer.isNotEmpty) {
+              for (var element in listOfLessonsFromServer) {
+                final data = LessonFoundBySearch(
+                  id: element["id"],
+                  gymId: element["gymId"] ?? 0,
+                  title: element["description"],
+                  distanceFromClient: calCulateDistanceSrazy(
+                    state.userPosition!.latitude,
+                    state.userPosition!.longitude,
+                    double.parse(element['latitude']),
+                    double.parse(element['longitude']),
+                  ),
+                );
+                listToCollectLessons.add(data);
+              }
+            }
+            state = state.copyWith(
+              gymsFoundBySearch: listToCollectGyms,
+              lessonsFoundBySearch: listToCollectLessons,
+            );
+          }
+        },
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
   }
 }

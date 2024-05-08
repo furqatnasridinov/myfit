@@ -79,7 +79,7 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
                             await event.getGymsList(
                               context,
                               ref.watch(settingsProvider).knownActivities,
-                              ref.watch(main2Provider).recommendedGyms,
+                              ref.watch(mapProvider).recommendedGyms,
                             );
                             await event.getGetListOfGymsFromDiapozone();
                             await event.setFlexes();

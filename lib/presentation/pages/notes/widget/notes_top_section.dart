@@ -1,6 +1,5 @@
 // ignore_for_file: deprecated_member_use
 
-import 'dart:ui';
 
 import 'package:myfit/application/schedule/schedule_notifier.dart';
 import 'package:myfit/application/schedule/schedule_state.dart';

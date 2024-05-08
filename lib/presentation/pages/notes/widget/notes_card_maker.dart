@@ -1,5 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, deprecated_member_use
-import 'dart:ui';
 
 import 'package:myfit/application/notes/notes_notifer.dart';
 import 'package:myfit/application/notes/notes_state.dart';

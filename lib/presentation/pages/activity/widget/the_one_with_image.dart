@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/presentation/components/custom_button.dart';

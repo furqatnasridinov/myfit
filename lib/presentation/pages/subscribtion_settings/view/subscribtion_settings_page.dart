@@ -13,16 +13,19 @@ class SubscribtionSettingsScreen extends StatefulWidget {
   const SubscribtionSettingsScreen({super.key});
 
   @override
-  State<SubscribtionSettingsScreen> createState() => _SubscribtionSettingsScreenState();
+  State<SubscribtionSettingsScreen> createState() =>
+      _SubscribtionSettingsScreenState();
 }
 
-class _SubscribtionSettingsScreenState extends State<SubscribtionSettingsScreen> {
+class _SubscribtionSettingsScreenState
+    extends State<SubscribtionSettingsScreen> {
   ScrollController? controller = ScrollController();
   GlobalKey howSubscribtionWorksBlockKey = GlobalKey();
-  Offset position= Offset.zero;
+  Offset position = Offset.zero;
 
   void getPostion() {
-    final RenderBox renderBox = howSubscribtionWorksBlockKey.currentContext!.findRenderObject() as RenderBox;
+    final RenderBox renderBox = howSubscribtionWorksBlockKey.currentContext!
+        .findRenderObject() as RenderBox;
     position = renderBox.localToGlobal(Offset.zero);
   }
 
@@ -38,7 +41,7 @@ class _SubscribtionSettingsScreenState extends State<SubscribtionSettingsScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: const Main2Header(showBackButton: true, canNavigateToSettings: false),
+      appBar: Main2Header(showBackButton: true, canNavigateToSettings: false),
       body: CustomScrollView(
         controller: controller,
         slivers: [
@@ -56,12 +59,12 @@ class _SubscribtionSettingsScreenState extends State<SubscribtionSettingsScreen>
           // Choose Subscribtion
           SliverToBoxAdapter(
             child: ChooseSubscribtion(
-              onTap: (){
+              onTap: () {
                 controller?.animateTo(
-                      position.dy - 60.h,
-                      duration: const Duration(milliseconds: 700),
-                      curve: Curves.easeInOut,
-                    );
+                  position.dy - 60.h,
+                  duration: const Duration(milliseconds: 700),
+                  curve: Curves.easeInOut,
+                );
               },
             ),
           ),
@@ -72,7 +75,7 @@ class _SubscribtionSettingsScreenState extends State<SubscribtionSettingsScreen>
           ),
 
           // infos about Subscribtion
-           SliverToBoxAdapter(
+          SliverToBoxAdapter(
             child: InfosAboutSubscribtion(
               blockKey: howSubscribtionWorksBlockKey,
             ),

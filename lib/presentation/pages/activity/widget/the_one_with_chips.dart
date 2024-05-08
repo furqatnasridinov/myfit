@@ -38,6 +38,7 @@ class TheOneWithChips extends StatelessWidget {
                     runSpacing: 5.h,
                     spacing: 5.w,
                     children: List.generate(activityTypes.length, (index) {
+                      
                       final current = activityTypes[index];
                       bool isActive = current == selectedActivity;
                       return GestureDetector(

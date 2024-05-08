@@ -1,6 +1,5 @@
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/presentation/components/components.dart';
-import 'package:myfit/presentation/components/inter_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,14 +19,15 @@ class Description extends StatelessWidget {
           children: [
             32.verticalSpace,
             CustomText(
-              text: "Описание",
+              text: "Описание активности",
               fontSize: 16.sp,
               fontWeight: FontWeight.w600,
             ),
-            InterText(
+            CustomText(
               text: typeDescription,
               fontSize: 13.sp,
               fontWeight: FontWeight.w400,
+              height: 1.1,
             ),
           ],
         ),

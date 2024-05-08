@@ -117,4 +117,45 @@ class MainRepository implements MainRepositoryInterface {
       );
     }
   }
+
+   @override
+  Future<ApiResult<Map<String, dynamic>>> searchForGymAndLesson(
+      {required String searchString}) async {
+    try {
+      final client = inject<HttpService>().clientDio();
+      final sendingData = {"searchString": searchString};
+      final response = await client.get(
+        AppConstants.searchForGymAndLesson,
+        queryParameters: sendingData,
+      );
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      //throw e;
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      );
+    }
+  }
+
+    @override
+  Future<ApiResult<Map<String, dynamic>>> getRecommendationForVisiting() async {
+    try {
+      final client = inject<HttpService>().clientDio();
+      final response = await client.get(AppConstants.getRecommendationForVisit);
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      //rethrow;
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      );
+    }
+  }
+
+ 
 }

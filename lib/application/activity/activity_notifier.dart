@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myfit/application/activity/activity_state.dart';
 import 'package:myfit/application/main2/main2_notifier.dart';
+import 'package:myfit/application/map/map_notifier.dart';
 import 'package:myfit/application/schedule/schedule_notifier.dart';
 import 'package:myfit/domain/handlers/network_exceptions.dart';
 import 'package:myfit/domain/interface/activity.dart';
@@ -27,11 +28,12 @@ import '../../presentation/components/custom_button.dart';
 
 class ActivityNotifier extends StateNotifier<ActivityState> {
   ActivityNotifier(this._activityRepositoryInterface, this.scheduleNotifier,
-      this.main2Notifier)
+      this.main2Notifier, this.mapNotifier)
       : super(const ActivityState());
   final ActivityRepositoryInterface _activityRepositoryInterface;
   final ScheduleNotifier scheduleNotifier;
   final Main2Notifier main2Notifier;
+  final MapNotifier mapNotifier;
 
   Future<void> getGymInfo(BuildContext context, {required int gymId}) async {
     final connected = await AppConnectivity().connectivity();
@@ -338,18 +340,36 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   }
 
   void handleWebSocket(WebSocketChannel channel, BuildContext context) {
+    //ws://77.222.53.122:8080/appSchedulePanel
     /// Listen for all incoming data
     channel.stream.listen(
       (data) async {
         // convert the incoming data to json
         Map<String, dynamic> lessonData = jsonDecode(data);
         // get all lessons again && get lessons of selected activity
-        await getAllLessons(context, id: lessonData["gymId"]);
-        await getLessonsOfSelectedActivity(state.selectedActivity ?? "", false);
-        // get users schedules to show in schedule page
+        if (context.router.current.path == "/activity") {
+          final String gymIdFromCurrentPath = context.router.current.args
+              .toString()
+              .split("gymId:")[1]
+              .replaceAll("}", "");
+          if (int.parse(gymIdFromCurrentPath) == lessonData["gymId"]) {
+            await getAllLessons(context, id: lessonData["gymId"]);
+            await getLessonsOfSelectedActivity(
+                state.selectedActivity ?? "", false);
+          }
+        }
         scheduleNotifier.getUsersSchedules(context);
-        // add here get nearest lesson
-        main2Notifier.getNearestLesson(context);
+        await mapNotifier.getGymsList(
+          context,
+          [],
+          {},
+        );
+        //mapNotifier.getGetListOfGymsFromDiapozone();
+        if (lessonData["lessonState"] == "CONFIRMED") {
+          // get users schedules to show in schedule page
+          // add here get nearest lesson
+          main2Notifier.getNearestLesson(context);
+        }
       },
       onError: (error) {
         AppHelpers.showErrorSnack(context, "WebSocket1 ${error.message}");
@@ -362,16 +382,23 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   }
 
   void handleWebSocket2(WebSocketChannel channel, BuildContext context) {
-    /// Listen for all incoming data
+    //ws://77.222.53.122:8080/appGymPanel
+    // когда статус урока меняется,
     channel.stream.listen(
       (data) async {
         // convert the incoming data to json
         Map<String, dynamic> lessonData = jsonDecode(data);
-        // get all lessons again && get lessons of selected activity
-        await getAllLessons(context, id: lessonData["gymId"]);
-        await getLessonsOfSelectedActivity(state.selectedActivity ?? "", false);
-        // get users schedules to show in schedule page
-        scheduleNotifier.getUsersSchedules(context);
+        if (context.router.current.path == "/activity") {
+          final String gymIdFromCurrentPath = context.router.current.args
+              .toString()
+              .split("gymId:")[1]
+              .replaceAll("}", "");
+          if (int.parse(gymIdFromCurrentPath) == lessonData["gymId"]) {
+            await getAllLessons(context, id: lessonData["gymId"]);
+            await getLessonsOfSelectedActivity(
+                state.selectedActivity ?? "", false);
+          }
+        }
       },
       onError: (error) {
         AppHelpers.showErrorSnack(context, "WebSocket2 ${error.message}");
@@ -485,7 +512,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   Future<void> getListOf15CalendarDatesFromToday() async {
     List<String> dates = [];
     DateTime currentDate = DateTime.now();
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < 30; i++) {
       String dayOfWeek = DateFormat('EEE').format(currentDate);
       switch (dayOfWeek) {
         case "Mon":
@@ -597,21 +624,24 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
               final operationInfo = data["operationInfo"];
               final Map<String, dynamic> convertedToMap =
                   jsonDecode(operationInfo ?? "");
-              if (convertedToMap["errorType"] == "conflict") {
-                final String date = convertedToMap["date"].toString();
-                // handle operation info and pass it to the dialog
-                final EnrollingErrorMessage error = EnrollingErrorMessage(
-                    date: getDate(date),
-                    startTime: date.substring(date.length - 5),
-                    endTime: getEndingTime(
-                        date.substring(date.length - 5), convertedToMap["duration"]),
-                    lessonType: convertedToMap["lessonType"],
-                    gymName: convertedToMap["gymName"]);
-                showConflictDialog(error, context);
+              final String date = convertedToMap["date"].toString();
+              // handle operation info and pass it to the dialog
+              final EnrollingErrorMessage error = EnrollingErrorMessage(
+                date: getDate(date),
+                startTime: date.substring(date.length - 5),
+                endTime: getEndingTime(date.substring(date.length - 5),
+                    convertedToMap["duration"]),
+                lessonType: convertedToMap["lessonType"],
+                gymName: convertedToMap["gymName"],
+              );
+              if (convertedToMap["errorType"] == "conflictTime") {
+                showConflictTimeDialog(error, context);
+              } else if (convertedToMap["errorType"] == "conflictGym") {
+                showConflictGymDialog(error, context);
               }
             } catch (e) {
               log(e.toString());
-              throw e;
+              rethrow;
             }
 
             state = state.copyWith(isEnrollingLoading: false);
@@ -628,40 +658,33 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
-  String getDate(String inputDate){
+  String getDate(String inputDate) {
     // from 2024-05-07T17:00 to 7 мая
     final parts = inputDate.split("T");
     final date = parts[0];
     final dateParts = date.split("-");
     final day = dateParts[2];
-    final month = dateParts[1];
-    switch (month) {
-      case "01":
-        return "$day янв";
-      case "02":
-        return "$day фев";
-      case "03":
-        return "$day мар";
-      case "04":
-        return "$day апр";
-      case "05":
-        return "$day мая";
-      case "06":
-        return "$day июня";
-      case "07":
-        return "$day июля";
-      case "08":
-        return "$day авг";
-      case "09":
-        return "$day сен";
-      case "10":
-        return "$day окт";
-      case "11":
-        return "$day ноя";
-      case "12":
-        return "$day дек";
-      default:
-        return "error";
+    final month = int.tryParse(dateParts[1]);
+
+    final monthNames = [
+      "янв",
+      "фев",
+      "мар",
+      "апр",
+      "мая",
+      "июня",
+      "июля",
+      "авг",
+      "сен",
+      "окт",
+      "ноя",
+      "дек"
+    ];
+
+    if (month != null && month >= 1 && month <= 12) {
+      return "$day ${monthNames[month - 1]}";
+    } else {
+      return "error";
     }
   }
 
@@ -676,7 +699,8 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     return "${nameWithoutExtension}_icon$extension";
   }
 
-  void showConflictDialog(EnrollingErrorMessage error, BuildContext context) {
+  void showConflictTimeDialog(
+      EnrollingErrorMessage error, BuildContext context) {
     showDialog(
         context: context,
         builder: (context) {
@@ -709,7 +733,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
                         Flexible(
                           child: CustomText(
                             text:
-                                "Нельзя записаться на два занятия в одно и то же время.",
+                                "Нельзя записаться на два занятия, у которых совпадает время проведения.",
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w400,
                             height: 1.1,
@@ -729,7 +753,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
                                   "${error.date} с ${error.startTime}-${error.endTime}",
                               style: GoogleFonts.raleway(
                                 fontSize: 14.sp,
-                                fontWeight: FontWeight.w700,
+                                fontWeight: FontWeight.w500,
                                 color: Colors.black,
                                 height: 1.1,
                                 fontFeatures: const [
@@ -764,6 +788,161 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
                       fontWeight: FontWeight.w500,
                       textColor: Colors.white,
                     ),
+                  ],
+                ),
+              ));
+        });
+  }
+
+  void showConflictGymDialog(
+      EnrollingErrorMessage error, BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.r),
+                  side: const BorderSide(
+                    color: AppColors.blueBorder,
+                  )),
+              elevation: 0,
+              insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: Padding(
+                padding: EdgeInsets.all(16.r),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CustomText(
+                      text: "Невозможно записаться",
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    16.verticalSpace,
+                    Row(
+                      children: [
+                        SvgPicture.asset(
+                          "assets/svg/error.svg",
+                        ),
+                        10.horizontalSpace,
+                        Flexible(
+                          child: CustomText(
+                            text:
+                                "В этом заведении в день можно посетить только одно занятие.",
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            height: 1.1,
+                          ),
+                        )
+                      ],
+                    ),
+                    16.verticalSpace,
+                    Row(
+                      children: [
+                        //34.horizontalSpace,
+                        Flexible(
+                          child: RichText(
+                              text: TextSpan(children: [
+                            TextSpan(
+                              text: "Вы уже записаны в",
+                              style: GoogleFonts.raleway(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                                height: 1.1,
+                                fontFeatures: const [
+                                  FontFeature.liningFigures()
+                                ],
+                              ),
+                            ),
+                            WidgetSpan(child: 3.horizontalSpace),
+                            TextSpan(
+                              text: "${error.gymName},",
+                              style: GoogleFonts.raleway(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                                height: 1.1,
+                              ),
+                            ),
+                            WidgetSpan(child: 3.horizontalSpace),
+                            TextSpan(
+                              text: "на активность",
+                              style: GoogleFonts.raleway(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                                height: 1.1,
+                                fontFeatures: const [
+                                  FontFeature.liningFigures()
+                                ],
+                              ),
+                            ),
+                            WidgetSpan(child: 3.horizontalSpace),
+                            TextSpan(
+                              text: "${error.lessonType}.",
+                              style: GoogleFonts.raleway(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                                height: 1.1,
+                              ),
+                            ),
+                            WidgetSpan(child: 3.horizontalSpace),
+                            TextSpan(
+                              text:
+                                  "Пожалуйста выберите другой день, либо запишитесь в другое заведение.",
+                              style: GoogleFonts.raleway(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                                height: 1.1,
+                                fontFeatures: const [
+                                  FontFeature.liningFigures()
+                                ],
+                              ),
+                            ),
+                          ])),
+                        )
+                      ],
+                    ),
+                    16.verticalSpace,
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 6,
+                          child: CustomButton(
+                            onPressed: () {
+                              context.router.removeLast();
+                              if (AutoTabsRouter.of(context).activeIndex != 2) {
+                                AutoTabsRouter.of(context).setActiveIndex(2);
+                              }
+                            },
+                            text: "Карта заведений",
+                            height: 40.h,
+                            buttonColor: Colors.white,
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            textColor: Colors.black,
+                          ),
+                        ),
+                        5.horizontalSpace,
+                        Expanded(
+                          flex: 4,
+                          child: CustomButton(
+                            onPressed: () {
+                              context.popRoute();
+                            },
+                            text: "Понятно",
+                            height: 40.h,
+                            buttonColor: AppColors.blueColor,
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            textColor: Colors.white,
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 ),
               ));

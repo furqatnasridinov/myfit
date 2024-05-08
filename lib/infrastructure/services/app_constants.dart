@@ -27,6 +27,7 @@ class AppConstants {
   static const String getUserSubscribtion = "api/subscription/user";
   static const String getAllAvailableSubscribtions = "api/subscription";
   static const String toggleAutoRenewal = "api/subscription/user";
+  static const String searchForGymAndLesson= "api/main/search";
 
 
   static const String sendPhoneNumber = "api/user/loginCode";

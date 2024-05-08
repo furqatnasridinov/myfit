@@ -1,14 +1,13 @@
 // ignore_for_file: must_be_immutable
 import 'dart:async';
-import 'dart:developer';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:myfit/application/main2/main2_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/presentation/components/animation_button_effect.dart';
 import 'package:myfit/presentation/components/components.dart';
 import 'package:myfit/presentation/components/custom_card.dart';
+import 'package:myfit/presentation/pages/main2/widget/main2_header.dart';
 import 'package:myfit/presentation/pages/map/widget/pop_up_map.dart';
 import 'package:myfit/presentation/pages/schedule/widget/widget.dart';
 import 'package:myfit/presentation/router/app_router.gr.dart';
@@ -42,6 +41,9 @@ class _MapScreenState extends ConsumerState<MapScreen>
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (ref.watch(mapProvider).showMapOnly) {
         ref.read(mapProvider.notifier).reduceMap();
+      }
+      if (ref.watch(mapProvider).userPosition == null) {
+        ref.read(mapProvider.notifier).getUserLocation();
       }
     });
   }
@@ -111,7 +113,24 @@ class _MapScreenState extends ConsumerState<MapScreen>
     final height = MediaQuery.of(context).size.height;
     final state = ref.watch(mapProvider);
     final event = ref.read(mapProvider.notifier);
-    log("activemarker ${state.activeMarker}");
+    ref.listen(mapProvider, (previous, next) {
+      if (previous!.showRecommended != next.showRecommended &&
+          !next.showRecommended) {
+        _controller.future.then((controller) async {
+          await controller.animateCamera(
+            CameraUpdate.newCameraPosition(
+              CameraPosition(
+                target: LatLng(
+                  ref.watch(mapProvider).userPosition!.latitude,
+                  ref.watch(mapProvider).userPosition!.longitude,
+                ),
+                zoom: 14,
+              ),
+            ),
+          );
+        });
+      }
+    });
     bool isAnyOpened = state.activitiesWithGymsInsideFromSelectedDiapozone
         .any((element) => element.isOpened);
     return PopScope(
@@ -127,11 +146,16 @@ class _MapScreenState extends ConsumerState<MapScreen>
       },
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        appBar: ScheduleHeader(
+        appBar: Main2Header(
+          showBackButton: state.showOnlyKnown || state.showRecommended,
+          canNavigateToSettings: true,
+          height: height * 0.08,
+        ),
+       /*  ScheduleHeader(
             showNavigationButton: false,
             showBackButton: state.showOnlyKnown || state.showRecommended,
             height: height * 0.07 //12
-            ),
+            ), */
         body: SafeArea(
           child: ListView(
             //shrinkWrap: true,
@@ -140,6 +164,8 @@ class _MapScreenState extends ConsumerState<MapScreen>
               // top section
               AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
+                alignment: Alignment.bottomCenter,
+                curve: Curves.easeInOut,
                 height: height * state.topFlexValue,
                 child: SizedBox(
                   child: CustomScrollView(
@@ -176,17 +202,26 @@ class _MapScreenState extends ConsumerState<MapScreen>
               AnimatedContainer(
                 curve: Curves.easeInOut,
                 duration: const Duration(milliseconds: 300),
+                alignment: Alignment.bottomCenter,
                 height: state.isGymsPopupShown
-                    ? height * (state.bottomFlexValue + 0.09) : height * state.bottomFlexValue,
+                    ? height * (state.bottomFlexValue + 0.09)
+                    : height * state.bottomFlexValue,
                 child: Stack(
                   children: [
                     // map itself
                     DecoratedBox(
                       decoration: BoxDecoration(
                         boxShadow:
-                            state.activitiesWithGymsInsideFromSelectedDiapozone.length > 5 &&
-                              (state.activitiesWithGymsInsideFromSelectedDiapozone.length > 2 ||
-                                state.locationPermissionDenied) && !state.showMapOnly ? event.getShadows() : [],
+                            state.activitiesWithGymsInsideFromSelectedDiapozone
+                                            .length >
+                                        5 &&
+                                    (state.activitiesWithGymsInsideFromSelectedDiapozone
+                                                .length >
+                                            2 ||
+                                        state.locationPermissionDenied) &&
+                                    !state.showMapOnly
+                                ? event.getShadows()
+                                : [],
                       ),
                       child: SingleChildScrollView(
                         physics: const NeverScrollableScrollPhysics(),
@@ -197,7 +232,9 @@ class _MapScreenState extends ConsumerState<MapScreen>
                               width: MediaQuery.of(context).size.width,
                               height: MediaQuery.of(context).size.height,
                               child: GoogleMap(
-                                padding: EdgeInsets.only(bottom: height * (state.showMapOnly ? 0.5 : 0.7)),
+                                padding: EdgeInsets.only(
+                                    bottom: height *
+                                        (state.showMapOnly ? 0.5 : 0.7)),
                                 zoomControlsEnabled: false,
                                 compassEnabled: false,
                                 mapType: MapType.normal,
@@ -213,14 +250,16 @@ class _MapScreenState extends ConsumerState<MapScreen>
                                   await event.getGymsList(
                                     context,
                                     ref.watch(settingsProvider).knownActivities,
-                                    ref.watch(main2Provider).recommendedGyms,
+                                    ref.watch(mapProvider).recommendedGyms,
                                   );
                                   await event.getGetListOfGymsFromDiapozone();
-                                  await event.setFlexes();
+                                  event.setFlexes();
                                   await event.getAllMarkers();
                                   await event.addUserLocationMarker();
                                 },
-                                markers: state.listOfMarkers.isEmpty ? {} : state.listOfMarkers,
+                                markers: state.listOfMarkers.isEmpty
+                                    ? {}
+                                    : state.listOfMarkers,
                               ),
                             ),
                           ],

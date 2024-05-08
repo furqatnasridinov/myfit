@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:convert';
-import 'dart:developer';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:myfit/application/main2/main2_provider.dart';
 import 'package:myfit/application/schedule/schedule_provider.dart';
@@ -72,10 +71,10 @@ class QrCodeScreen extends StatelessWidget {
                   //await ref.read(main2Provider.notifier).getNearestLesson(context);
                   context.router.pop();
                   AppHelpers.showSuccessSnack(
-                      context, "QR code validated successfully.");
+                      context, "QR code успешно отсканирован!");
                 } else {
                   AppHelpers.showErrorSnack(context,
-                      "QR code not validated. Please scan the correct QR code.");
+                      "QR code не соответствует текущему занятию!");
                   context.router.pop();
                 }
               } catch (e) {

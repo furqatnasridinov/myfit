@@ -7,6 +7,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:myfit/presentation/router/app_router.gr.dart';
 
 @RoutePage()
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -29,21 +30,41 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar:
-          const Main2Header(showBackButton: true, canNavigateToSettings: false),
+           Main2Header(showBackButton: true, canNavigateToSettings: false),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             20.verticalSpace,
-            CustomText(
-              text: "Настройки",
-              fontSize: 20.sp,
-              fontWeight: FontWeight.w600,
+            Consumer(
+              builder: (context, ref, child) {
+                return Row(
+                  children: [
+                    CustomText(
+                      text: "Настройки",
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: () {
+                        context.router.push(const SubscribtionSettingsRoute());
+                      },
+                      child: CustomText(
+                        text: "Купить подписку",
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.blueText,
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
             32.verticalSpace,
             const MySubscribtion(),
-            32.verticalSpace,
+            //32.verticalSpace,
             /* Two containers */
             Consumer(
               builder: (context, ref, child) {

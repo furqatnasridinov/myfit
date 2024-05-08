@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:myfit/application/main2/main2_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
+import 'package:myfit/infrastructure/models/data/lessons_found_by_search.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:myfit/presentation/components/custom_button.dart';
@@ -15,20 +16,24 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../infrastructure/models/data/gym_data.dart';
+
 class Main2Header extends ConsumerStatefulWidget
     implements PreferredSizeWidget {
   final bool showBackButton;
   final bool canNavigateToSettings;
-  const Main2Header(
+  double? height;
+  Main2Header(
       {required this.showBackButton,
       required this.canNavigateToSettings,
+      this.height = 55,
       super.key});
 
   @override
   ConsumerState<Main2Header> createState() => _MainHeaderState();
 
   @override
-  Size get preferredSize => Size.fromHeight(55.h);
+  Size get preferredSize => Size.fromHeight(height ?? 55.h);
 }
 
 class _MainHeaderState extends ConsumerState<Main2Header> {
@@ -67,9 +72,15 @@ class _MainHeaderState extends ConsumerState<Main2Header> {
                 }
               },
               child: Consumer(builder: (context, ref, child) {
-                final schedulesFoundBySearching =
-                    ref.watch(main2Provider).schedulesFoundBySearching;
-                return controller.text.length > 2
+                final lessonsFoundBySearch =
+                    ref.watch(mapProvider).lessonsFoundBySearch;
+                final gymsFoundBySearch =
+                    ref.watch(mapProvider).gymsFoundBySearch;
+                List combinedList = [
+                  ...lessonsFoundBySearch,
+                  ...gymsFoundBySearch
+                ];
+                return controller.text.length > 1
                     ? Container(
                         //height: 160.h,
                         constraints:
@@ -89,8 +100,7 @@ class _MainHeaderState extends ConsumerState<Main2Header> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              controller.text.length > 2 &&
-                                      schedulesFoundBySearching.isEmpty
+                              controller.text.length > 1 && combinedList.isEmpty
                                   ? CustomText(
                                       text:
                                           "По вашему запросу ничего не найдено! ",
@@ -105,27 +115,48 @@ class _MainHeaderState extends ConsumerState<Main2Header> {
                                             BoxConstraints(maxHeight: 200.h),
                                         child: ListView.builder(
                                           shrinkWrap: true,
-                                          itemCount:
-                                              schedulesFoundBySearching.length,
+                                          itemCount: combinedList.length,
                                           itemBuilder: (context, index) {
                                             final currentGym =
-                                                schedulesFoundBySearching[
-                                                    index];
-                                            return _listiles(
-                                              currentGym.description ?? "??",
-                                              currentGym.gym?.address ?? "??",
-                                              () {
-                                                textfieldFocusnode.unfocus();
-                                                setState(() {});
-                                                context.router.push(
-                                                  ActivityRoute(
-                                                      gymId:
-                                                          currentGym.gym?.id ??
-                                                              0),
-                                                );
-                                                controller.clear();
-                                              },
-                                            );
+                                                combinedList[index];
+                                            if (currentGym is GymData) {
+                                              return _listiles(
+                                                "Заведение - ${currentGym.name}",
+                                                "${currentGym.distanceFromClient} км",
+                                                () {
+                                                  textfieldFocusnode.unfocus();
+                                                  setState(() {});
+                                                  context.router.push(
+                                                    ActivityRoute(
+                                                        gymId:
+                                                            currentGym.id ?? 0),
+                                                  );
+                                                  controller.clear();
+                                                },
+                                              );
+                                            }
+                                            if (currentGym
+                                                is LessonFoundBySearch) {
+                                              return _listiles(
+                                                "Занятие - ${currentGym.title}",
+                                                currentGym.distanceFromClient !=
+                                                        null
+                                                    ? "${currentGym.distanceFromClient} км"
+                                                    : "",
+                                                () {
+                                                  textfieldFocusnode.unfocus();
+                                                  setState(() {});
+                                                  context.router.push(
+                                                    ActivityRoute(
+                                                        gymId:
+                                                            currentGym.gymId ??
+                                                                0),
+                                                  );
+                                                  controller.clear();
+                                                },
+                                              );
+                                            }
+                                            return null;
                                           },
                                         ),
                                       ),
@@ -133,11 +164,22 @@ class _MainHeaderState extends ConsumerState<Main2Header> {
                               const SizedBox(height: 10.0),
                               CustomButton(
                                 onPressed: () {
-                                  textfieldFocusnode.unfocus();
-                                  controller.clear();
-                                  setState(() {});
+                                  if (controller.text.length > 1 &&
+                                      combinedList.isNotEmpty) {
+                                    context.router.push(const MapRoute());
+                                    textfieldFocusnode.unfocus();
+                                    controller.clear();
+                                    setState(() {});
+                                  } else {
+                                    textfieldFocusnode.unfocus();
+                                    controller.clear();
+                                    setState(() {});
+                                  }
                                 },
-                                text: "Закрыть",
+                                text: controller.text.length > 1 &&
+                                        combinedList.isNotEmpty
+                                    ? "Перейти к карте"
+                                    : "Закрыть",
                                 buttonColor: AppColors.blueColor,
                                 borderColor: AppColors.blueBorder,
                                 textColor: Colors.white,
@@ -187,9 +229,9 @@ class _MainHeaderState extends ConsumerState<Main2Header> {
 
     controller.addListener(() {
       if (controller.text.length > 1 && controller.text != previousText) {
-        ref.read(main2Provider.notifier).searchingSchedules(
+        ref.read(mapProvider.notifier).searchForGymAndLesson(
               context,
-              schedule: controller.text,
+              searchString: controller.text,
             );
         previousText = controller.text;
         _updateOverlay();
@@ -348,7 +390,7 @@ class _MainHeaderState extends ConsumerState<Main2Header> {
                 fontWeight: FontWeight.w400,
                 fontFeatures: const [FontFeature.liningFigures()],
               ),
-              hintText: "Найти занятие",
+              hintText: "Занятие, зал",
               border: InputBorder.none,
             ),
           ),

@@ -181,6 +181,41 @@ class AppHelpers {
     return prefix;
   }
 
+  Color getColorOfActivity(String activityName) {
+    Color color = Colors.black;
+    switch (activityName) {
+      case "Йога":
+        color = AppColors.blueColor;
+        break;
+      case "Бассейн":
+        color = AppColors.goldText;
+        break;
+      case "Медитации":
+        color = Colors.red;
+        break;
+      case "Спортзал":
+        color = Colors.brown;
+        break;
+      case "Секция бокса":
+        color = AppColors.blueText;
+        break;
+      case "Кардио-тренировки":
+        color = AppColors.green;
+        break;
+      case "Массаж":
+        color = AppColors.massageColor;
+        break;
+      case "Силовые тренировки":
+        color = AppColors.purpleText;
+        break;
+      case "Смешанные единоборства":
+        color = AppColors.purpleBorder;
+        break;
+    }
+    return color;
+  }
+
+
   String getCorrectWordFromUsersCount(int usersCount) {
     int lastDigit = usersCount % 10;
     int lastTwoDigits = usersCount % 100;

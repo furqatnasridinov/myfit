@@ -73,7 +73,7 @@ class PaymentSection extends StatelessWidget {
                                   const Spacer(),
                                   GestureDetector(
                                     onTap: () {
-                                      event.deleteCard();
+                                      //event.deleteCard();
                                     },
                                     child: CustomText(
                                       text: "Удалить карту",
