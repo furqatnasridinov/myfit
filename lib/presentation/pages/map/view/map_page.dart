@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
 import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
@@ -9,7 +10,6 @@ import 'package:myfit/presentation/components/components.dart';
 import 'package:myfit/presentation/components/custom_card.dart';
 import 'package:myfit/presentation/pages/main2/widget/main2_header.dart';
 import 'package:myfit/presentation/pages/map/widget/pop_up_map.dart';
-import 'package:myfit/presentation/pages/schedule/widget/widget.dart';
 import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -149,7 +149,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
         appBar: Main2Header(
           showBackButton: state.showOnlyKnown || state.showRecommended,
           canNavigateToSettings: true,
-          height: height * 0.08,
+          height: height * 0.07,
         ),
        /*  ScheduleHeader(
             showNavigationButton: false,
@@ -244,8 +244,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                                   target: event.getInitialLatLon(),
                                   zoom: 15,
                                 ),
-                                onMapCreated:
-                                    (GoogleMapController controller) async {
+                                onMapCreated:(GoogleMapController controller) async {
                                   _controller.complete(controller);
                                   await event.getGymsList(
                                     context,
@@ -354,28 +353,31 @@ class _MapScreenState extends ConsumerState<MapScreen>
 
                     // here we show bottom card of gyms
                     if (state.isGymsPopupShown)
-                      Positioned(
+                      Consumer(builder: (context, ref, child) {
+                        final isFromSearch = ref.watch(activityProvider).isFromSearch;
+                        final selectedGym = ref.watch(mapProvider).selectedGym;
+                        return Positioned(
                         bottom: 0,
                         child: PopUpMap(
-                          name: state.selectedGym?.name ?? "??",
-                          address: state.selectedGym?.address ?? "??",
-                          visitPerMonth: state.selectedGym?.visitPerMonth ?? 0,
-                          visitedCount: state.selectedGym?.visitedCount ?? 0,
+                          name: selectedGym?.name ?? "??",
+                          address: selectedGym?.address ?? "??",
+                          visitPerMonth: selectedGym?.visitPerMonth ?? 0,
+                          visitedCount: selectedGym?.visitedCount ?? 0,
                           onNavigate: () {
-                            //event.removePopUp();
+                            if (isFromSearch) {
+                              ref.read(activityProvider.notifier).setIsFromSearch(false);
+                            }
                             event.showLocationButton();
-                            context.router.push(
-                              ActivityRoute(
-                                  gymId: state.selectedGym?.id ?? 0,
-                                  isFromMap: true),
-                            );
+                            context.router.push(ActivityRoute(gymId: state.selectedGym?.id ?? 0,isFromMap: true));
+                            event.removePopUp();
                           },
                           onCancel: () {
                             event.removePopUp();
                             event.showLocationButton();
                           },
                         ),
-                      ),
+                      );
+                      },),
                   ],
                 ),
               ),

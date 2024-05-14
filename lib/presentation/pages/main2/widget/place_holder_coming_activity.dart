@@ -10,36 +10,39 @@ class PlaceholderComingActivity extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final autoTabsRouter = AutoTabsRouter.of(context);
-    return Container(
-      height: 56.h,
-      decoration: const BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Color.fromRGBO(0, 0, 0, 0.15),
-            offset: Offset(0, 2),
-            blurRadius: 5,
-            spreadRadius: 0,
-          ),
-          BoxShadow(
-            color: Color.fromRGBO(109, 150, 212, 1),
-            offset: Offset(0, 15),
-            blurRadius: 18,
-            spreadRadius: -15,
-          ),
-        ],
-      ),
-      child: CustomButton(
-        buttonColor: AppColors.blueColor,
-        textColor: Colors.white,
-        fontSize: 16.sp,
-        fontWeight: FontWeight.w600,
-        onPressed: () {
-          autoTabsRouter.setActiveIndex(2);
-        },
-        onHover: (value){
-          //print("hover $value");
-        },
-        text: "Найти себе занятие",
+    return Padding(
+      padding: EdgeInsets.only(top: 16.h),
+      child: DecoratedBox(
+        decoration: const BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Color.fromRGBO(0, 0, 0, 0.15),
+              offset: Offset(0, 2),
+              blurRadius: 5,
+              spreadRadius: 0,
+            ),
+            BoxShadow(
+              color: Color.fromRGBO(109, 150, 212, 1),
+              offset: Offset(0, 15),
+              blurRadius: 18,
+              spreadRadius: -15,
+            ),
+          ],
+        ),
+        child: CustomButton(
+          height: 56.h,
+          buttonColor: AppColors.blueColor,
+          textColor: Colors.white,
+          fontSize: 16.sp,
+          fontWeight: FontWeight.w600,
+          onPressed: () {
+            autoTabsRouter.setActiveIndex(2);
+          },
+          onHover: (value){
+            //print("hover $value");
+          },
+          text: "Найти себе занятие",
+        ),
       ),
     );
   }

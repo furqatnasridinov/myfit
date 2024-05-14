@@ -265,4 +265,38 @@ class AppHelpers {
       return SvgPicture.asset("assets/svg/0_percent.svg");
     }
   }
+
+  String getTranslatedLessonType({required String engLessonType}){
+    String translatedLessonType = "Яхай";
+    switch (engLessonType) {
+      case "CARDIO":
+        translatedLessonType = "Кардио-тренировки";
+        break;
+      case "BOX":
+        translatedLessonType = "Секция бокса";
+        break;
+      case "MMA":
+        translatedLessonType = "Смешанные единоборства";
+        break;
+      case "GYM":
+        translatedLessonType = "Спортзал";
+        break;
+      case "POWER":
+        translatedLessonType = "Силовые тренировки";
+        break;
+      case "MASSAGE":
+        translatedLessonType = "Массаж";
+        break;
+      case "POOL":
+        translatedLessonType = "Бассейн";
+        break;
+      case "YOGA":
+        translatedLessonType = "Йога";
+        break;
+      case "MEDITATION":
+        translatedLessonType = "Медитации";
+        break;
+    }
+    return translatedLessonType;
+  }
 }

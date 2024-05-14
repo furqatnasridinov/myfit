@@ -6,13 +6,15 @@ class UserSubscription {
   String? prolongationData;
   String? endData;
   bool? autoRenewal;
+  String? endDataFormatted;
 
   UserSubscription(
       {this.subscription,
       this.firstBuyData,
       this.prolongationData,
       this.endData,
-      this.autoRenewal});
+      this.autoRenewal,
+      this.endDataFormatted});
 
   UserSubscription.fromJson(Map<String, dynamic> json) {
     subscription = json['subscription'] != null

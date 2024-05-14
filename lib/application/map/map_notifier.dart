@@ -343,7 +343,7 @@ class MapNotifier extends StateNotifier<MapState> {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
       state = state.copyWith(isloading: true);
-      await setFlexes();
+      //await setFlexes();
       final response = await _mainRepositoryInterface.getGymsList();
       response.when(
         success: (data) {
@@ -398,6 +398,7 @@ class MapNotifier extends StateNotifier<MapState> {
         },
       );
       state = state.copyWith(isloading: false);
+     // setFlexes();
     } else {
       // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
@@ -641,13 +642,16 @@ class MapNotifier extends StateNotifier<MapState> {
 
   void showPopUpOnMap(BuildContext context, String lesson) {
     // remove prvious pop up first
-
     removePopUp(); // if there is a pop up remove it
     if (!state.isLocationIconHidden) {
       hideLocationIcon();
     }
-    state = state.copyWith(
-        isGymsPopupShown: true, selectedLessonTypeFromMap: lesson);
+    state = state.copyWith(isGymsPopupShown: true, 
+      selectedLessonTypeFromMap: lesson);
+  }
+
+  void setSelectedActivityFromMap(String lesson) {
+    state = state.copyWith(selectedLessonTypeFromMap: lesson);
   }
 
   void removePopUp() {
@@ -797,7 +801,7 @@ class MapNotifier extends StateNotifier<MapState> {
             final List<GymData> listToCollectGyms = [];
             final List<LessonFoundBySearch> listToCollectLessons = [];
             final List listOfGymsFromServer = mapData["gymShortDtos"];
-            final List listOfLessonsFromServer = mapData["lessonShortInfoDtos"];
+            final List listOfLessonsFromServer = mapData["lessonSearchDto"];
             if (listOfGymsFromServer.isNotEmpty) {
               for (var element in listOfGymsFromServer) {
                 final data = GymData(
@@ -820,6 +824,8 @@ class MapNotifier extends StateNotifier<MapState> {
                   id: element["id"],
                   gymId: element["gymId"] ?? 0,
                   title: element["description"],
+                  lessonType: element["lessonType"],
+                  date: element["date"],
                   distanceFromClient: calCulateDistanceSrazy(
                     state.userPosition!.latitude,
                     state.userPosition!.longitude,

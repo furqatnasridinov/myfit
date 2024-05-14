@@ -91,12 +91,13 @@ class UserStatsBlock extends StatelessWidget {
                                 runSpacing: 5.h,
                                 spacing: 5.w,
                                 children: List.generate(
-                                    statsForMonth.length,
-                                    (index) => _indicator(
-                                        AppHelpers().getColorOfActivity(
-                                            statsForMonth[index].lessonType ??
-                                                ""),
-                                        statsForMonth[index].lessonType ?? "")),
+                                  statsForMonth.length,
+                                  (index) => _indicator(
+                                    AppHelpers().getColorOfActivity(
+                                        statsForMonth[index].lessonType ?? ""),
+                                    statsForMonth[index].lessonType ?? "",
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -118,11 +119,13 @@ class UserStatsBlock extends StatelessWidget {
       (i) {
         const double radius = 4.0;
         return PieChartSectionData(
-            radius: radius,
-            value: double.parse(statsForMonth[i].count.toString()),
-            showTitle: false,
-            color: AppHelpers()
-                .getColorOfActivity(statsForMonth[i].lessonType ?? ""));
+          radius: radius,
+          value: double.parse(statsForMonth[i].count.toString()),
+          showTitle: false,
+          color: AppHelpers().getColorOfActivity(
+            statsForMonth[i].lessonType ?? "",
+          ),
+        );
       },
     );
   }

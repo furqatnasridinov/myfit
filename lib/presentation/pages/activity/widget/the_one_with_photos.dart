@@ -3,6 +3,7 @@ import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:myfit/presentation/components/components.dart';
+import 'package:myfit/presentation/pages/activity/skeletons/photos_skeleton.dart';
 import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -17,12 +18,12 @@ class TheOneWithPhotos extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (context, ref, child) {
-      final photosOfSelectedActivity =
-          ref.watch(activityProvider).photosOfSelectedActivity;
-      if (photosOfSelectedActivity.isEmpty) return const SizedBox();
+      final photosOfSelectedActivity = ref.watch(activityProvider).photosOfSelectedActivity;
+      final loading = ref.watch(activityProvider).isPhotosLoading;
+      if (photosOfSelectedActivity.isEmpty && !loading) return const SizedBox();
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
-        child: Column(
+        child: loading ? const PhotosSkeleton() : Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             32.verticalSpace,
@@ -67,12 +68,15 @@ class TheOneWithPhotos extends StatelessWidget {
                           //color: Colors.red,
                           width: 47.w,
                           height: 47.h,
-                          child: CachedNetworkImage(
-                            imageUrl:"http://77.222.53.122/image/$linkToCompressedPhoto",
-                            fit: BoxFit.cover,
-                            errorWidget: (context, url, error) {
-                              return Image.asset(AppConstants.cristianBale);
-                            },
+                          child: Hero(
+                            tag: index,
+                            child: CachedNetworkImage(
+                              imageUrl:"http://77.222.53.122/image/$linkToCompressedPhoto",
+                              fit: BoxFit.cover,
+                              errorWidget: (context, url, error) {
+                                return Image.asset(AppConstants.cristianBale);
+                              },
+                            ),
                           ),
                         ),
                       ),

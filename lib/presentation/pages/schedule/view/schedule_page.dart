@@ -54,7 +54,7 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
-      appBar:  Main2Header(
+      appBar: Main2Header(
         showBackButton: false,
         canNavigateToSettings: true,
       ),
@@ -362,7 +362,7 @@ Widget listOfActivitiesEachItem(
                       // describtion
                       SizedBox(
                         width: 220.w,
-                        child: InterText(
+                        child: CustomText(
                           text: description,
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w400,
@@ -566,24 +566,48 @@ Widget _plusButton(
             child: SizedBox(
               width: 40.w,
               height: 40.h,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.r),
-                  border: Border.all(
-                    width: 1.w,
+              child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 500),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.r),
+                    border: Border.all(
+                      width: 1.w,
+                      color: AppColors.blueColor,
+                    ),
                     color: AppColors.blueColor,
+                    boxShadow: isplusState! ?
+                         [
+                            const BoxShadow(
+                              color:  Color.fromRGBO(119, 170, 249, 0.6),
+                              spreadRadius: -5,
+                              blurRadius: 9,
+                              offset: Offset(0, 11), 
+                            ),
+                          ] : [
+                            const BoxShadow(
+                              color:  Color.fromRGBO(119, 170, 249, 0),
+                              spreadRadius: -5,
+                              blurRadius: 9,
+                              offset: Offset(0, 11),
+                            ),
+                          ],
+                        
                   ),
-                  color: AppColors.blueColor,
-                ),
-                child: Transform.rotate(
-                  angle: isplusState == true ? (45 * pi / 180) : (0 * pi / 180),
-                  child: Icon(
-                    Icons.add,
-                    color: Colors.white,
-                    size: 18.r,
-                  ),
-                ),
-              ),
+                  child: TweenAnimationBuilder<double>(
+                    duration: const Duration(milliseconds: 300),
+                    tween: Tween(begin: 0, end: isplusState! ? 1.0 : 0),
+                    builder:
+                        (BuildContext context, double angle, Widget? child) {
+                      return Transform.rotate(
+                        angle: angle / 4 * pi,
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 20.r,
+                        ),
+                      );
+                    },
+                  )),
             ),
           ));
     });

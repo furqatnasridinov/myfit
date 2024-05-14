@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 import 'dart:async';
+import 'dart:math';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:myfit/application/activity/activity_provider.dart';
@@ -167,13 +168,22 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                                 color: AppColors.blueColor,
                               ),
                               5.horizontalSpace,
-                              Icon(
-                                !isOpened
-                                    ? Icons.keyboard_arrow_down
-                                    : Icons.keyboard_arrow_up,
-                                color: AppColors.blueColor,
-                                size: 18.r,
+                              TweenAnimationBuilder<double>(
+                                duration: const Duration(milliseconds: 300),
+                                tween: Tween(begin: 0, end: isOpened ? 1.0 : 0),
+                                builder: (BuildContext context, double angle,
+                                    Widget? child) {
+                                  return Transform.rotate(
+                                    angle: angle * pi,
+                                    child: Icon(
+                                      Icons.keyboard_arrow_down,
+                                      size: 18.sp,
+                                      color: AppColors.blueColor,
+                                    ),
+                                  );
+                                },
                               ),
+
                               const Spacer(),
                               CustomText(
                                 text: "${gymsList.first.distanceFromClient} км",

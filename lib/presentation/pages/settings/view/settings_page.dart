@@ -39,6 +39,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             20.verticalSpace,
             Consumer(
               builder: (context, ref, child) {
+                final bool currentSubscribtionNull =
+                    ref.watch(settingsProvider).currentSubscribtion == null;
                 return Row(
                   children: [
                     CustomText(
@@ -47,6 +49,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       fontWeight: FontWeight.w600,
                     ),
                     const Spacer(),
+                    if(currentSubscribtionNull)
                     GestureDetector(
                       onTap: () {
                         context.router.push(const SubscribtionSettingsRoute());

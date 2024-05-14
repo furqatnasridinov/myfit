@@ -268,7 +268,7 @@ Widget listOfActivitiesEachItem(
                         // describtion
                         SizedBox(
                           width: 220.w,
-                          child: InterText(
+                          child: CustomText(
                             //text: AppConstants.confirmationText,
                             text: description,
                             fontSize: 13.sp,

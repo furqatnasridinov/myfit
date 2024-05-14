@@ -49,8 +49,8 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
         ..getWaitingLessonTypes(context) // for known activities
         ..getUserSubscribtions(context);
       ref.read(mapProvider.notifier)
-      ..getUserLocation()
-      ..getRecommendationForVisit(context);
+        ..getUserLocation()
+        ..getRecommendationForVisit(context);
 
       // web socket for updating lesson states
       channel = IOWebSocketChannel.connect(
@@ -115,7 +115,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
-      appBar:  Main2Header(
+      appBar: Main2Header(
         showBackButton: false,
         canNavigateToSettings: true,
       ),
@@ -140,8 +140,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                   slivers: [
                     // Приветствие
                     SliverPadding(
-                      padding:
-                          EdgeInsets.only(left: 26.w).copyWith(top: 10.h),
+                      padding: EdgeInsets.only(left: 26.w).copyWith(top: 10.h),
                       sliver: SliverToBoxAdapter(
                         child: Align(
                           alignment: Alignment.centerLeft,
@@ -155,35 +154,29 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                         ),
                       ),
                     ),
-                
+
                     // Статистика
                     const SliverToBoxAdapter(
-                        child: UserStatsBlock(),
-                      ),
-                  
-                
+                      child: UserStatsBlock(),
+                    ),
+
                     // Ближайшее занятие
                     Consumer(builder: (context, ref, child) {
-                      final nearestLesson =
-                          ref.watch(main2Provider).nearestLesson;
+                      final nearestLesson =ref.watch(main2Provider).nearestLesson;
                       return SliverPadding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w)
-                            .copyWith(top: 32.h),
+                        padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 5.h),
                         sliver: SliverToBoxAdapter(
                           child: nearestLesson == null
                               ? const PlaceholderComingActivity() //button "Найти себе занятие"
                               : ComingActivity(
-                                  nearestLesson: nearestLesson,
-                                  event: event,
-                                ),
+                                  nearestLesson: nearestLesson, event: event),
                         ),
                       );
                     }),
-                
+
                     // Бассейны поблизости
                     SliverPadding(
-                      padding:
-                          EdgeInsets.only(left: 25.w).copyWith(top: 32.h),
+                      padding: EdgeInsets.only(left: 25.w).copyWith(top: 32.h),
                       sliver: SliverToBoxAdapter(
                         child: Consumer(
                           builder: (context, ref, child) {
@@ -200,7 +193,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                         ),
                       ),
                     ),
-                
+
                     // Карта
                     SliverPadding(
                       padding: EdgeInsets.symmetric(horizontal: 16.w)
@@ -223,7 +216,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                         }),
                       ),
                     ),
-                
+
                     // Декоративный текст
                     SliverPadding(
                       padding: EdgeInsets.only(top: 32.h),

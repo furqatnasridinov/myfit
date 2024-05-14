@@ -1,10 +1,11 @@
 import 'dart:ui';
-import 'package:myfit/application/main2/main2_provider.dart';
+import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/models/data/lessons_found_by_search.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/app_constants.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/presentation/components/custom_button.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:myfit/presentation/components/inter_text.dart';
@@ -42,6 +43,8 @@ class _MainHeaderState extends ConsumerState<Main2Header> {
   late LayerLink layerlink;
   OverlayEntry? entry;
   String previousText = "";
+  bool showAvatar = true;
+  bool _showBack = false;
 
   void showOverlay() {
     final overlay = Overlay.of(context);
@@ -117,41 +120,33 @@ class _MainHeaderState extends ConsumerState<Main2Header> {
                                           shrinkWrap: true,
                                           itemCount: combinedList.length,
                                           itemBuilder: (context, index) {
-                                            final currentGym =
-                                                combinedList[index];
-                                            if (currentGym is GymData) {
+                                            final current = combinedList[index];
+                                            if (current is GymData) {
                                               return _listiles(
-                                                "Заведение - ${currentGym.name}",
-                                                "${currentGym.distanceFromClient} км",
+                                                "Заведение - ${current.name}",
+                                                "${current.distanceFromClient} км",
                                                 () {
                                                   textfieldFocusnode.unfocus();
                                                   setState(() {});
-                                                  context.router.push(
-                                                    ActivityRoute(
-                                                        gymId:
-                                                            currentGym.id ?? 0),
-                                                  );
+                                                  context.router.push(ActivityRoute(gymId:current.id ?? 0));
                                                   controller.clear();
                                                 },
                                               );
                                             }
-                                            if (currentGym
+                                            if (current
                                                 is LessonFoundBySearch) {
                                               return _listiles(
-                                                "Занятие - ${currentGym.title}",
-                                                currentGym.distanceFromClient !=
-                                                        null
-                                                    ? "${currentGym.distanceFromClient} км"
-                                                    : "",
+                                                "Занятие - ${current.title}",
+                                                current.distanceFromClient !=null ? "${current.distanceFromClient} км" : "",
                                                 () {
                                                   textfieldFocusnode.unfocus();
                                                   setState(() {});
-                                                  context.router.push(
-                                                    ActivityRoute(
-                                                        gymId:
-                                                            currentGym.gymId ??
-                                                                0),
-                                                  );
+                                                  ref.read(activityProvider.notifier)
+                                                  ..setDayOfSelectedLessonFromSearch(current.date ?? "")
+                                                  ..setIsFromSearch(true);
+                                                  ref.read(mapProvider.notifier).setSelectedActivityFromMap(
+                                                          AppHelpers().getTranslatedLessonType(engLessonType:current.lessonType ??""));
+                                                  context.router.push(ActivityRoute(gymId:current.gymId ?? 0));
                                                   controller.clear();
                                                 },
                                               );
@@ -218,8 +213,17 @@ class _MainHeaderState extends ConsumerState<Main2Header> {
     controller = TextEditingController();
     textfieldFocusnode = FocusNode();
     layerlink = LayerLink();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (!_showBack) {
+        if (widget.showBackButton && !_showBack) {
+          _showBack = true;
+          setState(() {});
+        }
+      }
+    });
 
     textfieldFocusnode.addListener(() {
+      handleShowAvatar();
       if (textfieldFocusnode.hasFocus) {
         showOverlay();
       } else {
@@ -243,6 +247,19 @@ class _MainHeaderState extends ConsumerState<Main2Header> {
     });
   }
 
+  Future<void> handleShowAvatar() async {
+    if (textfieldFocusnode.hasFocus) {
+      showAvatar = false;
+      _showBack = false;
+      setState(() {});
+    } else {
+      await Future.delayed(const Duration(milliseconds: 1200));
+      showAvatar = true;
+      _showBack = true;
+      setState(() {});
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -258,9 +275,9 @@ class _MainHeaderState extends ConsumerState<Main2Header> {
       toolbarHeight: 40.h,
       backgroundColor: AppColors.backgroundColor,
       elevation: 0,
-      leadingWidth: widget.showBackButton ? null : 0,
+      leadingWidth: (widget.showBackButton && !textfieldFocusnode.hasFocus) ? null : 0,
       centerTitle: false,
-      titleSpacing: textfieldFocusnode.hasFocus ? 14.w : 5.0,
+      titleSpacing: 0, //textfieldFocusnode.hasFocus ? 14.w : 5.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(32.r),
@@ -281,14 +298,13 @@ class _MainHeaderState extends ConsumerState<Main2Header> {
       ),
 
       // leading
-      leading: textfieldFocusnode.hasFocus
-          ? null
-          : GestureDetector(
+      leading: _showBack ?
+      GestureDetector(
               onTap: () {
                 context.popRoute();
               },
-              child: Container(
-                margin: EdgeInsets.only(left: 10.5.w),
+              child: DecoratedBox(
+                //margin: EdgeInsets.only(left: 10.5.w),
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: AppColors.greyBorder,
@@ -305,16 +321,18 @@ class _MainHeaderState extends ConsumerState<Main2Header> {
                   ),
                 ),
               ),
-            ),
+            ) : const SizedBox.shrink(),
 
       // title
       title: AnimatedContainer(
         margin: EdgeInsets.only(
-            left: !widget.showBackButton && !textfieldFocusnode.hasFocus
-                ? 16.w
-                : 0),
-        duration: const Duration(milliseconds: 200),
-        width: textfieldFocusnode.hasFocus ? 360.w : 300.w,
+            left: (widget.showBackButton && !textfieldFocusnode.hasFocus)
+                ? 0
+                : 13.w,
+            right: 16),
+        duration: const Duration(milliseconds: 1000),
+        curve: Curves.easeInOut,
+        width: textfieldFocusnode.hasFocus ? 390.w : 300.w,
         height: 40.h,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -399,38 +417,37 @@ class _MainHeaderState extends ConsumerState<Main2Header> {
 
       // action
       actions: [
-        textfieldFocusnode.hasFocus
-            ? const SizedBox()
-            : Padding(
-                padding: EdgeInsets.only(right: 15.w),
-                child: Consumer(builder: (context, ref, child) {
-                  final settingsState = ref.watch(settingsProvider);
-                  return GestureDetector(
-                    onTap: () {
-                      if (widget.canNavigateToSettings) {
-                        context.router.push(const SettingsRoute());
-                      }
-                    },
-                    child: CircleAvatar(
-                      radius: 20.r,
-                      backgroundColor: AppColors.blueColor,
-                      child: settingsState.avatar.isEmpty
-                          ? CircleAvatar(
-                              radius: 18.r,
-                              backgroundImage:
-                                  const AssetImage(AppConstants.cristianBale))
-                          : CircleAvatar(
-                              radius: 18.r,
-                              backgroundImage: NetworkImage(
-                                  "http://77.222.53.122/image/${settingsState.avatar}"),
-                              onBackgroundImageError: (exception, stackTrace) {
-                                debugPrint(exception.toString());
-                              },
-                            ),
-                    ),
-                  );
-                }),
-              ),
+        if (showAvatar)
+          Padding(
+            padding: EdgeInsets.only(right: 15.w),
+            child: Consumer(builder: (context, ref, child) {
+              final settingsState = ref.watch(settingsProvider);
+              return GestureDetector(
+                onTap: () {
+                  if (widget.canNavigateToSettings) {
+                    context.router.push(const SettingsRoute());
+                  }
+                },
+                child: CircleAvatar(
+                  radius: 20.r,
+                  backgroundColor: AppColors.blueColor,
+                  child: settingsState.avatar.isEmpty
+                      ? CircleAvatar(
+                          radius: 18.r,
+                          backgroundImage:
+                              const AssetImage(AppConstants.cristianBale))
+                      : CircleAvatar(
+                          radius: 18.r,
+                          backgroundImage: NetworkImage(
+                              "http://77.222.53.122/image/${settingsState.avatar}"),
+                          onBackgroundImageError: (exception, stackTrace) {
+                            debugPrint(exception.toString());
+                          },
+                        ),
+                ),
+              );
+            }),
+          ),
       ],
     );
   }

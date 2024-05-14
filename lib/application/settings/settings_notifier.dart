@@ -519,15 +519,30 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         if (data["operationResult"] == "OK") {
           final listFromServer = data["object"] as List;
           if (listFromServer.isNotEmpty) {
-            final userSubscription =
-                UserSubscription.fromJson(listFromServer[0]);
+            final userSubscription = UserSubscription(
+              subscription:
+                  Subscription.fromJson(listFromServer[0]["subscription"]),
+              autoRenewal: listFromServer[0]["autoRenewal"],
+              firstBuyData: listFromServer[0]["firstBuyData"],
+              endData: listFromServer[0]["endData"],
+              prolongationData: listFromServer[0]["prolongationData"],
+              endDataFormatted:
+                  getWhenCurrentSubEnds(listFromServer[0]["endData"]),
+            );
             state = state.copyWith(
               currentSubscribtion: userSubscription,
               autoRenewal: userSubscription.autoRenewal ?? false,
             );
             if (listFromServer.length > 1) {
-              final nextSubscription =
-                  UserSubscription.fromJson(listFromServer[1]);
+              final nextSubscription = UserSubscription(
+                subscription:
+                    Subscription.fromJson(listFromServer[1]["subscription"]),
+                autoRenewal: listFromServer[1]["autoRenewal"],
+                firstBuyData: listFromServer[1]["firstBuyData"],
+                endData: listFromServer[1]["endData"],
+                prolongationData: listFromServer[1]["prolongationData"],
+                endDataFormatted: "46 дней",
+              );
               state = state.copyWith(nextSubscribtion: nextSubscription);
             }
           }
@@ -541,10 +556,12 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     }
   }
 
-  Future<void> purchaseSubscription(BuildContext context, {required int id, required bool autoRenewal}) async{
+  Future<void> purchaseSubscription(BuildContext context,
+      {required int id, required bool autoRenewal}) async {
     final connected = await AppConnectivity().connectivity();
     if (connected) {
-      final response = await _settingsRepositoryInterface.purchaseSubscription(id: id, autoRenewal: autoRenewal);
+      final response = await _settingsRepositoryInterface.purchaseSubscription(
+          id: id, autoRenewal: autoRenewal);
       response.when(success: (data) async {
         if (data["operationResult"] == "OK") {
           // to get updated subscribtions
@@ -596,10 +613,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       response.when(success: (data) {
         if (data["operationResult"] == "OK") {
           // nothing to do we already update autoRenewal
-        }else{
+        } else {
           state = state.copyWith(autoRenewal: !val);
           AppHelpers.showErrorSnack(
-            context, "Ошибка при изменении автопродления");
+              context, "Ошибка при изменении автопродления");
         }
       }, failure: (error, statusCode, operationInfo) {
         state = state.copyWith(autoRenewal: !val);
@@ -623,6 +640,35 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     }
   }
 
+  String getWhenCurrentSubEnds(String futureDateString) {
+    // from 2024-06-03T13:56:25 to 2 дня 3 часа
+  DateTime now = DateTime.now();
+  DateTime futureDate = DateTime.parse(futureDateString);
+  if (futureDate.isAfter(now)) {
+    Duration difference = futureDate.difference(now);
+
+    if (difference.inDays >= 1) {
+      return 'через ${difference.inDays} ${plural(difference.inDays, ['день', 'дня', 'дней'])}';
+    } else if (difference.inHours >= 1) {
+      return 'через ${difference.inHours} ${plural(difference.inHours, ['час', 'часа', 'часов'])}';
+    } else {
+      return 'через ${difference.inMinutes} ${plural(difference.inMinutes, ['минуту', 'минуты', 'минут'])}';
+    }
+  } else {
+    return "если это показывается то !futureDate.isAfter(now)";
+  }
+}
+
+String plural(int num, List<String> forms) {
+  if (num % 10 == 1 && num % 100 != 11) {
+    return forms[0];
+  } else if (num % 10 >= 2 && num % 10 <= 4 && (num % 100 < 10 || num % 100 >= 20)) {
+    return forms[1];
+  } else {
+    return forms[2];
+  }
+}
+
   void setQrCodeValue(String value) {
     state = state.copyWith(qrcodeValue: value);
   }
@@ -641,8 +687,6 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     }
   }
 
-
-
   void addCard(String number) {
     state = state.copyWith(cardNumber: number);
   }
@@ -650,8 +694,6 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   void deleteCard() {
     state = state.copyWith(cardNumber: "");
   }
-
-
 
   String formatDuration(Duration duration) {
     int days = duration.inDays;

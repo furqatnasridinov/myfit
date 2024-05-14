@@ -2,8 +2,8 @@ import 'package:myfit/application/main2/main2_notifier.dart';
 import 'package:myfit/application/main2/main2_provider.dart';
 import 'package:myfit/infrastructure/models/response/get_nearest_lesson_response.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/presentation/components/custom_card.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
-import 'package:myfit/presentation/components/ui_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,8 +20,8 @@ class ComingActivity extends StatelessWidget {
     List<String> parts = nearestLesson.bodyData!.date!.split("@");
     final today = event.dateTimeNowToString(DateTime.now());
     final String formattedDay = event.formatDay(parts[0]);
-    return UiCard(
-      cardValue: Column(
+    return CustomCard(
+      child:  Column(
         children: [
           Consumer(builder: (context, ref, child) {
             final lessonIsAlreadyStarted =

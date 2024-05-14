@@ -32,12 +32,14 @@ class PhotoViewScreen extends StatelessWidget {
         itemCount: photos.length,
         builder: (context, index) => PhotoViewGalleryPageOptions.customChild(
           child: //Image.asset(dummyPhotos[index]),
-              CachedNetworkImage(
-                  imageUrl: "http://77.222.53.122/image/${photos[index]}",
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                  placeholder: (context, url) => const Center(
-                      child: CircularProgressIndicator(
-                          color: AppColors.blueColor))),
+              Hero(
+                tag: index,
+                child: CachedNetworkImage(
+                    imageUrl: "http://77.222.53.122/image/${photos[index]}",
+                    errorWidget: (context, url, error) => const Icon(Icons.error),
+                    placeholder: (context, url) => const Center(
+                        child: CircularProgressIndicator(color: AppColors.blueColor))),
+              ),
           minScale: PhotoViewComputedScale.covered,
         ),
         pageController: PageController(initialPage: index),

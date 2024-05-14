@@ -4,7 +4,7 @@ import 'package:myfit/presentation/components/custom_button.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:myfit/presentation/components/custom_textfield.dart';
 import 'package:myfit/presentation/components/ui_dropdown_menu.dart';
-import 'package:myfit/presentation/router/app_router.gr.dart';
+import 'package:myfit/presentation/pages/activity/skeletons/photo_skeleton.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -47,27 +47,31 @@ class _TheOneWithImageState extends State<TheOneWithImage> {
       final mainPictureUrl = ref.watch(activityProvider).gym?.mainPictureUrl;
       final name = ref.watch(activityProvider).gym?.name;
       final address = ref.watch(activityProvider).gym?.address;
-      return Stack(
+      final loading = ref.watch(activityProvider).isGymLoading;
+      return loading ? const PhotoSkeleton() : Stack(
         children: [
           SizedBox(
             height: 210.h,
             width: double.maxFinite,
-            child: CachedNetworkImage(
-              imageUrl: "http://77.222.53.122/image/$mainPictureUrl",
-              errorWidget: (context, url, error) {
-                return Image.asset(
-                  "assets/images/avatar.png",
-                  fit: BoxFit.cover,
-                );
-              },
-              fit: BoxFit.cover,
+            child: Hero(
+              tag: mainPictureUrl ?? "",
+              child: CachedNetworkImage(
+                imageUrl: "http://77.222.53.122/image/$mainPictureUrl",
+                errorWidget: (context, url, error) {
+                  return Image.asset(
+                    "assets/images/avatar.png",
+                    fit: BoxFit.cover,
+                  );
+                },
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           GestureDetector(
             onTap: (){
-              if (mainPictureUrl != null && mainPictureUrl.isNotEmpty) {
+             /*  if (mainPictureUrl != null && mainPictureUrl.isNotEmpty) {
                 context.pushRoute(PhotoViewRoute(photos: [mainPictureUrl], index: 0));
-              }
+              } */
             },
             child: SizedBox(
               height: 210.h,

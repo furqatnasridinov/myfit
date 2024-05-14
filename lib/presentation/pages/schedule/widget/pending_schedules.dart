@@ -189,7 +189,7 @@ Widget listOfActivitiesEachItem2(
                 // describtion
                 SizedBox(
                   width: 220.w,
-                  child: InterText(
+                  child: CustomText(
                     text: description, //description,
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w400,

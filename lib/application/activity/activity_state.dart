@@ -17,17 +17,18 @@ class ActivityState with _$ActivityState {
     @Default(false) bool infoForTypeLoading,
     @Default(null) GymResponse? gym,
     @Default(null) DescribtionAndPeculiarities? describtionAndPeculiarities,
+    @Default("") String? dayOfSelectedLessonFromSearch,
     @Default([]) List<String>? activityTypes,
     @Default({}) Map<String, dynamic> allPhotos,
     @Default({}) Map<String, dynamic> allLessons,
     @Default([]) List<Lesson> lessonsOfSelectedActivity,
-    @Default([])
-    List<String> daysInWhichWeHaveLessons, // [Вс 25 Фев, Пн 26 Фев]
+    @Default([])List<String> daysInWhichWeHaveLessons, // [Вс 25 Фев, Пн 26 Фев]
     @Default("") String? selectedCalendarDay,
     @Default([]) List<Lesson> lessonsToShowAfterSelectingADay,
     @Default("") String? selectedActivity,
     @Default([]) List<String> photosOfSelectedActivity,
     @Default({}) Map<String, dynamic> infosForType,
+    @Default(false) bool isFromSearch,
     @Default([]) List<String> listOf15CalendarDaysFromNow,
     @Default(null) EnrollingErrorMessage? enrollingError,
   }) = _ActivityState;

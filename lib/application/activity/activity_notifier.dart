@@ -35,10 +35,12 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   final Main2Notifier main2Notifier;
   final MapNotifier mapNotifier;
 
-  Future<void> getGymInfo(BuildContext context, {required int gymId}) async {
+  Future<void> getGymInfo(BuildContext context,bool showLoading,  {required int gymId}) async {
     final connected = await AppConnectivity().connectivity();
     if (connected) {
-      state = state.copyWith(isGymLoading: true);
+      if (showLoading) {
+        state = state.copyWith(isGymLoading: true);
+      }
       final response =
           await _activityRepositoryInterface.getInfoAboutGym(id: gymId);
       response.when(
@@ -121,18 +123,27 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
+  void setIsFromSearch(bool value) {
+    state = state.copyWith(isFromSearch: value);
+  }
+
   Future<void> getInfoForType(BuildContext context, {required int id}) async {
     final connected = await AppConnectivity().connectivity();
     if (connected) {
+      state = state.copyWith(infoForTypeLoading: true);
       final response =
           await _activityRepositoryInterface.getInfoForType(id: id);
       response.when(
         success: (data) {
           if (data["object"] != null) {
-            state = state.copyWith(infosForType: data["object"]);
+            state = state.copyWith(
+              infosForType: data["object"],
+              infoForTypeLoading: false,
+            );
           }
         },
         failure: (error, statusCode, operationInfo) {
+          state = state.copyWith(infoForTypeLoading: false);
           AppHelpers.showErrorSnack(
               context, NetworkExceptions.getErrorMessage(error));
         },
@@ -248,21 +259,23 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   }
 
   Future<void> getAllLessons(
-    BuildContext context, {
+    BuildContext context, bool showLoading, {
     required int id,
   }) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
-      state = state.copyWith(isSchedulesLoading: true);
+       if (showLoading) {
+           state = state.copyWith(isSchedulesLoading: true);
+        }
       final response = await _activityRepositoryInterface.getSchedules(id: id);
       response.when(
         success: (data) {
           if (data.isNotEmpty) {
             state = state.copyWith(
               allLessons: data,
-              isSchedulesLoading: false,
             );
           }
+          state = state.copyWith(isSchedulesLoading: false);
         },
         failure: (error, statusCode, operationInfo) {
           state = state.copyWith(isSchedulesLoading: false);
@@ -278,8 +291,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   Future<void> getLessonsOfSelectedActivity(
       String selectedActivity, bool selectADefaultDay) async {
     final Map<String, dynamic> allLessons = state.allLessons;
-    final String selectedActivity =
-        state.selectedActivity ?? "no activity selected";
+    final String selectedActivity = state.selectedActivity ?? "no activity selected";
     final List<Lesson> listToCollectLessons = [];
     final List<String> listToColllectDays = [];
     final List<String> keys = allLessons.keys.toList();
@@ -287,15 +299,13 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       allLessons[key].forEach((el) {
         if (el["lessonType"] == selectedActivity) {
           try {
-            final DateTime startTime =
-                DateTime.parse(el["date"].toString().replaceAll("@", " "));
+            final DateTime startTime = DateTime.parse(el["date"].toString().replaceAll("@", " "));
             final lesson = Lesson(
                 id: el["id"],
                 date: el["date"],
                 calendarDate: formatOriginalToCalendar(el["date"]),
                 startTime: returnOnlyTime(el["date"]),
-                endTime:
-                    getEndingTime(returnOnlyTime(el["date"]), el["duration"]),
+                endTime: getEndingTime(returnOnlyTime(el["date"]), el["duration"]),
                 description: el["description"],
                 duration: formatDuration(el["duration"]),
                 lessonType: el["lessonType"],
@@ -303,8 +313,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
                 repeat: el["repeat"].cast<int>(),
                 canSignUp: el["canSignUp"],
                 lessonState: el["lessonState"] ?? false,
-                showInCalendar: DateTime.now()
-                    .isBefore(startTime.subtract(const Duration(minutes: 30))),
+                showInCalendar: DateTime.now().isBefore(startTime.subtract(const Duration(minutes: 30))),
                 isDeleted: el["deleteLesson"] ?? false,
                 isLoading: false);
             if (lesson.showInCalendar! &&
@@ -323,7 +332,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
     // makimg first day that is in state.listOf15CalendarDaysFromNow
     // as selected day
-    if (selectADefaultDay) {
+    if (selectADefaultDay && !state.isFromSearch) {
       for (var element in listToColllectDays) {
         if (state.listOf15CalendarDaysFromNow.contains(element)) {
           state = state.copyWith(selectedCalendarDay: element);
@@ -332,11 +341,20 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       }
     }
 
+    if (state.isFromSearch && state.dayOfSelectedLessonFromSearch!.isNotEmpty) {
+      final formatted = formatOriginalToCalendar(state.dayOfSelectedLessonFromSearch!);
+      state = state.copyWith(selectedCalendarDay: formatted);
+    }
+
     state = state.copyWith(
       lessonsOfSelectedActivity: listToCollectLessons,
       daysInWhichWeHaveLessons: listToColllectDays,
     );
     getLessonsToShowAfterSelectingADay(state.selectedCalendarDay ?? "");
+  }
+
+  void setDayOfSelectedLessonFromSearch(String day) {
+    state = state.copyWith(dayOfSelectedLessonFromSearch: day);
   }
 
   void handleWebSocket(WebSocketChannel channel, BuildContext context) {
@@ -349,21 +367,14 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         // get all lessons again && get lessons of selected activity
         if (context.router.current.path == "/activity") {
           final String gymIdFromCurrentPath = context.router.current.args
-              .toString()
-              .split("gymId:")[1]
-              .replaceAll("}", "");
+              .toString().split("gymId:")[1].replaceAll("}", "");
           if (int.parse(gymIdFromCurrentPath) == lessonData["gymId"]) {
-            await getAllLessons(context, id: lessonData["gymId"]);
-            await getLessonsOfSelectedActivity(
-                state.selectedActivity ?? "", false);
+            await getAllLessons(context, false, id: lessonData["gymId"]);
+            await getLessonsOfSelectedActivity(state.selectedActivity ?? "", false);
           }
         }
         scheduleNotifier.getUsersSchedules(context);
-        await mapNotifier.getGymsList(
-          context,
-          [],
-          {},
-        );
+        await mapNotifier.getGymsList(context,[],{});
         //mapNotifier.getGetListOfGymsFromDiapozone();
         if (lessonData["lessonState"] == "CONFIRMED") {
           // get users schedules to show in schedule page
@@ -390,14 +401,14 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         Map<String, dynamic> lessonData = jsonDecode(data);
         if (context.router.current.path == "/activity") {
           final String gymIdFromCurrentPath = context.router.current.args
-              .toString()
-              .split("gymId:")[1]
-              .replaceAll("}", "");
+              .toString().split("gymId:")[1].replaceAll("}", "");
           if (int.parse(gymIdFromCurrentPath) == lessonData["gymId"]) {
-            await getAllLessons(context, id: lessonData["gymId"]);
-            await getLessonsOfSelectedActivity(
-                state.selectedActivity ?? "", false);
+            await getAllLessons(context, false ,id: lessonData["gymId"]);
+            await getLessonsOfSelectedActivity(state.selectedActivity ?? "", false);
+            getGymInfo(context,false, gymId: lessonData["gymId"]);
           }
+          await mapNotifier.getGymsList(context,[],{});
+          mapNotifier.getGetListOfGymsFromDiapozone();
         }
       },
       onError: (error) {
@@ -426,8 +437,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     listToCollectLessons.sort((a, b) =>
         int.parse(a.startTime!.replaceAll(":", ""))
             .compareTo(int.parse(b.startTime!.replaceAll(":", ""))));
-    state =
-        state.copyWith(lessonsToShowAfterSelectingADay: listToCollectLessons);
+    state = state.copyWith(lessonsToShowAfterSelectingADay: listToCollectLessons);
   }
 
   Future<void> removeSelectedCalendarDay() async {
@@ -512,7 +522,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   Future<void> getListOf15CalendarDatesFromToday() async {
     List<String> dates = [];
     DateTime currentDate = DateTime.now();
-    for (int i = 0; i < 30; i++) {
+    for (int i = 0; i < 45; i++) {
       String dayOfWeek = DateFormat('EEE').format(currentDate);
       switch (dayOfWeek) {
         case "Mon":

@@ -15,5 +15,7 @@ class AppColors {
   static const Color fadedPrimary3 = Color.fromRGBO(236, 243, 254, 1);
   static const Color massageColor = Color.fromRGBO(89, 86, 248, 1);
   static const Color green = Color.fromRGBO(122, 228, 72, 1);
+  static const Color skeletonBg = Color.fromRGBO(218, 233, 255, 1);
+  static const Color skeletonSecondary = Color.fromRGBO(235, 243, 255, 1);
   static Color shimmerBase = Colors.grey.shade300;
 }
