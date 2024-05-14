@@ -1,12 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:math';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
 import 'package:myfit/application/schedule/schedule_notifier.dart';
 import 'package:myfit/application/schedule/schedule_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
-import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:myfit/presentation/components/animation_button_effect.dart';
 import 'package:myfit/presentation/components/custom_card.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
@@ -28,10 +25,8 @@ class CompletedSchedules extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final event = ref.watch(scheduleProvider.notifier);
     final completedSchedules = ref.watch(scheduleProvider).completedSchedules;
-    final completedSchedulesShown =
-        ref.watch(scheduleProvider).completedSchedulesShown;
-    final completedLessonListAnimaion =
-        ref.watch(scheduleProvider).completedLessonListAnimaion;
+    final completedSchedulesShown = ref.watch(scheduleProvider).completedSchedulesShown;
+    final completedLessonListAnimaion = ref.watch(scheduleProvider).completedLessonListAnimaion;
     return completedSchedules.isEmpty
         ? const SizedBox.shrink()
         : Padding(
@@ -122,6 +117,7 @@ class CompletedSchedules extends ConsumerWidget {
                 Consumer(builder: (context, watch, child) {
                   final completedSchedules =
                       ref.watch(scheduleProvider).completedSchedules;
+                  
                   return AnimatedSize(
                     duration: const Duration(milliseconds: 350),
                     curve: Curves.easeInOut,
@@ -272,7 +268,7 @@ Widget listOfActivitiesEachItem(
                         // describtion
                         SizedBox(
                           width: 220.w,
-                          child: InterText(
+                          child: CustomText(
                             //text: AppConstants.confirmationText,
                             text: description,
                             fontSize: 13.sp,

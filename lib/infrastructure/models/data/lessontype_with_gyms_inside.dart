@@ -27,6 +27,8 @@ class Gymdata {
   String? address;
   String? latitude;
   String? longitude;
+  int? visitedCount;
+  int? visitPerMonth;
   double? distanceFromClient;
   bool isSelected = false;
 
@@ -36,6 +38,8 @@ class Gymdata {
       this.address,
       this.latitude,
       this.longitude,
+      this.visitedCount,
+      this.visitPerMonth,
       this.distanceFromClient});
 
   Gymdata.fromJson(Map<String, dynamic> json) {
@@ -44,6 +48,8 @@ class Gymdata {
     address = json['address'];
     latitude = json['latitude'];
     longitude = json['longitude'];
+    visitedCount = json['visitedCount'];
+    visitPerMonth = json['visitPerMonth'];
   }
 
   Gymdata copyWith({
@@ -52,6 +58,8 @@ class Gymdata {
     String? address,
     String? latitude,
     String? longitude,
+    int? visitedCount,
+    int? visitPerMonth,
     double? distanceFromClient,
     bool? isSelected,
   }) {
@@ -62,6 +70,8 @@ class Gymdata {
       address: address ?? this.address,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
+      visitedCount: visitedCount ?? this.visitedCount,
+      visitPerMonth: visitPerMonth ?? this.visitPerMonth,
       distanceFromClient: distanceFromClient ?? this.distanceFromClient,
     );
   }

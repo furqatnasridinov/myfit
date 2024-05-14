@@ -1,4 +1,3 @@
-import 'package:myfit/application/main2/main2_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
@@ -79,7 +78,7 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
                             await event.getGymsList(
                               context,
                               ref.watch(settingsProvider).knownActivities,
-                              ref.watch(main2Provider).recommendedGyms,
+                              ref.watch(mapProvider).recommendedGyms,
                             );
                             await event.getGetListOfGymsFromDiapozone();
                             await event.setFlexes();

@@ -1,10 +1,10 @@
-class Subscribtion{
+class SubscribtionDemo{
   final int id;
   final String description;
   final String price;
   final String durationInMonths;
 
-  Subscribtion({
+  SubscribtionDemo({
     required this.id,
     required this.description,
     required this.price,

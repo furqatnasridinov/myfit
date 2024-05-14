@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:flutter_svg/svg.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -178,6 +181,41 @@ class AppHelpers {
     return prefix;
   }
 
+  Color getColorOfActivity(String activityName) {
+    Color color = Colors.black;
+    switch (activityName) {
+      case "Йога":
+        color = AppColors.blueColor;
+        break;
+      case "Бассейн":
+        color = AppColors.goldText;
+        break;
+      case "Медитации":
+        color = Colors.red;
+        break;
+      case "Спортзал":
+        color = Colors.brown;
+        break;
+      case "Секция бокса":
+        color = AppColors.blueText;
+        break;
+      case "Кардио-тренировки":
+        color = AppColors.green;
+        break;
+      case "Массаж":
+        color = AppColors.massageColor;
+        break;
+      case "Силовые тренировки":
+        color = AppColors.purpleText;
+        break;
+      case "Смешанные единоборства":
+        color = AppColors.purpleBorder;
+        break;
+    }
+    return color;
+  }
+
+
   String getCorrectWordFromUsersCount(int usersCount) {
     int lastDigit = usersCount % 10;
     int lastTwoDigits = usersCount % 100;
@@ -193,18 +231,72 @@ class AppHelpers {
   }
 
   String getMonthWord(int month) {
-  if (month < 1 || month > 12) {
-    throw ArgumentError('Invalid month value. Only numbers from 1 to 12 are allowed.');
+    if (month < 1 || month > 12) {
+      throw ArgumentError(
+          'Invalid month value. Only numbers from 1 to 12 are allowed.');
+    }
+
+    if (month == 1) {
+      return "1 месяц";
+    } else if (month >= 2 && month <= 4) {
+      return "$month месяца";
+    } else if (month == 6) {
+      return "Пол года";
+    } else {
+      return "$month месяцев";
+    }
   }
 
-  if (month == 1) {
-    return "1 месяц";
-  } else if (month >= 2 && month <= 4) {
-    return "$month месяца";
-  } else if (month == 6) {
-    return "Пол года";
-  } else {
-    return "$month месяцев";
+  Widget getBatteryIcon(int visited, int total) {
+    double percent = 100 - (visited / total * 100);
+    log("getBatteryIcon visited :  $visited");
+    log("getBatteryIcon total : $total");
+    log("getBatteryIcon percent : $percent");
+    if (percent >= 1 && percent <= 19) {
+      return SvgPicture.asset("assets/svg/1-19_percent.svg");
+    } else if (percent >= 20 && percent <= 49) {
+      return SvgPicture.asset("assets/svg/20-49_percent.svg");
+    } else if (percent >= 50 && percent <= 79) {
+      return SvgPicture.asset("assets/svg/50-79_percent.svg");
+    } else if (percent >= 80 && percent <= 100) {
+      return SvgPicture.asset("assets/svg/80-100_percent.svg");
+    } else {
+      // if 0
+      return SvgPicture.asset("assets/svg/0_percent.svg");
+    }
   }
-}
+
+  String getTranslatedLessonType({required String engLessonType}){
+    String translatedLessonType = "Яхай";
+    switch (engLessonType) {
+      case "CARDIO":
+        translatedLessonType = "Кардио-тренировки";
+        break;
+      case "BOX":
+        translatedLessonType = "Секция бокса";
+        break;
+      case "MMA":
+        translatedLessonType = "Смешанные единоборства";
+        break;
+      case "GYM":
+        translatedLessonType = "Спортзал";
+        break;
+      case "POWER":
+        translatedLessonType = "Силовые тренировки";
+        break;
+      case "MASSAGE":
+        translatedLessonType = "Массаж";
+        break;
+      case "POOL":
+        translatedLessonType = "Бассейн";
+        break;
+      case "YOGA":
+        translatedLessonType = "Йога";
+        break;
+      case "MEDITATION":
+        translatedLessonType = "Медитации";
+        break;
+    }
+    return translatedLessonType;
+  }
 }

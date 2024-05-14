@@ -1,31 +1,46 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:convert';
+import 'dart:developer';
+import 'package:auto_route/auto_route.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:myfit/application/activity/activity_state.dart';
 import 'package:myfit/application/main2/main2_notifier.dart';
+import 'package:myfit/application/map/map_notifier.dart';
 import 'package:myfit/application/schedule/schedule_notifier.dart';
 import 'package:myfit/domain/handlers/network_exceptions.dart';
 import 'package:myfit/domain/interface/activity.dart';
 import 'package:myfit/infrastructure/models/data/description_and_peculiarities.dart';
+import 'package:myfit/infrastructure/models/data/enrolling_error_message.dart';
 import 'package:myfit/infrastructure/models/data/lesson.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/infrastructure/services/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import '../../presentation/components/custom_button.dart';
+
 class ActivityNotifier extends StateNotifier<ActivityState> {
-  ActivityNotifier(this._activityRepositoryInterface, this.scheduleNotifier, this.main2Notifier)
+  ActivityNotifier(this._activityRepositoryInterface, this.scheduleNotifier,
+      this.main2Notifier, this.mapNotifier)
       : super(const ActivityState());
   final ActivityRepositoryInterface _activityRepositoryInterface;
   final ScheduleNotifier scheduleNotifier;
   final Main2Notifier main2Notifier;
+  final MapNotifier mapNotifier;
 
-  Future<void> getGymInfo(BuildContext context, {required int gymId}) async {
+  Future<void> getGymInfo(BuildContext context,bool showLoading,  {required int gymId}) async {
     final connected = await AppConnectivity().connectivity();
     if (connected) {
-      state = state.copyWith(isGymLoading: true);
+      if (showLoading) {
+        state = state.copyWith(isGymLoading: true);
+      }
       final response =
           await _activityRepositoryInterface.getInfoAboutGym(id: gymId);
       response.when(
@@ -108,18 +123,27 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
+  void setIsFromSearch(bool value) {
+    state = state.copyWith(isFromSearch: value);
+  }
+
   Future<void> getInfoForType(BuildContext context, {required int id}) async {
     final connected = await AppConnectivity().connectivity();
     if (connected) {
+      state = state.copyWith(infoForTypeLoading: true);
       final response =
           await _activityRepositoryInterface.getInfoForType(id: id);
       response.when(
         success: (data) {
           if (data["object"] != null) {
-            state = state.copyWith(infosForType: data["object"]);
+            state = state.copyWith(
+              infosForType: data["object"],
+              infoForTypeLoading: false,
+            );
           }
         },
         failure: (error, statusCode, operationInfo) {
+          state = state.copyWith(infoForTypeLoading: false);
           AppHelpers.showErrorSnack(
               context, NetworkExceptions.getErrorMessage(error));
         },
@@ -235,21 +259,23 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   }
 
   Future<void> getAllLessons(
-    BuildContext context, {
+    BuildContext context, bool showLoading, {
     required int id,
   }) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
-      state = state.copyWith(isSchedulesLoading: true);
+       if (showLoading) {
+           state = state.copyWith(isSchedulesLoading: true);
+        }
       final response = await _activityRepositoryInterface.getSchedules(id: id);
       response.when(
         success: (data) {
           if (data.isNotEmpty) {
             state = state.copyWith(
               allLessons: data,
-              isSchedulesLoading: false,
             );
           }
+          state = state.copyWith(isSchedulesLoading: false);
         },
         failure: (error, statusCode, operationInfo) {
           state = state.copyWith(isSchedulesLoading: false);
@@ -265,8 +291,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   Future<void> getLessonsOfSelectedActivity(
       String selectedActivity, bool selectADefaultDay) async {
     final Map<String, dynamic> allLessons = state.allLessons;
-    final String selectedActivity =
-        state.selectedActivity ?? "no activity selected";
+    final String selectedActivity = state.selectedActivity ?? "no activity selected";
     final List<Lesson> listToCollectLessons = [];
     final List<String> listToColllectDays = [];
     final List<String> keys = allLessons.keys.toList();
@@ -274,26 +299,23 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       allLessons[key].forEach((el) {
         if (el["lessonType"] == selectedActivity) {
           try {
-            final DateTime startTime =
-                DateTime.parse(el["date"].toString().replaceAll("@", " "));
+            final DateTime startTime = DateTime.parse(el["date"].toString().replaceAll("@", " "));
             final lesson = Lesson(
-              id: el["id"],
-              date: el["date"],
-              calendarDate: formatOriginalToCalendar(el["date"]),
-              startTime: returnOnlyTime(el["date"]),
-              endTime:getEndingTime(returnOnlyTime(el["date"]), el["duration"]),
-              description: el["description"],
-              duration: formatDuration(el["duration"]),
-              lessonType: el["lessonType"],
-              owner: el["owner"] != null ? Owner.fromJson(el["owner"]) : null,
-              repeat: el["repeat"].cast<int>(),
-              canSignUp: el["canSignUp"],
-              lessonState: el["lessonState"] ?? false,
-              showInCalendar: DateTime.now()
-                  .isBefore(startTime.subtract(const Duration(minutes: 30))),
-              isDeleted: el["deleteLesson"] ?? false,
-              isLoading: false
-            );
+                id: el["id"],
+                date: el["date"],
+                calendarDate: formatOriginalToCalendar(el["date"]),
+                startTime: returnOnlyTime(el["date"]),
+                endTime: getEndingTime(returnOnlyTime(el["date"]), el["duration"]),
+                description: el["description"],
+                duration: formatDuration(el["duration"]),
+                lessonType: el["lessonType"],
+                owner: el["owner"] != null ? Owner.fromJson(el["owner"]) : null,
+                repeat: el["repeat"].cast<int>(),
+                canSignUp: el["canSignUp"],
+                lessonState: el["lessonState"] ?? false,
+                showInCalendar: DateTime.now().isBefore(startTime.subtract(const Duration(minutes: 30))),
+                isDeleted: el["deleteLesson"] ?? false,
+                isLoading: false);
             if (lesson.showInCalendar! &&
                 !lesson.isDeleted! &&
                 lesson.canSignUp!) {
@@ -310,13 +332,18 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
     // makimg first day that is in state.listOf15CalendarDaysFromNow
     // as selected day
-    if (selectADefaultDay) {
+    if (selectADefaultDay && !state.isFromSearch) {
       for (var element in listToColllectDays) {
         if (state.listOf15CalendarDaysFromNow.contains(element)) {
           state = state.copyWith(selectedCalendarDay: element);
           break; // stop the loop
         }
       }
+    }
+
+    if (state.isFromSearch && state.dayOfSelectedLessonFromSearch!.isNotEmpty) {
+      final formatted = formatOriginalToCalendar(state.dayOfSelectedLessonFromSearch!);
+      state = state.copyWith(selectedCalendarDay: formatted);
     }
 
     state = state.copyWith(
@@ -326,20 +353,34 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     getLessonsToShowAfterSelectingADay(state.selectedCalendarDay ?? "");
   }
 
+  void setDayOfSelectedLessonFromSearch(String day) {
+    state = state.copyWith(dayOfSelectedLessonFromSearch: day);
+  }
+
   void handleWebSocket(WebSocketChannel channel, BuildContext context) {
+    //ws://77.222.53.122:8080/appSchedulePanel
     /// Listen for all incoming data
     channel.stream.listen(
       (data) async {
         // convert the incoming data to json
         Map<String, dynamic> lessonData = jsonDecode(data);
         // get all lessons again && get lessons of selected activity
-        await getAllLessons(context, id: lessonData["gymId"]);
-        await getLessonsOfSelectedActivity(state.selectedActivity ?? "", false);
-        // get users schedules to show in schedule page
+        if (context.router.current.path == "/activity") {
+          final String gymIdFromCurrentPath = context.router.current.args
+              .toString().split("gymId:")[1].replaceAll("}", "");
+          if (int.parse(gymIdFromCurrentPath) == lessonData["gymId"]) {
+            await getAllLessons(context, false, id: lessonData["gymId"]);
+            await getLessonsOfSelectedActivity(state.selectedActivity ?? "", false);
+          }
+        }
         scheduleNotifier.getUsersSchedules(context);
-        // add here get nearest lesson
-        main2Notifier.getNearestLesson(context);
-
+        await mapNotifier.getGymsList(context,[],{});
+        //mapNotifier.getGetListOfGymsFromDiapozone();
+        if (lessonData["lessonState"] == "CONFIRMED") {
+          // get users schedules to show in schedule page
+          // add here get nearest lesson
+          main2Notifier.getNearestLesson(context);
+        }
       },
       onError: (error) {
         AppHelpers.showErrorSnack(context, "WebSocket1 ${error.message}");
@@ -352,16 +393,23 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   }
 
   void handleWebSocket2(WebSocketChannel channel, BuildContext context) {
-    /// Listen for all incoming data
+    //ws://77.222.53.122:8080/appGymPanel
+    // когда статус урока меняется,
     channel.stream.listen(
       (data) async {
         // convert the incoming data to json
         Map<String, dynamic> lessonData = jsonDecode(data);
-        // get all lessons again && get lessons of selected activity
-        await getAllLessons(context, id: lessonData["gymId"]);
-        await getLessonsOfSelectedActivity(state.selectedActivity ?? "", false);
-        // get users schedules to show in schedule page
-        scheduleNotifier.getUsersSchedules(context);
+        if (context.router.current.path == "/activity") {
+          final String gymIdFromCurrentPath = context.router.current.args
+              .toString().split("gymId:")[1].replaceAll("}", "");
+          if (int.parse(gymIdFromCurrentPath) == lessonData["gymId"]) {
+            await getAllLessons(context, false ,id: lessonData["gymId"]);
+            await getLessonsOfSelectedActivity(state.selectedActivity ?? "", false);
+            getGymInfo(context,false, gymId: lessonData["gymId"]);
+          }
+          await mapNotifier.getGymsList(context,[],{});
+          mapNotifier.getGetListOfGymsFromDiapozone();
+        }
       },
       onError: (error) {
         AppHelpers.showErrorSnack(context, "WebSocket2 ${error.message}");
@@ -389,8 +437,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     listToCollectLessons.sort((a, b) =>
         int.parse(a.startTime!.replaceAll(":", ""))
             .compareTo(int.parse(b.startTime!.replaceAll(":", ""))));
-    state =
-        state.copyWith(lessonsToShowAfterSelectingADay: listToCollectLessons);
+    state = state.copyWith(lessonsToShowAfterSelectingADay: listToCollectLessons);
   }
 
   Future<void> removeSelectedCalendarDay() async {
@@ -475,7 +522,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   Future<void> getListOf15CalendarDatesFromToday() async {
     List<String> dates = [];
     DateTime currentDate = DateTime.now();
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < 45; i++) {
       String dayOfWeek = DateFormat('EEE').format(currentDate);
       switch (dayOfWeek) {
         case "Mon":
@@ -553,9 +600,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
     var durationParts = duration.split(":");
     final durationToAdd = Duration(
-      hours: int.parse(
-        durationParts[0],
-      ),
+      hours: int.parse(durationParts[0]),
       minutes: int.parse(durationParts[1]),
     );
     final initialDuration =
@@ -584,6 +629,32 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         success: (data) {
           if (data["operationResult"] == "OK") {
             state = state.copyWith(isEnrollingLoading: false);
+          } else if (data["operationResult"] == "ERROR") {
+            try {
+              final operationInfo = data["operationInfo"];
+              final Map<String, dynamic> convertedToMap =
+                  jsonDecode(operationInfo ?? "");
+              final String date = convertedToMap["date"].toString();
+              // handle operation info and pass it to the dialog
+              final EnrollingErrorMessage error = EnrollingErrorMessage(
+                date: getDate(date),
+                startTime: date.substring(date.length - 5),
+                endTime: getEndingTime(date.substring(date.length - 5),
+                    convertedToMap["duration"]),
+                lessonType: convertedToMap["lessonType"],
+                gymName: convertedToMap["gymName"],
+              );
+              if (convertedToMap["errorType"] == "conflictTime") {
+                showConflictTimeDialog(error, context);
+              } else if (convertedToMap["errorType"] == "conflictGym") {
+                showConflictGymDialog(error, context);
+              }
+            } catch (e) {
+              log(e.toString());
+              rethrow;
+            }
+
+            state = state.copyWith(isEnrollingLoading: false);
           }
         },
         failure: (error, statusCode, operationInfo) {
@@ -597,6 +668,36 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
+  String getDate(String inputDate) {
+    // from 2024-05-07T17:00 to 7 мая
+    final parts = inputDate.split("T");
+    final date = parts[0];
+    final dateParts = date.split("-");
+    final day = dateParts[2];
+    final month = int.tryParse(dateParts[1]);
+
+    final monthNames = [
+      "янв",
+      "фев",
+      "мар",
+      "апр",
+      "мая",
+      "июня",
+      "июля",
+      "авг",
+      "сен",
+      "окт",
+      "ноя",
+      "дек"
+    ];
+
+    if (month != null && month >= 1 && month <= 12) {
+      return "$day ${monthNames[month - 1]}";
+    } else {
+      return "error";
+    }
+  }
+
   String getLinkToCompressedPhoto(String fileName) {
     int lastDotIndex = fileName.lastIndexOf('.');
     if (lastDotIndex == -1) {
@@ -606,5 +707,255 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     String nameWithoutExtension = fileName.substring(0, lastDotIndex);
     String extension = fileName.substring(lastDotIndex);
     return "${nameWithoutExtension}_icon$extension";
+  }
+
+  void showConflictTimeDialog(
+      EnrollingErrorMessage error, BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.r),
+                  side: const BorderSide(
+                    color: AppColors.blueBorder,
+                  )),
+              elevation: 0,
+              insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: Padding(
+                padding: EdgeInsets.all(16.r),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CustomText(
+                      text: "Невозможно записаться",
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    16.verticalSpace,
+                    Row(
+                      children: [
+                        SvgPicture.asset(
+                          "assets/svg/error.svg",
+                        ),
+                        10.horizontalSpace,
+                        Flexible(
+                          child: CustomText(
+                            text:
+                                "Нельзя записаться на два занятия, у которых совпадает время проведения.",
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            height: 1.1,
+                          ),
+                        )
+                      ],
+                    ),
+                    16.verticalSpace,
+                    Row(
+                      children: [
+                        34.horizontalSpace,
+                        Flexible(
+                          child: RichText(
+                              text: TextSpan(children: [
+                            TextSpan(
+                              text:
+                                  "${error.date} с ${error.startTime}-${error.endTime}",
+                              style: GoogleFonts.raleway(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                                height: 1.1,
+                                fontFeatures: const [
+                                  FontFeature.liningFigures()
+                                ],
+                              ),
+                            ),
+                            WidgetSpan(child: 3.horizontalSpace),
+                            TextSpan(
+                              text:
+                                  "вы уже записаны на занятие: “${error.lessonType}” в ${error.gymName}.",
+                              style: GoogleFonts.raleway(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                                height: 1.1,
+                              ),
+                            ),
+                          ])),
+                        )
+                      ],
+                    ),
+                    16.verticalSpace,
+                    CustomButton(
+                      onPressed: () {
+                        context.popRoute();
+                      },
+                      text: "Понятно",
+                      height: 40.h,
+                      buttonColor: AppColors.blueColor,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      textColor: Colors.white,
+                    ),
+                  ],
+                ),
+              ));
+        });
+  }
+
+  void showConflictGymDialog(
+      EnrollingErrorMessage error, BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.r),
+                  side: const BorderSide(
+                    color: AppColors.blueBorder,
+                  )),
+              elevation: 0,
+              insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: Padding(
+                padding: EdgeInsets.all(16.r),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CustomText(
+                      text: "Невозможно записаться",
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    16.verticalSpace,
+                    Row(
+                      children: [
+                        SvgPicture.asset(
+                          "assets/svg/error.svg",
+                        ),
+                        10.horizontalSpace,
+                        Flexible(
+                          child: CustomText(
+                            text:
+                                "В этом заведении в день можно посетить только одно занятие.",
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            height: 1.1,
+                          ),
+                        )
+                      ],
+                    ),
+                    16.verticalSpace,
+                    Row(
+                      children: [
+                        //34.horizontalSpace,
+                        Flexible(
+                          child: RichText(
+                              text: TextSpan(children: [
+                            TextSpan(
+                              text: "Вы уже записаны в",
+                              style: GoogleFonts.raleway(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                                height: 1.1,
+                                fontFeatures: const [
+                                  FontFeature.liningFigures()
+                                ],
+                              ),
+                            ),
+                            WidgetSpan(child: 3.horizontalSpace),
+                            TextSpan(
+                              text: "${error.gymName},",
+                              style: GoogleFonts.raleway(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                                height: 1.1,
+                              ),
+                            ),
+                            WidgetSpan(child: 3.horizontalSpace),
+                            TextSpan(
+                              text: "на активность",
+                              style: GoogleFonts.raleway(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                                height: 1.1,
+                                fontFeatures: const [
+                                  FontFeature.liningFigures()
+                                ],
+                              ),
+                            ),
+                            WidgetSpan(child: 3.horizontalSpace),
+                            TextSpan(
+                              text: "${error.lessonType}.",
+                              style: GoogleFonts.raleway(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                                height: 1.1,
+                              ),
+                            ),
+                            WidgetSpan(child: 3.horizontalSpace),
+                            TextSpan(
+                              text:
+                                  "Пожалуйста выберите другой день, либо запишитесь в другое заведение.",
+                              style: GoogleFonts.raleway(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                                height: 1.1,
+                                fontFeatures: const [
+                                  FontFeature.liningFigures()
+                                ],
+                              ),
+                            ),
+                          ])),
+                        )
+                      ],
+                    ),
+                    16.verticalSpace,
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 6,
+                          child: CustomButton(
+                            onPressed: () {
+                              context.router.removeLast();
+                              if (AutoTabsRouter.of(context).activeIndex != 2) {
+                                AutoTabsRouter.of(context).setActiveIndex(2);
+                              }
+                            },
+                            text: "Карта заведений",
+                            height: 40.h,
+                            buttonColor: Colors.white,
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            textColor: Colors.black,
+                          ),
+                        ),
+                        5.horizontalSpace,
+                        Expanded(
+                          flex: 4,
+                          child: CustomButton(
+                            onPressed: () {
+                              context.popRoute();
+                            },
+                            text: "Понятно",
+                            height: 40.h,
+                            buttonColor: AppColors.blueColor,
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            textColor: Colors.white,
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ));
+        });
   }
 }

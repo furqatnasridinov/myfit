@@ -309,7 +309,7 @@ class _MainHeaderState extends ConsumerState<ScheduleHeader> {
             ),
             onChanged: (value) {
               controller.text = value;
-              setState(() {});
+              //setState(() {});
             },
             onTap: () {
               textfieldFocusnode.requestFocus();

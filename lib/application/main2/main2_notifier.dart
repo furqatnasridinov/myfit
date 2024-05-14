@@ -1,10 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'package:myfit/application/main2/main2_state.dart';
 import 'package:myfit/domain/handlers/network_exceptions.dart';
 import 'package:myfit/domain/interface/schedule.dart';
-import 'package:myfit/infrastructure/models/data/schedule_and_gym.dart';
-import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/infrastructure/services/connectivity.dart';
 import 'package:flutter/material.dart';
@@ -224,26 +221,6 @@ class Main2Notifier extends StateNotifier<Main2State> {
     }
   }
 
-  Future<void> getRecommendationForVisit(BuildContext context)async{
-    final connected = await AppConnectivity().connectivity();
-    if (connected) {
-      final response = await _scheduleRepositoryInterface.getRecommendationForVisiting();
-      response.when(success: (data){
-        if (data["operationResult"] == "OK") {
-          final operationObject = data["object"];
-          if (operationObject["lessonType"] != null) {
-             debugPrint(operationObject.toString());
-              state = state.copyWith(recommendedGyms: operationObject);
-          }
-        }
-      }, failure: (error, statusCode, operationInfo){
-        AppHelpers.showErrorSnack(
-              context, NetworkExceptions.getErrorMessage(error));
-      });
-    }else{
-      AppHelpers.showCheckTopSnackBar(context);
-    }
-  }
 
   DateTime getEndTime(DateTime dateTime, String duration) {
     final durationParts = duration.split(':');
@@ -327,7 +304,7 @@ class Main2Notifier extends StateNotifier<Main2State> {
     }
   }
 
-  Future<void> searchingSchedules(BuildContext context,
+/*   Future<void> searchingSchedules(BuildContext context,
       {required String schedule}) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
@@ -362,7 +339,9 @@ class Main2Notifier extends StateNotifier<Main2State> {
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
-  }
+  } */
+
+  
 
   void openSearchBar() {
     state = state.copyWith(isSearchbarOpened: true);
@@ -380,23 +359,6 @@ class Main2Notifier extends StateNotifier<Main2State> {
     state = state.copyWith(nearestLesson: null);
   }
 
-  Future<void> cleanSearchList() async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    final listcha = <ScheduleAndGym>[];
-    state = state.copyWith(schedulesFoundBySearching: listcha);
-  }
 
-  Color getColors(int index) {
-    if (index == 0) {
-      return AppColors.goldText;
-    }
-    if (index == 1) {
-      return AppColors.purpleText;
-    }
-    if (index == 2) {
-      return AppColors.blueColor;
-    } else {
-      return Colors.grey.shade400;
-    }
-  }
+  
 }

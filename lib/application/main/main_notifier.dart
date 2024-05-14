@@ -7,8 +7,6 @@ import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/infrastructure/services/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class MainNotifier extends StateNotifier<MainState> {
   MainNotifier(this._mainRepositoryInterface) : super(const MainState());
@@ -151,6 +149,8 @@ class MainNotifier extends StateNotifier<MainState> {
           longitude: double.parse(e.longitude!),
           address: e.address ?? "?",
           id: e.id!,
+          visitedCount: 0,
+          visitPerMonth: 0,
         );
         if (!markers.any((element) => element.id == marker.id)) {
           markers.add(marker);
@@ -162,35 +162,6 @@ class MainNotifier extends StateNotifier<MainState> {
 
 
 
-  List<PlacemarkMapObject> getPlacemarkObjects() {
-    List<EachMarkersModel> allMarkers = state.listOfMarkers;
-    List<PlacemarkMapObject> listofPlaceMarks = [];
-    for (var i = 0; i < allMarkers.length; i++) {
-      listofPlaceMarks.add(
-        PlacemarkMapObject(
-          mapId: MapObjectId("MapObject $i "),
-          point: Point(
-            latitude: allMarkers[i].latitude ?? 0,
-            longitude: allMarkers[i].longitude ?? 0,
-          ),
-          consumeTapEvents: true,
-          icon: PlacemarkIcon.single(
-            PlacemarkIconStyle(
-              image: BitmapDescriptor.fromAssetImage(
-                allMarkers[i].name == "user"
-                    ? "assets/images/user_marker.png"
-                    : "assets/images/map_icon.png",
-              ),
-              scale: allMarkers[i].name == "user" ? 2.5.r : 4.r,
-            ),
-          ),
-          opacity: 1,
-        ),
-      );
-    }
-
-    return listofPlaceMarks;
-  }
 
   void determineContainerHeight(GlobalKey key) {
     RenderBox renderBox = key.currentContext?.findRenderObject() as RenderBox;

@@ -4,6 +4,7 @@ import 'package:myfit/presentation/components/animation_button_effect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:myfit/presentation/pages/activity/skeletons/chips_skeleton.dart';
 import '../../../components/components.dart';
 
 class TheOneWithChips extends StatelessWidget {
@@ -20,11 +21,10 @@ class TheOneWithChips extends StatelessWidget {
       final activityTypes = ref.watch(activityProvider).activityTypes;
       final selectedActivity = ref.watch(activityProvider).selectedActivity;
       final event = ref.read(activityProvider.notifier);
-      return activityTypes!.isEmpty
-          ? const SizedBox()
-          : Padding(
+      final loading = ref.watch(activityProvider).isActivitiesListLoading;
+      return  Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: Column(
+              child: loading ? const ChipsSkeleton() : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomText(
@@ -37,7 +37,7 @@ class TheOneWithChips extends StatelessWidget {
                   Wrap(
                     runSpacing: 5.h,
                     spacing: 5.w,
-                    children: List.generate(activityTypes.length, (index) {
+                    children: List.generate(activityTypes!.length, (index) {
                       final current = activityTypes[index];
                       bool isActive = current == selectedActivity;
                       return GestureDetector(

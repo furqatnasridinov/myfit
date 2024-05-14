@@ -12,4 +12,6 @@ abstract class MainRepositoryInterface {
   Future<ApiResult<Map<String, dynamic>>> searchGym({required String text});
   Future<ApiResult<dynamic>> getYandexMapImage(
       {required GetYandexMapImageRequest request});
+    Future<ApiResult<Map<String, dynamic>>> searchForGymAndLesson({required String searchString});
+    Future<ApiResult<Map<String, dynamic>>> getRecommendationForVisiting();
 }

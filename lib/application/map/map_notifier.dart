@@ -1,23 +1,23 @@
+import 'dart:async';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:myfit/application/map/map_state.dart';
 import 'package:myfit/domain/handlers/network_exceptions.dart';
 import 'package:myfit/domain/interface/main.dart';
-import 'package:myfit/infrastructure/models/data/each_markers_models.dart';
 import 'package:myfit/infrastructure/models/data/gym_data.dart';
+import 'package:myfit/infrastructure/models/data/lessons_found_by_search.dart';
 import 'package:myfit/infrastructure/models/data/lessontype_with_gyms_inside.dart';
 import 'package:myfit/infrastructure/models/request/get_yandex_map_image_request.dart';
+import 'package:myfit/infrastructure/models/response/user_schedules_response.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/infrastructure/services/connectivity.dart';
 import 'package:myfit/infrastructure/services/local_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class MapNotifier extends StateNotifier<MapState> {
   MapNotifier(this._mainRepositoryInterface) : super(const MapState());
   final MainRepositoryInterface _mainRepositoryInterface;
-  OverlayEntry? entry;
 
   Future<void> getUserLocation() async {
     // state = state.copyWith(isloading: true);
@@ -25,6 +25,7 @@ class MapNotifier extends StateNotifier<MapState> {
     if (permission == LocationPermission.denied ||
         permission == LocationPermission.deniedForever) {
       state = state.copyWith(locationPermissionDenied: true);
+      setLocationFromSelectedCity();
       permission = await Geolocator.requestPermission();
     }
     if (permission == LocationPermission.always ||
@@ -36,8 +37,53 @@ class MapNotifier extends StateNotifier<MapState> {
         state = state.copyWith(locationPermissionDenied: false);
       } catch (e) {
         state = state.copyWith(locationServiceIsNotEnabled: true);
+        setLocationFromSelectedCity();
       }
     }
+  }
+
+  Future<void> getAllMarkers() async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    Set<Marker> markers = {};
+    for (var element in state.activitiesWithGymsInsideFromSelectedDiapozone) {
+      element.listOfGyms?.forEach((gym) async {
+        final marker = Marker(
+            markerId: MarkerId(gym.id.toString()),
+            position: LatLng(
+                double.parse(gym.latitude!), double.parse(gym.longitude!)),
+            icon:
+                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+            /* await BitmapDescriptor.fromAssetImage(
+                const ImageConfiguration(size: Size(12, 12)),
+                "assets/images/american_psycho.jpg",
+            ), */
+            infoWindow: InfoWindow(
+              title: gym.name,
+              snippet: gym.address,
+            ));
+        markers.add(marker);
+      });
+    }
+    state = state.copyWith(listOfMarkers: markers);
+  }
+
+  Future<void> addUserLocationMarker() async {
+    Set<Marker> allMarkers = {};
+    allMarkers.addAll(state.listOfMarkers);
+    allMarkers.add(
+      Marker(
+        markerId: const MarkerId("user"),
+        position: LatLng(
+          state.userPosition!.latitude,
+          state.userPosition!.longitude,
+        ),
+        icon: await BitmapDescriptor.fromAssetImage(
+          const ImageConfiguration(size: Size(124, 124)),
+          "assets/images/user_marker.png",
+        ),
+      ),
+    );
+    state = state.copyWith(listOfMarkers: allMarkers);
   }
 
   Future<void> setUserPosition() async {
@@ -47,12 +93,18 @@ class MapNotifier extends StateNotifier<MapState> {
       final postion = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
       state = state.copyWith(userPosition: postion);
+      Marker updatedMarker = Marker(
+        markerId: const MarkerId("user"),
+        position: LatLng(postion.latitude, postion.longitude),
+        icon: await BitmapDescriptor.fromAssetImage(
+          const ImageConfiguration(size: Size(12, 12)),
+          "assets/images/user_marker.png",
+        ),
+      );
       var markersList = state.listOfMarkers;
-      for (var element in markersList) {
-        if (element.name == "user") {
-          element.latitude = postion.latitude;
-          element.longitude = postion.longitude;
-        }
+      if (markersList.contains(const Marker(markerId: MarkerId("user")))) {
+        markersList.removeWhere((element) => element.markerId.value == "user");
+        markersList.add(updatedMarker);
       }
       final withCalculatedDistances = // and sort
           calculateDistanceOfGyms(state.activitiesWithGymsInsideAll);
@@ -68,6 +120,28 @@ class MapNotifier extends StateNotifier<MapState> {
     }
   }
 
+  Future<void> getRecommendationForVisit(BuildContext context) async {
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      final response =
+          await _mainRepositoryInterface.getRecommendationForVisiting();
+      response.when(success: (data) {
+        if (data["operationResult"] == "OK") {
+          final operationObject = data["object"];
+          if (operationObject["lessonType"] != null) {
+            debugPrint(operationObject.toString());
+            state = state.copyWith(recommendedGyms: operationObject);
+          }
+        }
+      }, failure: (error, statusCode, operationInfo) {
+        AppHelpers.showErrorSnack(
+            context, NetworkExceptions.getErrorMessage(error));
+      });
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+/* 
   Future<void> getYandexMapImage(
     BuildContext context,
   ) async {
@@ -99,20 +173,22 @@ class MapNotifier extends StateNotifier<MapState> {
       response.when(
         success: (data) {
           if (data != null) {
-            state = state.copyWith(mapScreenShot: data, /* isloading: false */);
+            state = state.copyWith(
+              mapScreenShot: data, /* isloading: false */
+            );
           }
         },
         failure: (error, statusCode, operationInfo) {
           AppHelpers.showErrorSnack(
               context, NetworkExceptions.getErrorMessage(error));
-         // state = state.copyWith(isloading: false);
+          // state = state.copyWith(isloading: false);
         },
       );
     } else {
       // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
-  }
+  } */
 
   Future<void> getYandexMapImageWithAllMarkers(
     BuildContext context,
@@ -183,105 +259,72 @@ class MapNotifier extends StateNotifier<MapState> {
     state = state.copyWith(locationServiceIsNotEnabled: false);
   }
 
-  void setInitialCameraPosition({required YandexMapController controller}) {
+  void setInitialCameraPosition(
+      {required Completer<GoogleMapController> controller}) {
     if (state.userPosition != null) {
       // move to user location
-      controller.moveCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-            zoom: 11.5,
-            target: Point(
-              latitude: state.userPosition!.latitude,
-              longitude: state.userPosition!.longitude,
+      controller.future.then((value) {
+        value.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: LatLng(
+                state.userPosition!.latitude,
+                state.userPosition!.longitude,
+              ),
+              zoom: 15,
             ),
           ),
-        ),
-        animation: const MapAnimation(duration: 1),
-      );
-    }
-  }
-
-  Future<void> getAllMarkers() async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    List<EachMarkersModel> markers = [];
-    for (var element in state.activitiesWithGymsInsideFromSelectedDiapozone) {
-      element.listOfGyms?.forEach((gym) {
-        final marker = EachMarkersModel(
-          name: gym.name ?? "",
-          latitude: double.parse(gym.latitude!),
-          longitude: double.parse(gym.longitude!),
-          address: gym.address ?? "",
-          id: gym.id ?? 0,
         );
-        markers.add(marker);
       });
     }
-    state = state.copyWith(listOfMarkers: markers);
   }
 
-  Future<void> addUserLocationMarker() async {
-    List<EachMarkersModel> allMarkers = [];
-    allMarkers.addAll(state.listOfMarkers);
-    allMarkers.add(
-      EachMarkersModel(
-        name: "user",
-        latitude: state.userPosition!.latitude,
-        longitude: state.userPosition!.longitude,
-        address: "",
-        id: 0,
+  LatLng getInitialLatLon() {
+    if (state.showRecommended && state.recommendedGyms.isNotEmpty) {
+      return LatLng(double.parse(state.recommendedGyms["gyms"][0]["latitude"]),
+          double.parse(state.recommendedGyms["gyms"][0]["longitude"]));
+    } else {
+      if (state.userPosition != null) {
+        return LatLng(
+            state.userPosition!.latitude, state.userPosition!.longitude);
+      } else {
+        return LatLng(double.parse(LocalStorage.getSelectedCityLat()),
+            double.parse(LocalStorage.getSelectedCityLon()));
+      }
+    }
+  }
+
+  LatLng getInitialLatLonForSmallMap(List<dynamic> gyms) {
+    if (gyms.isNotEmpty) {
+      return LatLng(double.parse(gyms[0]["latitude"]),
+          double.parse(gyms[0]["longitude"]));
+    } else {
+      return LatLng(double.parse(LocalStorage.getSelectedCityLat()),
+          double.parse(LocalStorage.getSelectedCityLon()));
+    }
+  }
+
+  List<BoxShadow> getShadows() {
+    return const [
+      BoxShadow(
+        color: Color.fromRGBO(0, 0, 0, 0.15),
+        offset: Offset(0, 2),
+        blurRadius: 5,
+        spreadRadius: 0,
       ),
-    );
-    state = state.copyWith(listOfMarkers: allMarkers);
-  }
-
-  List<PlacemarkMapObject> getPlacemarkObjects(
-      {required Function(PlacemarkMapObject, Point)? onTap}) {
-    return state.listOfMarkers
-        .map(
-          (e) => PlacemarkMapObject(
-            mapId: MapObjectId("MapObject ${e.id}"),
-            point: Point(
-              latitude: e.latitude ?? 0,
-              longitude: e.longitude ?? 0,
-            ),
-            consumeTapEvents: true,
-            icon: PlacemarkIcon.single(
-              PlacemarkIconStyle(
-                image: BitmapDescriptor.fromAssetImage(
-                  e.name == "user"
-                      ? "assets/images/user_marker.png"
-                      : e.id == state.activeMarker?.id
-                          ? "assets/images/centered_icon.png"
-                          : "assets/images/map_icon_new.png",
-                ),
-                scale: e.name == "user"
-                    ? 1.5.r
-                    : e.id == state.activeMarker?.id
-                        ? 1.8.r
-                        : 0.5.r,
-              ),
-            ),
-            opacity: 1,
-            onTap: onTap,
-          ),
-        )
-        .toList();
-  }
-
-  void changeCameraPosition(
-    YandexMapController controller,
-    double lat,
-    double lon,
-  ) {
-    controller.moveCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target: Point(latitude: lat, longitude: lon),
-          zoom: 15,
-        ),
+      BoxShadow(
+        color: Color(0xFF6D96D4),
+        offset: Offset(0, 15),
+        blurRadius: 18,
+        spreadRadius: -15,
       ),
-      animation: const MapAnimation(duration: 1),
-    );
+      BoxShadow(
+        color: Color.fromRGBO(0, 0, 0, 0.39),
+        offset: Offset(0, -1),
+        blurRadius: 20.4,
+        spreadRadius: -2,
+      ),
+    ];
   }
 
   Future<void> setShowOnlyKnown(bool value) async {
@@ -300,13 +343,13 @@ class MapNotifier extends StateNotifier<MapState> {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
       state = state.copyWith(isloading: true);
-      await setFlexes();
+      //await setFlexes();
       final response = await _mainRepositoryInterface.getGymsList();
       response.when(
         success: (data) {
           final gymsMapFromServer = data["object"] as Map<String, dynamic>;
           final listToCollectActivitiesWithGyms = <LessonTypeWithGymsInside>[];
-          if (state.showOnlyKnown) {
+          if (state.showOnlyKnown && knownActivities.isNotEmpty) {
             for (var element in knownActivities) {
               gymsMapFromServer.forEach((key, value) {
                 if (element == key) {
@@ -321,7 +364,7 @@ class MapNotifier extends StateNotifier<MapState> {
                 }
               });
             }
-          } else if (state.showRecommended) {
+          } else if (state.showRecommended && recommended.isNotEmpty) {
             // logic to show only recommended
             final data = LessonTypeWithGymsInside(
               false,
@@ -355,6 +398,7 @@ class MapNotifier extends StateNotifier<MapState> {
         },
       );
       state = state.copyWith(isloading: false);
+     // setFlexes();
     } else {
       // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
@@ -398,7 +442,7 @@ class MapNotifier extends StateNotifier<MapState> {
     double distanceInKm = distanceInMeter / 1000;
     double formattedDistance = double.parse(
       distanceInKm
-          .toStringAsFixed(2)
+          .toStringAsFixed(1)
           .replaceAll(RegExp(r"([.]*0)(?!.*\d)"), ""),
     );
     return formattedDistance; // in kilometer
@@ -562,16 +606,25 @@ class MapNotifier extends StateNotifier<MapState> {
     }
   }
 
-  Future<void> setMarkerAsOpened(double lat, double lon) async {
-    if (state.activeMarker?.latitude == lat ||
-        state.activeMarker?.longitude == lon) {
-      return;
-    }
-    for (var element in state.listOfMarkers) {
-      if (element.latitude == lat && element.longitude == lon) {
-        state = state.copyWith(activeMarker: element);
-      }
-    }
+  Future<void> setSelectedGym({
+    final String? name,
+    final double? latitude,
+    final double? longitude,
+    final String? address,
+    final int? id,
+    final int? visitedCount,
+    final int? visitPerMonth,
+  }) async {
+    state = state.copyWith(
+        selectedGym: Gym(
+      address: address,
+      id: id,
+      latitude: latitude.toString(),
+      longitude: longitude.toString(),
+      name: name,
+      visitedCount: visitedCount,
+      visitPerMonth: visitPerMonth,
+    ));
   }
 
   Future<void> changeSelectedDiapozone(double diapozone) async {
@@ -589,14 +642,16 @@ class MapNotifier extends StateNotifier<MapState> {
 
   void showPopUpOnMap(BuildContext context, String lesson) {
     // remove prvious pop up first
-    if (state.activeMarker != null && state.activeMarker?.name != "user") {
-      removePopUp(); // if there is a pop up remove it
-      if (!state.isLocationIconHidden) {
-        hideLocationIcon();
-      }
-      state = state.copyWith(
-          isGymsPopupShown: true, selectedLessonTypeFromMap: lesson);
+    removePopUp(); // if there is a pop up remove it
+    if (!state.isLocationIconHidden) {
+      hideLocationIcon();
     }
+    state = state.copyWith(isGymsPopupShown: true, 
+      selectedLessonTypeFromMap: lesson);
+  }
+
+  void setSelectedActivityFromMap(String lesson) {
+    state = state.copyWith(selectedLessonTypeFromMap: lesson);
   }
 
   void removePopUp() {
@@ -705,24 +760,23 @@ class MapNotifier extends StateNotifier<MapState> {
     }
   }
 
-  void locationButtonFunction(YandexMapController? mapController) async {
+  void locationButtonFunction(Completer<GoogleMapController> controller) async {
     if (state.locationPermissionDenied) {
       await Geolocator.requestPermission();
     }
     if (!state.locationPermissionDenied && state.locationServiceIsNotEnabled) {
       await Geolocator.openLocationSettings();
     }
-    mapController?.moveCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target: Point(
-            latitude: state.userPosition!.latitude,
-            longitude: state.userPosition!.longitude,
-          ),
-        ),
-      ),
-      animation: const MapAnimation(duration: 1),
-    );
+    controller.future
+        .then((value) => value.animateCamera(CameraUpdate.newCameraPosition(
+              CameraPosition(
+                target: LatLng(
+                  state.userPosition!.latitude,
+                  state.userPosition!.longitude,
+                ),
+                zoom: 18,
+              ),
+            )));
   }
 
   void openSearchBar() {
@@ -731,5 +785,70 @@ class MapNotifier extends StateNotifier<MapState> {
 
   void closeSearchBar() {
     state = state.copyWith(isSearchbarOpened: false);
+  }
+
+  Future<void> searchForGymAndLesson(BuildContext context,
+      {required String searchString}) async {
+    final connect = await AppConnectivity().connectivity();
+    if (connect) {
+      final response = await _mainRepositoryInterface.searchForGymAndLesson(
+        searchString: searchString,
+      );
+      response.when(
+        success: (data) {
+          if (data["operationResult"] == "OK") {
+            final Map<String, dynamic> mapData = data["object"];
+            final List<GymData> listToCollectGyms = [];
+            final List<LessonFoundBySearch> listToCollectLessons = [];
+            final List listOfGymsFromServer = mapData["gymShortDtos"];
+            final List listOfLessonsFromServer = mapData["lessonSearchDto"];
+            if (listOfGymsFromServer.isNotEmpty) {
+              for (var element in listOfGymsFromServer) {
+                final data = GymData(
+                  id: element["id"],
+                  name: element["name"],
+                  address: element["address"],
+                  distanceFromClient: calCulateDistanceSrazy(
+                    state.userPosition!.latitude,
+                    state.userPosition!.longitude,
+                    double.parse(element['latitude']),
+                    double.parse(element['longitude']),
+                  ),
+                );
+                listToCollectGyms.add(data);
+              }
+            }
+            if (listOfLessonsFromServer.isNotEmpty) {
+              for (var element in listOfLessonsFromServer) {
+                final data = LessonFoundBySearch(
+                  id: element["id"],
+                  gymId: element["gymId"] ?? 0,
+                  title: element["description"],
+                  lessonType: element["lessonType"],
+                  date: element["date"],
+                  distanceFromClient: calCulateDistanceSrazy(
+                    state.userPosition!.latitude,
+                    state.userPosition!.longitude,
+                    double.parse(element['latitude']),
+                    double.parse(element['longitude']),
+                  ),
+                );
+                listToCollectLessons.add(data);
+              }
+            }
+            state = state.copyWith(
+              gymsFoundBySearch: listToCollectGyms,
+              lessonsFoundBySearch: listToCollectLessons,
+            );
+          }
+        },
+        failure: (error, statusCode, operationInfo) {
+          AppHelpers.showErrorSnack(
+              context, NetworkExceptions.getErrorMessage(error));
+        },
+      );
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
   }
 }

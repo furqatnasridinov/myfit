@@ -30,8 +30,6 @@ mixin _$Main2State {
   DateTime? get lessonStartsAt => throw _privateConstructorUsedError;
   DateTime? get lessonEndsAt => throw _privateConstructorUsedError;
   bool get lessonStartsWithin40Minutes => throw _privateConstructorUsedError;
-  Map<String, dynamic> get recommendedGyms =>
-      throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $Main2StateCopyWith<Main2State> get copyWith =>
@@ -57,8 +55,7 @@ abstract class $Main2StateCopyWith<$Res> {
       bool lessonIsAlreadyStarted,
       DateTime? lessonStartsAt,
       DateTime? lessonEndsAt,
-      bool lessonStartsWithin40Minutes,
-      Map<String, dynamic> recommendedGyms});
+      bool lessonStartsWithin40Minutes});
 }
 
 /// @nodoc
@@ -87,7 +84,6 @@ class _$Main2StateCopyWithImpl<$Res, $Val extends Main2State>
     Object? lessonStartsAt = freezed,
     Object? lessonEndsAt = freezed,
     Object? lessonStartsWithin40Minutes = null,
-    Object? recommendedGyms = null,
   }) {
     return _then(_value.copyWith(
       nearestLessonIsLoading: null == nearestLessonIsLoading
@@ -142,10 +138,6 @@ class _$Main2StateCopyWithImpl<$Res, $Val extends Main2State>
           ? _value.lessonStartsWithin40Minutes
           : lessonStartsWithin40Minutes // ignore: cast_nullable_to_non_nullable
               as bool,
-      recommendedGyms: null == recommendedGyms
-          ? _value.recommendedGyms
-          : recommendedGyms // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
     ) as $Val);
   }
 }
@@ -171,8 +163,7 @@ abstract class _$$Main2StateImplCopyWith<$Res>
       bool lessonIsAlreadyStarted,
       DateTime? lessonStartsAt,
       DateTime? lessonEndsAt,
-      bool lessonStartsWithin40Minutes,
-      Map<String, dynamic> recommendedGyms});
+      bool lessonStartsWithin40Minutes});
 }
 
 /// @nodoc
@@ -199,7 +190,6 @@ class __$$Main2StateImplCopyWithImpl<$Res>
     Object? lessonStartsAt = freezed,
     Object? lessonEndsAt = freezed,
     Object? lessonStartsWithin40Minutes = null,
-    Object? recommendedGyms = null,
   }) {
     return _then(_$Main2StateImpl(
       nearestLessonIsLoading: null == nearestLessonIsLoading
@@ -254,10 +244,6 @@ class __$$Main2StateImplCopyWithImpl<$Res>
           ? _value.lessonStartsWithin40Minutes
           : lessonStartsWithin40Minutes // ignore: cast_nullable_to_non_nullable
               as bool,
-      recommendedGyms: null == recommendedGyms
-          ? _value._recommendedGyms
-          : recommendedGyms // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
     ));
   }
 }
@@ -278,11 +264,9 @@ class _$Main2StateImpl extends _Main2State {
       this.lessonIsAlreadyStarted = false,
       this.lessonStartsAt = null,
       this.lessonEndsAt = null,
-      this.lessonStartsWithin40Minutes = false,
-      final Map<String, dynamic> recommendedGyms = const {}})
+      this.lessonStartsWithin40Minutes = false})
       : _statsForMonth = statsForMonth,
         _schedulesFoundBySearching = schedulesFoundBySearching,
-        _recommendedGyms = recommendedGyms,
         super._();
 
   @override
@@ -337,18 +321,10 @@ class _$Main2StateImpl extends _Main2State {
   @override
   @JsonKey()
   final bool lessonStartsWithin40Minutes;
-  final Map<String, dynamic> _recommendedGyms;
-  @override
-  @JsonKey()
-  Map<String, dynamic> get recommendedGyms {
-    if (_recommendedGyms is EqualUnmodifiableMapView) return _recommendedGyms;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_recommendedGyms);
-  }
 
   @override
   String toString() {
-    return 'Main2State(nearestLessonIsLoading: $nearestLessonIsLoading, statsMonthIsloading: $statsMonthIsloading, isSearchbarOpened: $isSearchbarOpened, showTillWhen: $showTillWhen, nearestLesson: $nearestLesson, whenActivityStarts: $whenActivityStarts, statsForMonth: $statsForMonth, schedulesFoundBySearching: $schedulesFoundBySearching, showScanButton: $showScanButton, lessonIsAlreadyStarted: $lessonIsAlreadyStarted, lessonStartsAt: $lessonStartsAt, lessonEndsAt: $lessonEndsAt, lessonStartsWithin40Minutes: $lessonStartsWithin40Minutes, recommendedGyms: $recommendedGyms)';
+    return 'Main2State(nearestLessonIsLoading: $nearestLessonIsLoading, statsMonthIsloading: $statsMonthIsloading, isSearchbarOpened: $isSearchbarOpened, showTillWhen: $showTillWhen, nearestLesson: $nearestLesson, whenActivityStarts: $whenActivityStarts, statsForMonth: $statsForMonth, schedulesFoundBySearching: $schedulesFoundBySearching, showScanButton: $showScanButton, lessonIsAlreadyStarted: $lessonIsAlreadyStarted, lessonStartsAt: $lessonStartsAt, lessonEndsAt: $lessonEndsAt, lessonStartsWithin40Minutes: $lessonStartsWithin40Minutes)';
   }
 
   @override
@@ -383,9 +359,7 @@ class _$Main2StateImpl extends _Main2State {
             (identical(other.lessonStartsWithin40Minutes,
                     lessonStartsWithin40Minutes) ||
                 other.lessonStartsWithin40Minutes ==
-                    lessonStartsWithin40Minutes) &&
-            const DeepCollectionEquality()
-                .equals(other._recommendedGyms, _recommendedGyms));
+                    lessonStartsWithin40Minutes));
   }
 
   @override
@@ -403,8 +377,7 @@ class _$Main2StateImpl extends _Main2State {
       lessonIsAlreadyStarted,
       lessonStartsAt,
       lessonEndsAt,
-      lessonStartsWithin40Minutes,
-      const DeepCollectionEquality().hash(_recommendedGyms));
+      lessonStartsWithin40Minutes);
 
   @JsonKey(ignore: true)
   @override
@@ -427,8 +400,7 @@ abstract class _Main2State extends Main2State {
       final bool lessonIsAlreadyStarted,
       final DateTime? lessonStartsAt,
       final DateTime? lessonEndsAt,
-      final bool lessonStartsWithin40Minutes,
-      final Map<String, dynamic> recommendedGyms}) = _$Main2StateImpl;
+      final bool lessonStartsWithin40Minutes}) = _$Main2StateImpl;
   const _Main2State._() : super._();
 
   @override
@@ -457,8 +429,6 @@ abstract class _Main2State extends Main2State {
   DateTime? get lessonEndsAt;
   @override
   bool get lessonStartsWithin40Minutes;
-  @override
-  Map<String, dynamic> get recommendedGyms;
   @override
   @JsonKey(ignore: true)
   _$$Main2StateImplCopyWith<_$Main2StateImpl> get copyWith =>

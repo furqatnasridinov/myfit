@@ -25,6 +25,7 @@ class ScheduleState with _$ScheduleState {
     @Default(false) bool completedSchedulesShown,
     @Default(false) bool pendingSchedulesShown,
     @Default(false) bool completedLessonListAnimaion,
+    @Default(false) bool pendingLessonsListAnimation,
     @Default([]) List<CompletedSchedule> completedSchedules,
   }) = _ScheduleState;
   const ScheduleState._();

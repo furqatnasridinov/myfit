@@ -11,6 +11,8 @@ class EachMarkersModel extends Equatable {
     required this.longitude,
     required this.address,
     required this.id,
+    required this.visitedCount,
+    required this.visitPerMonth,
   });
 
   /// Название населенного пункта
@@ -30,6 +32,12 @@ class EachMarkersModel extends Equatable {
 
   // id
   int? id;
+
+  // visitedCount
+  int? visitedCount;
+
+  // visitPerMonth
+  int? visitPerMonth;
 
   @override
   List<Object?> get props => [name, latitude, longitude, isOpened, address];

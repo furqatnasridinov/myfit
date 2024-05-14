@@ -9,7 +9,8 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i19;
-import 'package:flutter/material.dart' as _i20;
+import 'package:flutter/material.dart' as _i21;
+import 'package:flutter/widgets.dart' as _i20;
 import 'package:myfit/presentation/pages/activity/view/activity_page.dart'
     as _i1;
 import 'package:myfit/presentation/pages/auth/registration/registration_page.dart'
@@ -162,11 +163,9 @@ abstract class $AppRouter extends _i19.RootStackRouter {
       );
     },
     SubscribtionSettingsRoute.name: (routeData) {
-      final args = routeData.argsAs<SubscribtionSettingsRouteArgs>(
-          orElse: () => const SubscribtionSettingsRouteArgs());
       return _i19.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i18.SubscribtionSettingsScreen(key: args.key),
+        child: const _i18.SubscribtionSettingsScreen(),
       );
     },
   };
@@ -275,7 +274,7 @@ class MapRoute extends _i19.PageRouteInfo<void> {
 /// [_i6.NotesScreen]
 class NotesRoute extends _i19.PageRouteInfo<NotesRouteArgs> {
   NotesRoute({
-    _i20.Key? key,
+    _i21.Key? key,
     required String gymName,
     List<_i19.PageRouteInfo>? children,
   }) : super(
@@ -299,7 +298,7 @@ class NotesRouteArgs {
     required this.gymName,
   });
 
-  final _i20.Key? key;
+  final _i21.Key? key;
 
   final String gymName;
 
@@ -327,7 +326,7 @@ class NotificationRoute extends _i19.PageRouteInfo<void> {
 /// [_i8.PhotoViewScreen]
 class PhotoViewRoute extends _i19.PageRouteInfo<PhotoViewRouteArgs> {
   PhotoViewRoute({
-    _i20.Key? key,
+    _i21.Key? key,
     required List<String> photos,
     required int index,
     List<_i19.PageRouteInfo>? children,
@@ -354,7 +353,7 @@ class PhotoViewRouteArgs {
     required this.index,
   });
 
-  final _i20.Key? key;
+  final _i21.Key? key;
 
   final List<String> photos;
 
@@ -494,30 +493,14 @@ class SplashRoute extends _i19.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i18.SubscribtionSettingsScreen]
-class SubscribtionSettingsRoute
-    extends _i19.PageRouteInfo<SubscribtionSettingsRouteArgs> {
-  SubscribtionSettingsRoute({
-    _i20.Key? key,
-    List<_i19.PageRouteInfo>? children,
-  }) : super(
+class SubscribtionSettingsRoute extends _i19.PageRouteInfo<void> {
+  const SubscribtionSettingsRoute({List<_i19.PageRouteInfo>? children})
+      : super(
           SubscribtionSettingsRoute.name,
-          args: SubscribtionSettingsRouteArgs(key: key),
           initialChildren: children,
         );
 
   static const String name = 'SubscribtionSettingsRoute';
 
-  static const _i19.PageInfo<SubscribtionSettingsRouteArgs> page =
-      _i19.PageInfo<SubscribtionSettingsRouteArgs>(name);
-}
-
-class SubscribtionSettingsRouteArgs {
-  const SubscribtionSettingsRouteArgs({this.key});
-
-  final _i20.Key? key;
-
-  @override
-  String toString() {
-    return 'SubscribtionSettingsRouteArgs{key: $key}';
-  }
+  static const _i19.PageInfo<void> page = _i19.PageInfo<void>(name);
 }

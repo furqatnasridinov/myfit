@@ -1,11 +1,11 @@
 import 'package:myfit/application/activity/activity_notifier.dart';
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/presentation/components/components.dart';
-import 'package:myfit/presentation/components/inter_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:myfit/presentation/pages/activity/skeletons/contacts_skeleton.dart';
 
 class Contacts extends StatelessWidget {
   final ActivityNotifier event;
@@ -21,10 +21,10 @@ class Contacts extends StatelessWidget {
           final phone = ref.watch(activityProvider).gym?.phone;
           final gymTelegram = ref.watch(activityProvider).gym?.telegram;
           final gymVk = ref.watch(activityProvider).gym?.vk;
-
-          return Column(
+          final loading = ref.watch(activityProvider).isGymLoading;
+          return loading ? const ContactsSkeleton() : Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children:  [
               CustomText(
                 text: "Контакты",
                 fontSize: 16.sp,
@@ -65,18 +65,7 @@ class Contacts extends StatelessWidget {
                     }, gymVk)
                 ],
               ),
-              32.verticalSpace,
-              CustomText(
-                text: "Описание",
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-              ),
-              5.verticalSpace,
-              InterText(
-                text: ref.watch(activityProvider).gym?.description ?? "",
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w400,
-              )
+              
             ],
           );
         },

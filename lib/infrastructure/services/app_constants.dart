@@ -24,6 +24,10 @@ class AppConstants {
   static const String getCompletedLessonTypes = "api/user/lessons/similar/confirmed"; // maybe will change to completed
   static const String getWaitingLessonTypes = "api/user/lessons/similar/waiting";
   static const String getRecommendationForVisit = "api/user/recommendationForVisiting";
+  static const String getUserSubscribtion = "api/subscription/user";
+  static const String getAllAvailableSubscribtions = "api/subscription";
+  static const String toggleAutoRenewal = "api/subscription/user";
+  static const String searchForGymAndLesson= "api/main/search";
 
 
   static const String sendPhoneNumber = "api/user/loginCode";

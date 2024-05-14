@@ -7,6 +7,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:myfit/presentation/router/app_router.gr.dart';
 
 @RoutePage()
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -20,38 +21,62 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      //ref.read(settingsProvider.notifier).setUserInfos();
-    });
+    ref.read(settingsProvider.notifier).getAllAvailableSubscribtions(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(settingsProvider);
     final event = ref.read(settingsProvider.notifier);
-    debugPrint("image ${state.avatar}");
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar:
-          const Main2Header(showBackButton: true, canNavigateToSettings: false),
+           Main2Header(showBackButton: true, canNavigateToSettings: false),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             20.verticalSpace,
-            CustomText(
-              text: "Настройки",
-              fontSize: 20.sp,
-              fontWeight: FontWeight.w600,
+            Consumer(
+              builder: (context, ref, child) {
+                final bool currentSubscribtionNull =
+                    ref.watch(settingsProvider).currentSubscribtion == null;
+                return Row(
+                  children: [
+                    CustomText(
+                      text: "Настройки",
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    const Spacer(),
+                    if(currentSubscribtionNull)
+                    GestureDetector(
+                      onTap: () {
+                        context.router.push(const SubscribtionSettingsRoute());
+                      },
+                      child: CustomText(
+                        text: "Купить подписку",
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.blueText,
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
             32.verticalSpace,
             const MySubscribtion(),
-            32.verticalSpace,
+            //32.verticalSpace,
             /* Two containers */
-            PersonalInfo(
-              event: event,
-              state: state,
+            Consumer(
+              builder: (context, ref, child) {
+                final state = ref.watch(settingsProvider);
+                return PersonalInfo(
+                  event: event,
+                  state: state,
+                );
+              },
             ),
             32.verticalSpace,
             const ApplicationSettings(),

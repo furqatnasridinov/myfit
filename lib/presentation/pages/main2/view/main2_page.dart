@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:async';
+import 'dart:developer';
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/main2/main2_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
@@ -17,7 +18,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 @RoutePage()
 class Main2Screen extends ConsumerStatefulWidget {
@@ -28,7 +28,6 @@ class Main2Screen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreen extends ConsumerState<Main2Screen> {
-  final mapControllerCompleter = Completer<YandexMapController>();
   late final WebSocketChannel channel;
   Timer? _timer;
   late RefreshController refreshController = RefreshController();
@@ -40,16 +39,17 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     refreshController = RefreshController(initialRefresh: false);
     _scrollController = ScrollController();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(main2Provider.notifier)
+        ..getNearestLesson(context)
+        ..getUserStatsMonth(context);
       ref.read(settingsProvider.notifier)
         ..requestNotificationPermissions()
         ..setUserInfos()
-        ..getCompletedLessonTypes(context)
-        ..getWaitingLessonTypes(context);
-      ref.read(mapProvider.notifier).getUserLocation().then((value) {
-        ref.read(mapProvider.notifier).getYandexMapImage(context);});
-      ref.read(main2Provider.notifier)
-        ..getNearestLesson(context)
-        ..getUserStatsMonth(context)
+        ..getCompletedLessonTypes(context) // for known activities
+        ..getWaitingLessonTypes(context) // for known activities
+        ..getUserSubscribtions(context);
+      ref.read(mapProvider.notifier)
+        ..getUserLocation()
         ..getRecommendationForVisit(context);
 
       // web socket for updating lesson states
@@ -87,11 +87,13 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
   Widget build(BuildContext context) {
     //final nearestLesson = ref.watch(main2Provider).nearestLesson;
     final event = ref.read(main2Provider.notifier);
-    debugPrint("login time ${LocalStorage.getLoginTime()}");
-    debugPrint("user id ${LocalStorage.getUserId()}");
-    debugPrint("token ${LocalStorage.getToken()}");
-    debugPrint("known activities ${ref.watch(settingsProvider).knownActivities}");
-    debugPrint("when photo access opens >> ${LocalStorage.getWhenUploadingPhotoOpens()}");
+    log("login time ${LocalStorage.getLoginTime()}");
+    log("user id ${LocalStorage.getUserId()}");
+    log("token ${LocalStorage.getToken()}");
+    log("known activities ${ref.watch(settingsProvider).knownActivities}");
+    log("when photo access opens >> ${LocalStorage.getWhenUploadingPhotoOpens()}");
+    log("selected city lat >> ${LocalStorage.getSelectedCityLat()}");
+    log("selected city lon >> ${LocalStorage.getSelectedCityLon()}");
     //LocalStorage.removeToken();
     ref.listen(main2Provider, (previous, next) {
       if (previous!.lessonEndsAt != next.lessonEndsAt &&
@@ -113,7 +115,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: const Main2Header(
+      appBar: Main2Header(
         showBackButton: false,
         canNavigateToSettings: true,
       ),
@@ -133,130 +135,105 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
           child: Column(
             children: [
               Expanded(
-                child: GestureDetector(
-                  /* onVerticalDragDown: (onVerticalDragStart) {
-                    if (_scrollController.position.atEdge) {
-                      if (_scrollController.position.pixels == 0) {
-                        // You're at the top.
-                        refreshController.requestRefresh();
-                        debugPrint("_scrollController top");
-                      } else {
-                        // You're at the bottom.
-                        debugPrint("_scrollController bottom");
-                      }
-                    }
-                  }, */
-                  child: CustomScrollView(
-                    controller: _scrollController,
-                    slivers: [
-                      // Приветствие
-                      SliverPadding(
-                        padding:
-                            EdgeInsets.only(left: 26.w).copyWith(top: 10.h),
-                        sliver: SliverToBoxAdapter(
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: CustomText(
-                              text: LocalStorage.getUserName().isNotEmpty
-                                  ? "Привет, ${LocalStorage.getUserName()}!"
-                                  : 'Привет, George!',
-                              fontWeight: FontWeight.w600,
-                              fontSize: 20.sp,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      // Статистика и обоненмент
-                      SliverPadding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w)
-                            .copyWith(top: 10.h),
-                        sliver: SliverToBoxAdapter(
-                          child: FirstTwoCards(
-                            event: event,
-                          ),
-                        ),
-                      ),
-
-                      // Ближайшее занятие
-                      Consumer(builder: (context, ref, child) {
-                        final nearestLesson =
-                            ref.watch(main2Provider).nearestLesson;
-                        return SliverPadding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.w)
-                              .copyWith(top: 32.h),
-                          sliver: SliverToBoxAdapter(
-                            child: nearestLesson == null
-                                ? const PlaceholderComingActivity() //button "Найти себе занятие"
-                                : ComingActivity(
-                                    nearestLesson: nearestLesson,
-                                    event: event,
-                                  ),
-                          ),
-                        );
-                      }),
-
-                      // Бассейны поблизости
-                      SliverPadding(
-                        padding:
-                            EdgeInsets.only(left: 25.w).copyWith(top: 32.h),
-                        sliver: SliverToBoxAdapter(
-                          child: Consumer(builder: (context,ref,child){
-                            final recommendedGyms = ref.watch(main2Provider).recommendedGyms;
-                            return recommendedGyms.isEmpty ? const SizedBox.shrink() :
-                            CustomText(
-                            text: 'Рекоммендуемые занятия',
-                            fontSize: 20.sp,
+                child: CustomScrollView(
+                  controller: _scrollController,
+                  slivers: [
+                    // Приветствие
+                    SliverPadding(
+                      padding: EdgeInsets.only(left: 26.w).copyWith(top: 10.h),
+                      sliver: SliverToBoxAdapter(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: CustomText(
+                            text: LocalStorage.getUserName().isNotEmpty
+                                ? "Привет, ${LocalStorage.getUserName()}!"
+                                : 'Привет, George!',
                             fontWeight: FontWeight.w600,
-                          );
+                            fontSize: 20.sp,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // Статистика
+                    const SliverToBoxAdapter(
+                      child: UserStatsBlock(),
+                    ),
+
+                    // Ближайшее занятие
+                    Consumer(builder: (context, ref, child) {
+                      final nearestLesson =ref.watch(main2Provider).nearestLesson;
+                      return SliverPadding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 5.h),
+                        sliver: SliverToBoxAdapter(
+                          child: nearestLesson == null
+                              ? const PlaceholderComingActivity() //button "Найти себе занятие"
+                              : ComingActivity(
+                                  nearestLesson: nearestLesson, event: event),
+                        ),
+                      );
+                    }),
+
+                    // Бассейны поблизости
+                    SliverPadding(
+                      padding: EdgeInsets.only(left: 25.w).copyWith(top: 32.h),
+                      sliver: SliverToBoxAdapter(
+                        child: Consumer(
+                          builder: (context, ref, child) {
+                            final recommendedGyms =
+                                ref.watch(mapProvider).recommendedGyms;
+                            return recommendedGyms.isEmpty
+                                ? const SizedBox.shrink()
+                                : CustomText(
+                                    text: 'Рекомендуемые занятия',
+                                    fontSize: 20.sp,
+                                    fontWeight: FontWeight.w600,
+                                  );
                           },
                         ),
-                      ),),
+                      ),
+                    ),
 
-                      // Карта
-                      SliverPadding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w)
-                            .copyWith(top: 10.h),
-                        sliver: SliverToBoxAdapter(
+                    // Карта
+                    SliverPadding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w)
+                          .copyWith(top: 10.h),
+                      sliver: SliverToBoxAdapter(
+                        child: Consumer(builder: (context, ref, child) {
+                          final showRecommended =
+                              ref.watch(mapProvider).showRecommended;
+                          final recommendedGyms =
+                              ref.watch(mapProvider).recommendedGyms;
+                          return recommendedGyms.isEmpty
+                              ? const SizedBox.shrink()
+                              : Main2Map(
+                                  mapEvent: ref.read(mapProvider.notifier),
+                                  showRecommended: showRecommended,
+                                  showOnlyKnown:
+                                      ref.watch(mapProvider).showOnlyKnown,
+                                  gyms: recommendedGyms["gyms"],
+                                );
+                        }),
+                      ),
+                    ),
+
+                    // Декоративный текст
+                    SliverPadding(
+                      padding: EdgeInsets.only(top: 32.h),
+                      sliver: SliverToBoxAdapter(
                           child: Consumer(builder: (context, ref, child) {
-                            final mapScreenShot = ref.watch(mapProvider).mapScreenShot;
-                            final showRecommended = ref.watch(mapProvider).showRecommended;
-                            final recommendedGyms = ref.watch(main2Provider).recommendedGyms;
-                            return recommendedGyms.isEmpty ? const SizedBox.shrink() : mapScreenShot == null
-                                ? const Main2MapPlaceHolder()
-                                : Main2Map(
-                                    mapEvent: ref.read(mapProvider.notifier),
-                                    showRecommended: showRecommended,
-                                    showOnlyKnown: ref.watch(mapProvider).showOnlyKnown,
-                                    child: Image.memory(
-                                      mapScreenShot,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                        return const Main2MapPlaceHolder();
-                                      },
-                                    ),
-                                  );
-                          }),
-                        ),
-                      ),
-
-                      // Декоративный текст
-                      SliverPadding(
-                        padding: EdgeInsets.only(top: 32.h),
-                        sliver:  SliverToBoxAdapter(
-                          child: Consumer(builder: (context, ref,child){
-                            final recommendedGyms = ref.watch(main2Provider).recommendedGyms;
-                            return recommendedGyms.isEmpty ? const SizedBox() :
-                            DecoratedTextOne(
-                              lesson: recommendedGyms["lessonType"] ?? "",
-                              usersCount: recommendedGyms["countUsers"].toString(),
-                          );
-                          })
-                        ),
-                      ),
-                    ],
-                  ),
+                        final recommendedGyms =
+                            ref.watch(mapProvider).recommendedGyms;
+                        return recommendedGyms.isEmpty
+                            ? const SizedBox()
+                            : DecoratedTextOne(
+                                lesson: recommendedGyms["lessonType"] ?? "",
+                                usersCount:
+                                    recommendedGyms["countUsers"].toString(),
+                              );
+                      })),
+                    ),
+                  ],
                 ),
               ),
 

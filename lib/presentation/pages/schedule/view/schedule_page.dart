@@ -11,6 +11,7 @@ import 'package:myfit/presentation/components/custom_card.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:myfit/presentation/components/inter_text.dart';
 import 'package:myfit/presentation/components/ui_dropdown_menu.dart';
+import 'package:myfit/presentation/pages/main2/widget/main2_header.dart';
 import 'package:myfit/presentation/pages/schedule/widget/widget.dart';
 import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
@@ -53,10 +54,11 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: ScheduleHeader(
-        showNavigationButton: true,
+      appBar: Main2Header(
         showBackButton: false,
+        canNavigateToSettings: true,
       ),
+
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -64,6 +66,8 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
             Expanded(
               child: CustomScrollView(
                 controller: scrollController,
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
                 slivers: [
                   // Ваше расписание
                   SliverPadding(
@@ -231,6 +235,8 @@ Widget itemListBuilder(
                   current.duration ?? "",
                   current.gym?.name ?? "",
                   current.lessonType ?? "",
+                  current.gym?.visitedCount,
+                  current.gym?.visitPerMonth,
                 );
               });
             }),
@@ -249,6 +255,8 @@ Widget listOfActivitiesEachItem(
   final String duration,
   final String name,
   final String lessonType,
+  final int? visitedCount,
+  final int? visitPerMonth,
 ) {
   final DateTime startTime = event.getDateTime(time);
   final String formattedTime = time.substring(time.length - 5);
@@ -327,8 +335,9 @@ Widget listOfActivitiesEachItem(
                               color: AppColors.backgroundColor),
                           child: Padding(
                             padding: EdgeInsets.all(4.r),
-                           // child: SvgPicture.asset("assets/svg/boxing.svg"),
-                            child : SvgPicture.asset(AppHelpers().getIconSvg(lessonType)),
+                            // child: SvgPicture.asset("assets/svg/boxing.svg"),
+                            child: SvgPicture.asset(
+                                AppHelpers().getIconSvg(lessonType)),
                           ),
                         ),
                       ),
@@ -353,7 +362,7 @@ Widget listOfActivitiesEachItem(
                       // describtion
                       SizedBox(
                         width: 220.w,
-                        child: InterText(
+                        child: CustomText(
                           text: description,
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w400,
@@ -380,7 +389,7 @@ Widget listOfActivitiesEachItem(
                 SizedBox(
                   width: 265.w,
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       // duration
@@ -413,7 +422,7 @@ Widget listOfActivitiesEachItem(
                           //width: 200.w,
                           //color: Colors.red,
                           child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               SvgPicture.asset("assets/svg/location.svg"),
@@ -432,7 +441,10 @@ Widget listOfActivitiesEachItem(
                                     fontWeight: FontWeight.w400,
                                   ),
                                 ),
-                              )
+                              ),
+                              5.horizontalSpace,
+                              AppHelpers().getBatteryIcon(
+                                  visitedCount ?? 0, visitPerMonth ?? 0),
                             ],
                           ),
                         ),
@@ -528,15 +540,17 @@ Widget _plusButton(
                   width: 18.w,
                 ),
                 'action': () => {
-                      if(showRecommended){
-                        event.setShowRecommended(false),
-                      },
-                      if (showOnlyKnownOnMap){
-                        tabsRouter.setActiveIndex(2)
-                      }else{
-                        context.router.push(const MapRoute()),
-                        event.setShowOnlyKnown(true),
-                      }
+                      if (showRecommended)
+                        {
+                          event.setShowRecommended(false),
+                        },
+                      if (showOnlyKnownOnMap)
+                        {tabsRouter.setActiveIndex(2)}
+                      else
+                        {
+                          context.router.push(const MapRoute()),
+                          event.setShowOnlyKnown(true),
+                        }
                     }
               }
           ],
@@ -552,24 +566,48 @@ Widget _plusButton(
             child: SizedBox(
               width: 40.w,
               height: 40.h,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.r),
-                  border: Border.all(
-                    width: 1.w,
+              child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 500),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.r),
+                    border: Border.all(
+                      width: 1.w,
+                      color: AppColors.blueColor,
+                    ),
                     color: AppColors.blueColor,
+                    boxShadow: isplusState! ?
+                         [
+                            const BoxShadow(
+                              color:  Color.fromRGBO(119, 170, 249, 0.6),
+                              spreadRadius: -5,
+                              blurRadius: 9,
+                              offset: Offset(0, 11), 
+                            ),
+                          ] : [
+                            const BoxShadow(
+                              color:  Color.fromRGBO(119, 170, 249, 0),
+                              spreadRadius: -5,
+                              blurRadius: 9,
+                              offset: Offset(0, 11),
+                            ),
+                          ],
+                        
                   ),
-                  color: AppColors.blueColor,
-                ),
-                child: Transform.rotate(
-                  angle: isplusState == true ? (45 * pi / 180) : (0 * pi / 180),
-                  child: Icon(
-                    Icons.add,
-                    color: Colors.white,
-                    size: 18.r,
-                  ),
-                ),
-              ),
+                  child: TweenAnimationBuilder<double>(
+                    duration: const Duration(milliseconds: 300),
+                    tween: Tween(begin: 0, end: isplusState! ? 1.0 : 0),
+                    builder:
+                        (BuildContext context, double angle, Widget? child) {
+                      return Transform.rotate(
+                        angle: angle / 4 * pi,
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 20.r,
+                        ),
+                      );
+                    },
+                  )),
             ),
           ));
     });

@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:myfit/application/main/main_notifier.dart';
 import 'package:myfit/application/main/main_state.dart';

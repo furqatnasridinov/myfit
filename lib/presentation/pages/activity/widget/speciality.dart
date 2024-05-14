@@ -1,11 +1,12 @@
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/presentation/components/components.dart';
-import 'package:myfit/presentation/components/inter_text.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:myfit/presentation/components/skeleton_card.dart';
 
 class Speciality extends StatelessWidget {
   const Speciality({super.key});
@@ -13,13 +14,30 @@ class Speciality extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (context, ref, child) {
-      final peculiarities = ref.watch(activityProvider).describtionAndPeculiarities?.peculiarities;
-      if (peculiarities == null || peculiarities.isEmpty) return const SizedBox();
+      final loading = ref.watch(activityProvider).infoForTypeLoading;
+      final peculiarities = ref.watch(activityProvider).describtionAndPeculiarities
+          ?.peculiarities;
+      if ((peculiarities == null || peculiarities.isEmpty) && !loading) {
+        return const SizedBox();
+      }
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: loading ? [
+            32.verticalSpace,
+            Row(children: [
+              SkeletonCard(width: 210),
+              const Spacer(),
+              SkeletonCard(),
+            ],),
+            10.verticalSpace,
+            SkeletonCard(width: double.infinity),
+            5.verticalSpace,
+            SkeletonCard(width: double.infinity),
+             5.verticalSpace,
+            SkeletonCard(width: double.infinity),
+          ] : [
             32.verticalSpace,
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -49,10 +67,11 @@ class Speciality extends StatelessWidget {
               ],
             ),
             10.verticalSpace,
-            InterText(
-              text: peculiarities,
+            CustomText(
+              text: peculiarities ?? "",
               fontSize: 13.sp,
               fontWeight: FontWeight.w400,
+              height: 1.0,
             ),
           ],
         ),
@@ -68,15 +87,21 @@ void showSpecialityPopUp(BuildContext context) {
         return Dialog(
             backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16.r),
-                side: const BorderSide(
-                  color: AppColors.blueBorder,
-                )),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(16.r),
+                bottomLeft: Radius.circular(16.r),
+                bottomRight: Radius.circular(16.r),
+              ),
+              side: const BorderSide(
+                color: AppColors.blueBorder,
+              ),
+            ),
             elevation: 0,
             insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Padding(
               padding: EdgeInsets.all(16.r),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   CustomText(

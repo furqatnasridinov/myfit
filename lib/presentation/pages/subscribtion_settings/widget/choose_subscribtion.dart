@@ -1,27 +1,22 @@
-// ignore_for_file: division_optimization
-
-import 'package:auto_route/auto_route.dart';
+// ignore_for_file: division_optimization, must_be_immutable
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myfit/application/settings/settings_notifier.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
+import 'package:myfit/infrastructure/models/data/user_subscribtion.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/presentation/components/custom_button.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
-import 'package:myfit/presentation/components/dummy_data.dart';
-
-import '../../../../infrastructure/models/data/subscribtion.dart';
 
 class ChooseSubscribtion extends StatelessWidget {
-  ScrollController? controller;
-  ChooseSubscribtion({super.key, required this.controller});
+  void Function()? onTap;
+  ChooseSubscribtion({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    final List<Subscribtion> dummyList = DummyData().dummySubscribtions;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 32.h),
       child: Column(
@@ -35,64 +30,69 @@ class ChooseSubscribtion extends StatelessWidget {
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
               ),
-              Consumer(builder: (context, ref, child) {
-                final cardNumber = ref.watch(settingsProvider).cardNumber;
-                final Subscribtion? selectedSubscribtion =
-                    ref.watch(settingsProvider).selectedSubscribtion;
-                return GestureDetector(
-                  onTap: () {
-                    controller?.animateTo(
-                      selectedSubscribtion == null
-                          ? (cardNumber.isEmpty ? 595.h : 650.h)
-                          : (cardNumber.isEmpty ? 625.h : 680.h),
-                      duration: const Duration(milliseconds: 700),
-                      curve: Curves.easeInOut,
-                    );
-                  },
-                  child: CustomText(
-                    text: "Как работает подписка",
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.blueText,
-                  ),
-                );
-              })
+              GestureDetector(
+                onTap: onTap,
+                child: CustomText(
+                  text: "Как работает подписка",
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.blueText,
+                ),
+              ),
             ],
           ),
           16.verticalSpace,
 
           // list of subscribtions
           Consumer(builder: (context, ref, child) {
-            final Subscribtion? selectedSubscribtion =
-                ref.watch(settingsProvider).selectedSubscribtion;
+            final List<Subscription> allSubs =
+                ref.watch(settingsProvider).allAvailableSubscriptions;
+            final UserSubscription? nextSub =
+                ref.watch(settingsProvider).nextSubscribtion;
+            final UserSubscription? currentSub =
+                ref.watch(settingsProvider).currentSubscribtion;
             final String cardNumber = ref.watch(settingsProvider).cardNumber;
             final notifier = ref.read(settingsProvider.notifier);
             return Column(
               children: [
                 ListView.builder(
                   itemBuilder: (context, index) {
+                    final current = allSubs[index];
                     return eachSubscription(
+                      index,
+                      currentSub?.subscription?.id ?? 0,
                       context,
-                      dummyList[index].durationInMonths,
-                      dummyList[index].price,
-                      (int.parse(dummyList[index].price) /
-                              int.parse(dummyList[index].durationInMonths))
+                      current.durationInMonth.toString(),
+                      current.price.toString(),
+                      ((current.price ?? 0) / (current.durationInMonth ?? 1))
                           .toInt()
                           .toString(),
-                      dummyList[index].description,
-                      selectedSubscribtion?.id == dummyList[index].id,
+                      "Оплата раз в ${AppHelpers().getMonthWord(int.parse(current.durationInMonth.toString()))} и посещение сотен разных активностей",
+                      nextSub?.subscription?.id == current.id,
                       cardNumber,
-                      () => notifier.setSelectedSubscribtion(dummyList[index]),
+                      ref.watch(settingsProvider).isChangeSubscribtionLoading,
+                      notifier,
+                      () {
+                        if (currentSub != null) {
+                          notifier.changeNextSubscription(context,
+                              id: current.id ?? 0);
+                        } else {
+                          notifier.purchaseSubscription(context,
+                              id: current.id ?? 0,
+                              autoRenewal:
+                                  ref.watch(settingsProvider).autoRenewal);
+                        }
+                      },
                     );
                   },
-                  itemCount: dummyList.length,
+                  itemCount: allSubs.length,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                 ),
-                if (selectedSubscribtion != null)
+                if (currentSub != null && nextSub != null)
                   CustomText(
                     text:
-                        "Ваш тариф: “Пол года” закончится 26.05.24, после чего подписка сменится на “${AppHelpers().getMonthWord(int.parse(selectedSubscribtion.durationInMonths ?? ""))}”.",
+                        "Ваш тариф: “${currentSub.subscription?.description}” закончится ${notifier.getEndDateOfCurrentSub()}, после чего подписка сменится на “${nextSub.subscription?.description}”.",
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
                     height: 1.1.h,
@@ -107,6 +107,8 @@ class ChooseSubscribtion extends StatelessWidget {
 }
 
 Widget eachSubscription(
+    int index,
+    int currentSubId,
     BuildContext context,
     String month,
     String price,
@@ -114,6 +116,8 @@ Widget eachSubscription(
     String description,
     bool isSelected,
     String cardNumber,
+    bool loading,
+    SettingsNotifier notifier,
     void Function()? onTap) {
   return Padding(
     padding: EdgeInsets.only(bottom: 10.h),
@@ -121,7 +125,7 @@ Widget eachSubscription(
       onTap: () {
         if (cardNumber.isEmpty) {
           AppHelpers.showSnack(context, "Добавьте карту для смены тарифа");
-        }else{
+        } else {
           showDialog(
             context: context,
             builder: (context) {
@@ -134,7 +138,8 @@ Widget eachSubscription(
                 insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: dialogContent(context, month, price, cardNumber, onTap),
               );
-            });
+            },
+          );
         }
       },
       child: Row(
@@ -167,13 +172,29 @@ Widget eachSubscription(
           ),
           10.horizontalSpace,
           Expanded(
+              child: Container(
+                padding: EdgeInsets.all(1.r),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16.r),
+              border: Border.all(
+                      color: isSelected
+                          ? Colors.transparent
+                          : AppColors.fadedBlueBorder),
+              gradient: isSelected
+                  ? LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        const Color(0xFFEBC072).withOpacity(0.8),
+                        const Color(0xFF9A49C9),
+                      ],
+                      stops: const [-0.4115, 1.3761],
+                    )
+                  : null,
+            ),
             child: Container(
               decoration: BoxDecoration(
                   color: Colors.white,
-                  border: Border.all(
-                      color: isSelected
-                          ? AppColors.purpleBorder
-                          : AppColors.fadedBlueBorder),
                   borderRadius: BorderRadius.circular(16.r),
                   boxShadow: isSelected
                       ? const [
@@ -204,17 +225,45 @@ Widget eachSubscription(
               child: Padding(
                 padding: EdgeInsets.all(16.r),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        CustomText(
-                          text: AppHelpers().getMonthWord(int.parse(month)),
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                          color:
-                              isSelected ? Colors.white : AppColors.purpleText,
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text:
+                                    AppHelpers().getMonthWord(int.parse(month)),
+                                style: GoogleFonts.raleway(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  fontFeatures: const [
+                                    FontFeature.liningFigures()
+                                  ],
+                                  color: isSelected
+                                      ? Colors.white
+                                      : AppColors.purpleText,
+                                ),
+                              ),
+                              TextSpan(
+                                text: index + 1 == currentSubId + 1
+                                    ? " (c ${notifier.getEndDateOfCurrentSub()})"
+                                    : "",
+                                style: GoogleFonts.inter(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w400,
+                                  fontFeatures: const [
+                                    FontFeature.liningFigures()
+                                  ],
+                                  color:
+                                      isSelected ? Colors.white : Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                         SizedBox(
                           child: Column(
@@ -272,7 +321,7 @@ Widget eachSubscription(
                 ),
               ),
             ),
-          ),
+          )),
         ],
       ),
     ),
@@ -288,100 +337,109 @@ Widget dialogContent(
 ) {
   return Padding(
     padding: EdgeInsets.all(16.r),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        CustomText(
-          text: "Подтверждение смены тарифа",
-          fontSize: 16.sp,
-          fontWeight: FontWeight.w600,
-        ),
-        24.verticalSpace,
-        CustomText(
-          text:
-              "Сейчас у вас активна подписка “1 месяц”, она закончится 26.05.24, после чего тариф сменится на “${AppHelpers().getMonthWord(int.parse(month))}”.",
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w400,
-          height: 1.1.h,
-        ),
-        16.verticalSpace,
-        RichText(
-          text: TextSpan(children: [
-            TextSpan(
-              text: "27 мая 2024 года",
-              style: GoogleFonts.raleway(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w700,
-                height: 1.1.h,
-                color: Colors.black,
-                fontFeatures: const [FontFeature.liningFigures()],
-              ),
+    child: Consumer(
+      builder: (context, ref, child) {
+        final notifier = ref.read(settingsProvider.notifier);
+        final currentSub = ref.watch(settingsProvider).currentSubscribtion;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CustomText(
+              text: "Подтверждение смены тарифа",
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
             ),
-            WidgetSpan(child: 4.horizontalSpace),
-            TextSpan(
-              text: "Мы спишем",
-              style: GoogleFonts.raleway(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w400,
-                height: 1.1.h,
-                color: Colors.black,
-              ),
+            24.verticalSpace,
+            CustomText(
+              text:
+                  "Сейчас у вас активна подписка “${currentSub?.subscription?.description}”, она закончится ${notifier.getEndDateOfCurrentSub()}, после чего тариф сменится на “${AppHelpers().getMonthWord(int.parse(month))}”.",
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w400,
+              height: 1.1.h,
             ),
-            WidgetSpan(child: 4.horizontalSpace),
-            TextSpan(
-              text: "₽$price",
-              style: GoogleFonts.raleway(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w700,
-                height: 1.1.h,
-                color: Colors.black,
-                fontFeatures: const [FontFeature.liningFigures()],
-              ),
+            16.verticalSpace,
+            RichText(
+              text: TextSpan(children: [
+                TextSpan(
+                  text: notifier.getEndDateOfCurrentSub(),
+                  style: GoogleFonts.raleway(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w700,
+                    height: 1.1.h,
+                    color: Colors.black,
+                    fontFeatures: const [FontFeature.liningFigures()],
+                  ),
+                ),
+                WidgetSpan(child: 4.horizontalSpace),
+                TextSpan(
+                  text: "Мы спишем",
+                  style: GoogleFonts.raleway(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w400,
+                    height: 1.1.h,
+                    color: Colors.black,
+                  ),
+                ),
+                WidgetSpan(child: 4.horizontalSpace),
+                TextSpan(
+                  text: "₽$price",
+                  style: GoogleFonts.raleway(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w700,
+                    height: 1.1.h,
+                    color: Colors.black,
+                    fontFeatures: const [FontFeature.liningFigures()],
+                  ),
+                ),
+                WidgetSpan(child: 4.horizontalSpace),
+                TextSpan(
+                  text: "с вашей карты",
+                  style: GoogleFonts.raleway(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w400,
+                    height: 1.1.h,
+                    color: Colors.black,
+                  ),
+                ),
+                WidgetSpan(child: 4.horizontalSpace),
+                TextSpan(
+                  text: cardNumber,
+                  style: GoogleFonts.raleway(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w700,
+                    height: 1.1.h,
+                    color: Colors.black,
+                    fontFeatures: const [FontFeature.liningFigures()],
+                  ),
+                ),
+              ]),
             ),
-            WidgetSpan(child: 4.horizontalSpace),
-            TextSpan(
-              text: "с вашей карты",
-              style: GoogleFonts.raleway(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w400,
-                height: 1.1.h,
-                color: Colors.black,
-              ),
+            16.verticalSpace,
+            CustomText(
+              text: "Мы пришлём смс с напоминанием за 3 дня до списания.",
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w400,
+              height: 1.1.h,
             ),
-            WidgetSpan(child: 4.horizontalSpace),
-            TextSpan(
-              text: cardNumber,
-              style: GoogleFonts.raleway(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w700,
-                height: 1.1.h,
-                color: Colors.black,
-                fontFeatures: const [FontFeature.liningFigures()],
-              ),
+            24.verticalSpace,
+            Consumer(
+              builder: (context, ref, child) {
+                final bool loading =
+                    ref.watch(settingsProvider).isChangeSubscribtionLoading;
+                return CustomButton(
+                  onPressed: onPressed,
+                  text: loading ? "Подтверждение..." : 'Подтвердить',
+                  height: 40.h,
+                  buttonColor: Colors.white,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
+                );
+              },
             ),
-          ]),
-        ),
-        16.verticalSpace,
-        CustomText(
-          text: "Мы пришлём смс с напоминанием за 3 дня до списания.",
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w400,
-          height: 1.1.h,
-        ),
-        24.verticalSpace,
-        CustomButton(
-          onPressed: (){
-            onPressed?.call();
-            context.popRoute();
-          },
-          text: 'Подтвердить',
-          height: 40.h,
-          buttonColor: Colors.white,
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w500,
-        )
-      ],
+          ],
+        );
+      },
     ),
   );
 }

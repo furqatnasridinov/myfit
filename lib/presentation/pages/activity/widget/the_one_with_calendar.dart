@@ -1,17 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:myfit/application/activity/activity_notifier.dart';
 import 'package:myfit/application/activity/activity_provider.dart';
-import 'package:myfit/application/schedule/schedule_provider.dart';
-import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
-import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/presentation/components/animation_button_effect.dart';
 import 'package:myfit/presentation/components/components.dart';
-import 'package:myfit/presentation/components/custom_card.dart';
 import 'package:myfit/presentation/components/inter_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:myfit/presentation/pages/activity/skeletons/calendar_skeleton.dart';
 
 class TheOneWithCalendar extends StatefulWidget {
   final ActivityNotifier event;
@@ -38,52 +35,45 @@ class TheOneWithCalendar extends StatefulWidget {
 class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 0.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: CustomText(
-              text: "Выберите дату и удобное время",
-              fontWeight: FontWeight.w600,
-              fontSize: 16.sp,
-              color: Colors.black,
+    return Consumer(
+      builder: (context, ref, child) {
+        final listOf15CalendarDaysFromNow = ref.watch(activityProvider).listOf15CalendarDaysFromNow;
+        final daysInWhichWeHaveLessons =ref.watch(activityProvider).daysInWhichWeHaveLessons;
+        final selectedCalendarDay = ref.watch(activityProvider).selectedCalendarDay;
+        final loading = ref.watch(activityProvider).isSchedulesLoading;
+        return loading ? const CalendarSkeleton() : Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: CustomText(
+                text: "Выберите дату и удобное время",
+                fontWeight: FontWeight.w600,
+                fontSize: 16.sp,
+                color: Colors.black,
+              ),
             ),
-          ),
-          10.verticalSpace,
-          Padding(
-            padding: EdgeInsets.only(left: 16.w),
-            child: Container(
-                //color: Colors.green.shade300,
-                height: 75.h,
-                padding: EdgeInsets.symmetric(vertical: 4.w),
-                width: double.maxFinite,
-                child: Consumer(builder: (context, ref, child) {
-                  final listOf15CalendarDaysFromNow =
-                      ref.watch(activityProvider).listOf15CalendarDaysFromNow;
-                  final daysInWhichWeHaveLessons =
-                      ref.watch(activityProvider).daysInWhichWeHaveLessons;
-                  final selectedCalendarDay =
-                      ref.watch(activityProvider).selectedCalendarDay;
-                  return ListView.builder(
+            10.verticalSpace,
+            Padding(
+              padding: EdgeInsets.only(left: 16.w, bottom: 16.h),
+              child: Container(
+                  //color: Colors.green.shade300,
+                  height: 75.h,
+                  padding: EdgeInsets.symmetric(vertical: 4.w),
+                  width: double.maxFinite,
+                  child: ListView.builder(
                     itemCount: listOf15CalendarDaysFromNow.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
-                      final String currentDate =
-                          listOf15CalendarDaysFromNow[index];
-                      bool isAvailable =
-                          daysInWhichWeHaveLessons.contains(currentDate);
+                      final String currentDate = listOf15CalendarDaysFromNow[index];
+                      bool isAvailable = daysInWhichWeHaveLessons.contains(currentDate);
                       bool isSelected = selectedCalendarDay == currentDate;
                       final parts = currentDate.split(" ");
                       return GestureDetector(
                           onTap: () async {
                             if (isAvailable) {
-                              await widget.event
-                                  .setSelectedCalendarDay(currentDate);
-                              widget.event.getLessonsToShowAfterSelectingADay(
-                                  currentDate);
+                              await widget.event.setSelectedCalendarDay(currentDate);
+                              widget.event.getLessonsToShowAfterSelectingADay(currentDate);
                             }
                           },
                           child: Padding(
@@ -94,37 +84,26 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                                 //color: Colors.red,
                                 width: 41.w,
                                 child: Card(
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal: 1.w, vertical: 2.h),
-                                  shadowColor:
-                                      const Color.fromRGBO(123, 163, 225, 0.73),
+                                  margin: EdgeInsets.symmetric(horizontal: 1.w, vertical: 2.h),
+                                  shadowColor: const Color.fromRGBO(123, 163, 225, 0.73),
                                   elevation: isSelected ? 2.1 : 0,
-                                  color: isSelected
-                                      ? AppColors.blueColor
-                                      : Colors.white,
+                                  color: isSelected ? AppColors.blueColor : Colors.white,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8.r),
-                                    side: BorderSide(
-                                        color: isSelected
-                                            ? AppColors.blueColor
-                                            : isAvailable
-                                                ? AppColors.greyBorder
-                                                : Colors.transparent,
+                                    side: BorderSide(color: isSelected ? AppColors.blueColor
+                                            : isAvailable ? AppColors.greyBorder : Colors.transparent,
                                         width: 1.w),
                                   ),
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.center,
                                     children: [
                                       InterText(
                                         text: parts[0].toUpperCase(),
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w600,
-                                        color: isSelected
-                                            ? Colors.white
-                                            : isAvailable
-                                                ? Colors.black
-                                                : const Color.fromRGBO(
-                                                    176, 176, 176, 1),
+                                        color: isSelected ? Colors.white : isAvailable
+                                                ? Colors.black: const Color.fromRGBO(176, 176, 176, 1),
                                       ),
                                       3.verticalSpace,
                                       CustomText(
@@ -132,25 +111,15 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                                           fontWeight: FontWeight.w500,
                                           text: parts[1],
                                           color: isSelected
-                                              ? Colors.white
-                                              : isAvailable
-                                                  ? Colors.black
+                                              ? Colors.white : isAvailable ? Colors.black
                                                   : const Color.fromRGBO(
                                                       176, 176, 176, 1)),
                                       CustomText(
                                         fontSize: 10.sp,
                                         fontWeight: FontWeight.w500,
                                         text: parts[2],
-                                        color: isSelected
-                                            ? Colors.white
-                                            : isAvailable
-                                                ? Colors.black
-                                                : const Color.fromRGBO(
-                                                    176,
-                                                    176,
-                                                    176,
-                                                    1,
-                                                  ),
+                                        color: isSelected ? Colors.white : isAvailable
+                                                ? Colors.black : const Color.fromRGBO(176,176,176,1),
                                       ),
                                     ],
                                   ),
@@ -159,165 +128,11 @@ class _TheOneWithCalendarState extends State<TheOneWithCalendar> {
                             ),
                           ));
                     },
-                  );
-                })),
-          ),
-          16.verticalSpace,
-
-          // список занятий заведения на выбранный день
-          Consumer(
-            builder: (contex, ref, child) {
-              final lessonsToShowAfterSelectingADay =
-                  ref.watch(activityProvider).lessonsToShowAfterSelectingADay;
-              final scheduleEvent = ref.read(scheduleProvider.notifier);
-              if (lessonsToShowAfterSelectingADay.isEmpty) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: CustomCard(
-                    width: double.maxFinite,
-                    child: CustomText(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                      text:
-                          "В ближайшее время в заведении нет доступных занятий",
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                );
-              } else {
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: lessonsToShowAfterSelectingADay.length,
-                  itemBuilder: (context, index) {
-                    final currentSchedule =
-                        lessonsToShowAfterSelectingADay[index];
-
-                    return activityCard(
-                      currentSchedule.canSignUp ?? false,
-                      currentSchedule.id ?? 0,
-                      currentSchedule.startTime ?? "??",
-                      currentSchedule.endTime ?? "??",
-                      currentSchedule.duration ?? "??",
-                      currentSchedule.description ?? "??",
-                      currentSchedule.lessonState ?? "",
-                      currentSchedule.isLoading,
-                      () async {
-                        await widget.event.enrollToGym(
-                          context,
-                          currentSchedule.id ?? 0,
-                        );
-                        // временно до вебсокетов
-                        //currentSchedule.lessonState = "WAITING";
-                        //setState(() {});
-                        currentSchedule.isLoading = true;
-                        // get the updated list of lessons
-                        await widget.event.getAllLessons(context, id: widget.gymId);
-                        await widget.event.getLessonsOfSelectedActivity(currentSchedule.lessonType ?? "", false);
-                        currentSchedule.isLoading = false;
-                        scheduleEvent.getUsersSchedules(context);
-                        // to add this lessontype to known lessontypes if it's not there
-                        ref.read(settingsProvider.notifier).getWaitingLessonTypes(context);
-                      },
-                    );
-                  },
-                );
-              }
-            },
-          ),
-
-          15.verticalSpace,
-        ],
-      ),
-    );
-  }
-}
-
-Widget activityCard(
-  bool canSignUp,
-  int id,
-  String startTime,
-  String finishTime,
-  String duration,
-  String name,
-  String? status,
-  bool? isloading,
-  void Function()? enrollFunction,
-) {
-  
-  if (canSignUp || (!canSignUp && status == "CONFIRMED")) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 10.h, left: 16.w, right: 16.w),
-      child: CustomCard(
-        width: double.maxFinite,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // times
-                SizedBox(
-                  child: Row(
-                    children: [
-                      CustomText(
-                        text: startTime,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      2.horizontalSpace,
-                      const Text("-"),
-                      2.horizontalSpace,
-                      CustomText(
-                        text: finishTime,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ],
-                  ),
-                ),
-                
-                // get status text
-                SizedBox(
-                  child: GestureDetector(
-                    onTap: (status == "OPEN" || status == "CANCELED_USER" || status == "CANCELED_GYM") 
-                      && isloading == false ? () {
-                          enrollFunction?.call();
-                      }
-                        : null,
-                    child: SizedBox(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-                        child: CustomText(
-                          text: isloading == true ? "Загрузка " :  AppHelpers().getStatusText(status),
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                          color: AppHelpers().getStatusTextColor(status),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            5.verticalSpace,
-            InterText(
-              text: name,
-              fontSize: 13.sp,
-              fontWeight: FontWeight.w400,
-            ),
-            5.verticalSpace,
-            CustomText(
-              text: duration,
-              fontSize: 10.sp,
-              fontWeight: FontWeight.w500,
-              color: AppColors.greyText,
-            )
+                  )),
+            ),              
           ],
-        ),
-      ),
+        );
+      },
     );
-  } else {
-    return const SizedBox.shrink();
   }
 }

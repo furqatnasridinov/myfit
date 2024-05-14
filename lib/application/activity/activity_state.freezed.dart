@@ -25,6 +25,8 @@ mixin _$ActivityState {
   GymResponse? get gym => throw _privateConstructorUsedError;
   DescribtionAndPeculiarities? get describtionAndPeculiarities =>
       throw _privateConstructorUsedError;
+  String? get dayOfSelectedLessonFromSearch =>
+      throw _privateConstructorUsedError;
   List<String>? get activityTypes => throw _privateConstructorUsedError;
   Map<String, dynamic> get allPhotos => throw _privateConstructorUsedError;
   Map<String, dynamic> get allLessons => throw _privateConstructorUsedError;
@@ -39,7 +41,10 @@ mixin _$ActivityState {
   List<String> get photosOfSelectedActivity =>
       throw _privateConstructorUsedError;
   Map<String, dynamic> get infosForType => throw _privateConstructorUsedError;
+  bool get isFromSearch => throw _privateConstructorUsedError;
   List<String> get listOf15CalendarDaysFromNow =>
+      throw _privateConstructorUsedError;
+  EnrollingErrorMessage? get enrollingError =>
       throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -62,6 +67,7 @@ abstract class $ActivityStateCopyWith<$Res> {
       bool infoForTypeLoading,
       GymResponse? gym,
       DescribtionAndPeculiarities? describtionAndPeculiarities,
+      String? dayOfSelectedLessonFromSearch,
       List<String>? activityTypes,
       Map<String, dynamic> allPhotos,
       Map<String, dynamic> allLessons,
@@ -72,7 +78,9 @@ abstract class $ActivityStateCopyWith<$Res> {
       String? selectedActivity,
       List<String> photosOfSelectedActivity,
       Map<String, dynamic> infosForType,
-      List<String> listOf15CalendarDaysFromNow});
+      bool isFromSearch,
+      List<String> listOf15CalendarDaysFromNow,
+      EnrollingErrorMessage? enrollingError});
 }
 
 /// @nodoc
@@ -96,6 +104,7 @@ class _$ActivityStateCopyWithImpl<$Res, $Val extends ActivityState>
     Object? infoForTypeLoading = null,
     Object? gym = freezed,
     Object? describtionAndPeculiarities = freezed,
+    Object? dayOfSelectedLessonFromSearch = freezed,
     Object? activityTypes = freezed,
     Object? allPhotos = null,
     Object? allLessons = null,
@@ -106,7 +115,9 @@ class _$ActivityStateCopyWithImpl<$Res, $Val extends ActivityState>
     Object? selectedActivity = freezed,
     Object? photosOfSelectedActivity = null,
     Object? infosForType = null,
+    Object? isFromSearch = null,
     Object? listOf15CalendarDaysFromNow = null,
+    Object? enrollingError = freezed,
   }) {
     return _then(_value.copyWith(
       isGymLoading: null == isGymLoading
@@ -141,6 +152,10 @@ class _$ActivityStateCopyWithImpl<$Res, $Val extends ActivityState>
           ? _value.describtionAndPeculiarities
           : describtionAndPeculiarities // ignore: cast_nullable_to_non_nullable
               as DescribtionAndPeculiarities?,
+      dayOfSelectedLessonFromSearch: freezed == dayOfSelectedLessonFromSearch
+          ? _value.dayOfSelectedLessonFromSearch
+          : dayOfSelectedLessonFromSearch // ignore: cast_nullable_to_non_nullable
+              as String?,
       activityTypes: freezed == activityTypes
           ? _value.activityTypes
           : activityTypes // ignore: cast_nullable_to_non_nullable
@@ -181,10 +196,18 @@ class _$ActivityStateCopyWithImpl<$Res, $Val extends ActivityState>
           ? _value.infosForType
           : infosForType // ignore: cast_nullable_to_non_nullable
               as Map<String, dynamic>,
+      isFromSearch: null == isFromSearch
+          ? _value.isFromSearch
+          : isFromSearch // ignore: cast_nullable_to_non_nullable
+              as bool,
       listOf15CalendarDaysFromNow: null == listOf15CalendarDaysFromNow
           ? _value.listOf15CalendarDaysFromNow
           : listOf15CalendarDaysFromNow // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      enrollingError: freezed == enrollingError
+          ? _value.enrollingError
+          : enrollingError // ignore: cast_nullable_to_non_nullable
+              as EnrollingErrorMessage?,
     ) as $Val);
   }
 }
@@ -206,6 +229,7 @@ abstract class _$$ActivityStateImplCopyWith<$Res>
       bool infoForTypeLoading,
       GymResponse? gym,
       DescribtionAndPeculiarities? describtionAndPeculiarities,
+      String? dayOfSelectedLessonFromSearch,
       List<String>? activityTypes,
       Map<String, dynamic> allPhotos,
       Map<String, dynamic> allLessons,
@@ -216,7 +240,9 @@ abstract class _$$ActivityStateImplCopyWith<$Res>
       String? selectedActivity,
       List<String> photosOfSelectedActivity,
       Map<String, dynamic> infosForType,
-      List<String> listOf15CalendarDaysFromNow});
+      bool isFromSearch,
+      List<String> listOf15CalendarDaysFromNow,
+      EnrollingErrorMessage? enrollingError});
 }
 
 /// @nodoc
@@ -238,6 +264,7 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
     Object? infoForTypeLoading = null,
     Object? gym = freezed,
     Object? describtionAndPeculiarities = freezed,
+    Object? dayOfSelectedLessonFromSearch = freezed,
     Object? activityTypes = freezed,
     Object? allPhotos = null,
     Object? allLessons = null,
@@ -248,7 +275,9 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
     Object? selectedActivity = freezed,
     Object? photosOfSelectedActivity = null,
     Object? infosForType = null,
+    Object? isFromSearch = null,
     Object? listOf15CalendarDaysFromNow = null,
+    Object? enrollingError = freezed,
   }) {
     return _then(_$ActivityStateImpl(
       isGymLoading: null == isGymLoading
@@ -283,6 +312,10 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
           ? _value.describtionAndPeculiarities
           : describtionAndPeculiarities // ignore: cast_nullable_to_non_nullable
               as DescribtionAndPeculiarities?,
+      dayOfSelectedLessonFromSearch: freezed == dayOfSelectedLessonFromSearch
+          ? _value.dayOfSelectedLessonFromSearch
+          : dayOfSelectedLessonFromSearch // ignore: cast_nullable_to_non_nullable
+              as String?,
       activityTypes: freezed == activityTypes
           ? _value._activityTypes
           : activityTypes // ignore: cast_nullable_to_non_nullable
@@ -323,10 +356,18 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
           ? _value._infosForType
           : infosForType // ignore: cast_nullable_to_non_nullable
               as Map<String, dynamic>,
+      isFromSearch: null == isFromSearch
+          ? _value.isFromSearch
+          : isFromSearch // ignore: cast_nullable_to_non_nullable
+              as bool,
       listOf15CalendarDaysFromNow: null == listOf15CalendarDaysFromNow
           ? _value._listOf15CalendarDaysFromNow
           : listOf15CalendarDaysFromNow // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      enrollingError: freezed == enrollingError
+          ? _value.enrollingError
+          : enrollingError // ignore: cast_nullable_to_non_nullable
+              as EnrollingErrorMessage?,
     ));
   }
 }
@@ -343,6 +384,7 @@ class _$ActivityStateImpl extends _ActivityState {
       this.infoForTypeLoading = false,
       this.gym = null,
       this.describtionAndPeculiarities = null,
+      this.dayOfSelectedLessonFromSearch = "",
       final List<String>? activityTypes = const [],
       final Map<String, dynamic> allPhotos = const {},
       final Map<String, dynamic> allLessons = const {},
@@ -353,7 +395,9 @@ class _$ActivityStateImpl extends _ActivityState {
       this.selectedActivity = "",
       final List<String> photosOfSelectedActivity = const [],
       final Map<String, dynamic> infosForType = const {},
-      final List<String> listOf15CalendarDaysFromNow = const []})
+      this.isFromSearch = false,
+      final List<String> listOf15CalendarDaysFromNow = const [],
+      this.enrollingError = null})
       : _activityTypes = activityTypes,
         _allPhotos = allPhotos,
         _allLessons = allLessons,
@@ -389,6 +433,9 @@ class _$ActivityStateImpl extends _ActivityState {
   @override
   @JsonKey()
   final DescribtionAndPeculiarities? describtionAndPeculiarities;
+  @override
+  @JsonKey()
+  final String? dayOfSelectedLessonFromSearch;
   final List<String>? _activityTypes;
   @override
   @JsonKey()
@@ -474,6 +521,9 @@ class _$ActivityStateImpl extends _ActivityState {
     return EqualUnmodifiableMapView(_infosForType);
   }
 
+  @override
+  @JsonKey()
+  final bool isFromSearch;
   final List<String> _listOf15CalendarDaysFromNow;
   @override
   @JsonKey()
@@ -485,8 +535,12 @@ class _$ActivityStateImpl extends _ActivityState {
   }
 
   @override
+  @JsonKey()
+  final EnrollingErrorMessage? enrollingError;
+
+  @override
   String toString() {
-    return 'ActivityState(isGymLoading: $isGymLoading, isActivitiesListLoading: $isActivitiesListLoading, isEnrollingLoading: $isEnrollingLoading, isPhotosLoading: $isPhotosLoading, isSchedulesLoading: $isSchedulesLoading, infoForTypeLoading: $infoForTypeLoading, gym: $gym, describtionAndPeculiarities: $describtionAndPeculiarities, activityTypes: $activityTypes, allPhotos: $allPhotos, allLessons: $allLessons, lessonsOfSelectedActivity: $lessonsOfSelectedActivity, daysInWhichWeHaveLessons: $daysInWhichWeHaveLessons, selectedCalendarDay: $selectedCalendarDay, lessonsToShowAfterSelectingADay: $lessonsToShowAfterSelectingADay, selectedActivity: $selectedActivity, photosOfSelectedActivity: $photosOfSelectedActivity, infosForType: $infosForType, listOf15CalendarDaysFromNow: $listOf15CalendarDaysFromNow)';
+    return 'ActivityState(isGymLoading: $isGymLoading, isActivitiesListLoading: $isActivitiesListLoading, isEnrollingLoading: $isEnrollingLoading, isPhotosLoading: $isPhotosLoading, isSchedulesLoading: $isSchedulesLoading, infoForTypeLoading: $infoForTypeLoading, gym: $gym, describtionAndPeculiarities: $describtionAndPeculiarities, dayOfSelectedLessonFromSearch: $dayOfSelectedLessonFromSearch, activityTypes: $activityTypes, allPhotos: $allPhotos, allLessons: $allLessons, lessonsOfSelectedActivity: $lessonsOfSelectedActivity, daysInWhichWeHaveLessons: $daysInWhichWeHaveLessons, selectedCalendarDay: $selectedCalendarDay, lessonsToShowAfterSelectingADay: $lessonsToShowAfterSelectingADay, selectedActivity: $selectedActivity, photosOfSelectedActivity: $photosOfSelectedActivity, infosForType: $infosForType, isFromSearch: $isFromSearch, listOf15CalendarDaysFromNow: $listOf15CalendarDaysFromNow, enrollingError: $enrollingError)';
   }
 
   @override
@@ -496,8 +550,7 @@ class _$ActivityStateImpl extends _ActivityState {
             other is _$ActivityStateImpl &&
             (identical(other.isGymLoading, isGymLoading) ||
                 other.isGymLoading == isGymLoading) &&
-            (identical(
-                    other.isActivitiesListLoading, isActivitiesListLoading) ||
+            (identical(other.isActivitiesListLoading, isActivitiesListLoading) ||
                 other.isActivitiesListLoading == isActivitiesListLoading) &&
             (identical(other.isEnrollingLoading, isEnrollingLoading) ||
                 other.isEnrollingLoading == isEnrollingLoading) &&
@@ -508,10 +561,12 @@ class _$ActivityStateImpl extends _ActivityState {
             (identical(other.infoForTypeLoading, infoForTypeLoading) ||
                 other.infoForTypeLoading == infoForTypeLoading) &&
             (identical(other.gym, gym) || other.gym == gym) &&
-            (identical(other.describtionAndPeculiarities,
-                    describtionAndPeculiarities) ||
+            (identical(other.describtionAndPeculiarities, describtionAndPeculiarities) ||
                 other.describtionAndPeculiarities ==
                     describtionAndPeculiarities) &&
+            (identical(other.dayOfSelectedLessonFromSearch, dayOfSelectedLessonFromSearch) ||
+                other.dayOfSelectedLessonFromSearch ==
+                    dayOfSelectedLessonFromSearch) &&
             const DeepCollectionEquality()
                 .equals(other._activityTypes, _activityTypes) &&
             const DeepCollectionEquality()
@@ -533,9 +588,11 @@ class _$ActivityStateImpl extends _ActivityState {
                 other._photosOfSelectedActivity, _photosOfSelectedActivity) &&
             const DeepCollectionEquality()
                 .equals(other._infosForType, _infosForType) &&
-            const DeepCollectionEquality().equals(
-                other._listOf15CalendarDaysFromNow,
-                _listOf15CalendarDaysFromNow));
+            (identical(other.isFromSearch, isFromSearch) ||
+                other.isFromSearch == isFromSearch) &&
+            const DeepCollectionEquality()
+                .equals(other._listOf15CalendarDaysFromNow, _listOf15CalendarDaysFromNow) &&
+            (identical(other.enrollingError, enrollingError) || other.enrollingError == enrollingError));
   }
 
   @override
@@ -549,6 +606,7 @@ class _$ActivityStateImpl extends _ActivityState {
         infoForTypeLoading,
         gym,
         describtionAndPeculiarities,
+        dayOfSelectedLessonFromSearch,
         const DeepCollectionEquality().hash(_activityTypes),
         const DeepCollectionEquality().hash(_allPhotos),
         const DeepCollectionEquality().hash(_allLessons),
@@ -559,7 +617,9 @@ class _$ActivityStateImpl extends _ActivityState {
         selectedActivity,
         const DeepCollectionEquality().hash(_photosOfSelectedActivity),
         const DeepCollectionEquality().hash(_infosForType),
-        const DeepCollectionEquality().hash(_listOf15CalendarDaysFromNow)
+        isFromSearch,
+        const DeepCollectionEquality().hash(_listOf15CalendarDaysFromNow),
+        enrollingError
       ]);
 
   @JsonKey(ignore: true)
@@ -579,6 +639,7 @@ abstract class _ActivityState extends ActivityState {
       final bool infoForTypeLoading,
       final GymResponse? gym,
       final DescribtionAndPeculiarities? describtionAndPeculiarities,
+      final String? dayOfSelectedLessonFromSearch,
       final List<String>? activityTypes,
       final Map<String, dynamic> allPhotos,
       final Map<String, dynamic> allLessons,
@@ -589,7 +650,9 @@ abstract class _ActivityState extends ActivityState {
       final String? selectedActivity,
       final List<String> photosOfSelectedActivity,
       final Map<String, dynamic> infosForType,
-      final List<String> listOf15CalendarDaysFromNow}) = _$ActivityStateImpl;
+      final bool isFromSearch,
+      final List<String> listOf15CalendarDaysFromNow,
+      final EnrollingErrorMessage? enrollingError}) = _$ActivityStateImpl;
   const _ActivityState._() : super._();
 
   @override
@@ -608,6 +671,8 @@ abstract class _ActivityState extends ActivityState {
   GymResponse? get gym;
   @override
   DescribtionAndPeculiarities? get describtionAndPeculiarities;
+  @override
+  String? get dayOfSelectedLessonFromSearch;
   @override
   List<String>? get activityTypes;
   @override
@@ -629,7 +694,11 @@ abstract class _ActivityState extends ActivityState {
   @override
   Map<String, dynamic> get infosForType;
   @override
+  bool get isFromSearch;
+  @override
   List<String> get listOf15CalendarDaysFromNow;
+  @override
+  EnrollingErrorMessage? get enrollingError;
   @override
   @JsonKey(ignore: true)
   _$$ActivityStateImplCopyWith<_$ActivityStateImpl> get copyWith =>
