@@ -672,8 +672,7 @@ class MapNotifier extends StateNotifier<MapState> {
 
     List<LessonTypeWithGymsInside> listToCollect = [];
     double selectedDiapozone = state.selectedDiapozone;
-    final activityWithGyms =
-        List<LessonTypeWithGymsInside>.from(state.activitiesWithGymsInsideAll);
+    final activityWithGyms = List<LessonTypeWithGymsInside>.from(state.activitiesWithGymsInsideAll);
 
     if (selectedDiapozone == 5) {
       listToCollect.addAll(state.activitiesWithGymsInsideAll);

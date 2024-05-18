@@ -40,7 +40,7 @@ class MapListOfActivities extends StatefulWidget {
 class _MapListOfActivitiesState extends State<MapListOfActivities> {
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+   /*  WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.state.activitiesWithGymsInsideFromSelectedDiapozone.length >
               4 &&
           widget.state.activitiesWithGymsInsideFromSelectedDiapozone.last
@@ -51,7 +51,7 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
           duration: const Duration(microseconds: 100),
         );
       }
-    });
+    }); */
     return widget.state.isloading
         ? const SearchingActivitiesCard()
         : widget.state.activitiesWithGymsInsideFromSelectedDiapozone.isEmpty &&
@@ -71,12 +71,10 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                     //controller: widget.activitiesListController,
                     physics: const NeverScrollableScrollPhysics(),
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    itemCount: widget.state
-                        .activitiesWithGymsInsideFromSelectedDiapozone.length,
+                    itemCount: widget.state.activitiesWithGymsInsideFromSelectedDiapozone.length,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
-                      final currentActivity = widget.state
-                          .activitiesWithGymsInsideFromSelectedDiapozone[index];
+                      final currentActivity = widget.state.activitiesWithGymsInsideFromSelectedDiapozone[index];
                       return _listOfActivitiesBuilder(
                           currentActivity.lessontype ?? "??",
                           currentActivity.listOfGyms!.length.toString(),
@@ -94,8 +92,7 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                             }
                           }
                         } else {
-                          for (var el in widget.state
-                              .activitiesWithGymsInsideFromSelectedDiapozone) {
+                          for (var el in widget.state.activitiesWithGymsInsideFromSelectedDiapozone) {
                             if (el.isOpened && el != currentActivity) {
                               el.isOpened = false;
                             }

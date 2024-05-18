@@ -7,8 +7,8 @@ import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/local_storage.dart';
+import 'package:myfit/presentation/components/custom_search_bar.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
-import 'package:myfit/presentation/pages/main2/widget/main2_header.dart';
 import 'package:myfit/presentation/pages/main2/widget/widget.dart';
 import 'package:myfit/presentation/pages/schedule/widget/bottom_scan_container.dart';
 import 'package:auto_route/auto_route.dart';
@@ -115,10 +115,9 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: Main2Header(
+      appBar: CustomSearchBar(
         showBackButton: false,
-        canNavigateToSettings: true,
-      ),
+        canNavigateToSettings: true),
       body: SmartRefresher(
         controller: refreshController,
         header: const WaterDropMaterialHeader(
@@ -168,8 +167,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                         sliver: SliverToBoxAdapter(
                           child: nearestLesson == null
                               ? const PlaceholderComingActivity() //button "Найти себе занятие"
-                              : ComingActivity(
-                                  nearestLesson: nearestLesson, event: event),
+                              : ComingActivity(nearestLesson: nearestLesson, event: event),
                         ),
                       );
                     }),
@@ -209,8 +207,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                               : Main2Map(
                                   mapEvent: ref.read(mapProvider.notifier),
                                   showRecommended: showRecommended,
-                                  showOnlyKnown:
-                                      ref.watch(mapProvider).showOnlyKnown,
+                                  showOnlyKnown:ref.watch(mapProvider).showOnlyKnown,
                                   gyms: recommendedGyms["gyms"],
                                 );
                         }),
@@ -228,8 +225,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                             ? const SizedBox()
                             : DecoratedTextOne(
                                 lesson: recommendedGyms["lessonType"] ?? "",
-                                usersCount:
-                                    recommendedGyms["countUsers"].toString(),
+                                usersCount:recommendedGyms["countUsers"].toString(),
                               );
                       })),
                     ),

@@ -1,6 +1,4 @@
 // ignore_for_file: must_be_immutable
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
@@ -34,11 +32,6 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: AppColors.backgroundColor,
-      statusBarBrightness: Brightness
-          .dark, // this is to make the status bar icons visible on the white background
-    ));
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
         ref.read(activityProvider.notifier)

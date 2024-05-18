@@ -310,7 +310,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
                 duration: formatDuration(el["duration"]),
                 lessonType: el["lessonType"],
                 owner: el["owner"] != null ? Owner.fromJson(el["owner"]) : null,
-                repeat: el["repeat"].cast<int>(),
+                repeat: el["repeat"] != null ? el["repeat"].cast<int>() : [],
                 canSignUp: el["canSignUp"],
                 lessonState: el["lessonState"] ?? false,
                 showInCalendar: DateTime.now().isBefore(startTime.subtract(const Duration(minutes: 30))),

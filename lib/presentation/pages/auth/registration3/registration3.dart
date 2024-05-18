@@ -1,5 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:math';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/local_storage.dart';
@@ -41,112 +45,195 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
   final layerlink = LayerLink();
   bool isNameNotGiven = false;
   bool isCityNotSelected = false;
-  OverlayEntry? entry;
   City? selectedCity;
   bool isAllFieldsSumbitted = false;
   bool showReplayButton = false;
   bool topGapRemoved = false;
+  bool hideButton = false;
 
   void setSelectedCity(City city) {
     selectedCity = city;
-  }
-
-  void showOverlay() {
-    final overlay = Overlay.of(context);
-    final renderBox = context.findRenderObject() as RenderBox;
-    final size = renderBox.size;
-
-    entry = OverlayEntry(
-      builder: (context) => Positioned(
-        width: size.width,
-        child: CompositedTransformFollower(
-          offset: Offset(-16, 50.h),
-          link: layerlink,
-          child: Material(
-            color: Colors.transparent,
-            child: TapRegion(
-              child: Container(
-                height: 294.h,
-                margin: EdgeInsets.only(left: 16.w, right: 16.w),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.0),
-                  color: Colors.white,
-                  border: Border.all(
-                    width: 1.0,
-                    color: const Color.fromRGBO(119, 170, 249, 1),
-                  ),
-                ),
-                padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-                child: Column(children: [
-                  Expanded(
-                    child: MediaQuery.removePadding(
-                      context: context,
-                      removeTop: true,
-                      removeBottom: true,
-                      child: Consumer(builder: (context, ref, child) {
-                        final state = ref.watch(settingsProvider);
-
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: state.listOfCities.length,
-                          itemBuilder: (context, index) {
-                            final currentCity = state.listOfCities[index];
-                            return _listiles(
-                              currentCity.name ?? "",
-                              () {
-                                cityController.text = currentCity.name ?? "??";
-                                focusNode.unfocus();
-                                setSelectedCity(currentCity);
-                                setState(() {});
-                              },
-                            );
-                          },
-                        );
-                      }),
-                    ),
-                  ),
-                ]),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-
-    overlay.insert(entry!);
-  }
-
-  void hideOverlay() {
-    entry?.remove();
-    entry = null;
+    setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
     ref.read(settingsProvider.notifier).getListOfCities(context);
-    focusNode.addListener(() {
-      if (focusNode.hasFocus) {
-        showOverlay();
-      } else {
-        hideOverlay();
-      }
-    });
   }
+
 
   @override
   Widget build(BuildContext context) {
     final event = ref.read(settingsProvider.notifier);
     final height = MediaQuery.of(context).size.height;
+    ref.listen(settingsProvider, (previous, next) async{
+      if (previous!.dropDownOpened != next.dropDownOpened && !next.dropDownOpened) {
+        await Future.delayed(const Duration(milliseconds: 270));
+        hideButton = false;
+        setState(() {});
+      }
+    });
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
+          // waves
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: AnimatedOpacity(
+              opacity: isAllFieldsSumbitted ? 0 : 1,
+              duration: const Duration(milliseconds: 300),
+              child: CustomPaint(
+                size: Size(400, 180.w),
+                painter: TopWave(),
+              ),
+            ),
+          ),
+
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: AnimatedOpacity(
+              opacity: isAllFieldsSumbitted ? 0 : 1,
+              duration: const Duration(milliseconds: 300),
+              child: CustomPaint(
+                size: Size(350, 160.w),
+                painter: MediumWave(),
+              ),
+            ),
+          ),
+
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: AnimatedOpacity(
+              opacity: isAllFieldsSumbitted ? 0 : 1,
+              duration: const Duration(milliseconds: 300),
+              child: CustomPaint(
+                size: Size(400, 70.w),
+                painter: BottomWave(),
+              ),
+            ),
+          ),
+
+          // Icons
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            bottom: 28.h,
+            left: isAllFieldsSumbitted ? -30 : 40.w,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+              padding: EdgeInsets.all(3.r),
+              child: SvgPicture.asset(
+                "assets/svg/boxing.svg",
+              ),
+            ),
+          ),
+
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            bottom: 40.h,
+            left: isAllFieldsSumbitted ? -30 : 120.w,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+              padding: EdgeInsets.all(3.r),
+              child: SvgPicture.asset(
+                "assets/svg/yoga.svg",
+              ),
+            ),
+          ),
+
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            bottom: 135.h,
+            right: isAllFieldsSumbitted ? -30 : 40.w,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+              padding: EdgeInsets.all(3.r),
+              child: SvgPicture.asset(
+                "assets/svg/cardio.svg",
+              ),
+            ),
+          ),
+
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            bottom: 60.h,
+            right: isAllFieldsSumbitted ? -30 : 20.w,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+              padding: EdgeInsets.all(3.r),
+              child: SvgPicture.asset(
+                "assets/svg/meditation.svg",
+              ),
+            ),
+          ),
+
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            bottom: 25.h,
+            right: isAllFieldsSumbitted ? -30 : 90.w,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+              padding: EdgeInsets.all(3.r),
+              child: SvgPicture.asset(
+                "assets/svg/gym.svg",
+              ),
+            ),
+          ),
+
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            bottom: 55.h,
+            right: isAllFieldsSumbitted ? -30 : 140.w,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+              padding: EdgeInsets.all(3.r),
+              child: SvgPicture.asset(
+                "assets/svg/pool.svg",
+              ),
+            ),
+          ),
+
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            bottom: 95.h,
+            left: isAllFieldsSumbitted ? -30 : 10.w,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+              padding: EdgeInsets.all(3.r),
+              child: SvgPicture.asset(
+                "assets/svg/popa.svg",
+              ),
+            ),
+          ),
+          
+          
           // main body
           Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: isAllFieldsSumbitted ? 0 : 16.w),
+            padding: EdgeInsets.symmetric(horizontal: isAllFieldsSumbitted ? 0 : 16.w),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,10 +243,8 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16.r),
                       color: Colors.white,
-                      border: Border.all(
-                        color: isAllFieldsSumbitted
-                            ? Colors.transparent
-                            : AppColors.greyBorder,
+                      border: Border.all(color: isAllFieldsSumbitted
+                            ? Colors.transparent : AppColors.greyBorder,
                       ),
                     ),
                     child: AnimatedContainer(
@@ -177,9 +262,7 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                                   fontWeight: FontWeight.w500,
                                 )
                               : const SizedBox.shrink(),
-                          isAllFieldsSumbitted
-                              ? 25.verticalSpace
-                              : 0.verticalSpace,
+                          isAllFieldsSumbitted ? 25.verticalSpace : 0.verticalSpace,
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -198,134 +281,180 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                       ),
                     ),
                   ),
+
                   // creating separate column to hide its content when showing animation
                   !isAllFieldsSumbitted
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            48.verticalSpace,
-                            CustomText(
-                              text: "Как к вам обращаться",
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            5.verticalSpace,
-                            SizedBox(
-                              height: 40.h,
-                              width: double.maxFinite,
-                              child: CustomTextField(
-                                isError: isNameNotGiven,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                    RegExp(r'[a-zA-Zа-яА-Я]'),
-                                  ),
-                                ],
-                                counterStyle: const TextStyle(
-                                  height: double.minPositive,
+                      ? Consumer(builder: (context, ref, child) {
+                        final dropDownOpened = ref.watch(settingsProvider).dropDownOpened;
+                        final notifier = ref.read(settingsProvider.notifier);
+                        return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          48.verticalSpace,
+                          CustomText(
+                            text: "Как к вам обращаться",
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          5.verticalSpace,
+                          SizedBox(
+                            height: 40.h,
+                            width: double.maxFinite,
+                            child: CustomTextField(
+                              isError: isNameNotGiven,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                  RegExp(r'[a-zA-Zа-яА-Я]'),
                                 ),
-                                counterText: "",
-                                maxLength: 16,
+                              ],
+                              counterStyle: const TextStyle(height: double.minPositive),
+                              counterText: "",
+                              maxLength: 16,
+                              style: GoogleFonts.raleway(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                              ),
+                              controller: nameController,
+                              focusNode: nameFocus,
+                              onTapOutside: (onTapOutside) {
+                                if (nameFocus.hasFocus) {
+                                  nameFocus.unfocus();
+                                }
+                              },
+                              onTap: () {
+                                if (!nameFocus.hasFocus) {
+                                  nameFocus.requestFocus();
+                                }
+                              },
+                              onEditingComplete: () {
+                                if (!nameFocus.hasFocus) {
+                                  nameFocus.requestFocus();
+                                }
+                              },
+                              maxLines: 1,
+                              contentPadding: EdgeInsets.zero.copyWith(left: 10.w),
+                              hintText: "Ваше имя",
+                            ),
+                          ),
+                          isNameNotGiven
+                              ? Padding(
+                                  padding: EdgeInsets.only(top: 5.h),
+                                  child: CustomText(
+                                    text:"Имя должна содержать хотя бы 3 буквы",
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.red,
+                                  ),
+                                )
+                              : const SizedBox(),
+                          32.verticalSpace,
+                          CustomText(
+                            text: "В каком городе искать активности",
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          5.verticalSpace,
+                          // new dropdown
+                          Column(
+                            children: [
+                              CustomTextField(
                                 style: GoogleFonts.raleway(
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w400,
                                   color: Colors.black,
                                 ),
-                                controller: nameController,
-                                focusNode: nameFocus,
-                                onTapOutside: (onTapOutside) {
-                                  if (nameFocus.hasFocus) {
-                                    nameFocus.unfocus();
+                                onTap: () async{
+                                  if (!dropDownOpened) {
+                                    notifier.openDropDown();
+                                    focusNode.requestFocus();
+                                    hideButton = true;
+                                  } else {
+                                    focusNode.unfocus();
+                                    notifier.closeDropDown();
                                   }
                                 },
-                                onTap: () {
-                                  if (!nameFocus.hasFocus) {
-                                    nameFocus.requestFocus();
-                                  }
-                                },
-                                onEditingComplete: () {
-                                  if (!nameFocus.hasFocus) {
-                                    nameFocus.requestFocus();
-                                  }
-                                },
-                                maxLines: 1,
-                                contentPadding:
-                                    EdgeInsets.zero.copyWith(left: 10.w),
-                                hintText: "Ваше имя",
-                              ),
-                            ),
-                            isNameNotGiven
-                                ? Padding(
-                                    padding: EdgeInsets.only(top: 5.h),
-                                    child: CustomText(
-                                      text:
-                                          "Имя должна содержать хотя бы 3 буквы",
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.red,
+                                isError: isCityNotSelected,
+                                readOnly: true,
+                                focusNode: focusNode,
+                                //hasFocus: dropDownOpened,
+                                controller: cityController,
+                                hintText:LocalStorage.getSelectedCity().isEmpty ? "Выберите город" : "",
+                                suffixIcon: TweenAnimationBuilder<double>(
+                                duration: const Duration(milliseconds: 300),
+                                tween: Tween(begin: 0,end: dropDownOpened ? 1.0 : 0),
+                                builder:(BuildContext context, double angle, Widget? child) {
+                                  return Transform.rotate(
+                                    angle: angle * pi,
+                                    child: Icon(
+                                      Icons.keyboard_arrow_down,
+                                      size: 20.sp,
+                                      color: Colors.black.withOpacity(0.7),
                                     ),
-                                  )
-                                : const SizedBox(),
-
-                            32.verticalSpace,
-                            CustomText(
-                              text: "В каком городе искать активности",
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            5.verticalSpace,
-                            SizedBox(
-                              height: 40.h,
-                              width: double.maxFinite,
-                              child: CompositedTransformTarget(
-                                link: layerlink,
-                                child: CustomTextField(
-                                  style: GoogleFonts.raleway(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black,
-                                  ),
-                                  onTap: () {
-                                    if (!focusNode.hasFocus) {
-                                      focusNode.requestFocus();
-                                      setState(() {});
-                                    } else {
-                                      focusNode.unfocus();
-                                    }
-                                  },
-                                  isError: isCityNotSelected,
-                                  readOnly: true,
-                                  focusNode: focusNode,
-                                  controller: cityController,
-                                  hintText:
-                                      LocalStorage.getSelectedCity().isEmpty
-                                          ? "Выберите город"
-                                          : "",
-                                  suffixIcon: Icon(
-                                    focusNode.hasFocus
-                                        ? Icons.keyboard_arrow_up
-                                        : Icons.keyboard_arrow_down,
-                                    size: 23.r,
-                                  ),
-                                  contentPadding:
-                                      EdgeInsets.zero.copyWith(left: 10.w),
+                                  );
+                                },
+                              ),
+                                contentPadding: EdgeInsets.zero.copyWith(left: 10.w),
+                              ),
+                              5.verticalSpace,
+                              //if(focusNode.hasFocus)
+                              AnimatedContainer(
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                                height: dropDownOpened ? 294.h : 0,
+                                decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16.0),
+                                color: Colors.white,
+                                border: Border.all(
+                                width: 1.0,
+                                color: const Color.fromRGBO(119, 170, 249, 1),
                                 ),
                               ),
+                               padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+                              child: MediaQuery.removePadding(
+                                context: context,
+                                removeTop: true,
+                                removeBottom: true,
+                                child: Consumer(builder: (context, ref, child) {
+                                  final listOfCities = ref.watch(settingsProvider).listOfCities;
+                                  return ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: listOfCities.length,
+                                    itemBuilder: (context, index) {
+                                      final currentCity = listOfCities[index];
+                                      return _listiles(
+                                        currentCity.name ?? "",
+                                        () {
+                                          cityController.text = currentCity.name ?? "??";
+                                          focusNode.unfocus();
+                                          setSelectedCity(currentCity);
+                                          ref.read(settingsProvider.notifier).closeDropDown();
+                                        },
+                                      );
+                                    },
+                                  );
+                                }),
+                              ),
                             ),
-                            isCityNotSelected
-                                ? Padding(
-                                    padding: EdgeInsets.only(top: 5.h),
-                                    child: CustomText(
-                                      text: "Выберите город",
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.red,
-                                    ),
-                                  )
-                                : const SizedBox.shrink(),
-                            32.verticalSpace,
-
-                            // button
-                            Container(
+                            ],
+                          ),
+                          isCityNotSelected
+                              ? Padding(
+                                  padding: EdgeInsets.only(top: 5.h),
+                                  child: CustomText(
+                                    text: "Выберите город",
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.red,
+                                  ),
+                                )
+                              : const SizedBox.shrink(),
+                          32.verticalSpace,
+                      
+                          // button
+                          Visibility(
+                            visible: !hideButton,
+                            child: Container(
                               margin: focusNode.hasFocus
                                   ? EdgeInsets.symmetric(horizontal: 3.w)
                                   : EdgeInsets.zero,
@@ -352,32 +481,24 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w600,
                                 onPressed: () async {
-                                  if (nameController.text.length > 2 &&
-                                      cityController.text.isNotEmpty) {
-                                    if (nameController.text !=
-                                        LocalStorage.getUserName()) {
+                                  if (nameController.text.length > 2 && cityController.text.isNotEmpty) {
+                                    if (nameController.text != LocalStorage.getUserName()) {
                                       // if user changed name
-                                      await LocalStorage.setUserName(
-                                          nameController.text);
-                                      event.patchName(
-                                          nameController.text, context);
+                                      await LocalStorage.setUserName(nameController.text);
+                                      event.patchName(nameController.text, context);
                                     }
-                                    if (cityController.text !=
-                                        LocalStorage.getSelectedCity()) {
-                                      await LocalStorage.setSelectedCity(
-                                          cityController.text);
-                                      await LocalStorage.setSelectedCityLat(
-                                          selectedCity?.latitude ?? "");
-                                      await LocalStorage.setSelectedCityLon(
-                                          selectedCity?.longitude ?? "");
+                                    if (cityController.text !=LocalStorage.getSelectedCity()) {
+                                      // if user changed city
+                                      await LocalStorage.setSelectedCity(cityController.text);
+                                      await LocalStorage.setSelectedCityLat(selectedCity?.latitude ?? "");
+                                      await LocalStorage.setSelectedCityLon(selectedCity?.longitude ?? "");
                                       event.patchCity(selectedCity, context);
                                     }
                                     isAllFieldsSumbitted = true;
+                                    topGapRemoved = true;
                                     setState(() {});
-                                    await Future.delayed(
-                                        const Duration(milliseconds: 400));
-                                    context.router
-                                        .push(const Registration4Route());
+                                    await Future.delayed(const Duration(milliseconds: 400));
+                                    context.router.push(const Registration4Route());
                                   } else {
                                     if (nameController.text.length < 2) {
                                       isNameNotGiven = true;
@@ -392,183 +513,17 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                                 text: "Продолжить",
                               ),
                             ),
-                          ],
-                        )
+                          ),
+                        ],
+                      );
+                      },)
                       : const SizedBox.shrink()
                 ],
               ),
             ),
           ),
 
-          // waves
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: nameFocus.hasFocus
-                ? const SizedBox()
-                : AnimatedOpacity(
-                    opacity: isAllFieldsSumbitted ? 0 : 1,
-                    duration: const Duration(milliseconds: 300),
-                    child: CustomPaint(
-                      size: Size(400, 180.w),
-                      painter: TopWave(),
-                    ),
-                  ),
-          ),
-
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: nameFocus.hasFocus
-                ? const SizedBox()
-                : AnimatedOpacity(
-                    opacity: isAllFieldsSumbitted ? 0 : 1,
-                    duration: const Duration(milliseconds: 300),
-                    child: CustomPaint(
-                      size: Size(350, 160.w),
-                      painter: MediumWave(),
-                    ),
-                  ),
-          ),
-
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: nameFocus.hasFocus
-                ? const SizedBox()
-                : AnimatedOpacity(
-                    opacity: isAllFieldsSumbitted ? 0 : 1,
-                    duration: const Duration(milliseconds: 300),
-                    child: CustomPaint(
-                      size: Size(400, 70.w),
-                      painter: BottomWave(),
-                    ),
-                  ),
-          ),
-
-          // Icons
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 300),
-            bottom: 28.h,
-            left: isAllFieldsSumbitted ? -30 : 40.w,
-            child: nameFocus.hasFocus
-                ? const SizedBox()
-                : Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    padding: EdgeInsets.all(3.r),
-                    child: SvgPicture.asset(
-                      "assets/svg/boxing.svg",
-                    ),
-                  ),
-          ),
-
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 300),
-            bottom: 40.h,
-            left: isAllFieldsSumbitted ? -30 : 120.w,
-            child: nameFocus.hasFocus
-                ? const SizedBox()
-                : Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    padding: EdgeInsets.all(3.r),
-                    child: SvgPicture.asset(
-                      "assets/svg/yoga.svg",
-                    ),
-                  ),
-          ),
-
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 300),
-            bottom: 135.h,
-            right: isAllFieldsSumbitted ? -30 : 40.w,
-            child: nameFocus.hasFocus
-                ? const SizedBox()
-                : Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    padding: EdgeInsets.all(3.r),
-                    child: SvgPicture.asset(
-                      "assets/svg/cardio.svg",
-                    ),
-                  ),
-          ),
-
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 300),
-            bottom: 60.h,
-            right: isAllFieldsSumbitted ? -30 : 20.w,
-            child: nameFocus.hasFocus
-                ? const SizedBox()
-                : Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    padding: EdgeInsets.all(3.r),
-                    child: SvgPicture.asset(
-                      "assets/svg/meditation.svg",
-                    ),
-                  ),
-          ),
-
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 300),
-            bottom: 25.h,
-            right: isAllFieldsSumbitted ? -30 : 90.w,
-            child: nameFocus.hasFocus
-                ? const SizedBox()
-                : Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    padding: EdgeInsets.all(3.r),
-                    child: SvgPicture.asset(
-                      "assets/svg/gym.svg",
-                    ),
-                  ),
-          ),
-
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 300),
-            bottom: 55.h,
-            right: isAllFieldsSumbitted ? -30 : 140.w,
-            child: nameFocus.hasFocus
-                ? const SizedBox()
-                : Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    padding: EdgeInsets.all(3.r),
-                    child: SvgPicture.asset(
-                      "assets/svg/pool.svg",
-                    ),
-                  ),
-          ),
-
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 300),
-            bottom: 95.h,
-            left: isAllFieldsSumbitted ? -30 : 10.w,
-            child: nameFocus.hasFocus
-                ? const SizedBox()
-                : Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    padding: EdgeInsets.all(3.r),
-                    child: SvgPicture.asset(
-                      "assets/svg/popa.svg",
-                    ),
-                  ),
-          ),
+          
         ],
       ),
     );
@@ -579,7 +534,7 @@ Widget _listiles(
   String name,
   void Function()? onTap,
 ) {
-  return InkWell(
+  return GestureDetector(
     onTap: onTap,
     child: Container(
       margin: EdgeInsets.only(left: 5.w, bottom: 10.h),

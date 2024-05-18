@@ -8,7 +8,7 @@ import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/presentation/components/animation_button_effect.dart';
 import 'package:myfit/presentation/components/components.dart';
 import 'package:myfit/presentation/components/custom_card.dart';
-import 'package:myfit/presentation/pages/main2/widget/main2_header.dart';
+import 'package:myfit/presentation/components/custom_search_bar.dart';
 import 'package:myfit/presentation/pages/map/widget/pop_up_map.dart';
 import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
@@ -146,16 +146,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
       },
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        appBar: Main2Header(
-          showBackButton: state.showOnlyKnown || state.showRecommended,
-          canNavigateToSettings: true,
-          height: height * 0.07,
-        ),
-       /*  ScheduleHeader(
-            showNavigationButton: false,
-            showBackButton: state.showOnlyKnown || state.showRecommended,
-            height: height * 0.07 //12
-            ), */
+        appBar: CustomSearchBar(showBackButton: state.showOnlyKnown || state.showRecommended, canNavigateToSettings: true, height: height * 0.07,),
         body: SafeArea(
           child: ListView(
             //shrinkWrap: true,

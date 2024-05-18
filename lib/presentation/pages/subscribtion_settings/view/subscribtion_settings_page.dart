@@ -4,8 +4,8 @@ import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/presentation/components/custom_search_bar.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
-import 'package:myfit/presentation/pages/main2/widget/main2_header.dart';
 import 'package:myfit/presentation/pages/subscribtion_settings/widget/widget.dart';
 
 @RoutePage()
@@ -41,7 +41,7 @@ class _SubscribtionSettingsScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: Main2Header(showBackButton: true, canNavigateToSettings: false),
+      appBar: CustomSearchBar(showBackButton: true, canNavigateToSettings: false),
       body: CustomScrollView(
         controller: controller,
         slivers: [

@@ -52,6 +52,14 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     );
   }
 
+  void openDropDown(){
+    state = state.copyWith(dropDownOpened: true);
+  }
+
+  void closeDropDown(){
+    state = state.copyWith(dropDownOpened: false);
+  }
+
   Future<void> requestNotificationPermissions() async {
     final PermissionStatus status = await Permission.notification.request();
     if (status.isGranted) {

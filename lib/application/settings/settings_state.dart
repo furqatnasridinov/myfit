@@ -32,6 +32,7 @@ class SettingsState with _$SettingsState {
     @Default(false) bool isChangeSubscribtionLoading,
     @Default("**** **** **** 1234") String cardNumber,
     @Default(false) bool autoRenewal,
+    @Default(false) bool dropDownOpened,
   }) = _SettingsState;
   const SettingsState._();
 }

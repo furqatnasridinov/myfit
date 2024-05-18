@@ -33,7 +33,7 @@ class AppWidget extends StatelessWidget {
                   deepLinkBuilder: (link) {
                     log(link.path);
                     if (link.path.contains('/qrcode/page')) {
-                      return const DeepLink([Main2Route() ,QrCodeRoute()]);
+                      return const DeepLink([Main2Route(),QrCodeRoute()]);
                       //context.router.push(const QrCodeRoute());
                     } else {
                       return DeepLink.defaultPath;

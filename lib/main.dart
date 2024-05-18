@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:myfit/app_widget.dart';
 import 'package:myfit/infrastructure/firebase/cloud_messaging.dart';
 import 'package:myfit/infrastructure/firebase/firebase_options.dart';
@@ -15,6 +16,9 @@ void main() async {
   await CloudMessaging().initialize();
   tz.initializeTimeZones(); // for scheduled local notifications 
   await LocalNotificationService().initLocalNotification();
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.grey,
+    statusBarBrightness: Brightness.dark));
 
   runApp(
     ProviderScope(

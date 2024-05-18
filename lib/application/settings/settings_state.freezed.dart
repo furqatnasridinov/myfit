@@ -43,6 +43,7 @@ mixin _$SettingsState {
   bool get isChangeSubscribtionLoading => throw _privateConstructorUsedError;
   String get cardNumber => throw _privateConstructorUsedError;
   bool get autoRenewal => throw _privateConstructorUsedError;
+  bool get dropDownOpened => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $SettingsStateCopyWith<SettingsState> get copyWith =>
@@ -80,7 +81,8 @@ abstract class $SettingsStateCopyWith<$Res> {
       List<Subscription> allAvailableSubscriptions,
       bool isChangeSubscribtionLoading,
       String cardNumber,
-      bool autoRenewal});
+      bool autoRenewal,
+      bool dropDownOpened});
 }
 
 /// @nodoc
@@ -121,6 +123,7 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     Object? isChangeSubscribtionLoading = null,
     Object? cardNumber = null,
     Object? autoRenewal = null,
+    Object? dropDownOpened = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -223,6 +226,10 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.autoRenewal
           : autoRenewal // ignore: cast_nullable_to_non_nullable
               as bool,
+      dropDownOpened: null == dropDownOpened
+          ? _value.dropDownOpened
+          : dropDownOpened // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -260,7 +267,8 @@ abstract class _$$SettingsStateImplCopyWith<$Res>
       List<Subscription> allAvailableSubscriptions,
       bool isChangeSubscribtionLoading,
       String cardNumber,
-      bool autoRenewal});
+      bool autoRenewal,
+      bool dropDownOpened});
 }
 
 /// @nodoc
@@ -299,6 +307,7 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     Object? isChangeSubscribtionLoading = null,
     Object? cardNumber = null,
     Object? autoRenewal = null,
+    Object? dropDownOpened = null,
   }) {
     return _then(_$SettingsStateImpl(
       isloading: null == isloading
@@ -401,6 +410,10 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value.autoRenewal
           : autoRenewal // ignore: cast_nullable_to_non_nullable
               as bool,
+      dropDownOpened: null == dropDownOpened
+          ? _value.dropDownOpened
+          : dropDownOpened // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -433,7 +446,8 @@ class _$SettingsStateImpl extends _SettingsState {
       final List<Subscription> allAvailableSubscriptions = const [],
       this.isChangeSubscribtionLoading = false,
       this.cardNumber = "**** **** **** 1234",
-      this.autoRenewal = false})
+      this.autoRenewal = false,
+      this.dropDownOpened = false})
       : _listOfCities = listOfCities,
         _knownActivities = knownActivities,
         _allAvailableSubscriptions = allAvailableSubscriptions,
@@ -533,10 +547,13 @@ class _$SettingsStateImpl extends _SettingsState {
   @override
   @JsonKey()
   final bool autoRenewal;
+  @override
+  @JsonKey()
+  final bool dropDownOpened;
 
   @override
   String toString() {
-    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue, isNoAccessChangingPhoto: $isNoAccessChangingPhoto, currentSubscribtion: $currentSubscribtion, nextSubscribtion: $nextSubscribtion, allAvailableSubscriptions: $allAvailableSubscriptions, isChangeSubscribtionLoading: $isChangeSubscribtionLoading, cardNumber: $cardNumber, autoRenewal: $autoRenewal)';
+    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue, isNoAccessChangingPhoto: $isNoAccessChangingPhoto, currentSubscribtion: $currentSubscribtion, nextSubscribtion: $nextSubscribtion, allAvailableSubscriptions: $allAvailableSubscriptions, isChangeSubscribtionLoading: $isChangeSubscribtionLoading, cardNumber: $cardNumber, autoRenewal: $autoRenewal, dropDownOpened: $dropDownOpened)';
   }
 
   @override
@@ -592,7 +609,9 @@ class _$SettingsStateImpl extends _SettingsState {
             (identical(other.cardNumber, cardNumber) ||
                 other.cardNumber == cardNumber) &&
             (identical(other.autoRenewal, autoRenewal) ||
-                other.autoRenewal == autoRenewal));
+                other.autoRenewal == autoRenewal) &&
+            (identical(other.dropDownOpened, dropDownOpened) ||
+                other.dropDownOpened == dropDownOpened));
   }
 
   @override
@@ -622,7 +641,8 @@ class _$SettingsStateImpl extends _SettingsState {
         const DeepCollectionEquality().hash(_allAvailableSubscriptions),
         isChangeSubscribtionLoading,
         cardNumber,
-        autoRenewal
+        autoRenewal,
+        dropDownOpened
       ]);
 
   @JsonKey(ignore: true)
@@ -658,7 +678,8 @@ abstract class _SettingsState extends SettingsState {
       final List<Subscription> allAvailableSubscriptions,
       final bool isChangeSubscribtionLoading,
       final String cardNumber,
-      final bool autoRenewal}) = _$SettingsStateImpl;
+      final bool autoRenewal,
+      final bool dropDownOpened}) = _$SettingsStateImpl;
   const _SettingsState._() : super._();
 
   @override
@@ -711,6 +732,8 @@ abstract class _SettingsState extends SettingsState {
   String get cardNumber;
   @override
   bool get autoRenewal;
+  @override
+  bool get dropDownOpened;
   @override
   @JsonKey(ignore: true)
   _$$SettingsStateImplCopyWith<_$SettingsStateImpl> get copyWith =>
