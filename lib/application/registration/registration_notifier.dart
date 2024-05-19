@@ -128,7 +128,7 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
           phoneNumber, code);
       response.when(
         success: (data) async {
-          PageRouteInfo<dynamic> nextRoute = data.user?.firstName == null
+          PageRouteInfo<dynamic> nextRoute = data.user?.firstName != null // make this == null
               ? const Registration3Route()
               : const Main2Route();
           await LocalStorage.setToken(data.jwtToken ?? "");
@@ -156,8 +156,7 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
           moveClientToNextPage(context, nextRoute);
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(
-              context, NetworkExceptions.getErrorMessage(error));
+          AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {

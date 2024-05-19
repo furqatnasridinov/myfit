@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:myfit/infrastructure/services/local_storage.dart';
 import 'package:myfit/presentation/components/custom_button.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
@@ -66,7 +67,6 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
   @override
   Widget build(BuildContext context) {
     final event = ref.read(settingsProvider.notifier);
-    final height = MediaQuery.of(context).size.height;
     ref.listen(settingsProvider, (previous, next) async{
       if (previous!.dropDownOpened != next.dropDownOpened && !next.dropDownOpened) {
         await Future.delayed(const Duration(milliseconds: 270));
@@ -117,7 +117,7 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
             ),
           ),
 
-          // Icons
+          // bottom  Icons
           AnimatedPositioned(
             duration: const Duration(milliseconds: 300),
             bottom: 28.h,
@@ -230,61 +230,24 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
             ),
           ),
           
-          
           // main body
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: isAllFieldsSumbitted ? 0 : 16.w),
+            padding: EdgeInsets.symmetric(horizontal:  16.w),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  topGapRemoved ? 0.verticalSpace : 89.verticalSpace,
-                  Ink(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.r),
-                      color: Colors.white,
-                      border: Border.all(color: isAllFieldsSumbitted
-                            ? Colors.transparent : AppColors.greyBorder,
-                      ),
-                    ),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.easeIn,
-                      height: isAllFieldsSumbitted ? height : 132.h,
-                      width: double.maxFinite,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          isAllFieldsSumbitted
-                              ? CustomText(
-                                  text: "Добро пожаловать в команду",
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w500,
-                                )
-                              : const SizedBox.shrink(),
-                          isAllFieldsSumbitted ? 25.verticalSpace : 0.verticalSpace,
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                "assets/svg/MY.svg",
-                                width: isAllFieldsSumbitted ? 120.w : null,
-                              ),
-                              5.horizontalSpace,
-                              SvgPicture.asset(
-                                "assets/svg/FIT.svg",
-                                width: isAllFieldsSumbitted ? 120.w : null,
-                              ),
-                            ],
-                          ),
-                        ],
+                  89.verticalSpace,
+                  Hero(
+                    tag: AppConstants.registration3Hero,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: SvgPicture.asset(
+                        "assets/svg/myfitNew.svg",
                       ),
                     ),
                   ),
-
-                  // creating separate column to hide its content when showing animation
-                  !isAllFieldsSumbitted
-                      ? Consumer(builder: (context, ref, child) {
+                    Consumer(builder: (context, ref, child) {
                         final dropDownOpened = ref.watch(settingsProvider).dropDownOpened;
                         final notifier = ref.read(settingsProvider.notifier);
                         return Column(
@@ -495,9 +458,8 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                                       event.patchCity(selectedCity, context);
                                     }
                                     isAllFieldsSumbitted = true;
-                                    topGapRemoved = true;
                                     setState(() {});
-                                    await Future.delayed(const Duration(milliseconds: 400));
+                                    await Future.delayed(const Duration(milliseconds: 200));
                                     context.router.push(const Registration4Route());
                                   } else {
                                     if (nameController.text.length < 2) {
@@ -517,12 +479,41 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                         ],
                       );
                       },)
-                      : const SizedBox.shrink()
+                    
                 ],
               ),
             ),
           ),
 
+           // cloud 1 
+          Positioned(
+            top: 117.h,
+            left: 0.w,
+            child: SvgPicture.asset(
+              "assets/svg/cloud1.svg",
+             /*  width: 90.w,
+              height: 60.h, */
+              )),
+
+          // cloud 2
+          Positioned(
+            top: 60.h,
+            right: 0.w,
+            child: SvgPicture.asset(
+              "assets/svg/cloud2.svg",
+              /* width: 90.w,
+              height: 65.h, */
+              )),
+
+          // cloud 3
+          Positioned(
+            top: 160.h,
+            right: 30.w,
+            child: SvgPicture.asset(
+              "assets/svg/cloud3.svg",
+              /* width: 90.w,
+              height: 60.h, */
+              )),
           
         ],
       ),

@@ -1,3 +1,4 @@
+import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:myfit/presentation/components/components.dart';
 import 'package:myfit/presentation/router/app_router.gr.dart';
@@ -24,31 +25,33 @@ class Registration4Screen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Hero(
         tag: AppConstants.registration3Hero,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CustomText(
-                text: "Добро пожаловать в команду",
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
-              ),
-              38.verticalSpace,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SvgPicture.asset(
-                    "assets/svg/MY.svg",
-                    width: 120.w,
-                  ),
-                  5.horizontalSpace,
-                  SvgPicture.asset(
-                    "assets/svg/FIT.svg",
-                    width: 120.w,
-                  ),
-                ],
-              ),
-            ],
+        child: Material(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CustomText(
+                  text: "Добро пожаловать в команду",
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+                38.verticalSpace,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      "assets/svg/MY.svg",
+                      width: 120.w,
+                    ),
+                    5.horizontalSpace,
+                    SvgPicture.asset(
+                      "assets/svg/FIT.svg",
+                      width: 120.w,
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

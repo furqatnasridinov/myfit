@@ -103,8 +103,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                     child: Column(
                       children: [
                         CustomText(
-                          text:
-                              "Войдите, используя свой номер телефона. Это быстро и безопасно.",
+                          text:"Войдите, используя свой номер телефона. Это быстро и безопасно.",
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                         ),
@@ -183,10 +182,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                             GestureDetector(
                               onTap: () {
                                 if (state.isValidPhone) {
-                                  event.sendPhoneNumber(
-                                    state.phoneNumber,
-                                    context,
-                                  );
+                                  event.sendPhoneNumber(state.phoneNumber,context);
                                 }
                               },
                               child: AnimationButtonEffect(
@@ -290,6 +286,27 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
               size: Size(400, 180.h),
               painter: Registration1CustomPainter(),
             ),
+          ),
+
+          // cloud 1 
+          Positioned(
+            top: 50.h,
+            left: 30.w,
+            child: SvgPicture.asset("assets/svg/cloud1.svg"),
+          ),
+
+          // cloud 2
+          Positioned(
+            top: 120.h,
+            right: 120.w,
+            child: SvgPicture.asset("assets/svg/cloud2.svg"),
+          ),
+
+          // cloud 3
+          Positioned(
+            top: 44.h,
+            right: 30.w,
+            child: SvgPicture.asset("assets/svg/cloud3.svg"),
           ),
         ],
       ),
