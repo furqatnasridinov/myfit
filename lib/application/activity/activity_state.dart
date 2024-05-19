@@ -31,6 +31,7 @@ class ActivityState with _$ActivityState {
     @Default(false) bool isFromSearch,
     @Default([]) List<String> listOf15CalendarDaysFromNow,
     @Default(null) EnrollingErrorMessage? enrollingError,
+    @Default(false) bool isEnrollingError,
   }) = _ActivityState;
 
   const ActivityState._();

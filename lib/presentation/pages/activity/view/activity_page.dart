@@ -47,9 +47,9 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
               // get infos after the selected activity is set
               .then((value) {
             ref.read(activityProvider.notifier)
+            ..getLessonsOfSelectedActivity(ref.watch(activityProvider).selectedActivity!, true)
               ..getPhotosOfSelectedActivity(ref.watch(activityProvider).selectedActivity!)
-              ..getDescribtionAndPeculiarities(ref.watch(activityProvider).selectedActivity!)
-              ..getLessonsOfSelectedActivity(ref.watch(activityProvider).selectedActivity!, true);
+              ..getDescribtionAndPeculiarities(ref.watch(activityProvider).selectedActivity!);
             // web socket for gettiing new lessons if they were added when the user is on the page
             channel2 = IOWebSocketChannel.connect(
                 Uri.parse("ws://77.222.53.122:8080/appGymPanel/${widget.gymId}"),
@@ -102,12 +102,9 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
                 // get infos after the selected activity is set
                 .then((value) {
               ref.read(activityProvider.notifier)
-                ..getPhotosOfSelectedActivity(
-                    ref.watch(activityProvider).selectedActivity!)
-                ..getDescribtionAndPeculiarities(
-                    ref.watch(activityProvider).selectedActivity!)
-                ..getLessonsOfSelectedActivity(
-                    ref.watch(activityProvider).selectedActivity!, true);
+                ..getPhotosOfSelectedActivity(ref.watch(activityProvider).selectedActivity!)
+                ..getDescribtionAndPeculiarities(ref.watch(activityProvider).selectedActivity!)
+                ..getLessonsOfSelectedActivity(ref.watch(activityProvider).selectedActivity!, true);
             });
           await Future.delayed(const Duration(seconds: 1));
           refreshController.refreshCompleted();
@@ -124,24 +121,18 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
                 32.verticalSpace,
                 const GymDescription(),
                 32.verticalSpace,
-                TheOneWithChips(
-                  gymId: widget.gymId,
-                ),
+                TheOneWithChips(gymId: widget.gymId),
                 32.verticalSpace,
                 const RemainingVisits(),
                 const ActivityDescription(),
-                TheOneWithPhotos(
-                  event: event,
-                ),
+                TheOneWithPhotos(event: event),
                 const Speciality(),
                 32.verticalSpace,
                 TheOneWithCalendar(
                   event: event,
                   gymId: widget.gymId,
                 ),
-                TheOneWithLessons(
-                  gymId: widget.gymId,
-                ),
+                TheOneWithLessons(gymId: widget.gymId),
               ],
             ),
           ),

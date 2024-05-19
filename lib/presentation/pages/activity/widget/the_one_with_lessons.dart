@@ -22,6 +22,7 @@ class TheOneWithLessons extends StatelessWidget {
     return Consumer(
       builder: (contex, ref, child) {
         final event = ref.read(activityProvider.notifier);
+        //final isEnrollingError = ref.watch(activityProvider).isEnrollingError;
         final lessonsToShowAfterSelectingADay =ref.watch(activityProvider).lessonsToShowAfterSelectingADay;
         final scheduleEvent = ref.read(scheduleProvider.notifier);
         final int visitPerMonth = ref.watch(activityProvider).gym?.visitPerMonth ?? 0;
@@ -63,7 +64,17 @@ class TheOneWithLessons extends StatelessWidget {
                       () async {
                         currentSchedule.isLoading = true;
                         await event.enrollToGym(context, currentSchedule.id ?? 0);
-                        // get the updated list of lessons
+                        /* if (currentSchedule.autoAccept == true) {
+                          await event.getAllLessons(context, false,  id: gymId);
+                          await event.getLessonsOfSelectedActivity(currentSchedule.lessonType ?? "", false);
+                          currentSchedule.isLoading = false;
+                        }else if(currentSchedule.autoAccept == false){
+                          if (isEnrollingError == false) {
+                            currentSchedule.lessonState = "WAITING";
+                          }
+                          currentSchedule.isLoading = false;
+                        } */
+                        //get the updated list of lessons
                         await event.getAllLessons(context, false,  id: gymId);
                         await event.getLessonsOfSelectedActivity(currentSchedule.lessonType ?? "", false);
                         currentSchedule.isLoading = false;
@@ -130,11 +141,8 @@ Widget activityCard(
                 // get status text
                 Flexible(
                   child: GestureDetector(
-                    onTap: (status == "OPEN" ||
-                                status == "CANCELED_USER" ||
-                                status == "CANCELED_GYM") &&
-                            isloading == false &&
-                            !cannotEnrollDueToVisitLimit
+                    onTap: (status == "OPEN" || status == "CANCELED_USER" || status == "CANCELED_GYM") &&
+                            isloading == false && !cannotEnrollDueToVisitLimit
                         ? () {
                             enrollFunction?.call();
                           }
@@ -151,12 +159,12 @@ Widget activityCard(
                               textAlign: TextAlign.right,
                               text: isloading == true
                                   ? "Отправка запроса..."
-                                  : cannotEnrollDueToVisitLimit
+                                  : cannotEnrollDueToVisitLimit && (status != "CONFIRMED" && status != "COMPLETED")
                                       ? "Запись в это заведение будет доступна для вас ${currentSub?.endDataFormatted}"
                                       : AppHelpers().getStatusText(status),
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w500,
-                              color: cannotEnrollDueToVisitLimit
+                              color: cannotEnrollDueToVisitLimit && (status != "CONFIRMED" && status != "COMPLETED")
                                   ? AppColors.greyText
                                   : AppHelpers().getStatusTextColor(status),
                             );

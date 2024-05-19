@@ -35,7 +35,8 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   final Main2Notifier main2Notifier;
   final MapNotifier mapNotifier;
 
-  Future<void> getGymInfo(BuildContext context,bool showLoading,  {required int gymId}) async {
+  Future<void> getGymInfo(BuildContext context, bool showLoading,
+      {required int gymId}) async {
     final connected = await AppConnectivity().connectivity();
     if (connected) {
       if (showLoading) {
@@ -259,14 +260,15 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   }
 
   Future<void> getAllLessons(
-    BuildContext context, bool showLoading, {
+    BuildContext context,
+    bool showLoading, {
     required int id,
   }) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
-       if (showLoading) {
-           state = state.copyWith(isSchedulesLoading: true);
-        }
+      if (showLoading) {
+        state = state.copyWith(isSchedulesLoading: true);
+      }
       final response = await _activityRepositoryInterface.getSchedules(id: id);
       response.when(
         success: (data) {
@@ -291,7 +293,8 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   Future<void> getLessonsOfSelectedActivity(
       String selectedActivity, bool selectADefaultDay) async {
     final Map<String, dynamic> allLessons = state.allLessons;
-    final String selectedActivity = state.selectedActivity ?? "no activity selected";
+    final String selectedActivity =
+        state.selectedActivity ?? "no activity selected";
     final List<Lesson> listToCollectLessons = [];
     final List<String> listToColllectDays = [];
     final List<String> keys = allLessons.keys.toList();
@@ -299,13 +302,15 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       allLessons[key].forEach((el) {
         if (el["lessonType"] == selectedActivity) {
           try {
-            final DateTime startTime = DateTime.parse(el["date"].toString().replaceAll("@", " "));
+            final DateTime startTime =
+                DateTime.parse(el["date"].toString().replaceAll("@", " "));
             final lesson = Lesson(
                 id: el["id"],
                 date: el["date"],
                 calendarDate: formatOriginalToCalendar(el["date"]),
                 startTime: returnOnlyTime(el["date"]),
-                endTime: getEndingTime(returnOnlyTime(el["date"]), el["duration"]),
+                endTime:
+                    getEndingTime(returnOnlyTime(el["date"]), el["duration"]),
                 description: el["description"],
                 duration: formatDuration(el["duration"]),
                 lessonType: el["lessonType"],
@@ -313,9 +318,11 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
                 repeat: el["repeat"] != null ? el["repeat"].cast<int>() : [],
                 canSignUp: el["canSignUp"],
                 lessonState: el["lessonState"] ?? false,
-                showInCalendar: DateTime.now().isBefore(startTime.subtract(const Duration(minutes: 30))),
+                showInCalendar: DateTime.now()
+                    .isBefore(startTime.subtract(const Duration(minutes: 30))),
                 isDeleted: el["deleteLesson"] ?? false,
-                isLoading: false);
+                isLoading: false,
+                autoAccept: el["autoAccept"] ?? false);
             if (lesson.showInCalendar! &&
                 !lesson.isDeleted! &&
                 lesson.canSignUp!) {
@@ -342,7 +349,8 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
 
     if (state.isFromSearch && state.dayOfSelectedLessonFromSearch!.isNotEmpty) {
-      final formatted = formatOriginalToCalendar(state.dayOfSelectedLessonFromSearch!);
+      final formatted =
+          formatOriginalToCalendar(state.dayOfSelectedLessonFromSearch!);
       state = state.copyWith(selectedCalendarDay: formatted);
     }
 
@@ -359,26 +367,24 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
 
   void handleWebSocket(WebSocketChannel channel, BuildContext context) {
     //ws://77.222.53.122:8080/appSchedulePanel
-    /// Listen for all incoming data
+    /// когда статус урока меняется на CONFIRMED или CANCELED
     channel.stream.listen(
       (data) async {
         // convert the incoming data to json
         Map<String, dynamic> lessonData = jsonDecode(data);
-        // get all lessons again && get lessons of selected activity
         if (context.router.current.path == "/activity") {
           final String gymIdFromCurrentPath = context.router.current.args
               .toString().split("gymId:")[1].replaceAll("}", "");
           if (int.parse(gymIdFromCurrentPath) == lessonData["gymId"]) {
             await getAllLessons(context, false, id: lessonData["gymId"]);
             await getLessonsOfSelectedActivity(state.selectedActivity ?? "", false);
+            getGymInfo(context, false, gymId: lessonData["gymId"]);
           }
         }
         scheduleNotifier.getUsersSchedules(context);
-        await mapNotifier.getGymsList(context,[],{});
+        await mapNotifier.getGymsList(context, [], {});
         //mapNotifier.getGetListOfGymsFromDiapozone();
         if (lessonData["lessonState"] == "CONFIRMED") {
-          // get users schedules to show in schedule page
-          // add here get nearest lesson
           main2Notifier.getNearestLesson(context);
         }
       },
@@ -394,21 +400,22 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
 
   void handleWebSocket2(WebSocketChannel channel, BuildContext context) {
     //ws://77.222.53.122:8080/appGymPanel
-    // когда статус урока меняется,
+    // когда урок добавляется или удаляется
     channel.stream.listen(
       (data) async {
         // convert the incoming data to json
         Map<String, dynamic> lessonData = jsonDecode(data);
-        if (context.router.current.path == "/activity") {
+        if (lessonData["lessonState"] == "OPEN") {
+          if (context.router.current.path == "/activity") {
           final String gymIdFromCurrentPath = context.router.current.args
               .toString().split("gymId:")[1].replaceAll("}", "");
           if (int.parse(gymIdFromCurrentPath) == lessonData["gymId"]) {
-            await getAllLessons(context, false ,id: lessonData["gymId"]);
+            await getAllLessons(context, false, id: lessonData["gymId"]);
             await getLessonsOfSelectedActivity(state.selectedActivity ?? "", false);
-            getGymInfo(context,false, gymId: lessonData["gymId"]);
           }
-          await mapNotifier.getGymsList(context,[],{});
-          mapNotifier.getGetListOfGymsFromDiapozone();
+          //await mapNotifier.getGymsList(context, [], {});
+          //mapNotifier.getGetListOfGymsFromDiapozone();
+        }
         }
       },
       onError: (error) {
@@ -437,7 +444,8 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     listToCollectLessons.sort((a, b) =>
         int.parse(a.startTime!.replaceAll(":", ""))
             .compareTo(int.parse(b.startTime!.replaceAll(":", ""))));
-    state = state.copyWith(lessonsToShowAfterSelectingADay: listToCollectLessons);
+    state =
+        state.copyWith(lessonsToShowAfterSelectingADay: listToCollectLessons);
   }
 
   Future<void> removeSelectedCalendarDay() async {
@@ -623,17 +631,24 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   Future<void> enrollToGym(BuildContext context, int id) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
+      if (state.isEnrollingError) {
+        state = state.copyWith(isEnrollingError: false);
+      }
       state = state.copyWith(isEnrollingLoading: true);
       final response = await _activityRepositoryInterface.enrollToGym(id: id);
       response.when(
         success: (data) {
           if (data["operationResult"] == "OK") {
             state = state.copyWith(isEnrollingLoading: false);
-          } else if (data["operationResult"] == "ERROR") {
+          } 
+        },
+        failure: (error, statusCode, operationInfo) {
+          final String errorMessage = NetworkExceptions.getErrorMessage(error);
+          if (errorMessage.contains("errorType")) {
             try {
-              final operationInfo = data["operationInfo"];
-              final Map<String, dynamic> convertedToMap =
-                  jsonDecode(operationInfo ?? "");
+              state = state.copyWith(isEnrollingError: true);
+              final operationInfo = errorMessage.split("Internal Server Error, ")[1];
+              final Map<String, dynamic> convertedToMap = jsonDecode(operationInfo);
               final String date = convertedToMap["date"].toString();
               // handle operation info and pass it to the dialog
               final EnrollingErrorMessage error = EnrollingErrorMessage(
@@ -651,16 +666,14 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
               }
             } catch (e) {
               log(e.toString());
+              state = state.copyWith(isEnrollingLoading: false, isEnrollingError: true);
               rethrow;
             }
-
-            state = state.copyWith(isEnrollingLoading: false);
+          } else {
+            state = state.copyWith(isEnrollingLoading: false, isEnrollingError: true);
+            AppHelpers.showErrorSnack(context, errorMessage);
           }
-        },
-        failure: (error, statusCode, operationInfo) {
           state = state.copyWith(isEnrollingLoading: false);
-          AppHelpers.showErrorSnack(
-              context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {

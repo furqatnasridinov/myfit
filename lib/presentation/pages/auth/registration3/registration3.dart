@@ -352,7 +352,7 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                                     child: Icon(
                                       Icons.keyboard_arrow_down,
                                       size: 20.sp,
-                                      color: Colors.black.withOpacity(0.7),
+                                      color: Colors.black.withOpacity(0.5),
                                     ),
                                   );
                                 },

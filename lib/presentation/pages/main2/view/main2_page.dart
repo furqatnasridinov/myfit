@@ -51,7 +51,6 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
       ref.read(mapProvider.notifier)
         ..getUserLocation()
         ..getRecommendationForVisit(context);
-
       // web socket for updating lesson states
       channel = IOWebSocketChannel.connect(
           Uri.parse(
