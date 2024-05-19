@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
-
-
+import 'dart:math';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/settings/settings_notifier.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
@@ -11,31 +10,28 @@ import 'package:myfit/presentation/components/custom_button.dart';
 import 'package:myfit/presentation/components/custom_card.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:myfit/presentation/components/custom_textfield.dart';
-import 'package:myfit/presentation/components/custom_textformfield.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../../../../infrastructure/models/response/auth_response.dart';
 
-class PopupBody extends StatefulWidget {
+class PopupBody extends ConsumerStatefulWidget {
   final SettingsNotifier event;
   final SettingsState state;
   const PopupBody({super.key, required this.event, required this.state});
 
   @override
-  State<PopupBody> createState() => _PopupBodyState();
+  ConsumerState<PopupBody> createState() => _PopupBodyState();
 }
 
-class _PopupBodyState extends State<PopupBody> {
-  final layerlink = LayerLink();
+class _PopupBodyState extends ConsumerState<PopupBody> {
   GlobalKey sizedBoxKey = GlobalKey();
-  OverlayEntry? entry;
   City? selectedCity;
   bool isNameEmpty = false;
+  bool hideBlock = false;
+  final FocusNode focusNode = FocusNode();
   late TextEditingController cityController;
   late TextEditingController nameController;
   late TextEditingController lastNameController;
@@ -49,10 +45,8 @@ class _PopupBodyState extends State<PopupBody> {
     cityController =
         TextEditingController(text: LocalStorage.getSelectedCity());
     nameController = TextEditingController(text: LocalStorage.getUserName());
-    lastNameController = TextEditingController(
-        text: LocalStorage.getUserLastName().isEmpty
-            ? ""
-            : LocalStorage.getUserLastName());
+    lastNameController = TextEditingController(text: LocalStorage.getUserLastName().isEmpty
+            ? "" : LocalStorage.getUserLastName());
     ageController = TextEditingController(
         text: LocalStorage.getAge().isEmpty ? "" : LocalStorage.getAge());
     weightController = TextEditingController(
@@ -77,87 +71,6 @@ class _PopupBodyState extends State<PopupBody> {
     selectedCity = city;
   }
 
-  void showOverlay(BuildContext context) {
-    final overlay = Overlay.of(context);
-    final renderBox = context.findRenderObject() as RenderBox;
-    final size = renderBox.size;
-    // final offset = renderBox.localToGlobal(Offset.zero);
-    entry = OverlayEntry(
-      builder: (context) => Positioned(
-        width: size.width,
-        child: CompositedTransformFollower(
-          offset: Offset(-20, 50.h),
-          link: layerlink,
-          child: Material(
-            color: Colors.transparent,
-            child: TapRegion(
-              onTapOutside: (pointerDownEvent) {
-                final RenderBox overlay =
-                    Overlay.of(context).context.findRenderObject() as RenderBox;
-                final tapPosition =
-                    overlay.globalToLocal(pointerDownEvent.position);
-                if (!isTapInsideTextField(tapPosition)) {
-                  widget.event.cityTextFieldUnfocus();
-                  hideOverlay();
-                }
-              },
-              child: Container(
-                height: 240.h,
-                margin: EdgeInsets.only(left: 16.w, right: 16.w),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.0),
-                  color: Colors.white,
-                  border: Border.all(
-                    width: 1.0,
-                    color: const Color.fromRGBO(119, 170, 249, 1),
-                  ),
-                ),
-                padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-                child: Column(children: [
-                  Expanded(
-                    child: MediaQuery.removePadding(
-                      context: context,
-                      removeTop: true,
-                      removeBottom: true,
-                      child: Consumer(builder: (context, ref, child) {
-                        final listOfCities = ref.watch(settingsProvider).listOfCities;
-
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: listOfCities.length,
-                          itemBuilder: (context, index) {
-                            final currentCity = listOfCities[index];
-                            return _listiles(
-                              currentCity.name ?? "",
-                              () {
-                                cityController.text = currentCity.name ?? "??";
-                                setSelectedCity(currentCity);
-                                setState(() {});
-                                hideOverlay();
-                                widget.event.cityTextFieldUnfocus();
-                              },
-                            );
-                          },
-                        );
-                      }),
-                    ),
-                  ),
-                ]),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-
-    overlay.insert(entry!);
-  }
-
-  void hideOverlay() {
-    entry?.remove();
-    entry = null;
-  }
-
   bool isTapInsideTextField(Offset globalPosition) {
     final RenderBox textFieldRenderBox =
         sizedBoxKey.currentContext!.findRenderObject() as RenderBox;
@@ -172,21 +85,22 @@ class _PopupBodyState extends State<PopupBody> {
 
   @override
   Widget build(BuildContext context) {
-    //final loginTime = DateTime.parse(LocalStorage.getLoginTime());
-    //final bool loginTimeIsDayAfter = DateTime.now().isAfter(loginTime.add(const Duration(hours: 24)));
+    ref.listen(settingsProvider, (previous, next) async{
+      if (previous!.dropDownOpened != next.dropDownOpened && !next.dropDownOpened) {
+        await Future.delayed(const Duration(milliseconds: 270));
+        hideBlock = false;
+        setState(() {});
+      }
+    });
     final DateTime whenAccessUploadingPhotoOpens =
         DateTime.parse(LocalStorage.getWhenUploadingPhotoOpens());
     final String formattedString = widget.event.formatDuration(
         whenAccessUploadingPhotoOpens.difference(DateTime.now()));
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (widget.state.cityTextFieldHasFocus) {
-        showOverlay(context);
-      }
-    });
     return SingleChildScrollView(
       child: CustomCard(
         borderColor: Colors.transparent,
         width: double.maxFinite,
+        height: widget.state.isNoAccessChangingPhoto ? 540.h : 580.h,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,7 +121,8 @@ class _PopupBodyState extends State<PopupBody> {
                       SizedBox(
                         height: 40.h,
                         child: CustomTextField(
-                          style: GoogleFonts.raleway(fontSize: 14.sp,fontWeight: FontWeight.w400),
+                          style: GoogleFonts.raleway(
+                              fontSize: 14.sp, fontWeight: FontWeight.w400),
                           isError: isNameEmpty,
                           hasFocus: true,
                           cursorColor: AppColors.greyText,
@@ -243,12 +158,11 @@ class _PopupBodyState extends State<PopupBody> {
                       SizedBox(
                         height: 40.h,
                         child: CustomTextField(
-                          style: GoogleFonts.raleway(fontSize: 14.sp,fontWeight: FontWeight.w400),
-                          contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
-                          controller: lastNameController,
-                          hintText: LocalStorage.getUserLastName().isEmpty
-                              ? "Фамилия"
-                              : "",
+                          style: GoogleFonts.raleway(
+                              fontSize: 14.sp, fontWeight: FontWeight.w400),
+                              contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
+                              controller: lastNameController,
+                              hintText: LocalStorage.getUserLastName().isEmpty ? "Фамилия" : "",
                         ),
                       ),
                     ],
@@ -266,291 +180,269 @@ class _PopupBodyState extends State<PopupBody> {
             5.verticalSpace,
 
             // city textfield
-            SizedBox(
-              key: sizedBoxKey,
-              height: 40.h,
-              child: CompositedTransformTarget(
-                  link: layerlink,
-                  child: widget.state.isCitiesLoading
-                      ? CustomTextFormField(
-                        style: GoogleFonts.raleway(fontSize: 14.sp,fontWeight: FontWeight.w400),
-                          contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
-                          suffixIcon: SvgPicture.asset(
-                            !widget.state.cityTextFieldHasFocus
-                                ? "assets/svg/arrow_down.svg"
-                                : "assets/svg/arrow_up.svg",
-                            fit: BoxFit.none,
-                          ),
-                          readOnly: true,
-                          initialValue: "Загружаем город",
-                        )
-                      : CustomTextFormField(
-                          style: GoogleFonts.raleway(fontSize: 14.sp,fontWeight: FontWeight.w400),
-                          contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
-                          hasFocus: widget.state.cityTextFieldHasFocus,
-                          onTap: () {
-                            if (!widget.state.cityTextFieldHasFocus) {
-                              widget.event.cityTextFieldRequestFocus();
-                            }
+            Consumer(
+              builder: (context, ref, child) {
+                final dropDownOpened = ref.watch(settingsProvider).dropDownOpened;
+                final notifier = ref.watch(settingsProvider.notifier);
+                return Column(
+                  children: [
+                    SizedBox(
+                      key: sizedBoxKey,
+                      height: 40.h,
+                      child: CustomTextField(
+                        focusNode: focusNode,
+                        style: GoogleFonts.raleway(
+                            fontSize: 14.sp, 
+                            fontWeight: FontWeight.w400),
+                            contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
+                        //hasFocus: widget.state.cityTextFieldHasFocus,
+                        onTap: () async {
+                          if (!dropDownOpened) {
+                            notifier.openDropDown();
+                            focusNode.requestFocus();
+                            hideBlock = true;
+                          } else {
+                            focusNode.unfocus();
+                            notifier.closeDropDown();
+                          }
+                        },
+                        suffixIcon: TweenAnimationBuilder<double>(
+                          duration: const Duration(milliseconds: 300),
+                          tween: Tween(begin: 0, end: dropDownOpened ? 1.0 : 0),
+                          builder: (BuildContext context, double angle,
+                              Widget? child) {
+                            return Transform.rotate(
+                              angle: angle * pi,
+                              child: Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 20.sp,
+                                color: Colors.black.withOpacity(0.5),
+                              ),
+                            );
                           },
-                          suffixIcon: SvgPicture.asset(
-                            !widget.state.cityTextFieldHasFocus
-                                ? "assets/svg/arrow_down.svg"
-                                : "assets/svg/arrow_up.svg",
-                            fit: BoxFit.none,
-                          ),
-                          readOnly: true,
-                          controller: cityController,
-                        )),
+                        ),
+                        readOnly: true,
+                        controller: cityController,
+                      ),
+                    ),
+                    5.verticalSpace,
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      height: dropDownOpened ? (widget.state.isNoAccessChangingPhoto ? 260.h : 300.h) : 0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16.0),
+                        color: Colors.white,
+                        border: Border.all(
+                          width: 1.0,
+                          color: const Color.fromRGBO(119, 170, 249, 1),
+                        ),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+                      child: MediaQuery.removePadding(
+                        context: context,
+                        removeTop: true,
+                        removeBottom: true,
+                        child: Consumer(builder: (context, ref, child) {
+                          final listOfCities = ref.watch(settingsProvider).listOfCities;
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: listOfCities.length,
+                            itemBuilder: (context, index) {
+                              final currentCity = listOfCities[index];
+                              return _listiles(
+                                currentCity.name ?? "",
+                                () {
+                                  cityController.text = currentCity.name ?? "??";
+                                  focusNode.unfocus();
+                                  setSelectedCity(currentCity);
+                                  ref.read(settingsProvider.notifier).closeDropDown();
+                                },
+                              );
+                            },
+                          );
+                        }),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
             16.verticalSpace,
 
             // user data section (возраст, вес, рост)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // возраст
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomText(
-                      text: "Возраст",
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    5.verticalSpace,
-                    SizedBox(
-                      width: 93.w,
-                      height: 40.h,
-                      child: CustomTextField(
-                        style: GoogleFonts.raleway(fontSize: 14.sp, fontWeight: FontWeight.w400,fontFeatures: const [FontFeature.liningFigures()],),
-                        keyboardType: TextInputType.number,
-                        controller: ageController,
-                        counterStyle: const TextStyle(
-                          height: double.minPositive,
-                        ),
-                        counterText: "",
-                        maxLines: 1,
-                        maxLength: 3,
-                        contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
-                      ),
-                    ),
-                  ],
-                ),
-
-                // вес
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomText(
-                      text: "Вес, кг",
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    5.verticalSpace,
-                    SizedBox(
-                      width: 93.w,
-                      height: 40.h,
-                      child: CustomTextField(
-                        style: GoogleFonts.raleway(fontSize: 14.sp,fontWeight: FontWeight.w400,fontFeatures: const [FontFeature.liningFigures()],),
-                        keyboardType: TextInputType.number,
-                        controller: weightController,
-                        counterStyle: const TextStyle(
-                          height: double.minPositive,
-                        ),
-                        counterText: "",
-                        maxLines: 1,
-                        maxLength: 3,
-                        contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
-                      ),
-                    ),
-                  ],
-                ),
-
-                // рост
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomText(
-                      text: "Рост, см",
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    5.verticalSpace,
-                    SizedBox(
-                      width: 93.w,
-                      height: 40.h,
-                      child: CustomTextField(
-                        style: GoogleFonts.raleway(fontSize: 14.sp,fontWeight: FontWeight.w400,fontFeatures: const [FontFeature.liningFigures()],),
-                        keyboardType: TextInputType.number,
-                        controller: heightController,
-                        counterStyle: const TextStyle(
-                          height: double.minPositive,
-                        ),
-                        counterText: "",
-                        maxLines: 1,
-                        maxLength: 3,
-                        contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-
-            // avatar section
-            16.verticalSpace,
-            CustomText(
-              text: "Аватар",
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w500,
-            ),
-            5.verticalSpace,
-            SizedBox(
-              //color: Colors.red,
-              height: widget.state.avatar.isEmpty ? null : 80.h,
-              child: widget.state.avatar.isEmpty
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        InkWell(
-                          onTap: () async {
-                            await widget.event.pickImageFromGallery(context);
-                          },
-                          child: CircleAvatar(
-                            radius: 40.r,
-                            backgroundColor: AppColors.backgroundColor,
-                            child: const Center(
-                              child: Icon(
-                                Icons.add,
-                                color: AppColors.blueBorder,
-                              ),
-                            ),
-                          ),
-                        ),
-                        10.verticalSpace,
-                        CustomButton(
-                          borderColor: AppColors.fadedBlueBorder,
-                          buttonColor: AppColors.backgroundColor,
-                          fontSize: 14.sp,
-                          onPressed: () async {
-                            await widget.event.pickImageFromGallery(context);
-                          },
-                          text: "Добавить фотографию",
-                        )
-                      ],
-                    )
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CircleAvatar(
-                          radius: 40.r,
-                          backgroundColor: AppColors.backgroundColor,
-                          child: CircleAvatar(
-                            radius: 38.r,
-                            backgroundImage: NetworkImage(
-                                "http://77.222.53.122/image/${widget.state.avatar}"),
-                            onBackgroundImageError: (exception, stackTrace) {
-                              debugPrint(exception.toString());
-                            },
-                          ),
-                        ),
-                        5.horizontalSpace,
-                        if (!widget.state.isNoAccessChangingPhoto)
-                          CustomButton(
-                            height: 36.h,
-                            width: 190.w,
-                            fontSize: 14.sp,
-                            borderColor: AppColors.fadedBlueBorder,
-                            onPressed: () async {
-                              await widget.event.pickImageFromGallery(context);
-                            },
-                            text: "Заменить",
-                          ),
-                        if (widget.state.isNoAccessChangingPhoto)
-                          Column(
+            Visibility(
+              visible: !hideBlock, // скрываем когда открыт dropdown
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // возраст
+                      userParamsField(text: "Возраст", controller: ageController),
+                      // вес
+                      userParamsField(text: "Вес, кг", controller: weightController),
+                      // рост
+                      userParamsField(text: "Рост, см", controller: heightController),
+                    ],
+                  ),
+              
+                  // avatar section
+                  16.verticalSpace,
+                  CustomText(
+                    text: "Аватар",
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  5.verticalSpace,
+                  SizedBox(
+                    //color: Colors.red,
+                    height: widget.state.avatar.isEmpty ? null : 80.h,
+                    child: widget.state.avatar.isEmpty
+                        ? Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(
-                                width: 220.w,
-                                //color: Colors.red,
-                                child: CustomText(
-                                  text:"Фотографию можно обновлять не чаще раза в неделю.",
-                                  fontSize: 16.sp,
-                                  height: 1.1,
-                                  fontWeight: FontWeight.w400,
+                              InkWell(
+                                onTap: () async {
+                                  await widget.event.pickImageFromGallery(context);
+                                },
+                                child: CircleAvatar(
+                                  radius: 40.r,
+                                  backgroundColor: AppColors.backgroundColor,
+                                  child: const Center(
+                                    child: Icon(
+                                      Icons.add,
+                                      color: AppColors.blueBorder,
+                                    ),
+                                  ),
                                 ),
                               ),
-                              2.verticalSpace,
-                              RichText(text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Осталось: ",
-                                    style: GoogleFonts.raleway(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.black,
-                                      height: 1.1
+                              10.verticalSpace,
+                              CustomButton(
+                                borderColor: AppColors.fadedBlueBorder,
+                                buttonColor: AppColors.backgroundColor,
+                                fontSize: 14.sp,
+                                onPressed: () async {
+                                  await widget.event.pickImageFromGallery(context);
+                                },
+                                text: "Добавить фотографию",
+                              )
+                            ],
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CircleAvatar(
+                                radius: 40.r,
+                                backgroundColor: AppColors.backgroundColor,
+                                child: CircleAvatar(
+                                  radius: 38.r,
+                                  backgroundImage: NetworkImage(
+                                      "http://77.222.53.122/image/${widget.state.avatar}"),
+                                  onBackgroundImageError:
+                                      (exception, stackTrace) {
+                                    debugPrint(exception.toString());
+                                  },
+                                ),
+                              ),
+                              5.horizontalSpace,
+                              if (!widget.state.isNoAccessChangingPhoto)
+                                CustomButton(
+                                  height: 36.h,
+                                  width: 190.w,
+                                  fontSize: 14.sp,
+                                  borderColor: AppColors.fadedBlueBorder,
+                                  onPressed: () async {
+                                    await widget.event.pickImageFromGallery(context);
+                                  },
+                                  text: "Заменить",
+                                ),
+                              if (widget.state.isNoAccessChangingPhoto)
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      width: 220.w,
+                                      //color: Colors.red,
+                                      child: CustomText(
+                                        text:"Фотографию можно обновлять не чаще раза в неделю.",
+                                        fontSize: 16.sp,
+                                        height: 1.1,
+                                        fontWeight: FontWeight.w400,
+                                      ),
                                     ),
-                                  ),
-                                  TextSpan(
-                                    text: formattedString,
-                                    style: GoogleFonts.raleway(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.black,
-                                      height: 1.1,
-                                      fontFeatures: const [FontFeature.liningFigures()],
-                                    ),
-                                  ),
-                                ],
-                              )),
+                                    2.verticalSpace,
+                                    RichText(
+                                        text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: "Осталось: ",
+                                          style: GoogleFonts.raleway(
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black,
+                                              height: 1.1),
+                                        ),
+                                        TextSpan(
+                                          text: formattedString,
+                                          style: GoogleFonts.raleway(
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.black,
+                                            height: 1.1,
+                                            fontFeatures: const [FontFeature.liningFigures()],
+                                          ),
+                                        ),
+                                      ],
+                                    )),
+                                  ],
+                                ),
                             ],
                           ),
+                  ),
+                  10.verticalSpace,
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                            text: "Внимание!",
+                            style: GoogleFonts.raleway(
+                              color: Colors.black,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w700,
+                            )),
+                        WidgetSpan(child: SizedBox(width: 3.w)),
+                        TextSpan(
+                            text:"Администратор на входе будет сверяться с этим фото, чтобы вас пропустить",
+                            style: GoogleFonts.raleway(
+                              color: Colors.black,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w400,
+                            )),
                       ],
                     ),
-            ),
-            10.verticalSpace,
-            RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                      text: "Внимание!",
-                      style: GoogleFonts.raleway(
-                        color: Colors.black,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w700,
-                      )),
-                  WidgetSpan(
-                      child: SizedBox(
-                    width: 3.w,
-                  )),
-                  TextSpan(
-                      text:"Администратор на входе будет сверяться с этим фото, чтобы вас пропустить",
-                      style: GoogleFonts.raleway(
-                        color: Colors.black,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w400,
-                      )),
+                  ),
+                  !widget.state.isNoAccessChangingPhoto
+                      ? Column(
+                          children: [
+                            10.verticalSpace,
+                            CustomText(
+                              text:"Фотографию можно обновлять не чаще раза в неделю",
+                              fontSize: 16.sp,
+                              height: 1.1,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ],
+                        )
+                      : const SizedBox.shrink(),
                 ],
               ),
             ),
-            !widget.state.isNoAccessChangingPhoto
-                ? Column(
-                    children: [
-                      10.verticalSpace,
-                      CustomText(
-                        text:"Фотографию можно обновлять не чаще раза в неделю",
-                        fontSize: 16.sp,
-                        height: 1.1,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ],
-                  )
-                : const SizedBox.shrink(),
             // buttons
             16.verticalSpace,
+            const Spacer(),
             Row(
               //mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -582,37 +474,24 @@ class _PopupBodyState extends State<PopupBody> {
                         onPressed: () async {
                           if (!isNameEmpty) {
                             // check whether user added new data
-                            if (LocalStorage.getUserName() !=
-                                nameController.text.trim()) {
-                              await widget.event.patchName(
-                                  nameController.text.trim(), context);
+                            if (LocalStorage.getUserName() != nameController.text.trim()) {
+                              await widget.event.patchName(nameController.text.trim(), context);
                             }
-
-                            if (LocalStorage.getUserLastName() !=
-                                lastNameController.text.trim()) {
-                              await widget.event.patchLastname(
-                                  lastNameController.text.trim(), context);
+                            if (LocalStorage.getUserLastName() != lastNameController.text.trim()) {
+                              await widget.event.patchLastname(lastNameController.text.trim(), context);
                             }
-
-                            if (LocalStorage.getSelectedCity() !=
-                                cityController.text) {
-                              await widget.event
-                                  .patchCity(selectedCity, context);
+                            if (LocalStorage.getSelectedCity() != cityController.text) {
+                              await widget.event.patchCity(selectedCity, context);
                               await mapEvent.setLocationFromSelectedCity();
                             }
                             if (LocalStorage.getAge() != ageController.text) {
-                              await widget.event
-                                  .patchAge(ageController.text, context);
+                              await widget.event.patchAge(ageController.text, context);
                             }
-                            if (LocalStorage.getWeight() !=
-                                weightController.text) {
-                              await widget.event
-                                  .patchWeight(weightController.text, context);
+                            if (LocalStorage.getWeight() != weightController.text) {
+                              await widget.event.patchWeight(weightController.text, context);
                             }
-                            if (LocalStorage.getHeight() !=
-                                heightController.text) {
-                              await widget.event
-                                  .patchHeight(heightController.text, context);
+                            if (LocalStorage.getHeight() != heightController.text) {
+                              await widget.event.patchHeight(heightController.text, context);
                             }
                             context.popRoute();
                           }
@@ -707,4 +586,33 @@ void showConfirmationDialog(BuildContext context, void Function()? onConfirm) {
           ),
         );
       });
+}
+
+Widget userParamsField(
+    {required String text, TextEditingController? controller}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CustomText(text: text, fontSize: 16.sp, fontWeight: FontWeight.w500),
+      5.verticalSpace,
+      SizedBox(
+        width: 93.w,
+        height: 40.h,
+        child: CustomTextField(
+          style: GoogleFonts.raleway(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w400,
+            fontFeatures: const [FontFeature.liningFigures()],
+          ),
+          keyboardType: TextInputType.number,
+          controller: controller,
+          counterStyle: const TextStyle(height: double.minPositive),
+          counterText: "",
+          maxLines: 1,
+          maxLength: 3,
+          contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
+        ),
+      ),
+    ],
+  );
 }

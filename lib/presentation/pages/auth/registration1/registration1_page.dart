@@ -85,7 +85,8 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
   @override
   Widget build(BuildContext context) {
     final event = ref.read(registrationProvider.notifier);
-    final state = ref.watch(registrationProvider);
+    final isValidPhone = ref.watch(registrationProvider).isValidPhone;
+    final phoneNumber = ref.watch(registrationProvider).phoneNumber;
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
@@ -147,7 +148,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8.r),
                                     borderSide: BorderSide(
-                                      color: state.isValidPhone
+                                      color: isValidPhone
                                           ? AppColors.blueColor
                                           : AppColors.greyBorder,
                                       width: 1.w,
@@ -156,7 +157,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8.r),
                                     borderSide: BorderSide(
-                                      color: state.isValidPhone
+                                      color: isValidPhone
                                           ? AppColors.blueColor
                                           : AppColors.greyBorder,
                                       width: 1.w,
@@ -181,18 +182,18 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                             // button
                             GestureDetector(
                               onTap: () {
-                                if (state.isValidPhone) {
-                                  event.sendPhoneNumber(state.phoneNumber,context);
+                                if (isValidPhone) {
+                                  event.sendPhoneNumber(phoneNumber,context);
                                 }
                               },
                               child: AnimationButtonEffect(
-                                disabled: !state.isValidPhone,
+                                disabled: !isValidPhone,
                                 child: SizedBox(
                                   width: 40.w,
                                   height: 40.h,
                                   child: DecoratedBox(
                                     decoration: BoxDecoration(
-                                      color: state.isValidPhone
+                                      color: isValidPhone
                                           ? AppColors.blueColor
                                           : Colors.grey,
                                       borderRadius: BorderRadius.circular(8.r),
