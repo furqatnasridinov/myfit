@@ -38,6 +38,7 @@ class SettingsState with _$SettingsState {
     @Default(false) bool autoRenewal,
     @Default(false) bool dropDownOpened,
     @Default(false) bool genderDropDownOpened,
+    @Default([]) List<String> missingInfo,
   }) = _SettingsState;
   const SettingsState._();
 }

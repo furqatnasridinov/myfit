@@ -490,6 +490,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       response.when(success: (data) {
         if (data["operationResult"] == "OK") {
           final user = UserInstance.fromJson(data["object"]);
+          getMissingInfos(user);
           state = state.copyWith(user: user);
           if (LocalStorage.getAvatar() != data["object"]["pictureUrl"] &&
               data["object"]["pictureUrl"] != null) {
@@ -505,6 +506,29 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
+  }
+
+  void getMissingInfos(UserInstance user){
+    final List<String> listToCollectInfos = [];
+    if (user.firstName == null && !listToCollectInfos.contains("firstName")) {
+      listToCollectInfos.add("firstName");
+    }
+    if ((user.age == null || user.age == 0) && !listToCollectInfos.contains("age")) {
+      listToCollectInfos.add("age");
+    }
+    if (user.gender == null && !listToCollectInfos.contains("gender")) {
+      listToCollectInfos.add("gender");
+    }
+    if ((user.height == null || user.height == 0) && !listToCollectInfos.contains("height")) {
+      listToCollectInfos.add("height");
+    }
+    if ((user.weight == null || user.weight == 0) && !listToCollectInfos.contains("weight")) {
+      listToCollectInfos.add("weight");
+    }
+    if (user.city == null && !listToCollectInfos.contains("city")) {
+      listToCollectInfos.add("city");
+    }
+    state = state.copyWith(missingInfo: listToCollectInfos);
   }
 
   Future<void> getAllAvailableSubscribtions(BuildContext context) async {

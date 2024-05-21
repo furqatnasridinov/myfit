@@ -40,8 +40,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             20.verticalSpace,
             Consumer(
               builder: (context, ref, child) {
-                final bool currentSubscribtionNull =
-                    ref.watch(settingsProvider).currentSubscribtion == null;
+                final bool currentSubscribtionNull = ref.watch(settingsProvider).currentSubscribtion == null;
                 return Row(
                   children: [
                     CustomText(
@@ -66,6 +65,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 );
               },
             ),
+            const FillInfosBlock(),
             32.verticalSpace,
             const MySubscribtion(),
             //32.verticalSpace,

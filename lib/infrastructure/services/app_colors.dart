@@ -17,5 +17,6 @@ class AppColors {
   static const Color green = Color.fromRGBO(122, 228, 72, 1);
   static const Color skeletonBg = Color.fromRGBO(218, 233, 255, 1);
   static const Color skeletonSecondary = Color.fromRGBO(235, 243, 255, 1);
+  static const Color redBorder = Color.fromRGBO(255, 136, 136, 1);
   static Color shimmerBase = Colors.grey.shade300;
 }

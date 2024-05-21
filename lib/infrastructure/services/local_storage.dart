@@ -109,7 +109,7 @@ class LocalStorage {
     if (_preferences != null) {
       await _preferences?.setString(
         AppConstants.keyAge,
-        age ?? "??",
+        age == null  || age == "null" ? "0" : age,
       );
     }
   }
@@ -125,7 +125,7 @@ class LocalStorage {
     if (_preferences != null) {
       await _preferences?.setString(
         AppConstants.keyWeight,
-        weight ?? "??",
+        weight == null  || weight == "null" ? "0" : weight,
       );
     }
   }
@@ -142,7 +142,7 @@ class LocalStorage {
     if (_preferences != null) {
       await _preferences?.setString(
         AppConstants.keyHeight,
-        height ?? "??",
+         height == null  || height == "null" ? "0" : height,
       );
     }
   }

@@ -157,19 +157,15 @@ class _PersonalInfoState extends State<PersonalInfo> {
                         builder: (BuildContext context) {
                           return Dialog(
                             elevation: 0,
-                            insetPadding:
-                                EdgeInsets.symmetric(horizontal: 16.w),
+                            insetPadding:EdgeInsets.symmetric(horizontal: 16.w),
                             child: Consumer(builder: (context, ref, child) {
                               final stateConsumer = ref.watch(settingsProvider);
-                              final eventConsumer =
-                                  ref.read(settingsProvider.notifier);
+                              final eventConsumer = ref.read(settingsProvider.notifier);
                               return PopupBody(
                                 event: eventConsumer,
                                 state: stateConsumer,
                               );
                             }),
-
-                            /*  */
                           );
                         },
                       );

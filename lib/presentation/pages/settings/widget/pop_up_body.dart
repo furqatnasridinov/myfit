@@ -58,9 +58,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
     heightController = TextEditingController(
         text: LocalStorage.getHeight().isEmpty ? "" : LocalStorage.getHeight());
     genderController = TextEditingController(
-        text: LocalStorage.getGender().isEmpty
-            ? "Не указано"
-            : LocalStorage.getGender());
+        text: LocalStorage.getGender());
   }
 
   @override
@@ -104,6 +102,8 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                       text: "Ваше имя",
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w500,
+                      color: widget.state.missingInfo.contains("firstName")
+                          ? AppColors.redBorder : Colors.black,
                     ),
                     5.verticalSpace,
                     SizedBox(
@@ -114,7 +114,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                         ),
-                        isError: isNameEmpty,
+                        isError: isNameEmpty || widget.state.missingInfo.contains("firstName"),
                         hasFocus: true,
                         cursorColor: AppColors.greyText,
                         contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
@@ -168,13 +168,25 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // возраст
-                userParamsField(text: "Возраст", controller: ageController),
+                userParamsField(
+                  text: "Возраст",
+                  controller: ageController,
+                  isError: widget.state.missingInfo.contains("age"),
+                ),
                 SizedBox(width: 15.w),
                 // вес
-                userParamsField(text: "Вес, кг", controller: weightController),
+                userParamsField(
+                  text: "Вес, кг",
+                  controller: weightController,
+                  isError: widget.state.missingInfo.contains("weight"),
+                ),
                 SizedBox(width: 15.w),
                 // рост
-                userParamsField(text: "Рост, см", controller: heightController),
+                userParamsField(
+                  text: "Рост, см",
+                  controller: heightController,
+                  isError: widget.state.missingInfo.contains("height"),
+                ),
               ],
             ),
           ),
@@ -354,6 +366,8 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
               text: "В каком городе искать активности",
               fontSize: 16.sp,
               fontWeight: FontWeight.w500,
+              color: widget.state.missingInfo.contains("city")
+                  ? AppColors.redBorder : Colors.black,
             ),
           ),
           Positioned(
@@ -368,6 +382,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                       height: 40,
                       width: 310.w,
                       child: CustomTextField(
+                        isError: widget.state.missingInfo.contains("city"),
                         focusNode: focusNode,
                         style: GoogleFonts.raleway(
                             fontSize: 14.sp, fontWeight: FontWeight.w400),
@@ -455,6 +470,8 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
               text: "Пол",
               fontSize: 16.sp,
               fontWeight: FontWeight.w500,
+              color: widget.state.missingInfo.contains("gender")
+                  ? AppColors.redBorder : Colors.black,
             ),
           ),
           Positioned(
@@ -470,6 +487,8 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                       height: 40,
                       width: 310.w,
                       child: CustomTextField(
+                        hintText: LocalStorage.getGender().isEmpty ? "Не указано" : "",
+                        isError: widget.state.missingInfo.contains("gender"),
                         focusNode: genderFocusNode,
                         style: GoogleFonts.raleway(
                             fontSize: 14.sp, fontWeight: FontWeight.w400),
@@ -610,6 +629,9 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                       if (LocalStorage.getGender() != genderController.text) {
                         await widget.event.patchGender(genderController.text, context);
                       }
+                      if (widget.state.missingInfo.isNotEmpty) {
+                        widget.event.getUser(context);
+                      }
                       if (cityDropDownOpened) {
                         ref.read(settingsProvider.notifier).closeDropDown();
                       }
@@ -710,16 +732,22 @@ void showConfirmationDialog(BuildContext context, void Function()? onConfirm) {
 }
 
 Widget userParamsField(
-    {required String text, TextEditingController? controller}) {
+    {required String text, TextEditingController? controller, bool isError = false}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      CustomText(text: text, fontSize: 16.sp, fontWeight: FontWeight.w500),
+      CustomText(
+        text: text,
+        fontSize: 16.sp,
+        fontWeight: FontWeight.w500,
+        color: isError ? AppColors.redBorder : Colors.black,
+      ),
       5.verticalSpace,
       SizedBox(
         width: 93.w,
         height: 40.h,
         child: CustomTextField(
+          isError: isError,
           style: GoogleFonts.raleway(
             fontSize: 14.sp,
             fontWeight: FontWeight.w400,

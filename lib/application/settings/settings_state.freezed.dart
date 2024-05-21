@@ -47,6 +47,7 @@ mixin _$SettingsState {
   bool get autoRenewal => throw _privateConstructorUsedError;
   bool get dropDownOpened => throw _privateConstructorUsedError;
   bool get genderDropDownOpened => throw _privateConstructorUsedError;
+  List<String> get missingInfo => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $SettingsStateCopyWith<SettingsState> get copyWith =>
@@ -88,7 +89,8 @@ abstract class $SettingsStateCopyWith<$Res> {
       String cardNumber,
       bool autoRenewal,
       bool dropDownOpened,
-      bool genderDropDownOpened});
+      bool genderDropDownOpened,
+      List<String> missingInfo});
 }
 
 /// @nodoc
@@ -133,6 +135,7 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     Object? autoRenewal = null,
     Object? dropDownOpened = null,
     Object? genderDropDownOpened = null,
+    Object? missingInfo = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -251,6 +254,10 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.genderDropDownOpened
           : genderDropDownOpened // ignore: cast_nullable_to_non_nullable
               as bool,
+      missingInfo: null == missingInfo
+          ? _value.missingInfo
+          : missingInfo // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ) as $Val);
   }
 }
@@ -292,7 +299,8 @@ abstract class _$$SettingsStateImplCopyWith<$Res>
       String cardNumber,
       bool autoRenewal,
       bool dropDownOpened,
-      bool genderDropDownOpened});
+      bool genderDropDownOpened,
+      List<String> missingInfo});
 }
 
 /// @nodoc
@@ -335,6 +343,7 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     Object? autoRenewal = null,
     Object? dropDownOpened = null,
     Object? genderDropDownOpened = null,
+    Object? missingInfo = null,
   }) {
     return _then(_$SettingsStateImpl(
       isloading: null == isloading
@@ -453,6 +462,10 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value.genderDropDownOpened
           : genderDropDownOpened // ignore: cast_nullable_to_non_nullable
               as bool,
+      missingInfo: null == missingInfo
+          ? _value._missingInfo
+          : missingInfo // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ));
   }
 }
@@ -489,10 +502,12 @@ class _$SettingsStateImpl extends _SettingsState {
       this.cardNumber = "**** **** **** 1234",
       this.autoRenewal = false,
       this.dropDownOpened = false,
-      this.genderDropDownOpened = false})
+      this.genderDropDownOpened = false,
+      final List<String> missingInfo = const ["cdmkcm"]})
       : _listOfCities = listOfCities,
         _knownActivities = knownActivities,
         _allAvailableSubscriptions = allAvailableSubscriptions,
+        _missingInfo = missingInfo,
         super._();
 
   @override
@@ -601,10 +616,18 @@ class _$SettingsStateImpl extends _SettingsState {
   @override
   @JsonKey()
   final bool genderDropDownOpened;
+  final List<String> _missingInfo;
+  @override
+  @JsonKey()
+  List<String> get missingInfo {
+    if (_missingInfo is EqualUnmodifiableListView) return _missingInfo;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_missingInfo);
+  }
 
   @override
   String toString() {
-    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, gender: $gender, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, user: $user, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue, isNoAccessChangingPhoto: $isNoAccessChangingPhoto, currentSubscribtion: $currentSubscribtion, nextSubscribtion: $nextSubscribtion, allAvailableSubscriptions: $allAvailableSubscriptions, isChangeSubscribtionLoading: $isChangeSubscribtionLoading, cardNumber: $cardNumber, autoRenewal: $autoRenewal, dropDownOpened: $dropDownOpened, genderDropDownOpened: $genderDropDownOpened)';
+    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, gender: $gender, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, user: $user, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue, isNoAccessChangingPhoto: $isNoAccessChangingPhoto, currentSubscribtion: $currentSubscribtion, nextSubscribtion: $nextSubscribtion, allAvailableSubscriptions: $allAvailableSubscriptions, isChangeSubscribtionLoading: $isChangeSubscribtionLoading, cardNumber: $cardNumber, autoRenewal: $autoRenewal, dropDownOpened: $dropDownOpened, genderDropDownOpened: $genderDropDownOpened, missingInfo: $missingInfo)';
   }
 
   @override
@@ -666,7 +689,9 @@ class _$SettingsStateImpl extends _SettingsState {
             (identical(other.dropDownOpened, dropDownOpened) ||
                 other.dropDownOpened == dropDownOpened) &&
             (identical(other.genderDropDownOpened, genderDropDownOpened) ||
-                other.genderDropDownOpened == genderDropDownOpened));
+                other.genderDropDownOpened == genderDropDownOpened) &&
+            const DeepCollectionEquality()
+                .equals(other._missingInfo, _missingInfo));
   }
 
   @override
@@ -700,7 +725,8 @@ class _$SettingsStateImpl extends _SettingsState {
         cardNumber,
         autoRenewal,
         dropDownOpened,
-        genderDropDownOpened
+        genderDropDownOpened,
+        const DeepCollectionEquality().hash(_missingInfo)
       ]);
 
   @JsonKey(ignore: true)
@@ -740,7 +766,8 @@ abstract class _SettingsState extends SettingsState {
       final String cardNumber,
       final bool autoRenewal,
       final bool dropDownOpened,
-      final bool genderDropDownOpened}) = _$SettingsStateImpl;
+      final bool genderDropDownOpened,
+      final List<String> missingInfo}) = _$SettingsStateImpl;
   const _SettingsState._() : super._();
 
   @override
@@ -801,6 +828,8 @@ abstract class _SettingsState extends SettingsState {
   bool get dropDownOpened;
   @override
   bool get genderDropDownOpened;
+  @override
+  List<String> get missingInfo;
   @override
   @JsonKey(ignore: true)
   _$$SettingsStateImplCopyWith<_$SettingsStateImpl> get copyWith =>
