@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:myfit/application/map/map_notifier.dart';
 import 'package:myfit/presentation/router/app_router.gr.dart';
@@ -49,7 +51,7 @@ class Main2Map extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.r),
         child: GoogleMap(
           zoomControlsEnabled: false,
-          liteModeEnabled: true,
+          liteModeEnabled: Platform.isAndroid ? true : false,
           compassEnabled: false,
           mapType: MapType.normal,
           myLocationButtonEnabled: false,

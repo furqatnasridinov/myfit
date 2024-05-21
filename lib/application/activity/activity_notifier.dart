@@ -383,7 +383,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         }
         scheduleNotifier.getUsersSchedules(context);
         await mapNotifier.getGymsList(context, [], {});
-        //mapNotifier.getGetListOfGymsFromDiapozone();
+        mapNotifier.getGetListOfGymsFromDiapozone();
         if (lessonData["lessonState"] == "CONFIRMED") {
           main2Notifier.getNearestLesson(context);
         }

@@ -126,7 +126,7 @@ class _PersonalInfoState extends State<PersonalInfo> {
                         children: [
                           CustomText(
                             text: widget.state.userName.isEmpty
-                                ? " widget.state.userName.isEmpty"
+                                ? "Не указано"
                                 : widget.state.userName,
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w500,

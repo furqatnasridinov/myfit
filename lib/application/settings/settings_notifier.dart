@@ -5,6 +5,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:myfit/application/settings/settings_state.dart';
 import 'package:myfit/domain/handlers/network_exceptions.dart';
 import 'package:myfit/domain/interface/settings.dart';
+import 'package:myfit/infrastructure/models/data/user_instance.dart';
 import 'package:myfit/infrastructure/models/request/send_confirmation_code_request.dart';
 import 'package:myfit/infrastructure/models/request/send_phone_number_request.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
@@ -52,12 +53,20 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     );
   }
 
-  void openDropDown(){
+  void openDropDown() {
     state = state.copyWith(dropDownOpened: true);
   }
 
-  void closeDropDown(){
+  void closeDropDown() {
     state = state.copyWith(dropDownOpened: false);
+  }
+
+  void openGenderDropDown() {
+    state = state.copyWith(genderDropDownOpened: true);
+  }
+
+  void closeGenderDropDown() {
+    state = state.copyWith(genderDropDownOpened: false);
   }
 
   Future<void> requestNotificationPermissions() async {
@@ -351,14 +360,18 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     final connected = await AppConnectivity().connectivity();
     if (connected) {
       state = state.copyWith(isloading: true);
-      final request = {"gender": gender};
+      final code = gender == "Мужчина" ? 0 : 1;
+      final request = {"gender": code};
       final response = await _settingsRepositoryInterface.patchUser(
         request: request,
       );
       response.when(
-        success: (data) {
-          // no need to return we are saving locally
-          state = state.copyWith(isloading: false);
+        success: (data) async{
+          if (data["operationResult"] == "OK") {
+            await LocalStorage.setGender(data["object"]["gender"].toString());
+            setGender();
+            state = state.copyWith(isloading: false);
+          }
         },
         failure: (error, statusCode, operationInfo) {
           AppHelpers.showErrorSnack(
@@ -476,6 +489,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       final response = await _settingsRepositoryInterface.getUser();
       response.when(success: (data) {
         if (data["operationResult"] == "OK") {
+          final user = UserInstance.fromJson(data["object"]);
+          state = state.copyWith(user: user);
           if (LocalStorage.getAvatar() != data["object"]["pictureUrl"] &&
               data["object"]["pictureUrl"] != null) {
             state = state.copyWith(avatar: data["object"]["pictureUrl"]);
@@ -650,32 +665,46 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
 
   String getWhenCurrentSubEnds(String futureDateString) {
     // from 2024-06-03T13:56:25 to 2 дня 3 часа
-  DateTime now = DateTime.now();
-  DateTime futureDate = DateTime.parse(futureDateString);
-  if (futureDate.isAfter(now)) {
-    Duration difference = futureDate.difference(now);
+    DateTime now = DateTime.now();
+    DateTime futureDate = DateTime.parse(futureDateString);
+    if (futureDate.isAfter(now)) {
+      Duration difference = futureDate.difference(now);
 
-    if (difference.inDays >= 1) {
-      return 'через ${difference.inDays} ${plural(difference.inDays, ['день', 'дня', 'дней'])}';
-    } else if (difference.inHours >= 1) {
-      return 'через ${difference.inHours} ${plural(difference.inHours, ['час', 'часа', 'часов'])}';
+      if (difference.inDays >= 1) {
+        return 'через ${difference.inDays} ${plural(difference.inDays, [
+              'день',
+              'дня',
+              'дней'
+            ])}';
+      } else if (difference.inHours >= 1) {
+        return 'через ${difference.inHours} ${plural(difference.inHours, [
+              'час',
+              'часа',
+              'часов'
+            ])}';
+      } else {
+        return 'через ${difference.inMinutes} ${plural(difference.inMinutes, [
+              'минуту',
+              'минуты',
+              'минут'
+            ])}';
+      }
     } else {
-      return 'через ${difference.inMinutes} ${plural(difference.inMinutes, ['минуту', 'минуты', 'минут'])}';
+      return "если это показывается то !futureDate.isAfter(now)";
     }
-  } else {
-    return "если это показывается то !futureDate.isAfter(now)";
   }
-}
 
-String plural(int num, List<String> forms) {
-  if (num % 10 == 1 && num % 100 != 11) {
-    return forms[0];
-  } else if (num % 10 >= 2 && num % 10 <= 4 && (num % 100 < 10 || num % 100 >= 20)) {
-    return forms[1];
-  } else {
-    return forms[2];
+  String plural(int num, List<String> forms) {
+    if (num % 10 == 1 && num % 100 != 11) {
+      return forms[0];
+    } else if (num % 10 >= 2 &&
+        num % 10 <= 4 &&
+        (num % 100 < 10 || num % 100 >= 20)) {
+      return forms[1];
+    } else {
+      return forms[2];
+    }
   }
-}
 
   void setQrCodeValue(String value) {
     state = state.copyWith(qrcodeValue: value);
@@ -776,6 +805,10 @@ String plural(int num, List<String> forms) {
 
   void setHeight() {
     state = state.copyWith(height: LocalStorage.getHeight());
+  }
+
+  void setGender() {
+    state = state.copyWith(gender: LocalStorage.getGender());
   }
 
   void setAvatar() {

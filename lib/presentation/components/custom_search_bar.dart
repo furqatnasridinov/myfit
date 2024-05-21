@@ -264,7 +264,7 @@ class _CustomSearchBarState extends ConsumerState<CustomSearchBar> {
                 AnimatedPositioned(
                   duration: const Duration(milliseconds: 700),
                   curve: Curves.easeInOut,
-                  left: textfieldFocusnode.hasFocus ? -100 : 0,
+                  left: /* textfieldFocusnode.hasFocus ? -100 : */ 0,
                   bottom: 0,
                   child: GestureDetector(
                     onTap: () {
@@ -294,7 +294,42 @@ class _CustomSearchBarState extends ConsumerState<CustomSearchBar> {
                   ),
                 ),
             
-                // textfield            
+                // avatar            
+                AnimatedPositioned(
+                  duration: const Duration(milliseconds: 700),
+                  curve: Curves.easeInOut,
+                  right: /* textfieldFocusnode.hasFocus ? -100 : */ 0,
+                  bottom: 0,
+                  child: Consumer(builder: (context, ref, child) {
+                    final settingsState = ref.watch(settingsProvider);
+                    return GestureDetector(
+                      onTap: () {
+                        if (widget.canNavigateToSettings) {
+                          context.router.push(const SettingsRoute());
+                        }
+                      },
+                      child: CircleAvatar(
+                        radius: 20.r,
+                        backgroundColor: AppColors.blueColor,
+                        child: settingsState.avatar.isEmpty
+                            ? CircleAvatar(
+                                radius: 18.r,
+                                backgroundImage:
+                                    const AssetImage(AppConstants.cristianBale))
+                            : CircleAvatar(
+                                radius: 18.r,
+                                backgroundImage: NetworkImage(
+                                    "http://77.222.53.122/image/${settingsState.avatar}"),
+                                onBackgroundImageError: (exception, stackTrace) {
+                                  debugPrint(exception.toString());
+                                },
+                              ),
+                      ),
+                    );
+                  }),
+                ),
+              
+               // textfield            
                 AnimatedPositioned(
                   duration: const Duration(milliseconds: 500),
                   left: widget.showBackButton && !textfieldFocusnode.hasFocus ? 45.w : 0,
@@ -340,6 +375,7 @@ class _CustomSearchBarState extends ConsumerState<CustomSearchBar> {
                         },
                         focusNode: textfieldFocusnode,
                         decoration: InputDecoration(
+                          contentPadding: EdgeInsets.zero.copyWith(top: 7.h),
                           isDense: true,
                           suffixIcon: textfieldFocusnode.hasFocus &&
                                   controller.text.isNotEmpty
@@ -386,41 +422,6 @@ class _CustomSearchBarState extends ConsumerState<CustomSearchBar> {
                       ),
                     ),
                   ),
-                ),
-            
-                // avatar            
-                AnimatedPositioned(
-                  duration: const Duration(milliseconds: 700),
-                  curve: Curves.easeInOut,
-                  right: textfieldFocusnode.hasFocus ? -100 : 0,
-                  bottom: 0,
-                  child: Consumer(builder: (context, ref, child) {
-                    final settingsState = ref.watch(settingsProvider);
-                    return GestureDetector(
-                      onTap: () {
-                        if (widget.canNavigateToSettings) {
-                          context.router.push(const SettingsRoute());
-                        }
-                      },
-                      child: CircleAvatar(
-                        radius: 20.r,
-                        backgroundColor: AppColors.blueColor,
-                        child: settingsState.avatar.isEmpty
-                            ? CircleAvatar(
-                                radius: 18.r,
-                                backgroundImage:
-                                    const AssetImage(AppConstants.cristianBale))
-                            : CircleAvatar(
-                                radius: 18.r,
-                                backgroundImage: NetworkImage(
-                                    "http://77.222.53.122/image/${settingsState.avatar}"),
-                                onBackgroundImageError: (exception, stackTrace) {
-                                  debugPrint(exception.toString());
-                                },
-                              ),
-                      ),
-                    );
-                  }),
                 ),
               ],
             );

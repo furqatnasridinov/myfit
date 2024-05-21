@@ -1,4 +1,3 @@
-import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:myfit/presentation/components/components.dart';
 import 'package:myfit/presentation/router/app_router.gr.dart';
@@ -26,6 +25,7 @@ class Registration4Screen extends StatelessWidget {
       body: Hero(
         tag: AppConstants.registration3Hero,
         child: Material(
+          color: Colors.white,
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

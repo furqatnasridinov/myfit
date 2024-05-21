@@ -90,6 +90,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           // main body

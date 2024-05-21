@@ -29,9 +29,11 @@ mixin _$SettingsState {
   String get weight => throw _privateConstructorUsedError;
   String get height => throw _privateConstructorUsedError;
   String get avatar => throw _privateConstructorUsedError;
+  String get gender => throw _privateConstructorUsedError;
   bool get isPhoneEditModeEnabled => throw _privateConstructorUsedError;
   bool get isEmailEditModeEnabled => throw _privateConstructorUsedError;
   String get reminderTime => throw _privateConstructorUsedError;
+  UserInstance? get user => throw _privateConstructorUsedError;
   bool get isReminderDisabled => throw _privateConstructorUsedError;
   String? get qrcodeValue => throw _privateConstructorUsedError;
   bool get isNoAccessChangingPhoto => throw _privateConstructorUsedError;
@@ -44,6 +46,7 @@ mixin _$SettingsState {
   String get cardNumber => throw _privateConstructorUsedError;
   bool get autoRenewal => throw _privateConstructorUsedError;
   bool get dropDownOpened => throw _privateConstructorUsedError;
+  bool get genderDropDownOpened => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $SettingsStateCopyWith<SettingsState> get copyWith =>
@@ -70,9 +73,11 @@ abstract class $SettingsStateCopyWith<$Res> {
       String weight,
       String height,
       String avatar,
+      String gender,
       bool isPhoneEditModeEnabled,
       bool isEmailEditModeEnabled,
       String reminderTime,
+      UserInstance? user,
       bool isReminderDisabled,
       String? qrcodeValue,
       bool isNoAccessChangingPhoto,
@@ -82,7 +87,8 @@ abstract class $SettingsStateCopyWith<$Res> {
       bool isChangeSubscribtionLoading,
       String cardNumber,
       bool autoRenewal,
-      bool dropDownOpened});
+      bool dropDownOpened,
+      bool genderDropDownOpened});
 }
 
 /// @nodoc
@@ -111,9 +117,11 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     Object? weight = null,
     Object? height = null,
     Object? avatar = null,
+    Object? gender = null,
     Object? isPhoneEditModeEnabled = null,
     Object? isEmailEditModeEnabled = null,
     Object? reminderTime = null,
+    Object? user = freezed,
     Object? isReminderDisabled = null,
     Object? qrcodeValue = freezed,
     Object? isNoAccessChangingPhoto = null,
@@ -124,6 +132,7 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     Object? cardNumber = null,
     Object? autoRenewal = null,
     Object? dropDownOpened = null,
+    Object? genderDropDownOpened = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -178,6 +187,10 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.avatar
           : avatar // ignore: cast_nullable_to_non_nullable
               as String,
+      gender: null == gender
+          ? _value.gender
+          : gender // ignore: cast_nullable_to_non_nullable
+              as String,
       isPhoneEditModeEnabled: null == isPhoneEditModeEnabled
           ? _value.isPhoneEditModeEnabled
           : isPhoneEditModeEnabled // ignore: cast_nullable_to_non_nullable
@@ -190,6 +203,10 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.reminderTime
           : reminderTime // ignore: cast_nullable_to_non_nullable
               as String,
+      user: freezed == user
+          ? _value.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as UserInstance?,
       isReminderDisabled: null == isReminderDisabled
           ? _value.isReminderDisabled
           : isReminderDisabled // ignore: cast_nullable_to_non_nullable
@@ -230,6 +247,10 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.dropDownOpened
           : dropDownOpened // ignore: cast_nullable_to_non_nullable
               as bool,
+      genderDropDownOpened: null == genderDropDownOpened
+          ? _value.genderDropDownOpened
+          : genderDropDownOpened // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -256,9 +277,11 @@ abstract class _$$SettingsStateImplCopyWith<$Res>
       String weight,
       String height,
       String avatar,
+      String gender,
       bool isPhoneEditModeEnabled,
       bool isEmailEditModeEnabled,
       String reminderTime,
+      UserInstance? user,
       bool isReminderDisabled,
       String? qrcodeValue,
       bool isNoAccessChangingPhoto,
@@ -268,7 +291,8 @@ abstract class _$$SettingsStateImplCopyWith<$Res>
       bool isChangeSubscribtionLoading,
       String cardNumber,
       bool autoRenewal,
-      bool dropDownOpened});
+      bool dropDownOpened,
+      bool genderDropDownOpened});
 }
 
 /// @nodoc
@@ -295,9 +319,11 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     Object? weight = null,
     Object? height = null,
     Object? avatar = null,
+    Object? gender = null,
     Object? isPhoneEditModeEnabled = null,
     Object? isEmailEditModeEnabled = null,
     Object? reminderTime = null,
+    Object? user = freezed,
     Object? isReminderDisabled = null,
     Object? qrcodeValue = freezed,
     Object? isNoAccessChangingPhoto = null,
@@ -308,6 +334,7 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     Object? cardNumber = null,
     Object? autoRenewal = null,
     Object? dropDownOpened = null,
+    Object? genderDropDownOpened = null,
   }) {
     return _then(_$SettingsStateImpl(
       isloading: null == isloading
@@ -362,6 +389,10 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value.avatar
           : avatar // ignore: cast_nullable_to_non_nullable
               as String,
+      gender: null == gender
+          ? _value.gender
+          : gender // ignore: cast_nullable_to_non_nullable
+              as String,
       isPhoneEditModeEnabled: null == isPhoneEditModeEnabled
           ? _value.isPhoneEditModeEnabled
           : isPhoneEditModeEnabled // ignore: cast_nullable_to_non_nullable
@@ -374,6 +405,10 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value.reminderTime
           : reminderTime // ignore: cast_nullable_to_non_nullable
               as String,
+      user: freezed == user
+          ? _value.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as UserInstance?,
       isReminderDisabled: null == isReminderDisabled
           ? _value.isReminderDisabled
           : isReminderDisabled // ignore: cast_nullable_to_non_nullable
@@ -414,6 +449,10 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value.dropDownOpened
           : dropDownOpened // ignore: cast_nullable_to_non_nullable
               as bool,
+      genderDropDownOpened: null == genderDropDownOpened
+          ? _value.genderDropDownOpened
+          : genderDropDownOpened // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -435,9 +474,11 @@ class _$SettingsStateImpl extends _SettingsState {
       this.weight = "",
       this.height = "",
       this.avatar = "",
+      this.gender = "",
       this.isPhoneEditModeEnabled = false,
       this.isEmailEditModeEnabled = false,
       this.reminderTime = "30",
+      this.user = null,
       this.isReminderDisabled = false,
       this.qrcodeValue = "",
       this.isNoAccessChangingPhoto = false,
@@ -447,7 +488,8 @@ class _$SettingsStateImpl extends _SettingsState {
       this.isChangeSubscribtionLoading = false,
       this.cardNumber = "**** **** **** 1234",
       this.autoRenewal = false,
-      this.dropDownOpened = false})
+      this.dropDownOpened = false,
+      this.genderDropDownOpened = false})
       : _listOfCities = listOfCities,
         _knownActivities = knownActivities,
         _allAvailableSubscriptions = allAvailableSubscriptions,
@@ -506,6 +548,9 @@ class _$SettingsStateImpl extends _SettingsState {
   final String avatar;
   @override
   @JsonKey()
+  final String gender;
+  @override
+  @JsonKey()
   final bool isPhoneEditModeEnabled;
   @override
   @JsonKey()
@@ -513,6 +558,9 @@ class _$SettingsStateImpl extends _SettingsState {
   @override
   @JsonKey()
   final String reminderTime;
+  @override
+  @JsonKey()
+  final UserInstance? user;
   @override
   @JsonKey()
   final bool isReminderDisabled;
@@ -550,10 +598,13 @@ class _$SettingsStateImpl extends _SettingsState {
   @override
   @JsonKey()
   final bool dropDownOpened;
+  @override
+  @JsonKey()
+  final bool genderDropDownOpened;
 
   @override
   String toString() {
-    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue, isNoAccessChangingPhoto: $isNoAccessChangingPhoto, currentSubscribtion: $currentSubscribtion, nextSubscribtion: $nextSubscribtion, allAvailableSubscriptions: $allAvailableSubscriptions, isChangeSubscribtionLoading: $isChangeSubscribtionLoading, cardNumber: $cardNumber, autoRenewal: $autoRenewal, dropDownOpened: $dropDownOpened)';
+    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, gender: $gender, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, user: $user, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue, isNoAccessChangingPhoto: $isNoAccessChangingPhoto, currentSubscribtion: $currentSubscribtion, nextSubscribtion: $nextSubscribtion, allAvailableSubscriptions: $allAvailableSubscriptions, isChangeSubscribtionLoading: $isChangeSubscribtionLoading, cardNumber: $cardNumber, autoRenewal: $autoRenewal, dropDownOpened: $dropDownOpened, genderDropDownOpened: $genderDropDownOpened)';
   }
 
   @override
@@ -583,12 +634,14 @@ class _$SettingsStateImpl extends _SettingsState {
             (identical(other.weight, weight) || other.weight == weight) &&
             (identical(other.height, height) || other.height == height) &&
             (identical(other.avatar, avatar) || other.avatar == avatar) &&
+            (identical(other.gender, gender) || other.gender == gender) &&
             (identical(other.isPhoneEditModeEnabled, isPhoneEditModeEnabled) ||
                 other.isPhoneEditModeEnabled == isPhoneEditModeEnabled) &&
             (identical(other.isEmailEditModeEnabled, isEmailEditModeEnabled) ||
                 other.isEmailEditModeEnabled == isEmailEditModeEnabled) &&
             (identical(other.reminderTime, reminderTime) ||
                 other.reminderTime == reminderTime) &&
+            (identical(other.user, user) || other.user == user) &&
             (identical(other.isReminderDisabled, isReminderDisabled) ||
                 other.isReminderDisabled == isReminderDisabled) &&
             (identical(other.qrcodeValue, qrcodeValue) ||
@@ -611,7 +664,9 @@ class _$SettingsStateImpl extends _SettingsState {
             (identical(other.autoRenewal, autoRenewal) ||
                 other.autoRenewal == autoRenewal) &&
             (identical(other.dropDownOpened, dropDownOpened) ||
-                other.dropDownOpened == dropDownOpened));
+                other.dropDownOpened == dropDownOpened) &&
+            (identical(other.genderDropDownOpened, genderDropDownOpened) ||
+                other.genderDropDownOpened == genderDropDownOpened));
   }
 
   @override
@@ -630,9 +685,11 @@ class _$SettingsStateImpl extends _SettingsState {
         weight,
         height,
         avatar,
+        gender,
         isPhoneEditModeEnabled,
         isEmailEditModeEnabled,
         reminderTime,
+        user,
         isReminderDisabled,
         qrcodeValue,
         isNoAccessChangingPhoto,
@@ -642,7 +699,8 @@ class _$SettingsStateImpl extends _SettingsState {
         isChangeSubscribtionLoading,
         cardNumber,
         autoRenewal,
-        dropDownOpened
+        dropDownOpened,
+        genderDropDownOpened
       ]);
 
   @JsonKey(ignore: true)
@@ -667,9 +725,11 @@ abstract class _SettingsState extends SettingsState {
       final String weight,
       final String height,
       final String avatar,
+      final String gender,
       final bool isPhoneEditModeEnabled,
       final bool isEmailEditModeEnabled,
       final String reminderTime,
+      final UserInstance? user,
       final bool isReminderDisabled,
       final String? qrcodeValue,
       final bool isNoAccessChangingPhoto,
@@ -679,7 +739,8 @@ abstract class _SettingsState extends SettingsState {
       final bool isChangeSubscribtionLoading,
       final String cardNumber,
       final bool autoRenewal,
-      final bool dropDownOpened}) = _$SettingsStateImpl;
+      final bool dropDownOpened,
+      final bool genderDropDownOpened}) = _$SettingsStateImpl;
   const _SettingsState._() : super._();
 
   @override
@@ -709,11 +770,15 @@ abstract class _SettingsState extends SettingsState {
   @override
   String get avatar;
   @override
+  String get gender;
+  @override
   bool get isPhoneEditModeEnabled;
   @override
   bool get isEmailEditModeEnabled;
   @override
   String get reminderTime;
+  @override
+  UserInstance? get user;
   @override
   bool get isReminderDisabled;
   @override
@@ -734,6 +799,8 @@ abstract class _SettingsState extends SettingsState {
   bool get autoRenewal;
   @override
   bool get dropDownOpened;
+  @override
+  bool get genderDropDownOpened;
   @override
   @JsonKey(ignore: true)
   _$$SettingsStateImplCopyWith<_$SettingsStateImpl> get copyWith =>

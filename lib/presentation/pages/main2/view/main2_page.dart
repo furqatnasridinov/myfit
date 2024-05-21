@@ -43,6 +43,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
         ..getNearestLesson(context)
         ..getUserStatsMonth(context);
       ref.read(settingsProvider.notifier)
+        ..getUser(context)
         ..requestNotificationPermissions()
         ..setUserInfos()
         ..getCompletedLessonTypes(context) // for known activities

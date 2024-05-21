@@ -441,6 +441,7 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                               child: CustomButton(
                                 buttonColor: AppColors.blueColor,
                                 textColor: Colors.white,
+                                borderColor: AppColors.blueBorder,
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w600,
                                 onPressed: () async {

@@ -249,9 +249,9 @@ class AppHelpers {
 
   Widget getBatteryIcon(int visited, int total) {
     double percent = 100 - (visited / total * 100);
-    log("getBatteryIcon visited :  $visited");
+/*     log("getBatteryIcon visited :  $visited");
     log("getBatteryIcon total : $total");
-    log("getBatteryIcon percent : $percent");
+    log("getBatteryIcon percent : $percent"); */
     if (percent >= 1 && percent <= 19) {
       return SvgPicture.asset("assets/svg/1-19_percent.svg");
     } else if (percent >= 20 && percent <= 49) {

@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myfit/presentation/components/dummy_data.dart';
 import '../../../../infrastructure/models/response/auth_response.dart';
 
 class PopupBody extends ConsumerStatefulWidget {
@@ -30,14 +31,15 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
   GlobalKey sizedBoxKey = GlobalKey();
   City? selectedCity;
   bool isNameEmpty = false;
-  bool hideBlock = false;
   final FocusNode focusNode = FocusNode();
+  final FocusNode genderFocusNode = FocusNode();
   late TextEditingController cityController;
   late TextEditingController nameController;
   late TextEditingController lastNameController;
   late TextEditingController ageController;
   late TextEditingController weightController;
   late TextEditingController heightController;
+  late TextEditingController genderController;
 
   @override
   void initState() {
@@ -45,15 +47,20 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
     cityController =
         TextEditingController(text: LocalStorage.getSelectedCity());
     nameController = TextEditingController(text: LocalStorage.getUserName());
-    lastNameController = TextEditingController(text: LocalStorage.getUserLastName().isEmpty
-            ? "" : LocalStorage.getUserLastName());
+    lastNameController = TextEditingController(
+        text: LocalStorage.getUserLastName().isEmpty
+            ? ""
+            : LocalStorage.getUserLastName());
     ageController = TextEditingController(
         text: LocalStorage.getAge().isEmpty ? "" : LocalStorage.getAge());
     weightController = TextEditingController(
         text: LocalStorage.getWeight().isEmpty ? "" : LocalStorage.getWeight());
     heightController = TextEditingController(
         text: LocalStorage.getHeight().isEmpty ? "" : LocalStorage.getHeight());
-    widget.event.getListOfCities(context);
+    genderController = TextEditingController(
+        text: LocalStorage.getGender().isEmpty
+            ? "Не указано"
+            : LocalStorage.getGender());
   }
 
   @override
@@ -71,237 +78,124 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
     selectedCity = city;
   }
 
-  bool isTapInsideTextField(Offset globalPosition) {
-    final RenderBox textFieldRenderBox =
-        sizedBoxKey.currentContext!.findRenderObject() as RenderBox;
-    final textFieldPosition = textFieldRenderBox.localToGlobal(Offset.zero);
-    final textFieldSize = textFieldRenderBox.size;
-
-    return globalPosition.dx >= textFieldPosition.dx &&
-        globalPosition.dx <= textFieldPosition.dx + textFieldSize.width &&
-        globalPosition.dy >= textFieldPosition.dy &&
-        globalPosition.dy <= textFieldPosition.dy + textFieldSize.height;
-  }
-
   @override
   Widget build(BuildContext context) {
-    ref.listen(settingsProvider, (previous, next) async{
-      if (previous!.dropDownOpened != next.dropDownOpened && !next.dropDownOpened) {
-        await Future.delayed(const Duration(milliseconds: 270));
-        hideBlock = false;
-        setState(() {});
-      }
-    });
     final DateTime whenAccessUploadingPhotoOpens =
         DateTime.parse(LocalStorage.getWhenUploadingPhotoOpens());
     final String formattedString = widget.event.formatDuration(
         whenAccessUploadingPhotoOpens.difference(DateTime.now()));
-    return SingleChildScrollView(
-      child: CustomCard(
-        borderColor: Colors.transparent,
-        width: double.maxFinite,
-        height: widget.state.isNoAccessChangingPhoto ? 540.h : 580.h,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+    return CustomCard(
+      borderColor: Colors.transparent,
+      width: double.maxFinite,
+      height: widget.state.isNoAccessChangingPhoto ? 580.h : 630.h,
+      child: Stack(
+        children: [
+          // name and last name row
+          Positioned(
+            top: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Имя
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomText(
-                        text: "Ваше имя",
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      5.verticalSpace,
-                      SizedBox(
-                        height: 40.h,
-                        child: CustomTextField(
-                          style: GoogleFonts.raleway(
-                              fontSize: 14.sp, fontWeight: FontWeight.w400),
-                          isError: isNameEmpty,
-                          hasFocus: true,
-                          cursorColor: AppColors.greyText,
-                          contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
-                          controller: nameController,
-                          onChanged: (val) {
-                            if (val.trim().isEmpty && !isNameEmpty) {
-                              isNameEmpty = true;
-                              setState(() {});
-                            } else if (val.trim().isNotEmpty && isNameEmpty) {
-                              isNameEmpty = false;
-                              setState(() {});
-                            }
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                10.horizontalSpace,
-
-                // Фамилия
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomText(
-                        text: "Фамилия",
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      5.verticalSpace,
-                      SizedBox(
-                        height: 40.h,
-                        child: CustomTextField(
-                          style: GoogleFonts.raleway(
-                              fontSize: 14.sp, fontWeight: FontWeight.w400),
-                              contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
-                              controller: lastNameController,
-                              hintText: LocalStorage.getUserLastName().isEmpty ? "Фамилия" : "",
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-
-            16.verticalSpace,
-            CustomText(
-              text: "В каком городе искать активности",
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w500,
-            ),
-            5.verticalSpace,
-
-            // city textfield
-            Consumer(
-              builder: (context, ref, child) {
-                final dropDownOpened = ref.watch(settingsProvider).dropDownOpened;
-                final notifier = ref.watch(settingsProvider.notifier);
-                return Column(
+                // имя
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      key: sizedBoxKey,
-                      height: 40.h,
-                      child: CustomTextField(
-                        focusNode: focusNode,
-                        style: GoogleFonts.raleway(
-                            fontSize: 14.sp, 
-                            fontWeight: FontWeight.w400),
-                            contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
-                        //hasFocus: widget.state.cityTextFieldHasFocus,
-                        onTap: () async {
-                          if (!dropDownOpened) {
-                            notifier.openDropDown();
-                            focusNode.requestFocus();
-                            hideBlock = true;
-                          } else {
-                            focusNode.unfocus();
-                            notifier.closeDropDown();
-                          }
-                        },
-                        suffixIcon: TweenAnimationBuilder<double>(
-                          duration: const Duration(milliseconds: 300),
-                          tween: Tween(begin: 0, end: dropDownOpened ? 1.0 : 0),
-                          builder: (BuildContext context, double angle,
-                              Widget? child) {
-                            return Transform.rotate(
-                              angle: angle * pi,
-                              child: Icon(
-                                Icons.keyboard_arrow_down,
-                                size: 20.sp,
-                                color: Colors.black.withOpacity(0.5),
-                              ),
-                            );
-                          },
-                        ),
-                        readOnly: true,
-                        controller: cityController,
-                      ),
+                    CustomText(
+                      text: "Ваше имя",
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w500,
                     ),
                     5.verticalSpace,
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                      height: dropDownOpened ? (widget.state.isNoAccessChangingPhoto ? 260.h : 300.h) : 0,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16.0),
-                        color: Colors.white,
-                        border: Border.all(
-                          width: 1.0,
-                          color: const Color.fromRGBO(119, 170, 249, 1),
+                    SizedBox(
+                      height: 40.h,
+                      width: 150.w, //
+                      child: CustomTextField(
+                        style: GoogleFonts.raleway(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w400,
                         ),
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-                      child: MediaQuery.removePadding(
-                        context: context,
-                        removeTop: true,
-                        removeBottom: true,
-                        child: Consumer(builder: (context, ref, child) {
-                          final listOfCities = ref.watch(settingsProvider).listOfCities;
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: listOfCities.length,
-                            itemBuilder: (context, index) {
-                              final currentCity = listOfCities[index];
-                              return _listiles(
-                                currentCity.name ?? "",
-                                () {
-                                  cityController.text = currentCity.name ?? "??";
-                                  focusNode.unfocus();
-                                  setSelectedCity(currentCity);
-                                  ref.read(settingsProvider.notifier).closeDropDown();
-                                },
-                              );
-                            },
-                          );
-                        }),
+                        isError: isNameEmpty,
+                        hasFocus: true,
+                        cursorColor: AppColors.greyText,
+                        contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
+                        controller: nameController,
+                        onChanged: (val) {
+                          if (val.trim().isEmpty && !isNameEmpty) {
+                            isNameEmpty = true;
+                            setState(() {});
+                          } else if (val.trim().isNotEmpty && isNameEmpty) {
+                            isNameEmpty = false;
+                            setState(() {});
+                          }
+                        },
                       ),
                     ),
                   ],
-                );
-              },
+                ),
+                10.horizontalSpace,
+                // Фамилия
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomText(
+                      text: "Фамилия",
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    5.verticalSpace,
+                    SizedBox(
+                      width: 150.w,
+                      height: 40.h,
+                      child: CustomTextField(
+                        style: GoogleFonts.raleway(
+                            fontSize: 14.sp, fontWeight: FontWeight.w400),
+                        contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
+                        controller: lastNameController,
+                        hintText: LocalStorage.getUserLastName().isEmpty
+                            ? "Фамилия" : "",
+                      ),
+                    ),
+                  ],
+                )
+              ],
             ),
-            16.verticalSpace,
+          ),
 
-            // user data section (возраст, вес, рост)
-            Visibility(
-              visible: !hideBlock, // скрываем когда открыт dropdown
-              child: Column(
+          // age, weight, height row
+          Positioned(
+            top: 245.h,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // возраст
+                userParamsField(text: "Возраст", controller: ageController),
+                SizedBox(width: 15.w),
+                // вес
+                userParamsField(text: "Вес, кг", controller: weightController),
+                SizedBox(width: 15.w),
+                // рост
+                userParamsField(text: "Рост, см", controller: heightController),
+              ],
+            ),
+          ),
+
+          // avatar
+          Positioned(
+              top: 325.h,
+          child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // возраст
-                      userParamsField(text: "Возраст", controller: ageController),
-                      // вес
-                      userParamsField(text: "Вес, кг", controller: weightController),
-                      // рост
-                      userParamsField(text: "Рост, см", controller: heightController),
-                    ],
-                  ),
-              
-                  // avatar section
-                  16.verticalSpace,
                   CustomText(
                     text: "Аватар",
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w500,
                   ),
-                  5.verticalSpace,
+                  5.horizontalSpace,
                   SizedBox(
                     //color: Colors.red,
                     height: widget.state.avatar.isEmpty ? null : 80.h,
                     child: widget.state.avatar.isEmpty
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                        ? Row(
                             children: [
                               InkWell(
                                 onTap: () async {
@@ -318,8 +212,10 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                                   ),
                                 ),
                               ),
-                              10.verticalSpace,
+                              20.horizontalSpace,
                               CustomButton(
+                                height: 36.h,
+                                width: 190.w,
                                 borderColor: AppColors.fadedBlueBorder,
                                 buttonColor: AppColors.backgroundColor,
                                 fontSize: 14.sp,
@@ -346,7 +242,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                                   },
                                 ),
                               ),
-                              5.horizontalSpace,
+                              20.horizontalSpace,
                               if (!widget.state.isNoAccessChangingPhoto)
                                 CustomButton(
                                   height: 36.h,
@@ -392,7 +288,9 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                                             fontWeight: FontWeight.w400,
                                             color: Colors.black,
                                             height: 1.1,
-                                            fontFeatures: const [FontFeature.liningFigures()],
+                                            fontFeatures: const [
+                                              FontFeature.liningFigures()
+                                            ],
                                           ),
                                         ),
                                       ],
@@ -402,109 +300,332 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                             ],
                           ),
                   ),
-                  10.verticalSpace,
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                            text: "Внимание!",
-                            style: GoogleFonts.raleway(
-                              color: Colors.black,
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w700,
-                            )),
-                        WidgetSpan(child: SizedBox(width: 3.w)),
-                        TextSpan(
-                            text:"Администратор на входе будет сверяться с этим фото, чтобы вас пропустить",
-                            style: GoogleFonts.raleway(
-                              color: Colors.black,
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w400,
-                            )),
-                      ],
-                    ),
-                  ),
-                  !widget.state.isNoAccessChangingPhoto
-                      ? Column(
-                          children: [
-                            10.verticalSpace,
-                            CustomText(
-                              text:"Фотографию можно обновлять не чаще раза в неделю",
-                              fontSize: 16.sp,
-                              height: 1.1,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ],
-                        )
-                      : const SizedBox.shrink(),
                 ],
+              )),
+
+          // внимание
+          Positioned(
+            top: 450.h,
+            child: SizedBox(
+              width: 310.w,
+              child: RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                        text: "Внимание!",
+                        style: GoogleFonts.raleway(
+                          color: Colors.black,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w700,
+                        )),
+                    WidgetSpan(child: SizedBox(width: 3.w)),
+                    TextSpan(
+                      text:"Администратор на входе будет сверяться с этим фото, чтобы вас пропустить",
+                      style: GoogleFonts.raleway(
+                        color: Colors.black,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            // buttons
-            16.verticalSpace,
-            const Spacer(),
-            Row(
-              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: CustomButton(
-                    width: 130.w,
-                    height: 40.h,
-                    fontSize: 14.sp,
-                    buttonColor: Colors.white,
-                    onPressed: () {
-                      context.popRoute();
-                    },
-                    text: "Отменить",
-                  ),
+          ),
+
+          if (!widget.state.isNoAccessChangingPhoto)
+            Positioned(
+              top: 500.h,
+              child: SizedBox(
+                width: 310.w,
+                child: CustomText(
+                  text: "Фотографию можно обновлять не чаще раза в неделю",
+                  fontSize: 16.sp,
+                  height: 1.1,
+                  fontWeight: FontWeight.w400,
                 ),
-                10.horizontalSpace,
-                Expanded(
-                  child: Consumer(
-                    builder: (context, ref, child) {
-                      final mapEvent = ref.watch(mapProvider.notifier);
-                      return CustomButton(
-                        showProgress: widget.state.isloading,
-                        width: 130.w,
-                        height: 40.h,
-                        fontSize: 14.sp,
-                        buttonColor: AppColors.blueColor,
-                        borderColor: AppColors.blueBorder,
-                        textColor: Colors.white,
-                        onPressed: () async {
-                          if (!isNameEmpty) {
-                            // check whether user added new data
-                            if (LocalStorage.getUserName() != nameController.text.trim()) {
-                              await widget.event.patchName(nameController.text.trim(), context);
-                            }
-                            if (LocalStorage.getUserLastName() != lastNameController.text.trim()) {
-                              await widget.event.patchLastname(lastNameController.text.trim(), context);
-                            }
-                            if (LocalStorage.getSelectedCity() != cityController.text) {
-                              await widget.event.patchCity(selectedCity, context);
-                              await mapEvent.setLocationFromSelectedCity();
-                            }
-                            if (LocalStorage.getAge() != ageController.text) {
-                              await widget.event.patchAge(ageController.text, context);
-                            }
-                            if (LocalStorage.getWeight() != weightController.text) {
-                              await widget.event.patchWeight(weightController.text, context);
-                            }
-                            if (LocalStorage.getHeight() != heightController.text) {
-                              await widget.event.patchHeight(heightController.text, context);
-                            }
-                            context.popRoute();
+              ),
+            ),
+
+          // city
+          Positioned(
+            top: 155.h,
+            child: CustomText(
+              text: "В каком городе искать активности",
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Positioned(
+            top: 185.h,
+            child: Consumer(
+              builder: (context, ref, child) {
+                final dropDownOpened =ref.watch(settingsProvider).dropDownOpened;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 40,
+                      width: 310.w,
+                      child: CustomTextField(
+                        focusNode: focusNode,
+                        style: GoogleFonts.raleway(
+                            fontSize: 14.sp, fontWeight: FontWeight.w400),
+                        contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
+                        onTap: () async {
+                          if (!dropDownOpened) {
+                            widget.event.openDropDown();
+                            focusNode.requestFocus();
+                          } else {
+                            focusNode.unfocus();
+                            widget.event.closeDropDown();
                           }
                         },
-                        text: "Сохранить",
-                      );
-                    },
-                  ),
-                ),
-              ],
+                        suffixIcon: TweenAnimationBuilder<double>(
+                          duration: const Duration(milliseconds: 300),
+                          tween: Tween(begin: 0, end: dropDownOpened ? 1.0 : 0),
+                          builder: (BuildContext context, double angle,
+                              Widget? child) {
+                            return Transform.rotate(
+                              angle: angle * pi,
+                              child: Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 20.sp,
+                                color: Colors.black.withOpacity(0.5),
+                              ),
+                            );
+                          },
+                        ),
+                        readOnly: true,
+                        controller: cityController,
+                      ),
+                    ),
+                    5.verticalSpace,
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      height: dropDownOpened ? 260.h : 0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16.0),
+                        color: Colors.white,
+                        border: Border.all(
+                          width: 1.0,
+                          color: const Color.fromRGBO(119, 170, 249, 1),
+                        ),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+                      child: MediaQuery.removePadding(
+                        context: context,
+                        removeTop: true,
+                        removeBottom: true,
+                        child: Consumer(builder: (context, ref, child) {
+                          final listOfCities = ref.watch(settingsProvider).listOfCities;
+                          return SizedBox(
+                            width: 276.w,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: listOfCities.length,
+                              itemBuilder: (context, index) {
+                                final currentCity = listOfCities[index];
+                                return _listiles(
+                                  currentCity.name ?? "",
+                                  () {
+                                    cityController.text = currentCity.name ?? "??";
+                                    focusNode.unfocus();
+                                    setSelectedCity(currentCity);
+                                    ref.read(settingsProvider.notifier).closeDropDown();
+                                  },
+                                );
+                              },
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
-          ],
-        ),
+          ),
+
+          // gender
+          Positioned(
+            top: 80.h,
+            child: CustomText(
+              text: "Пол",
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Positioned(
+            top: 110.h,
+            child: // gender
+                Consumer(
+              builder: (context, ref, child) {
+                final genderDropDownOpened =ref.watch(settingsProvider).genderDropDownOpened;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 40,
+                      width: 310.w,
+                      child: CustomTextField(
+                        focusNode: genderFocusNode,
+                        style: GoogleFonts.raleway(
+                            fontSize: 14.sp, fontWeight: FontWeight.w400),
+                        contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
+                        onTap: () async {
+                          if (!genderDropDownOpened) {
+                            widget.event.openGenderDropDown();
+                            genderFocusNode.requestFocus();
+                          } else {
+                            genderFocusNode.unfocus();
+                            widget.event.closeGenderDropDown();
+                          }
+                        },
+                        suffixIcon: TweenAnimationBuilder<double>(
+                          duration: const Duration(milliseconds: 300),
+                          tween: Tween(
+                              begin: 0, end: genderDropDownOpened ? 1.0 : 0),
+                          builder: (BuildContext context, double angle,
+                              Widget? child) {
+                            return Transform.rotate(
+                              angle: angle * pi,
+                              child: Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 20.sp,
+                                color: Colors.black.withOpacity(0.5),
+                              ),
+                            );
+                          },
+                        ),
+                        readOnly: true,
+                        controller: genderController,
+                      ),
+                    ),
+                    5.verticalSpace,
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      height: genderDropDownOpened ? 80.h : 0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16.0),
+                        color: Colors.white,
+                        border: Border.all(
+                          width: 1.0,
+                          color: const Color.fromRGBO(119, 170, 249, 1),
+                        ),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 12.h, horizontal: 16.w),
+                      child: MediaQuery.removePadding(
+                        context: context,
+                        removeTop: true,
+                        removeBottom: true,
+                        child: Consumer(builder: (context, ref, child) {
+                          return SizedBox(
+                            width: 276.w,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: DummyData().genders.length,
+                              itemBuilder: (context, index) {
+                                final current = DummyData().genders[index];
+                                return _listiles(
+                                  current,
+                                  () {
+                                    genderController.text = current;
+                                    genderFocusNode.unfocus();
+                                    widget.event.closeGenderDropDown();
+                                  },
+                                );
+                              },
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+
+          // buttons
+          Positioned(
+            top: widget.state.isNoAccessChangingPhoto ? 500.h : 545.h,
+            child: Consumer(builder: (context, ref, child) {
+              final mapEvent = ref.watch(mapProvider.notifier);
+              final cityDropDownOpened = ref.watch(settingsProvider).dropDownOpened;
+              final genderDropDownOpened = ref.watch(settingsProvider).genderDropDownOpened;
+              return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomButton(
+                  width: 130.w,
+                  height: 40.h,
+                  fontSize: 14.sp,
+                  buttonColor: Colors.white,
+                  onPressed: () {
+                    if (cityDropDownOpened) {
+                      ref.read(settingsProvider.notifier).closeDropDown();
+                    }
+                    if (genderDropDownOpened) {
+                      ref.read(settingsProvider.notifier).closeGenderDropDown();
+                    }
+                    context.popRoute();
+                  },
+                  text: "Отменить",
+                ),
+                10.horizontalSpace,
+                CustomButton(
+                  showProgress: widget.state.isloading,
+                  width: 143.w,
+                  height: 40.h,
+                  fontSize: 14.sp,
+                  buttonColor: AppColors.blueColor,
+                  borderColor: AppColors.blueBorder,
+                  textColor: Colors.white,
+                  onPressed: () async {
+                    if (!isNameEmpty) {
+                      // check whether user added new data
+                      if (LocalStorage.getUserName() != nameController.text.trim()) {
+                        await widget.event.patchName(nameController.text.trim(), context);
+                      }
+                      if (LocalStorage.getUserLastName() != lastNameController.text.trim()) {
+                        await widget.event.patchLastname(lastNameController.text.trim(), context);
+                      }
+                      if (LocalStorage.getSelectedCity() != cityController.text) {
+                        await widget.event.patchCity(selectedCity, context);
+                        await mapEvent.setLocationFromSelectedCity();
+                      }
+                      if (LocalStorage.getAge() != ageController.text) {
+                        await widget.event.patchAge(ageController.text, context);
+                      }
+                      if (LocalStorage.getWeight() != weightController.text) {
+                        await widget.event.patchWeight(weightController.text, context);
+                      }
+                      if (LocalStorage.getHeight() != heightController.text) {
+                        await widget.event.patchHeight(heightController.text, context);
+                      }
+                      if (LocalStorage.getGender() != genderController.text) {
+                        await widget.event.patchGender(genderController.text, context);
+                      }
+                      if (cityDropDownOpened) {
+                        ref.read(settingsProvider.notifier).closeDropDown();
+                      }
+                      if (genderDropDownOpened) {
+                        ref.read(settingsProvider.notifier).closeGenderDropDown();
+                      }
+                      context.popRoute();
+                        }
+                      },
+                      text: "Сохранить",
+                    ),
+              ],
+            );
+            },),
+          )
+        ],
       ),
     );
   }

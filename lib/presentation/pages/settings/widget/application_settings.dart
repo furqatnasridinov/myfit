@@ -145,8 +145,7 @@ class ApplicationSettings extends StatelessWidget {
                                 onPressed: () async {
                                   await LocalStorage.instance.logOut();
                                   // remove all routes and replace with splash route
-                                  context.router
-                                      .replaceAll([const SplashRoute()]);
+                                  context.router.replaceAll([const SplashRoute()]);
                                 },
                                 text: "Выйти",
                               ),
