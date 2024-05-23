@@ -448,24 +448,22 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       {required File image}) async {
     final connected = await AppConnectivity().connectivity();
     if (connected) {
-      final response =
-          await _settingsRepositoryInterface.addPicture(image: image);
+      state = state.copyWith(isPhotoUploading: true);
+      final response = await _settingsRepositoryInterface.addPicture(image: image);
       response.when(success: (data) {
-        //
+        state = state.copyWith(isPhotoUploading: false);
       }, failure: (error, statusCode, operationInfo) {
         //AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
         final errorcha = error.toString();
+         state = state.copyWith(isPhotoUploading: false);
         debugPrint("errorcha $errorcha");
         if (errorcha.contains("Смена фото не чаще 1 раза в неделю")) {
-          AppHelpers.showErrorSnack(context,
-              "Фото не изменено.Сменить фото можно только один раз в неделью");
-          final String whenAccessOpens =
-              errorcha.split("неделю/")[1].replaceAll(")", "");
+          AppHelpers.showErrorSnack(context, "Фото не изменено.Сменить фото можно только один раз в неделью");
+          final String whenAccessOpens = errorcha.split("неделю/")[1].replaceAll(")", "");
           LocalStorage.setWhenUploadingPhotoOpens(whenAccessOpens);
           if (!state.isNoAccessChangingPhoto) {
             state = state.copyWith(isNoAccessChangingPhoto: true);
           }
-          //context.popRoute();
         }
       });
     } else {

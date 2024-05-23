@@ -30,6 +30,7 @@ class SettingsState with _$SettingsState {
     @Default(false) bool isReminderDisabled,
     @Default("") String? qrcodeValue,
     @Default(false) bool isNoAccessChangingPhoto,
+    @Default(false) bool isPhotoUploading,
     @Default(null) UserSubscription? currentSubscribtion,
     @Default(null) UserSubscription? nextSubscribtion,
     @Default([]) List<Subscription> allAvailableSubscriptions,

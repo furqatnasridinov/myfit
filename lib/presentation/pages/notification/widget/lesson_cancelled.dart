@@ -1,0 +1,176 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
+import 'package:myfit/presentation/components/custom_button.dart';
+import 'package:myfit/presentation/components/custom_card.dart';
+import 'package:myfit/presentation/components/custom_text.dart';
+import 'package:myfit/presentation/components/inter_text.dart';
+
+class LessonCancelled extends StatelessWidget {
+  final String lessonType;
+  final bool unread;
+  final String time;
+  final String gymName;
+  final int gymId;
+  final String reason;
+  final int? visitsLeft;
+  final int? tottalVisits;
+  const LessonCancelled(
+      {super.key,
+      required this.lessonType,
+      required this.unread,
+      required this.time,
+      required this.gymName,
+      required this.gymId,
+      required this.reason,
+      this.visitsLeft,
+      this.tottalVisits});
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomCard(
+      marginBottom: 16.h,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(6.r),
+                child: SizedBox(
+                  width: 24.w,
+                  height: 24.h,
+                  child: ColoredBox(
+                    color: AppColors.backgroundColor,
+                    child: Padding(
+                      padding: EdgeInsets.all(3.r),
+                      child: SvgPicture.asset(
+                        AppHelpers().getIconSvg(lessonType),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              6.horizontalSpace,
+              InterText(
+                text: lessonType,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w400,
+                color: AppColors.blueText,
+              ),
+              const Spacer(),
+              if(unread)
+              Row(
+                children: [
+                  SizedBox(
+                    width: 6.w,
+                    height: 6.h,
+                    child: const DecoratedBox(
+                        decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.blueText,
+                    )),
+                  ),
+                  5.horizontalSpace,
+                  InterText(
+                    text: "Новое",
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.blueText,
+                  ),
+                ],
+              ),
+            ],
+          ),
+          16.verticalSpace,
+          CustomText(
+            text: "Отмена занятия на 16 мая в 13:40 в Crystall",
+            fontSize: 13.sp,
+            fontWeight: FontWeight.w600,
+            height: 1.1,
+          ),
+          16.verticalSpace,
+          CustomText(
+            text: getReason(reason),
+            fontSize: 13.sp,
+            fontWeight: FontWeight.w400,
+            height: 1.1,
+          ),
+          16.verticalSpace,
+          CustomText(
+            text: "Посещение не будет потрачено и уже вернулось к вам! Теперь в “Crystall” их - 5.",
+            fontSize: 13.sp,
+            fontWeight: FontWeight.w400,
+            height: 1.1,
+          ),
+          reason == "lesson_deleted" ? 16.verticalSpace : 0.verticalSpace,
+          if(reason == "lesson_deleted")
+          CustomText(
+            text: "Нажмите кнопку ниже, чтобы открыть расписание и выбрать подходящее занятие.",
+            fontSize: 13.sp,
+            fontWeight: FontWeight.w400,
+            height: 1.1,
+          ),
+          16.verticalSpace,
+          CustomButton(
+            onPressed: () {},
+            text: "Открыть расписание заведения",
+            buttonColor: Colors.white,
+            textColor: Colors.black,
+            fontSize: 13.sp,
+            fontWeight: FontWeight.w500,
+            height: 40.h,
+          ),
+          12.verticalSpace,
+          Row(
+            children: [
+              SvgPicture.asset(
+                "assets/svg/clock.svg",
+                width: 16.w,
+                height: 16.h,
+              ),
+              6.horizontalSpace,
+              InterText(
+                text: time,
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w400,
+                color: AppColors.greyText,
+              ),
+              const Spacer(),
+              Row(
+                children: [
+                  SvgPicture.asset(
+                    "assets/svg/location.svg",
+                    width: 16.w,
+                    height: 16.h,
+                  ),
+                  2.horizontalSpace,
+                  InterText(
+                    text: gymName,
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.greyText,
+                  ),
+                  6.horizontalSpace,
+                  AppHelpers().getBatteryIcon(7, 12),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+String getReason(String reason) {
+  if (reason == "no_places_left") {
+    return "К сожалению так вышло, что в зале закончились места, по этому запись пришлось отменить.";
+  } else if (reason == "lesson_deleted") {
+    return "К сожалению так вышло, что занятие на которое вы были записаны - отменилось.";
+  } else {
+    return "";
+  }
+}

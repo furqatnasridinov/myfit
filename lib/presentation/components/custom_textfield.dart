@@ -80,7 +80,7 @@ class CustomTextField extends StatelessWidget {
         suffixIcon: suffixIcon,
         contentPadding: contentPadding,
         hintText: hintText,
-        hintStyle: GoogleFonts.inter(
+        hintStyle: GoogleFonts.raleway(
           fontSize: 14.sp,
           fontWeight: FontWeight.w400,
         ),

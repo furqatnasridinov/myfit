@@ -88,6 +88,16 @@ class AppConstants {
   static const String subscriptionText1 = "MyFit — это один абонемент на разные виды активностей. Вы можете выбрать занятия на каждый день и в любое время.";
   static const String subscriptionText2 = "Можно записаться на несколько занятий в день: утром на йогу, в обед на фитнес и вечером в бассейн.";
   static const String subscriptionText3 = "В абонементе нет ограничений по количеству посещений в месяц, но есть несколько правил, которые стоит помнить при посещении активностей MyFit:";
+  static const String visitsCountIsEndingLongText = "Если до пополнения ещё долго - мы рекомендуем записаться в другой зал и попробовать что то новое. Движение - это жизнь!";
+  static const String lessonChangedLongText = "Администратор заведения внёс изменения в занятие, на которое вы были записаны, по этому ваша запись отменена. Ознакомьтесь с изменениями и если вас всё устраивает - нажмите кнопку снизу этого уведомления.";
   static const String fiilYourProfileLongText = "Так мы сможем подобрать для вас предложения, которые с большей вероятностью смогут вас заинтересовать";
-  
+}
+
+enum NotificationType {
+  lessonCompleted, // 
+  lessonCancelled, //
+  lessonConfirmed, // 
+  lessonStartsWithin15minutes, //
+  lessonChanged, // 
+  visitsCountIsGettingLowOrEnded, //
 }

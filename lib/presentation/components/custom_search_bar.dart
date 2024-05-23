@@ -14,8 +14,8 @@ import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/presentation/components/custom_button.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:myfit/presentation/components/inter_text.dart';
+import 'package:myfit/presentation/pages/notification/widget/notification_bottom_sheet.dart';
 import 'package:myfit/presentation/router/app_router.gr.dart';
-
 import '../../infrastructure/models/data/gym_data.dart';
 
 class CustomSearchBar extends ConsumerStatefulWidget
@@ -112,10 +112,8 @@ class _CustomSearchBarState extends ConsumerState<CustomSearchBar> {
                 }
               },
               child: Consumer(builder: (context, ref, child) {
-                final lessonsFoundBySearch =
-                    ref.watch(mapProvider).lessonsFoundBySearch;
-                final gymsFoundBySearch =
-                    ref.watch(mapProvider).gymsFoundBySearch;
+                final lessonsFoundBySearch = ref.watch(mapProvider).lessonsFoundBySearch;
+                final gymsFoundBySearch = ref.watch(mapProvider).gymsFoundBySearch;
                 List combinedList = [
                   ...lessonsFoundBySearch,
                   ...gymsFoundBySearch
@@ -262,8 +260,7 @@ class _CustomSearchBarState extends ConsumerState<CustomSearchBar> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 3.h),
       decoration: BoxDecoration(
-        //color: Colors.blue,
-        //color: AppColors.backgroundColor,
+        color: AppColors.backgroundColor,
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(32.r),
           bottomRight: Radius.circular(32.r),
@@ -277,7 +274,7 @@ class _CustomSearchBarState extends ConsumerState<CustomSearchBar> {
             children: [
               //leading
               if (widget.showBackButton)
-                Positioned(
+              Positioned(
                   left: 0,
                   bottom: 0,
                   child: GestureDetector(
@@ -308,48 +305,56 @@ class _CustomSearchBarState extends ConsumerState<CustomSearchBar> {
                   ),
                 ),
 
-              // action
+              // actions
               Positioned(
                 right: 0,
                 bottom: 0,
                 child: Consumer(builder: (context, ref, child) {
                   final avatar = ref.watch(settingsProvider).avatar;
                   final missingInfos = ref.watch(settingsProvider).missingInfo;
-                  return widget.showNotification ?
-                  Container(
-                    width: 100,
-                    height: 40.h,
-                    padding: EdgeInsets.only(left: 20.w),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(32.r),
-                      border: Border.all(
-                        color: AppColors.greyBorder,
-                        width: 1.w,
-                      ),
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                      SvgPicture.asset("assets/svg/notificationInSearch.svg"),
-                      const Spacer(),
-                          avatarOnly(missingInfos, avatar,widget.canNavigateToSettings,context),
-                      ]
-                    ),
-                  ) : avatarOnly(missingInfos, avatar, widget.canNavigateToSettings, context);
+                  return widget.showNotification
+                      ? Container(
+                          width: 100.w,
+                          height: 40.h,
+                          padding: EdgeInsets.only(left: 20.w),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(32.r),
+                            border: Border(
+                              bottom: BorderSide(
+                                color: AppColors.greyBorder,
+                                width: 1.w),
+                              top: BorderSide(
+                                color: AppColors.greyBorder,
+                                width: 1.w     
+                              ),
+                              left: BorderSide(
+                                color: AppColors.greyBorder,
+                                width: 1.w
+                              ),
+                            ),
+                          ),
+                          child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                notificationIcon(context),
+                                const Spacer(),
+                                avatarOnly(missingInfos, avatar, widget.canNavigateToSettings, context),
+                              ]),
+                        )
+                      : avatarOnly(missingInfos, avatar, widget.canNavigateToSettings, context);
                 }),
               ),
 
               // textfield
               AnimatedPositioned(
                 duration: const Duration(milliseconds: 500),
-                left: widget.showBackButton && !textfieldFocusnode.hasFocus
-                    ? 45.w : 0,
+                left: widget.showBackButton && !textfieldFocusnode.hasFocus ? 45.w : 0,
                 curve: Curves.easeInOut,
                 bottom: 0,
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 500),
-                  //curve: Curves.easeInOut,
+                  curve: Curves.easeInOut,
                   width: textfieldFocusnode.hasFocus
                       ? constraints.maxWidth : getWidth(widget.showBackButton, widget.showNotification),
                   height: 40.h,
@@ -358,8 +363,7 @@ class _CustomSearchBarState extends ConsumerState<CustomSearchBar> {
                     borderRadius: BorderRadius.circular(100.r),
                     border: Border.all(
                       color: textfieldFocusnode.hasFocus
-                          ? AppColors.blueColor
-                          : AppColors.greyBorder,
+                          ? AppColors.blueColor : AppColors.greyBorder,
                       width: 1.w,
                     ),
                   ),
@@ -472,7 +476,8 @@ Widget _listiles(
   );
 }
 
-Widget avatarOnly(List<String> missingInfos, String avatar, bool canNavigateToSettings, BuildContext context) {
+Widget avatarOnly(List<String> missingInfos, String avatar,
+    bool canNavigateToSettings, BuildContext context) {
   return GestureDetector(
     onTap: () {
       if (canNavigateToSettings) {
@@ -520,17 +525,43 @@ Widget avatarOnly(List<String> missingInfos, String avatar, bool canNavigateToSe
   );
 }
 
+Widget notificationIcon(BuildContext context) {
+  return GestureDetector(
+    onTap: () {
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.white,
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16.r),
+            topRight: Radius.circular(16.r),
+          ),
+        ),
+        builder: (context) {
+          return NotificationBottomSheet();
+        },
+      );
+    },
+    child: SvgPicture.asset(
+      "assets/svg/notificationInSearch.svg",
+      width: 24.w,
+      height: 24.h,
+    ),
+  );
+}
+
 double getWidth(bool showBack, showNotif) {
   if (showNotif) {
     if (showBack) {
-      return 200.w;
+      return 190.w;
     } else {
-      return 245.w;
+      return 235.w;
     }
-  }else if(!showNotif){
+  } else if (!showNotif) {
     if (showBack) {
       return 250.w;
-    }else{
+    } else {
       return 295.w;
     }
   }

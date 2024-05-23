@@ -37,6 +37,7 @@ mixin _$SettingsState {
   bool get isReminderDisabled => throw _privateConstructorUsedError;
   String? get qrcodeValue => throw _privateConstructorUsedError;
   bool get isNoAccessChangingPhoto => throw _privateConstructorUsedError;
+  bool get isPhotoUploading => throw _privateConstructorUsedError;
   UserSubscription? get currentSubscribtion =>
       throw _privateConstructorUsedError;
   UserSubscription? get nextSubscribtion => throw _privateConstructorUsedError;
@@ -82,6 +83,7 @@ abstract class $SettingsStateCopyWith<$Res> {
       bool isReminderDisabled,
       String? qrcodeValue,
       bool isNoAccessChangingPhoto,
+      bool isPhotoUploading,
       UserSubscription? currentSubscribtion,
       UserSubscription? nextSubscribtion,
       List<Subscription> allAvailableSubscriptions,
@@ -127,6 +129,7 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     Object? isReminderDisabled = null,
     Object? qrcodeValue = freezed,
     Object? isNoAccessChangingPhoto = null,
+    Object? isPhotoUploading = null,
     Object? currentSubscribtion = freezed,
     Object? nextSubscribtion = freezed,
     Object? allAvailableSubscriptions = null,
@@ -222,6 +225,10 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.isNoAccessChangingPhoto
           : isNoAccessChangingPhoto // ignore: cast_nullable_to_non_nullable
               as bool,
+      isPhotoUploading: null == isPhotoUploading
+          ? _value.isPhotoUploading
+          : isPhotoUploading // ignore: cast_nullable_to_non_nullable
+              as bool,
       currentSubscribtion: freezed == currentSubscribtion
           ? _value.currentSubscribtion
           : currentSubscribtion // ignore: cast_nullable_to_non_nullable
@@ -292,6 +299,7 @@ abstract class _$$SettingsStateImplCopyWith<$Res>
       bool isReminderDisabled,
       String? qrcodeValue,
       bool isNoAccessChangingPhoto,
+      bool isPhotoUploading,
       UserSubscription? currentSubscribtion,
       UserSubscription? nextSubscribtion,
       List<Subscription> allAvailableSubscriptions,
@@ -335,6 +343,7 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     Object? isReminderDisabled = null,
     Object? qrcodeValue = freezed,
     Object? isNoAccessChangingPhoto = null,
+    Object? isPhotoUploading = null,
     Object? currentSubscribtion = freezed,
     Object? nextSubscribtion = freezed,
     Object? allAvailableSubscriptions = null,
@@ -430,6 +439,10 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value.isNoAccessChangingPhoto
           : isNoAccessChangingPhoto // ignore: cast_nullable_to_non_nullable
               as bool,
+      isPhotoUploading: null == isPhotoUploading
+          ? _value.isPhotoUploading
+          : isPhotoUploading // ignore: cast_nullable_to_non_nullable
+              as bool,
       currentSubscribtion: freezed == currentSubscribtion
           ? _value.currentSubscribtion
           : currentSubscribtion // ignore: cast_nullable_to_non_nullable
@@ -495,6 +508,7 @@ class _$SettingsStateImpl extends _SettingsState {
       this.isReminderDisabled = false,
       this.qrcodeValue = "",
       this.isNoAccessChangingPhoto = false,
+      this.isPhotoUploading = false,
       this.currentSubscribtion = null,
       this.nextSubscribtion = null,
       final List<Subscription> allAvailableSubscriptions = const [],
@@ -503,7 +517,7 @@ class _$SettingsStateImpl extends _SettingsState {
       this.autoRenewal = false,
       this.dropDownOpened = false,
       this.genderDropDownOpened = false,
-      final List<String> missingInfo = const ["cdmkcm"]})
+      final List<String> missingInfo = const []})
       : _listOfCities = listOfCities,
         _knownActivities = knownActivities,
         _allAvailableSubscriptions = allAvailableSubscriptions,
@@ -587,6 +601,9 @@ class _$SettingsStateImpl extends _SettingsState {
   final bool isNoAccessChangingPhoto;
   @override
   @JsonKey()
+  final bool isPhotoUploading;
+  @override
+  @JsonKey()
   final UserSubscription? currentSubscribtion;
   @override
   @JsonKey()
@@ -627,7 +644,7 @@ class _$SettingsStateImpl extends _SettingsState {
 
   @override
   String toString() {
-    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, gender: $gender, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, user: $user, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue, isNoAccessChangingPhoto: $isNoAccessChangingPhoto, currentSubscribtion: $currentSubscribtion, nextSubscribtion: $nextSubscribtion, allAvailableSubscriptions: $allAvailableSubscriptions, isChangeSubscribtionLoading: $isChangeSubscribtionLoading, cardNumber: $cardNumber, autoRenewal: $autoRenewal, dropDownOpened: $dropDownOpened, genderDropDownOpened: $genderDropDownOpened, missingInfo: $missingInfo)';
+    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, gender: $gender, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, user: $user, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue, isNoAccessChangingPhoto: $isNoAccessChangingPhoto, isPhotoUploading: $isPhotoUploading, currentSubscribtion: $currentSubscribtion, nextSubscribtion: $nextSubscribtion, allAvailableSubscriptions: $allAvailableSubscriptions, isChangeSubscribtionLoading: $isChangeSubscribtionLoading, cardNumber: $cardNumber, autoRenewal: $autoRenewal, dropDownOpened: $dropDownOpened, genderDropDownOpened: $genderDropDownOpened, missingInfo: $missingInfo)';
   }
 
   @override
@@ -672,6 +689,8 @@ class _$SettingsStateImpl extends _SettingsState {
             (identical(
                     other.isNoAccessChangingPhoto, isNoAccessChangingPhoto) ||
                 other.isNoAccessChangingPhoto == isNoAccessChangingPhoto) &&
+            (identical(other.isPhotoUploading, isPhotoUploading) ||
+                other.isPhotoUploading == isPhotoUploading) &&
             (identical(other.currentSubscribtion, currentSubscribtion) ||
                 other.currentSubscribtion == currentSubscribtion) &&
             (identical(other.nextSubscribtion, nextSubscribtion) ||
@@ -718,6 +737,7 @@ class _$SettingsStateImpl extends _SettingsState {
         isReminderDisabled,
         qrcodeValue,
         isNoAccessChangingPhoto,
+        isPhotoUploading,
         currentSubscribtion,
         nextSubscribtion,
         const DeepCollectionEquality().hash(_allAvailableSubscriptions),
@@ -759,6 +779,7 @@ abstract class _SettingsState extends SettingsState {
       final bool isReminderDisabled,
       final String? qrcodeValue,
       final bool isNoAccessChangingPhoto,
+      final bool isPhotoUploading,
       final UserSubscription? currentSubscribtion,
       final UserSubscription? nextSubscribtion,
       final List<Subscription> allAvailableSubscriptions,
@@ -812,6 +833,8 @@ abstract class _SettingsState extends SettingsState {
   String? get qrcodeValue;
   @override
   bool get isNoAccessChangingPhoto;
+  @override
+  bool get isPhotoUploading;
   @override
   UserSubscription? get currentSubscribtion;
   @override

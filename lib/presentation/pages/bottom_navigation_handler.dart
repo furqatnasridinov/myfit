@@ -35,10 +35,8 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
                 final event = ref.read(mapProvider.notifier);
                 return NavigationBar(
                   backgroundColor: Colors.white,
-                  height:
-                      (mapPageBottomCardShown && tabsRouter.activeIndex == 2)
-                          ? 0
-                          : height * 0.09,
+                  height: (mapPageBottomCardShown && tabsRouter.activeIndex == 2)
+                          ? 0 : height * 0.09,
                   elevation: 10,
                   shadowColor: Colors.black,
                   selectedIndex: tabsRouter.activeIndex,

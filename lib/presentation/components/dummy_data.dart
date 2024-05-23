@@ -1,5 +1,7 @@
 import 'package:myfit/infrastructure/models/data/addresses.dart';
+import 'package:myfit/infrastructure/models/data/notification.dart';
 import 'package:myfit/infrastructure/models/data/subscribtion_card.dart';
+import 'package:myfit/infrastructure/services/app_constants.dart';
 
 class DummyData {
   final List<Addresses> dummyAddresses = [
@@ -49,4 +51,118 @@ class DummyData {
   ];
 
   final List<String> genders = ["Мужчина", "Женщина"];
+
+  final List<Notification> notifications = [
+    Notification(
+      type: NotificationType.lessonCompleted,
+      lessonType: "Силовые тренировки",
+      unread: true,
+      time: "20:30",
+      title: "",
+      description: "",
+      gymName: "Crystall",
+      gymId: 35,
+      body: {},
+      tottalVisits: 10,
+      visitsLeft: 5,
+    ),
+    Notification(
+      type: NotificationType.lessonConfirmed,
+      lessonType: "Силовые тренировки",
+      unread: true,
+      time: "20:30",
+      title: "",
+      description: "Занятие начинается 27 мая в 14:40.",
+      gymName: "Crystall",
+      gymId: 35,
+      body: {},
+      tottalVisits: 10,
+      visitsLeft: 5,
+    ),
+    Notification(
+      type: NotificationType.lessonChanged,
+      lessonType: "Силовые тренировки",
+      unread: true,
+      time: "20:30",
+      title: "",
+      description: "",
+      gymName: "Crystall",
+      gymId: 35,
+      body: {
+        "oldTime" : "21.03 в 15:00",
+        "newTime" : "22.03 в 15:00",
+        "oldDescription" : "Описание старое",
+        "newDescription" : "Массаж - это метод механического воздействия на мягкие ткани тела человека с помощью рук.",
+      },
+      tottalVisits: 10,
+      visitsLeft: 5,
+    ),
+     Notification(
+      type: NotificationType.visitsCountIsGettingLowOrEnded,
+      lessonType: "Силовые тренировки",
+      unread: true,
+      time: "20:30",
+      title: "Заканчиваются посещения в зале “Crystall”. Осталось 2.",
+      description: "Запас посещений пополнится 27 мая в 16:40",
+      gymName: "Crystall",
+      gymId: 35,
+      body: {},
+      tottalVisits: 10,
+      visitsLeft: 5,
+    ),
+    Notification(
+      type: NotificationType.visitsCountIsGettingLowOrEnded,
+      lessonType: "Силовые тренировки",
+      unread: true,
+      time: "20:30",
+      title: "В зале “Crystall” закончились посещения!",
+      description: "Запас посещений пополнится 27 мая в 16:40",
+      gymName: "Crystall",
+      gymId: 35,
+      body: {},
+      tottalVisits: 10,
+      visitsLeft: 5,
+    ),
+    Notification(
+      type: NotificationType.lessonStartsWithin15minutes,
+      lessonType: "Силовые тренировки",
+      unread: true,
+      time: "20:30",
+      title: "",
+      description: "",
+      gymName: "Crystall",
+      gymId: 35,
+      body: {},
+      tottalVisits: 10,
+      visitsLeft: 5,
+    ),
+    Notification(
+      type: NotificationType.lessonCancelled,
+      lessonType: "Силовые тренировки",
+      unread: true,
+      time: "20:30",
+      title: "",
+      description: "",
+      reason: "no_places_left",
+      gymName: "Crystall",
+      gymId: 35,
+      body: {},
+      tottalVisits: 10,
+      visitsLeft: 5,
+    ),
+    Notification(
+      type: NotificationType.lessonCancelled,
+      lessonType: "Силовые тренировки",
+      unread: true,
+      time: "20:30",
+      title: "",
+      description: "",
+      reason: "lesson_deleted",
+      gymName: "Crystall",
+      gymId: 35,
+      body: {},
+      tottalVisits: 10,
+      visitsLeft: 5,
+    ),
+  ];
 }

@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:math';
+import 'package:flutter/cupertino.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/settings/settings_notifier.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
@@ -85,14 +86,13 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
     return CustomCard(
       borderColor: Colors.transparent,
       width: double.maxFinite,
-      height: widget.state.isNoAccessChangingPhoto ? 580.h : 630.h,
+      height: widget.state.isNoAccessChangingPhoto ? 575.h : 618.h,
       child: Stack(
         children: [
           // name and last name row
           Positioned(
             top: 0,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // имя
                 Column(
@@ -108,7 +108,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                     5.verticalSpace,
                     SizedBox(
                       height: 40.h,
-                      width: 150.w, //
+                      width: 150.w, 
                       child: CustomTextField(
                         style: GoogleFonts.raleway(
                           fontSize: 14.sp,
@@ -117,7 +117,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                         isError: isNameEmpty || widget.state.missingInfo.contains("firstName"),
                         hasFocus: true,
                         cursorColor: AppColors.greyText,
-                        contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
+                        contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
                         controller: nameController,
                         onChanged: (val) {
                           if (val.trim().isEmpty && !isNameEmpty) {
@@ -132,7 +132,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                     ),
                   ],
                 ),
-                10.horizontalSpace,
+                9.horizontalSpace,
                 // Фамилия
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,10 +149,10 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                       child: CustomTextField(
                         style: GoogleFonts.raleway(
                             fontSize: 14.sp, fontWeight: FontWeight.w400),
-                        contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
+                        contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
                         controller: lastNameController,
-                        hintText: LocalStorage.getUserLastName().isEmpty
-                            ? "Фамилия" : "",
+                        /* hintText: LocalStorage.getUserLastName().isEmpty
+                            ? "Фамилия" : "", */
                       ),
                     ),
                   ],
@@ -163,7 +163,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
 
           // age, weight, height row
           Positioned(
-            top: 245.h,
+            top: 235.h,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -193,7 +193,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
 
           // avatar
           Positioned(
-              top: 325.h,
+              top: 315.h,
           child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -202,10 +202,10 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w500,
                   ),
-                  5.horizontalSpace,
+                  5.verticalSpace,
                   SizedBox(
                     //color: Colors.red,
-                    height: widget.state.avatar.isEmpty ? null : 80.h,
+                    height: widget.state.avatar.isEmpty ? null : 83.h,
                     child: widget.state.avatar.isEmpty
                         ? Row(
                             children: [
@@ -216,18 +216,20 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                                 child: CircleAvatar(
                                   radius: 40.r,
                                   backgroundColor: AppColors.backgroundColor,
-                                  child: const Center(
-                                    child: Icon(
-                                      Icons.add,
-                                      color: AppColors.blueBorder,
-                                    ),
+                                  child:  Center(
+                                    child: widget.state.isPhotoUploading
+                                        ? const CupertinoActivityIndicator()
+                                        : const Icon(
+                                            Icons.add,
+                                            color: AppColors.blueBorder,
+                                          ),
                                   ),
                                 ),
                               ),
-                              20.horizontalSpace,
+                              9.horizontalSpace,
                               CustomButton(
                                 height: 36.h,
-                                width: 190.w,
+                                width: 220.w,
                                 borderColor: AppColors.fadedBlueBorder,
                                 buttonColor: AppColors.backgroundColor,
                                 fontSize: 14.sp,
@@ -239,26 +241,26 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                             ],
                           )
                         : Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               CircleAvatar(
                                 radius: 40.r,
                                 backgroundColor: AppColors.backgroundColor,
-                                child: CircleAvatar(
-                                  radius: 38.r,
-                                  backgroundImage: NetworkImage(
-                                      "http://77.222.53.122/image/${widget.state.avatar}"),
-                                  onBackgroundImageError:
-                                      (exception, stackTrace) {
-                                    debugPrint(exception.toString());
-                                  },
-                                ),
+                                child: widget.state.isPhotoUploading
+                                    ? const CupertinoActivityIndicator()
+                                    : CircleAvatar(
+                                        radius: 38.r,
+                                        backgroundImage: NetworkImage("http://77.222.53.122/image/${widget.state.avatar}"),
+                                        onBackgroundImageError:
+                                            (exception, stackTrace) {
+                                          debugPrint(exception.toString());
+                                        },
+                                      ),
                               ),
-                              20.horizontalSpace,
+                              9.horizontalSpace,
                               if (!widget.state.isNoAccessChangingPhoto)
                                 CustomButton(
                                   height: 36.h,
-                                  width: 190.w,
+                                  width: 220.w,
                                   fontSize: 14.sp,
                                   borderColor: AppColors.fadedBlueBorder,
                                   onPressed: () async {
@@ -317,7 +319,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
 
           // внимание
           Positioned(
-            top: 450.h,
+            top: 440.h,
             child: SizedBox(
               width: 310.w,
               child: RichText(
@@ -347,7 +349,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
 
           if (!widget.state.isNoAccessChangingPhoto)
             Positioned(
-              top: 500.h,
+              top: 485.h,
               child: SizedBox(
                 width: 310.w,
                 child: CustomText(
@@ -379,14 +381,14 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      height: 40,
-                      width: 310.w,
+                      height: 40.h,
+                      width: 309.w,
                       child: CustomTextField(
                         isError: widget.state.missingInfo.contains("city"),
                         focusNode: focusNode,
                         style: GoogleFonts.raleway(
                             fontSize: 14.sp, fontWeight: FontWeight.w400),
-                        contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
+                        contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
                         onTap: () async {
                           if (!dropDownOpened) {
                             widget.event.openDropDown();
@@ -436,7 +438,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                         child: Consumer(builder: (context, ref, child) {
                           final listOfCities = ref.watch(settingsProvider).listOfCities;
                           return SizedBox(
-                            width: 276.w,
+                            width: 275.w,
                             child: ListView.builder(
                               shrinkWrap: true,
                               itemCount: listOfCities.length,
@@ -465,7 +467,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
 
           // gender
           Positioned(
-            top: 80.h,
+            top: 77.h,
             child: CustomText(
               text: "Пол",
               fontSize: 16.sp,
@@ -475,7 +477,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
             ),
           ),
           Positioned(
-            top: 110.h,
+            top: 105.h,
             child: // gender
                 Consumer(
               builder: (context, ref, child) {
@@ -484,15 +486,15 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      height: 40,
-                      width: 310.w,
+                      height: 40.h,
+                      width: 309.w,
                       child: CustomTextField(
                         hintText: LocalStorage.getGender().isEmpty ? "Не указано" : "",
                         isError: widget.state.missingInfo.contains("gender"),
                         focusNode: genderFocusNode,
                         style: GoogleFonts.raleway(
                             fontSize: 14.sp, fontWeight: FontWeight.w400),
-                        contentPadding: EdgeInsets.zero.copyWith(left: 5.w),
+                        contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
                         onTap: () async {
                           if (!genderDropDownOpened) {
                             widget.event.openGenderDropDown();
@@ -543,7 +545,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                         removeBottom: true,
                         child: Consumer(builder: (context, ref, child) {
                           return SizedBox(
-                            width: 276.w,
+                            width: 275.w,
                             child: ListView.builder(
                               shrinkWrap: true,
                               itemCount: DummyData().genders.length,
@@ -571,7 +573,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
 
           // buttons
           Positioned(
-            top: widget.state.isNoAccessChangingPhoto ? 500.h : 545.h,
+            top: widget.state.isNoAccessChangingPhoto ? 490.h : 535.h,
             child: Consumer(builder: (context, ref, child) {
               final mapEvent = ref.watch(mapProvider.notifier);
               final cityDropDownOpened = ref.watch(settingsProvider).dropDownOpened;
@@ -580,7 +582,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CustomButton(
-                  width: 130.w,
+                  width: 150.w,
                   height: 40.h,
                   fontSize: 14.sp,
                   buttonColor: Colors.white,
@@ -595,10 +597,10 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                   },
                   text: "Отменить",
                 ),
-                10.horizontalSpace,
+                9.horizontalSpace,
                 CustomButton(
                   showProgress: widget.state.isloading,
-                  width: 143.w,
+                  width: 150.w,
                   height: 40.h,
                   fontSize: 14.sp,
                   buttonColor: AppColors.blueColor,

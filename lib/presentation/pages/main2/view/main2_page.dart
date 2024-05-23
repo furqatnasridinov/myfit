@@ -86,6 +86,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
   @override
   Widget build(BuildContext context) {
     log('missing info: ${ref.watch(settingsProvider).missingInfo}');
+    log("token ${LocalStorage.getToken()}");
     log(LocalStorage.getGender());
     //final nearestLesson = ref.watch(main2Provider).nearestLesson;
     final event = ref.read(main2Provider.notifier);

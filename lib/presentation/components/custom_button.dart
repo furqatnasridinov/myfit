@@ -43,7 +43,7 @@ class CustomButton extends StatelessWidget {
         onHover: onHover,
         style: ButtonStyle(
           backgroundColor: WidgetStateProperty.all(buttonColor),
-          minimumSize: MaterialStateProperty.all(Size(width!.w, height!.h)),
+          minimumSize: MaterialStateProperty.all(Size(width!, height!)),
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.r),
