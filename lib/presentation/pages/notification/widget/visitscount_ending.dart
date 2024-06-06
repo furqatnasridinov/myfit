@@ -17,8 +17,7 @@ class VisitsCountEnding extends StatelessWidget {
   final String time;
   final String gymName;
   final int gymId;
-  final int? visitsLeft;
-  final int? tottalVisits;
+  final Widget batteryIcon;
   const VisitsCountEnding(
       {super.key,
       required this.lessonType,
@@ -28,8 +27,7 @@ class VisitsCountEnding extends StatelessWidget {
       required this.time,
       required this.gymName,
       required this.gymId,
-      this.visitsLeft,
-      this.tottalVisits});
+      required this.batteryIcon});
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +147,7 @@ class VisitsCountEnding extends StatelessWidget {
                     color: AppColors.greyText,
                   ),
                   6.horizontalSpace,
-                  AppHelpers().getBatteryIcon(7, 12),
+                  batteryIcon,
                 ],
               ),
             ],

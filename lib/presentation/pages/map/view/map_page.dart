@@ -131,11 +131,12 @@ class _MapScreenState extends ConsumerState<MapScreen>
         });
       }
     });
-    bool isAnyOpened = state.activitiesWithGymsInsideFromSelectedDiapozone
-        .any((element) => element.isOpened);
+    bool isAnyOpened = state.activitiesWithGymsInsideFromSelectedDiapozone.any((element) => element.isOpened);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: CustomSearchBar(showBackButton: state.showOnlyKnown || state.showRecommended, canNavigateToSettings: true, height: height * 0.07,),
+      appBar: CustomSearchBar(
+        showBackButton: state.showOnlyKnown || state.showRecommended, 
+        canNavigateToSettings: true, height: height * 0.07),
       body: SafeArea(
         child: ListView(
           //shrinkWrap: true,
@@ -151,7 +152,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                 child: CustomScrollView(
                     controller: activitiesListController,
                     slivers: [
-                      SliverAppBar(
+                      const SliverAppBar(
                         scrolledUnderElevation: 0,
                         automaticallyImplyLeading: false,
                         backgroundColor: AppColors.backgroundColor,
@@ -159,13 +160,10 @@ class _MapScreenState extends ConsumerState<MapScreen>
                         elevation: 0,
                         floating: false,
                         flexibleSpace: FlexibleSpaceBar(
-                          background: MapPageTopSection(
-                            event: event,
-                            state: state,
-                          ),
+                          background: MapPageTopSection(),
                         ),
                       ),
-                      SliverPadding(padding: EdgeInsets.only(bottom: 0.h)),
+                      //SliverPadding(padding: EdgeInsets.only(bottom: 0.h)),
                       SliverToBoxAdapter(
                         child: MapListOfActivities(
                           activitiesListController,
@@ -191,17 +189,9 @@ class _MapScreenState extends ConsumerState<MapScreen>
                   // map itself
                   DecoratedBox(
                     decoration: BoxDecoration(
-                      boxShadow:
-                          state.activitiesWithGymsInsideFromSelectedDiapozone
-                                          .length >
-                                      5 &&
-                                  (state.activitiesWithGymsInsideFromSelectedDiapozone
-                                              .length >
-                                          2 ||
-                                      state.locationPermissionDenied) &&
-                                  !state.showMapOnly
-                              ? event.getShadows()
-                              : [],
+                      boxShadow: state.activitiesWithGymsInsideFromSelectedDiapozone.length > 5 &&
+                                  (state.activitiesWithGymsInsideFromSelectedDiapozone.length > 2 || 
+                                  state.locationPermissionDenied) && !state.showMapOnly ? event.getShadows() : [],
                     ),
                     child: SingleChildScrollView(
                       physics: const NeverScrollableScrollPhysics(),
@@ -212,9 +202,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height,
                             child: GoogleMap(
-                              padding: EdgeInsets.only(
-                                  bottom: height *
-                                      (state.showMapOnly ? 0.5 : 0.7)),
+                              padding: EdgeInsets.only(bottom: height * (state.showMapOnly ? 0.5 : 0.7)),
                               zoomControlsEnabled: false,
                               compassEnabled: false,
                               mapType: MapType.normal,
@@ -236,9 +224,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                                 await event.getAllMarkers();
                                 await event.addUserLocationMarker();
                               },
-                              markers: state.listOfMarkers.isEmpty
-                                  ? {}
-                                  : state.listOfMarkers,
+                              markers: state.listOfMarkers.isEmpty ? {} : state.listOfMarkers,
                             ),
                           ),
                         ],
@@ -273,9 +259,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                                 children: [
                                   15.horizontalSpace,
                                   CustomText(
-                                    text: state.showMapOnly
-                                        ? "Показать список активностей"
-                                        : "Карта на весь экран",
+                                    text: state.showMapOnly ? "Показать список активностей" : "Карта на весь экран",
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -285,9 +269,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                                     height: 18.h,
                                     child: Center(
                                       child: SvgPicture.asset(
-                                        state.showMapOnly
-                                            ? "assets/svg/arrow_down.svg"
-                                            : "assets/svg/arrow_up.svg",
+                                        state.showMapOnly ? "assets/svg/arrow_down.svg" : "assets/svg/arrow_up.svg",
                                         width: 18.w,
                                         height: 18.h,
                                       ),
@@ -305,10 +287,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                   Positioned(
                     right: 0.w,
                     bottom: (isAnyOpened && state.isLocationIconHidden)
-                        ? 170.h
-                        : (state.isLocationIconHidden && !isAnyOpened)
-                            ? 160.h
-                            : 20.h,
+                        ? 170.h: (state.isLocationIconHidden && !isAnyOpened) ? 160.h : 20.h,
                     child: Padding(
                       padding: EdgeInsets.only(right: 10.w),
                       child: GestureDetector(

@@ -98,8 +98,7 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       {required RateRequest request}) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
-      final response =
-          await _scheduleRepositoryInterface.makeRate(request: request);
+      final response = await _scheduleRepositoryInterface.makeRate(request: request);
       response.when(
         success: (data) {
           debugPrint(data.toString());

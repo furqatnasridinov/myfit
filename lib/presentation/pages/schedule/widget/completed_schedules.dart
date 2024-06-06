@@ -199,6 +199,7 @@ Widget listOfActivitiesEachItem(
                             id: id,
                             gymName: name,
                             describtion: description,
+                           
                           ),
                         );
                       });
@@ -292,9 +293,11 @@ Widget listOfActivitiesEachItem(
                                     insetPadding:
                                         EdgeInsets.symmetric(horizontal: 16.w),
                                     child: RateDialog(
-                                        id: id,
-                                        gymName: name,
-                                        describtion: description),
+                                      id: id,
+                                      gymName: name,
+                                      describtion: description,
+                                     
+                                    ),
                                   );
                                 });
                           },

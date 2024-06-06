@@ -20,7 +20,7 @@ class TheOneWithPhotos extends StatelessWidget {
     return Consumer(builder: (context, ref, child) {
       final photosOfSelectedActivity = ref.watch(activityProvider).photosOfSelectedActivity;
       final loading = ref.watch(activityProvider).isPhotosLoading;
-      if (photosOfSelectedActivity.isEmpty && !loading) return const SizedBox();
+      //if (photosOfSelectedActivity.isEmpty && !loading) return const SizedBox();
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         child: loading ? const PhotosSkeleton() : Column(

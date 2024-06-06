@@ -1,7 +1,7 @@
 // ignore_for_file: must_be_immutable
 import 'dart:async';
 import 'dart:math';
-
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_notifier.dart';
@@ -56,8 +56,7 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
         ? const SearchingActivitiesCard()
         : widget.state.activitiesWithGymsInsideFromSelectedDiapozone.isEmpty &&
                 !widget.state.isloading
-            ? NoGymsInSelectedDiapozone(
-                state: widget.state, event: widget.event)
+            ? NoGymsInSelectedDiapozone(event: widget.event)
             : SizedBox(
                 child: Column(
                 children: [
@@ -67,6 +66,70 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                       event: widget.event,
                       state: widget.state,
                     ),
+
+                    // map ui type 2  
+
+                    /* DefaultTabController(
+                      length: widget.state.activitiesWithGymsInsideFromSelectedDiapozone.length,
+                      child: Column(
+                      children: [
+                        TabBar(
+                          isScrollable: true,
+                          labelColor: Colors.white,
+                          unselectedLabelColor: Colors.black,
+                          indicatorColor: Colors.transparent,
+                          //indicatorSize: TabBarIndicatorSize.tab,
+                          dividerColor: Colors.transparent,
+                          //labelPadding: EdgeInsets.all(8.r),
+                          padding: EdgeInsets.zero,
+                          labelStyle: GoogleFonts.raleway(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          //indicatorPadding: EdgeInsets.only(left: 16.w),
+                          tabAlignment: TabAlignment.start,
+                          indicator: BoxDecoration(
+                            color: AppColors.blueColor,
+                            borderRadius: BorderRadius.circular(6.r),
+                          ),
+                          tabs: widget.state.activitiesWithGymsInsideFromSelectedDiapozone.map(
+                            (LessonTypeWithGymsInside el) {
+                              return Container(
+                                padding: EdgeInsets.all(8.r),
+                                //color:  Colors.white,
+                                child: Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    AppHelpers().getIconSvg(el.lessontype ?? "??"),
+                                    height: 15.h,
+                                  ),
+                                  10.horizontalSpace,
+                                  Text(el.lessontype ?? "??"),
+                                ]),
+                              );
+                            }
+                            ).toList() as List<Widget>,
+                        ),
+                        /* Expanded(
+                          child: TabBarView(
+                            children: widget.state.activitiesWithGymsInsideFromSelectedDiapozone.map((Gymdata gym) {
+                              return _tabContentBuilder(
+                                gym.name,
+                                gym.address,
+                                gym.visitedCount,
+                                gym.visitPerMonth,
+                                gym.distanceFromClient ?? 3469,
+                                "",
+                                gym.isSelected,
+                                () {
+                                  // ваш код обработчика нажатия
+                                },
+                              );
+                            }).toList(),
+                          ),
+                        ), */
+                      ],
+                    ),), */
                   ListView.builder(
                     //controller: widget.activitiesListController,
                     physics: const NeverScrollableScrollPhysics(),
@@ -197,13 +260,11 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                 ),
                 if (isOpened)
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 14.w)
-                        .copyWith(top: 5.h),
+                    padding: EdgeInsets.symmetric(horizontal: 14.w).copyWith(top: 5.h),
                     child: SizedBox(
                       child: Consumer(
                         builder: (context, ref, child) {
-                          final activityEvent =
-                              ref.read(activityProvider.notifier);
+                          final activityEvent = ref.read(activityProvider.notifier);
                           return ListView.builder(
                               itemCount: gymsList.length,
                               shrinkWrap: true,
@@ -224,48 +285,31 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                                         //setState(() {});
                                       }
                                     }
-                                    gymsList[index].isSelected =
-                                        !gymsList[index].isSelected;
+                                    gymsList[index].isSelected = !gymsList[index].isSelected;
                                     setState(() {});
                                     //
-                                    activityEvent.getActivityTypes(
-                                        context,
-                                        false,
-                                        ref
-                                            .watch(mapProvider)
-                                            .selectedLessonTypeFromMap,
+                                    activityEvent.getActivityTypes(context,false,
+                                        ref.watch(mapProvider).selectedLessonTypeFromMap,
                                         gymId: gymsList[index].id!);
                                     widget.controller.future.then((value) {
-                                      value.animateCamera(
-                                          CameraUpdate.newCameraPosition(
+                                      value.animateCamera(CameraUpdate.newCameraPosition(
                                         CameraPosition(
-                                          target: LatLng(
-                                              double.parse(gymsList[index]
-                                                  .latitude
-                                                  .toString()),
-                                              double.parse(gymsList[index]
-                                                  .longitude
-                                                  .toString())),
+                                          target: LatLng(double.parse(gymsList[index].latitude.toString()),
+                                              double.parse(gymsList[index].longitude.toString())),
                                           zoom: 15.0,
                                         ),
                                       ));
                                     });
-                                    widget.event
-                                        .setSelectedGym(
+                                    widget.event.setSelectedGym(
                                           address: gymsList[index].address,
                                           id: gymsList[index].id,
-                                          latitude: double.parse(
-                                              gymsList[index].latitude ?? "0"),
-                                          longitude: double.parse(
-                                              gymsList[index].longitude ?? "0"),
+                                          latitude: double.parse(gymsList[index].latitude ?? "0"),
+                                          longitude: double.parse(gymsList[index].longitude ?? "0"),
                                           name: gymsList[index].name,
-                                          visitPerMonth:
-                                              gymsList[index].visitPerMonth,
-                                          visitedCount:
-                                              gymsList[index].visitedCount,
+                                          visitPerMonth:gymsList[index].visitPerMonth,
+                                          visitedCount:gymsList[index].visitedCount,
                                         )
-                                        .then((value) => widget.event
-                                            .showPopUpOnMap(context, title));
+                                        .then((value) => widget.event.showPopUpOnMap(context, title));
                                   },
                                 );
                               });

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:myfit/application/notification/notification_notifier.dart';
 import 'package:myfit/domain/di/dependency_manager.dart';
 import 'package:myfit/presentation/router/app_router.dart';
 import 'package:myfit/presentation/router/app_router.gr.dart';
@@ -17,8 +18,7 @@ class AppWidget extends StatelessWidget {
     return FutureBuilder(
       future: Future.wait(
         [
-          setUpDependencies(),
-          //LocalStorage.getSharedPreferences(),
+          //setUpDependencies(),
         ],
       ),
       builder: (context, snapshot) {
@@ -29,7 +29,7 @@ class AppWidget extends StatelessWidget {
           builder: (context, child) {
             return MaterialApp.router(
               routerConfig: appRouter.config(
-                  //navigatorObservers: () => [MyRouteObserver()],
+                  navigatorObservers: () => [MyRouteObserver()],
                   deepLinkBuilder: (link) {
                     log(link.path);
                     if (link.path.contains('/qrcode/page')) {
@@ -49,7 +49,8 @@ class AppWidget extends StatelessWidget {
   }
 }
 
-/* class MyRouteObserver extends AutoRouteObserver {
+class MyRouteObserver extends AutoRouteObserver {
+  final NotificationNotifier notificationNotifier = NotificationNotifier(notificationRepo);
   @override
   void didPush(Route route, Route? previousRoute) {
     super.didPush(route, previousRoute);
@@ -67,5 +68,9 @@ class AppWidget extends StatelessWidget {
   void didPop(Route route, Route? previousRoute) {
     super.didPop(route, previousRoute);
     log('didPop ${route.settings.name}');
+    if (route.settings.name == 'NotificationRoute') {  
+      log("yahaybalya");
+      //notificationNotifier.onPopNotificationRoute();
+    }
   }
-} */
+}

@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
+import 'package:myfit/application/notification/notification_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/models/data/lessons_found_by_search.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
@@ -176,23 +177,16 @@ class _CustomSearchBarState extends ConsumerState<CustomSearchBar> {
                                           return _listiles(
                                             "Занятие - ${current.title}",
                                             current.distanceFromClient != null
-                                                ? "${current.distanceFromClient} км"
-                                                : "",
+                                                ? "${current.distanceFromClient} км"  : "",
                                             () {
                                               textfieldFocusnode.unfocus();
                                               setState(() {});
-                                              ref.read(
-                                                  activityProvider.notifier)
-                                                ..setDayOfSelectedLessonFromSearch(
-                                                    current.date ?? "")
+                                              ref.read(activityProvider.notifier)
+                                                ..setDayOfSelectedLessonFromSearch(current.date ?? "")
                                                 ..setIsFromSearch(true);
-                                              ref
-                                                  .read(mapProvider.notifier)
-                                                  .setSelectedActivityFromMap(AppHelpers()
-                                                      .getTranslatedLessonType(
-                                                          engLessonType: current
-                                                                  .lessonType ??
-                                                              ""));
+                                              ref.read(mapProvider.notifier).setSelectedActivityFromMap(
+                                                AppHelpers()
+                                                      .getTranslatedLessonType(engLessonType: current.lessonType ??""));
                                               context.router.push(ActivityRoute(
                                                   gymId: current.gymId ?? 0));
                                               controller.clear();
@@ -526,28 +520,50 @@ Widget avatarOnly(List<String> missingInfos, String avatar,
 }
 
 Widget notificationIcon(BuildContext context) {
-  return GestureDetector(
-    onTap: () {
-      showModalBottomSheet(
-        context: context,
-        backgroundColor: Colors.white,
-        isScrollControlled: true,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(16.r),
-            topRight: Radius.circular(16.r),
-          ),
-        ),
-        builder: (context) {
-          return NotificationBottomSheet();
+  return Consumer(
+    builder: (context, ref, child) {
+      final showWithIndicator =
+          ref.watch(notificationProvider).onlyNewNotifications.isNotEmpty &&
+              ref.watch(notificationProvider).hasUnreadNotification;
+      final notifier = ref.read(notificationProvider.notifier);
+      return GestureDetector(
+        onTap: () {
+          notifier.handleReadAll(context: context);
+          if (ref.watch(notificationProvider).onlyNewNotifications.isNotEmpty) {
+            showModalBottomSheet(
+              context: context,
+              backgroundColor: Colors.white,
+              isScrollControlled: true,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16.r),
+                  topRight: Radius.circular(16.r),
+                ),
+              ),
+              builder: (context) {
+                return NotificationBottomSheet(
+                  list: ref.watch(notificationProvider).onlyNewNotifications,
+                  onNavigate: (){
+                    // close bottom sheet
+                    notifier.getAllNotifications();
+                    context.popRoute();
+                    context.router.push(const NotificationRoute());
+                  },
+                );
+              },
+            );
+          }else{
+            context.router.push(const NotificationRoute());
+          }
         },
+        child: SvgPicture.asset(
+          showWithIndicator ? "assets/svg/notificationWithRedCircle.svg"
+              : "assets/svg/notificationInSearch.svg",
+          width: 24.w,
+          height: 24.h,
+        ),
       );
     },
-    child: SvgPicture.asset(
-      "assets/svg/notificationInSearch.svg",
-      width: 24.w,
-      height: 24.h,
-    ),
   );
 }
 

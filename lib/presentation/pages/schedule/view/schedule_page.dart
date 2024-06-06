@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/schedule/schedule_notifier.dart';
 import 'package:myfit/application/schedule/schedule_provider.dart';
@@ -106,8 +107,7 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
                           ); // today in this format => (2024-01-07 00:00:00)
                           final scheduleDate = DateTime.parse(date);
                           final formattedDay = event.formatDay(date);
-                          final formattedDayOfWeek =
-                              event.determineWeekday(date);
+                          final formattedDayOfWeek = event.determineWeekday(date);
 
                           // Проверка, является ли день текущим или будущим
                           bool isTodayOrFuture = scheduleDate
@@ -365,16 +365,24 @@ Widget listOfActivitiesEachItem(
                       ),
                       10.horizontalSpace,
                       // three dots
-                      DropDownMenuInsideCard(
+                     Consumer(builder: (context, ref, child) {
+                      final isFromSearch = ref.watch(activityProvider).isFromSearch;
+                       return  DropDownMenuInsideCard(
                         onTap: () => context.router.push(
                           NotesRoute(
                             gymName: name,
                           ),
                         ),
-                        onTap2: () => context.router.push(
+                        onTap2: () {
+                          if (isFromSearch) {
+                            ref.read(activityProvider.notifier).setIsFromSearch(false);
+                          }
+                          context.router.push(
                           ActivityRoute(gymId: gymId),
-                        ),
-                      ),
+                        );
+                        },
+                      );
+                     },),
                     ],
                   ),
                 ),

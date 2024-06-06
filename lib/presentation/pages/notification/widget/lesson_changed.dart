@@ -1,6 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:myfit/application/activity/activity_provider.dart';
+import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
@@ -8,6 +12,7 @@ import 'package:myfit/presentation/components/custom_button.dart';
 import 'package:myfit/presentation/components/custom_card.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:myfit/presentation/components/inter_text.dart';
+import 'package:myfit/presentation/router/app_router.gr.dart';
 
 class LessonChanged extends StatelessWidget {
   final String lessonType;
@@ -15,8 +20,8 @@ class LessonChanged extends StatelessWidget {
   final String time;
   final String gymName;
   final int gymId;
-  final int? visitsLeft;
-  final int? tottalVisits;
+  final DateTime lessonStartDate;
+  final Widget batteryIcon;
   final Map<String, dynamic> updates;
   const LessonChanged(
       {super.key,
@@ -25,8 +30,8 @@ class LessonChanged extends StatelessWidget {
       required this.time,
       required this.gymName,
       required this.gymId,
-      this.visitsLeft,
-      this.tottalVisits,
+      required this.lessonStartDate,
+      required this.batteryIcon,
       required this.updates});
 
   @override
@@ -107,16 +112,26 @@ class LessonChanged extends StatelessWidget {
             height: 1.1,
           ),
           5.verticalSpace,
-          getNewUpdates(updates),
+          getNewUpdates(updates, lessonStartDate),
           16.verticalSpace,
-          CustomButton(
-            onPressed: () {},
-            text: "Записаться",
-            buttonColor: Colors.white,
-            textColor: Colors.black,
-            fontSize: 13.sp,
-            fontWeight: FontWeight.w500,
-            height: 40.h,
+          Consumer(
+            builder: (context, ref, child) {
+              return CustomButton(
+                onPressed: () {
+                  ref.read(activityProvider.notifier)
+                  ..setDayOfSelectedLessonFromSearch(AppHelpers.getStringFromDateTime(lessonStartDate))
+                  ..setIsFromSearch(true);
+                  ref.read(mapProvider.notifier).setSelectedActivityFromMap(lessonType);
+                  context.router.push(ActivityRoute(gymId: gymId));
+                },
+                text: "Записаться",
+                buttonColor: Colors.white,
+                textColor: Colors.black,
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w500,
+                height: 40.h,
+              );
+            },
           ),
           12.verticalSpace,
           Row(
@@ -149,7 +164,7 @@ class LessonChanged extends StatelessWidget {
                     color: AppColors.greyText,
                   ),
                   6.horizontalSpace,
-                  AppHelpers().getBatteryIcon(7, 12),
+                  batteryIcon,
                 ],
               ),
             ],
@@ -160,12 +175,12 @@ class LessonChanged extends StatelessWidget {
   }
 }
 
-Widget getNewUpdates(Map<String, dynamic> updates) {
+Widget getNewUpdates(Map<String, dynamic> updates, DateTime lessonStartDate) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
 
-      if (updates.containsKey("oldDescription"))
+      if (updates["descriptionOld"] != null)
         Padding(
           padding: EdgeInsets.only(bottom: 5.h),
           child: Column(
@@ -191,7 +206,7 @@ Widget getNewUpdates(Map<String, dynamic> updates) {
                   child: Padding(
                     padding:  EdgeInsets.all(16.r),
                     child: CustomText(
-                      text: updates["newDescription"],
+                      text: updates["descriptionNew"],
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w400,
                       height: 1.1,
@@ -203,7 +218,7 @@ Widget getNewUpdates(Map<String, dynamic> updates) {
           ),
         ),
 
-      if (updates.containsKey("oldTime"))
+      if (updates["lessonTimeOld"] != null || updates["durationOld"] != null)
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -213,6 +228,8 @@ Widget getNewUpdates(Map<String, dynamic> updates) {
               fontWeight: FontWeight.w400,
             ),
             5.verticalSpace,
+            // shows only when when lessonStart changes
+            if(updates["lessonTimeOld"] != null)
             Row(
               children: [
                 Expanded(
@@ -229,7 +246,8 @@ Widget getNewUpdates(Map<String, dynamic> updates) {
                       padding: EdgeInsets.all(16.r),
                       child: Center(
                         child: CustomText(
-                          text: updates["oldTime"],
+                          text: AppHelpers.getChangedLessonStartsAt(
+                            DateTime.parse(updates["lessonTimeOld"].toString().replaceAll("T", " "))),
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w400,
                           height: 1.1,
@@ -260,7 +278,8 @@ Widget getNewUpdates(Map<String, dynamic> updates) {
                       padding: EdgeInsets.all(16.r),
                       child: Center(
                         child: CustomText(
-                          text: updates["newTime"],
+                          text: AppHelpers.getChangedLessonStartsAt(
+                            DateTime.parse(updates["lessonTimeNew"].toString().replaceAll("T", " "))),
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w400,
                           height: 1.1,
@@ -271,9 +290,78 @@ Widget getNewUpdates(Map<String, dynamic> updates) {
                 ),
               ],
             ),
+
+            // shows only when when duration(end time) changes
+            if(updates["durationOld"] != null)
+            Padding(
+              padding: EdgeInsets.only(top: updates["lessonTimeOld"] != null ? 16.h : 0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: AppColors.greyBorder,
+                          width: 1.w,
+                        ),
+                        borderRadius: BorderRadius.circular(16.r),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(16.r),
+                        child: Center(
+                          child: CustomText(
+                            text: AppHelpers.getChangedLessonEndsAt(
+                                startTime: updates["lessonTimeOld"] == null ? lessonStartDate  :  DateTime.parse(
+                                  updates["lessonTimeOld"].toString().replaceAll("T", " ")),
+                                durationInString: updates["durationOld"]),
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w400,
+                            height: 1.1,
+                            color: AppColors.greyText,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  5.horizontalSpace,
+                  SvgPicture.asset(
+                    "assets/svg/nextNext.svg",
+                    width: 24.w,
+                    height: 24.h,
+                  ),
+                  5.horizontalSpace,
+                  Expanded(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: AppColors.primaryFadedBorder,
+                          width: 1.w,
+                        ),
+                        borderRadius: BorderRadius.circular(16.r),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(16.r),
+                        child: Center(
+                          child: CustomText(
+                            text: AppHelpers.getChangedLessonEndsAt(
+                                startTime: updates["lessonTimeNew"] == null ? lessonStartDate : DateTime.parse(
+                                  updates["lessonTimeNew"].toString().replaceAll("T", " ")),
+                                durationInString: updates["durationNew"]),
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w400,
+                            height: 1.1,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
-      
     ],
   );
 }

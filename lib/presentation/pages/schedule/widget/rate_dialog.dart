@@ -17,11 +17,13 @@ class RateDialog extends StatefulWidget {
   final int id;
   final String gymName;
   final String describtion;
-  const RateDialog(
+  VoidCallback? afterMakingRate;
+   RateDialog(
       {super.key,
       required this.id,
       required this.gymName,
-      required this.describtion});
+      required this.describtion,
+      this.afterMakingRate});
 
   @override
   State<RateDialog> createState() => _RateDialogState();
@@ -237,6 +239,7 @@ class _RateDialogState extends State<RateDialog> {
                             await event.makeARate(context, request: request);
                             // get updated list of schedule
                             event.getCompletedSchedules(context);
+                            widget.afterMakingRate?.call();
                             context.router.pop();
                           }
                         },

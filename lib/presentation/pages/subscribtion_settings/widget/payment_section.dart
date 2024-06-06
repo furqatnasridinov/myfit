@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/presentation/components/animation_button_effect.dart';
+import 'package:myfit/presentation/components/custom_switch.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
 
 class PaymentSection extends StatelessWidget {
@@ -93,13 +94,13 @@ class PaymentSection extends StatelessWidget {
                 Row(
                   children: [
                     Consumer(builder: (contex, ref, child) {
-                      final autoRenewal = ref.watch(settingsProvider).autoRenewal;
+                      final autoRenewal =
+                          ref.watch(settingsProvider).autoRenewal;
                       final event = ref.read(settingsProvider.notifier);
-                      return CupertinoSwitch(
+                      return CustomSwitch(
                         value: autoRenewal,
-                        activeColor: AppColors.blueColor,
-                        onChanged: (val) {
-                          event.toggleAutoRenewal(context, val: val);
+                        onChanged: (value) {
+                          event.toggleAutoRenewal(context, val: value);
                         },
                       );
                     }),

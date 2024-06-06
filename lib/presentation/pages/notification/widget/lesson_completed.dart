@@ -1,12 +1,18 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:myfit/application/notification/notification_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/presentation/components/custom_button.dart';
 import 'package:myfit/presentation/components/custom_card.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:myfit/presentation/components/inter_text.dart';
+import 'package:myfit/presentation/pages/schedule/widget/rate_dialog.dart';
+import 'package:myfit/presentation/pages/schedule/widget/rate_history_modal.dart';
+import 'package:myfit/presentation/router/app_router.gr.dart';
 
 class LessonCompleted extends StatelessWidget {
   final String lessonType;
@@ -14,17 +20,23 @@ class LessonCompleted extends StatelessWidget {
   final String time;
   final String gymName;
   final int gymId;
-  final int? visitsLeft;
-  final int? tottalVisits;
+  final int grade;
+  final String lessonDescription;
+  final String comment;
+  final int gradeId;
+  final Widget batteryIcon;
   const LessonCompleted(
       {super.key,
       required this.lessonType,
       required this.unread,
       required this.time,
       required this.gymName,
+      required this.grade,
+      required this.lessonDescription,
+      required this.comment,
+      required this.gradeId,
       required this.gymId,
-      this.visitsLeft,
-      this.tottalVisits});
+      required this.batteryIcon});
 
   @override
   Widget build(BuildContext context) {
@@ -94,8 +106,55 @@ class LessonCompleted extends StatelessWidget {
             children: [
               Expanded(
                 child: CustomButton(
-                  onPressed: () {},
-                  text: "Оставить отзыв",
+                  onPressed: () {
+                    if (grade == 0) {
+                      //  show dialog to make a rate
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return Dialog(
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.r)),
+                              elevation: 0,
+                              insetPadding:EdgeInsets.symmetric(horizontal: 16.w),
+                              child: Consumer(builder: (context, ref, child) {
+                                return RateDialog(
+                                    id: gradeId,
+                                    gymName: gymName,
+                                    describtion: lessonDescription,
+                                    afterMakingRate: () {
+                                      ref.read(notificationProvider.notifier).getAllNotifications();
+                                    },
+                                  );
+                              },),
+                            );
+                          });
+                    } else {
+                      // open dialog to see how we rated before
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return Dialog(
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.r),
+                              ),
+                              elevation: 0,
+                              insetPadding:
+                                  EdgeInsets.symmetric(horizontal: 16.w),
+                              child: RateHistoryDialog(
+                                id: gradeId,
+                                gymName: gymName,
+                                describtion: lessonDescription,
+                                comment: comment,
+                                rate: grade,
+                              ),
+                            );
+                          });
+                    }
+                  },
+                  text: grade == 0 ? "Оставить отзыв" : "Cмотреть отзыв",
                   buttonColor: Colors.white,
                   textColor: Colors.black,
                   fontSize: 13.sp,
@@ -106,7 +165,9 @@ class LessonCompleted extends StatelessWidget {
               16.horizontalSpace,
               Expanded(
                 child: CustomButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    context.router.push(ActivityRoute(gymId: gymId));
+                  },
                   text: "Записаться ещё",
                   buttonColor: AppColors.blueColor,
                   textColor: Colors.white,
@@ -148,7 +209,7 @@ class LessonCompleted extends StatelessWidget {
                     color: AppColors.greyText,
                   ),
                   6.horizontalSpace,
-                  AppHelpers().getBatteryIcon(7, 12),
+                  batteryIcon,
                 ],
               ),
             ],

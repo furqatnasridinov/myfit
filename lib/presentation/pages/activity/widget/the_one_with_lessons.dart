@@ -64,21 +64,14 @@ class TheOneWithLessons extends StatelessWidget {
                       () async {
                         currentSchedule.isLoading = true;
                         await event.enrollToGym(context, currentSchedule.id ?? 0);
-                        /* if (currentSchedule.autoAccept == true) {
-                          await event.getAllLessons(context, false,  id: gymId);
-                          await event.getLessonsOfSelectedActivity(currentSchedule.lessonType ?? "", false);
-                          currentSchedule.isLoading = false;
-                        }else if(currentSchedule.autoAccept == false){
-                          if (isEnrollingError == false) {
-                            currentSchedule.lessonState = "WAITING";
-                          }
-                          currentSchedule.isLoading = false;
-                        } */
                         //get the updated list of lessons
                         await event.getAllLessons(context, false,  id: gymId);
                         await event.getLessonsOfSelectedActivity(currentSchedule.lessonType ?? "", false);
                         currentSchedule.isLoading = false;
                         scheduleEvent.getUsersSchedules(context);
+                        if (currentSchedule.autoAccept == true) {
+                          event.getGymInfo(context, false, gymId: gymId);
+                        }
                         // to add this lessontype to known lessontypes if it's not there
                         ref.read(settingsProvider.notifier).getWaitingLessonTypes(context);
                       },

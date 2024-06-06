@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/main2/main2_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
+import 'package:myfit/application/notification/notification_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/local_storage.dart';
@@ -52,6 +53,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
       ref.read(mapProvider.notifier)
         ..getUserLocation()
         ..getRecommendationForVisit(context);
+      ref.read(notificationProvider.notifier).getAllNotifications();
       // web socket for updating lesson states
       channel = IOWebSocketChannel.connect(
           Uri.parse(

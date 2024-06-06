@@ -1,12 +1,17 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:myfit/application/activity/activity_provider.dart';
+import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/presentation/components/custom_button.dart';
 import 'package:myfit/presentation/components/custom_card.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:myfit/presentation/components/inter_text.dart';
+import 'package:myfit/presentation/router/app_router.gr.dart';
 
 class LessonCancelled extends StatelessWidget {
   final String lessonType;
@@ -15,8 +20,8 @@ class LessonCancelled extends StatelessWidget {
   final String gymName;
   final int gymId;
   final String reason;
-  final int? visitsLeft;
-  final int? tottalVisits;
+  final DateTime lessonStartDate;
+  final Widget batteryIcon;
   const LessonCancelled(
       {super.key,
       required this.lessonType,
@@ -25,8 +30,8 @@ class LessonCancelled extends StatelessWidget {
       required this.gymName,
       required this.gymId,
       required this.reason,
-      this.visitsLeft,
-      this.tottalVisits});
+      required this.lessonStartDate,
+      required this.batteryIcon});
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +91,7 @@ class LessonCancelled extends StatelessWidget {
           ),
           16.verticalSpace,
           CustomText(
-            text: "Отмена занятия на 16 мая в 13:40 в Crystall",
+            text: "Отмена занятия на ${AppHelpers.getLessonStartsAt(lessonStartDate)} в $gymName",
             fontSize: 13.sp,
             fontWeight: FontWeight.w600,
             height: 1.1,
@@ -100,7 +105,7 @@ class LessonCancelled extends StatelessWidget {
           ),
           16.verticalSpace,
           CustomText(
-            text: "Посещение не будет потрачено и уже вернулось к вам! Теперь в “Crystall” их - 5.",
+            text: "Посещение не будет потрачено и уже вернулось к вам!",
             fontSize: 13.sp,
             fontWeight: FontWeight.w400,
             height: 1.1,
@@ -114,14 +119,24 @@ class LessonCancelled extends StatelessWidget {
             height: 1.1,
           ),
           16.verticalSpace,
-          CustomButton(
-            onPressed: () {},
-            text: "Открыть расписание заведения",
-            buttonColor: Colors.white,
-            textColor: Colors.black,
-            fontSize: 13.sp,
-            fontWeight: FontWeight.w500,
-            height: 40.h,
+          Consumer(
+            builder: (context, ref, child) {
+              return CustomButton(
+                onPressed: () {
+                  ref.read(activityProvider.notifier)
+                  ..setDayOfSelectedLessonFromSearch(AppHelpers.getStringFromDateTime(lessonStartDate))
+                  ..setIsFromSearch(true);
+                  ref.read(mapProvider.notifier).setSelectedActivityFromMap(lessonType);
+                  context.router.push(ActivityRoute(gymId: gymId));
+                },
+                text: "Открыть расписание заведения",
+                buttonColor: Colors.white,
+                textColor: Colors.black,
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w500,
+                height: 40.h,
+              );
+            },
           ),
           12.verticalSpace,
           Row(
@@ -154,7 +169,7 @@ class LessonCancelled extends StatelessWidget {
                     color: AppColors.greyText,
                   ),
                   6.horizontalSpace,
-                  AppHelpers().getBatteryIcon(7, 12),
+                  batteryIcon,
                 ],
               ),
             ],

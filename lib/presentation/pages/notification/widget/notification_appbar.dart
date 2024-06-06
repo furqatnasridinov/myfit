@@ -52,13 +52,10 @@ class NotificationAppbar extends StatelessWidget
                 ),
               ),
               10.horizontalSpace,
-              Text(
-                "Ваши уведомления",
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                ),
+              CustomText(
+                text: "Ваши уведомления",
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w600,
               ),
               const Spacer(),
               // avatar
@@ -78,11 +75,11 @@ class NotificationAppbar extends StatelessWidget
                               : AppColors.redBorder,
                           child: avatar.isEmpty
                               ? CircleAvatar(
-                                  radius: 17.r,
+                                  radius: 18.r,
                                   backgroundImage: const AssetImage(
                                       AppConstants.cristianBale))
                               : CircleAvatar(
-                                  radius: 17.r,
+                                  radius: 18.r,
                                   backgroundImage: NetworkImage(
                                       "http://77.222.53.122/image/$avatar"),
                                   onBackgroundImageError:

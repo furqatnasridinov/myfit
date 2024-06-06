@@ -28,8 +28,8 @@ class AppConstants {
   static const String getAllAvailableSubscribtions = "api/subscription";
   static const String toggleAutoRenewal = "api/subscription/user";
   static const String searchForGymAndLesson= "api/main/search";
-
-
+  static const String getNotifications = "api/notification/userNotifications";
+  static const String markNotificationAsRead = "api/notification/markAsRead";
   static const String sendPhoneNumber = "api/user/loginCode";
   static const String sendCodeConfirmation = "api/user/loginCodeConfirmation";
   //static const String getInfoForType = "api/gym/3/infoForType";
@@ -100,4 +100,5 @@ enum NotificationType {
   lessonStartsWithin15minutes, //
   lessonChanged, // 
   visitsCountIsGettingLowOrEnded, //
+  system,
 }

@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,6 +8,7 @@ import 'package:myfit/presentation/components/custom_button.dart';
 import 'package:myfit/presentation/components/custom_card.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:myfit/presentation/components/inter_text.dart';
+import 'package:myfit/presentation/router/app_router.gr.dart';
 
 class LessonStartsWithin15Minutes extends StatelessWidget {
   final String lessonType;
@@ -14,8 +16,7 @@ class LessonStartsWithin15Minutes extends StatelessWidget {
   final String time;
   final String gymName;
   final int gymId;
-  final int? visitsLeft;
-  final int? tottalVisits;
+  final Widget batteryIcon;
   const LessonStartsWithin15Minutes(
       {super.key,
       required this.lessonType,
@@ -23,8 +24,7 @@ class LessonStartsWithin15Minutes extends StatelessWidget {
       required this.time,
       required this.gymName,
       required this.gymId,
-      this.visitsLeft,
-      this.tottalVisits});
+      required this.batteryIcon});
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +91,9 @@ class LessonStartsWithin15Minutes extends StatelessWidget {
           ),
           16.verticalSpace,
           CustomButton(
-            onPressed: () {},
+            onPressed: () {
+              context.router.push(const QrCodeRoute());
+            },
             text: "Открыть сканер QR кода",
             buttonColor: Colors.white,
             textColor: Colors.black,
@@ -130,7 +132,7 @@ class LessonStartsWithin15Minutes extends StatelessWidget {
                     color: AppColors.greyText,
                   ),
                   6.horizontalSpace,
-                  AppHelpers().getBatteryIcon(7, 12),
+                  batteryIcon,
                 ],
               ),
             ],

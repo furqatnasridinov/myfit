@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -182,7 +183,7 @@ class AppHelpers {
   }
 
   Color getColorOfActivity(String activityName) {
-    Color color = Colors.black;
+    Color color = Colors.red;
     switch (activityName) {
       case "Йога":
         color = AppColors.blueColor;
@@ -299,4 +300,133 @@ class AppHelpers {
     }
     return translatedLessonType;
   }
+
+  static String getFormattedDay(DateTime dateTime){
+    // from 2024-05-25 00:00:00.000 to Cуббота, 25 мая
+    String day = getWeekDay(dateTime.weekday);
+    return "$day, ${dateTime.day} ${getMonth(dateTime.month)}";
+  }
+
+  static String getFormattedDay2(String day){
+    // from 2024-05-25 to Cуббота, 25 мая
+    DateTime dateTime = DateTime.parse(day);
+    String dayName = getWeekDay(dateTime.weekday);
+    return "$dayName, ${dateTime.day} ${getMonth(dateTime.month)}";
+  }
+
+  static String getFormattedTime(DateTime dateTime) {
+    String hours = dateTime.hour.toString().padLeft(2, '0');
+    String minutes = dateTime.minute.toString().padLeft(2, '0');
+    return "$hours:$minutes";
 }
+
+  static String getMonth(int month) {
+    switch (month) {
+      case 1:
+        return "января";
+      case 2:
+        return "февраля";
+      case 3:
+        return "марта";
+      case 4:
+        return "апреля";
+      case 5:
+        return "мая";
+      case 6:
+        return "июня";
+      case 7:
+        return "июля";
+      case 8:
+        return "августа";
+      case 9:
+        return "сентября";
+      case 10:
+        return "октября";
+      case 11:
+        return "ноября";
+      case 12:
+        return "декабря";
+      default:
+        return "";
+    }
+  }
+
+  static String getWeekDay(int weekDay) {
+    switch (weekDay) {
+      case 1:
+        return "Понедельник";
+      case 2:
+        return "Вторник";
+      case 3:
+        return "Среда";
+      case 4:
+        return "Четверг";
+      case 5:
+        return "Пятница";
+      case 6:
+        return "Суббота";
+      case 7:
+        return "Воскресенье";
+      default:
+        return "";
+    }
+  }
+
+  static NotificationType getNotificationType(String str) {
+    switch (str) {
+      case "FINISH_LESSON":
+        return NotificationType.lessonCompleted;
+      case "UPDATE_LESSON":
+        return NotificationType.lessonChanged;
+      case "CANCEL_LESSON":
+        return NotificationType.lessonCancelled;
+      case "CONFIRM_LESSON":
+        return NotificationType.lessonConfirmed;
+      case "ENDED_LESSON":
+        return NotificationType.visitsCountIsGettingLowOrEnded;
+      case "QR_CODE":
+        return NotificationType.lessonStartsWithin15minutes;
+      default: return NotificationType.system;
+    }
+  }
+
+  static String getLessonStartsAt(DateTime time) {
+    // from 2024-05-25 00:00:00.000 to 25 мая в 12:00
+    String hours = time.hour.toString().padLeft(2, '0');
+    String minutes = time.minute.toString().padLeft(2, '0');
+    return "${time.day} ${getMonth(time.month)} в $hours:$minutes";
+  }
+
+  static String getChangedLessonStartsAt(DateTime time) {
+    // from 2024-05-25 00:00:00.000 to 25.05 в 12:00
+    String hours = time.hour.toString().padLeft(2, '0');
+    String minutes = time.minute.toString().padLeft(2, '0');
+    String month = time.month.toString().padLeft(2, '0');
+    return "${time.day}.$month в $hours:$minutes";
+  }
+
+  static String getChangedLessonEndsAt({required DateTime startTime, required String durationInString}){
+    // from start time 2024-05-25 10:00:00.000 and durationInString 01:00:00 to 25.05 до 11:00
+    // consider minutes too
+    List<String> durationParts = durationInString.split(':');
+    int hours = int.parse(durationParts[0]);
+    int minutes = int.parse(durationParts[1]);
+    DateTime endTime = startTime.add(Duration(hours: hours, minutes: minutes));
+    String hoursStr = endTime.hour.toString().padLeft(2, '0');
+    String minutesStr = endTime.minute.toString().padLeft(2, '0');
+    String month = endTime.month.toString().padLeft(2, '0');
+    return "${endTime.day}.$month до $hoursStr:$minutesStr";   
+}
+
+  static String getStringFromDateTime(DateTime dateTime) {
+    // from 2024-05-25 08:00:00.000 to 2024-05-25@08:00
+    String hours = dateTime.hour.toString().padLeft(2, '0');
+    String minutes = dateTime.minute.toString().padLeft(2, '0');
+    String month = dateTime.month.toString().padLeft(2, '0');
+    String day = dateTime.day.toString().padLeft(2, '0');
+    return "${dateTime.year}-$month-$day@$hours:$minutes";
+    }
+
+}
+
+
