@@ -28,8 +28,8 @@ class AppConstants {
   static const String getAllAvailableSubscribtions = "api/subscription";
   static const String toggleAutoRenewal = "api/subscription/user";
   static const String searchForGymAndLesson= "api/main/search";
-
-
+  static const String getNotifications = "api/notification/userNotifications";
+  static const String markNotificationAsRead = "api/notification/markAsRead";
   static const String sendPhoneNumber = "api/user/loginCode";
   static const String sendCodeConfirmation = "api/user/loginCodeConfirmation";
   //static const String getInfoForType = "api/gym/3/infoForType";
@@ -68,6 +68,7 @@ class AppConstants {
   static const String keyIsNotificationDisabled ="key_is_notification_disabled";
   static const String keyNotificationTime = "key_notification_time";
   static const String keyWhenUploadingPhotoAccessOpens = "key_photo_access";
+  static const String keyUserBirthday = "key_birthday";
 
   // hero animations tags
   static const String registration3Hero = "registration_3_hero";
@@ -79,6 +80,8 @@ class AppConstants {
   static const String scheduledNotificationChannelName ="tmpScheduledChanelName";
 
     // long texts
+    static const String confirmationText2 =
+      "Продолжая вход я даю согласие на обработку персональных данных и подтверждаю, что прочитал(а)";
   static const String confirmationText =
       "Нажимая на кнопку «Продолжить» - я даю согласие на обработку персональных данных и подтверждаю, что прочитал(а) ";
   static const String userAgreement =
@@ -88,5 +91,19 @@ class AppConstants {
   static const String subscriptionText1 = "MyFit — это один абонемент на разные виды активностей. Вы можете выбрать занятия на каждый день и в любое время.";
   static const String subscriptionText2 = "Можно записаться на несколько занятий в день: утром на йогу, в обед на фитнес и вечером в бассейн.";
   static const String subscriptionText3 = "В абонементе нет ограничений по количеству посещений в месяц, но есть несколько правил, которые стоит помнить при посещении активностей MyFit:";
-  
+  static const String visitsCountIsEndingLongText = "Если до пополнения ещё долго - мы рекомендуем записаться в другой зал и попробовать что то новое. Движение - это жизнь!";
+  static const String lessonChangedLongText = "Администратор заведения внёс изменения в занятие, на которое вы были записаны, по этому ваша запись отменена. Ознакомьтесь с изменениями и если вас всё устраивает - нажмите кнопку снизу этого уведомления.";
+  static const String fiilYourProfileLongText = "Так мы сможем подобрать для вас предложения, которые с большей вероятностью смогут вас заинтересовать";
+  static const String inviteFriendLongText = "Всё очень просто, если вы пригласите 3 новых пользователей в MyFit и они оформят подписку - то вы получите подписку на месяц в подарок.";
+  static const String inviteFriendLongText2 = "Отправьте ссылку другу. Он получит скидку 10% на первое оформление подписки. Когда 3 друга впервые оформят подписку - вы получите подписку на месяц, бесплатно.";
+}
+
+enum NotificationType {
+  lessonCompleted, // 
+  lessonCancelled, //
+  lessonConfirmed, // 
+  lessonStartsWithin15minutes, //
+  lessonChanged, // 
+  visitsCountIsGettingLowOrEnded, //
+  system,
 }

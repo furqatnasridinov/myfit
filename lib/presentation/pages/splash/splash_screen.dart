@@ -19,11 +19,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     ref.read(splashprovider.notifier).checkUserIfExists(
       context,
       goMain: () {
-       // context.replaceRoute(const Main2Route());
-        context.replaceRoute(const BottomNavigationHandlerRoute());
+        //context.replaceRoute(const Registration4Route());
+       context.replaceRoute(const BottomNavigationHandlerRoute());
       },
       goLogin: () {
-        context.replaceRoute(const RegistrationRoute());
+        context.replaceRoute(const Registration1Route());
         //context.replaceRoute(const Registration3Route());
       },
     );

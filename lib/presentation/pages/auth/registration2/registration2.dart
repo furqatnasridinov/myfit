@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
-
+import 'package:flutter_svg/svg.dart';
 import 'package:myfit/application/registration/registration_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/presentation/components/components.dart';
@@ -40,9 +40,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
       });
     }
     isChecking = true;
-    await Future.delayed(
-      const Duration(milliseconds: 2300),
-    );
+    await Future.delayed(const Duration(milliseconds: 2300));
     isChecking = false;
     if (code == userCode) {
       isPinCodeValidate = true;
@@ -99,6 +97,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
     //final width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Stack(
           children: [
@@ -129,20 +128,40 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                 ),
               ),
             ),
-            // main body
 
+            // main body
             Center(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  //mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    75.verticalSpace,
+                     Stack(
+                      children: [
+                      Align(
+                        alignment: Alignment.center,
+                        child: SvgPicture.asset("assets/svg/myfitNew.svg"),
+                      ),
+                      /* Align(
+                        alignment: Alignment.bottomCenter,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 400),
+                          curve: Curves.easeInOut,
+                          color: Colors.white.withOpacity(
+                            isPinCodeValidate ? 0 : 0.96),
+                          height: 100, 
+                          width: 100),
+                      ), */
+                      ],
+                     ),
+                    115.verticalSpace,
                     CustomCard(
                       child: CustomText(
-                        text:
-                            "Дождитесь смс на свой телефон и введите код из сообщения в поле ниже:",
+                        text:"Дождитесь смс на свой телефон и введите код из сообщения в поле ниже:",
                         fontSize: 14.sp,
+                        height: 1.1,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -173,8 +192,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                         focusedPinTheme: event.getDefaultPinTheme(),
                         disabledPinTheme: event.getDefaultPinTheme(),
                         submittedPinTheme: isCodeError
-                            ? event.getErrorPinTheme()
-                            : event.getSubmittedPinTheme(),
+                            ? event.getErrorPinTheme() : event.getSubmittedPinTheme(),
                       ),
                     ),
 
@@ -267,8 +285,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                       },
                       child: InterText(
                         text: counterDown == 0
-                            ? "Отправить снова"
-                            : "Отправить ещё раз через $counterDown с",
+                            ? "Отправить снова" : "Отправить ещё раз через $counterDown с",
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w400,
                         color: AppColors.blueColor,
@@ -287,6 +304,29 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                 painter: Registration1CustomPainter(),
               ),
             ),
+
+          /* AnimatedPositioned(
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.easeInOut,
+            top: 117.h,
+            left: isPinCodeValidate ? 0 : 65.w,
+            child: SvgPicture.asset("assets/svg/cloud1.svg")),
+            
+          // cloud 2
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.easeInOut,
+            top: 60.h,
+            right:isPinCodeValidate ? 0 : 70.w,
+            child: SvgPicture.asset("assets/svg/cloud2.svg")),
+
+          // cloud 3
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.easeInOut,
+            top: 160.h,
+            right:isPinCodeValidate ? 30 : 90.w,
+            child: SvgPicture.asset("assets/svg/cloud3.svg")), */
           ],
         ),
       ),

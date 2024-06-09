@@ -1,5 +1,6 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myfit/application/map/map_notifier.dart';
-import 'package:myfit/application/map/map_state.dart';
+import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/presentation/components/custom_button.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
@@ -10,9 +11,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DiapozoneBottomSheet extends StatelessWidget {
   final MapNotifier event;
-  final MapState state;
   const DiapozoneBottomSheet(
-      {super.key, required this.event, required this.state});
+      {super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,9 @@ class DiapozoneBottomSheet extends StatelessWidget {
           fontWeight: FontWeight.w600,
         ),
         20.verticalSpace,
-        Row(
+        Consumer(builder: (context, ref, child) {
+          final listOfBool = ref.watch(mapProvider).listOfBool;
+          return Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             RadioButton700(
@@ -54,7 +56,7 @@ class DiapozoneBottomSheet extends StatelessWidget {
               ontap: () {
                 event.changeDiapozoneAndGetActivities(0, 1, context);
               },
-              isSelected: state.listOfBool[0],
+              isSelected: listOfBool[0],
             ),
             Expanded(
               child: Divider(
@@ -66,7 +68,7 @@ class DiapozoneBottomSheet extends StatelessWidget {
                 ontap: () {
                   event.changeDiapozoneAndGetActivities(1, 2, context);
                 },
-                isSelected: state.listOfBool[1]),
+                isSelected: listOfBool[1]),
             Expanded(
               child: Divider(color: Colors.blue.shade100),
             ),
@@ -75,7 +77,7 @@ class DiapozoneBottomSheet extends StatelessWidget {
                 ontap: () {
                   event.changeDiapozoneAndGetActivities(2, 3, context);
                 },
-                isSelected: state.listOfBool[2]),
+                isSelected: listOfBool[2]),
             Expanded(
               child: Divider(color: Colors.blue.shade100),
             ),
@@ -84,10 +86,11 @@ class DiapozoneBottomSheet extends StatelessWidget {
               ontap: () {
                 event.changeDiapozoneAndGetActivities(3, 5, context);
               },
-              isSelected: state.listOfBool[3],
+              isSelected: listOfBool[3],
             ),
           ],
-        ),
+        );
+        },),
         const Spacer(),
         CustomButton(
           height: 40.h,

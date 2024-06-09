@@ -1,3 +1,6 @@
+// ignore_for_file: deprecated_member_use
+
+import 'package:flutter/cupertino.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/presentation/components/animation_button_effect.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
@@ -39,8 +42,8 @@ class CustomButton extends StatelessWidget {
         onPressed: onPressed,
         onHover: onHover,
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(buttonColor),
-          minimumSize: MaterialStateProperty.all(Size(width!.w, height!.h)),
+          backgroundColor: WidgetStateProperty.all(buttonColor),
+          minimumSize: MaterialStateProperty.all(Size(width!, height!)),
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.r),
@@ -60,9 +63,8 @@ class CustomButton extends StatelessWidget {
         child: showProgress
             ? Padding(
                 padding: EdgeInsets.symmetric(vertical: 5.h),
-                child: CircularProgressIndicator(
+                child: const CupertinoActivityIndicator(
                   color: Colors.white,
-                  strokeWidth: 2.5.w,
                 ),
               )
             : CustomText(

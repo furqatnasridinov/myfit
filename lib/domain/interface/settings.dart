@@ -24,4 +24,9 @@ abstract class SetttingsRepositoryInterface {
   Future<ApiResult<Map<String, dynamic>>> purchaseSubscription({required int id, required bool autoRenewal});
   Future<ApiResult<Map<String, dynamic>>> changeNextSubscription({required int id});
   Future<ApiResult<Map<String, dynamic>>> toggleAutoRenewal({required bool val});
+
+
+  // promocodes
+  Future<ApiResult<Map<String, dynamic>>> applyPromocode({required String code});
+  Future<ApiResult<Map<String, dynamic>>> getPromocodes();
 }

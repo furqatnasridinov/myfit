@@ -28,17 +28,14 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
             body: child,
             bottomNavigationBar: Consumer(
               builder: (context, ref, child) {
-                final mapPageBottomCardShown =
-                    ref.watch(mapProvider).isGymsPopupShown;
+                final mapPageBottomCardShown = ref.watch(mapProvider).isGymsPopupShown;
                 final showOnlyKnownOnMap = ref.watch(mapProvider).showOnlyKnown;
                 final recommendedShown = ref.watch(mapProvider).showRecommended;
                 final event = ref.read(mapProvider.notifier);
                 return NavigationBar(
                   backgroundColor: Colors.white,
-                  height:
-                      (mapPageBottomCardShown && tabsRouter.activeIndex == 2)
-                          ? 0
-                          : height * 0.09,
+                  height: (mapPageBottomCardShown && tabsRouter.activeIndex == 2)
+                          ? 0 : height * 0.09,
                   elevation: 10,
                   shadowColor: Colors.black,
                   selectedIndex: tabsRouter.activeIndex,

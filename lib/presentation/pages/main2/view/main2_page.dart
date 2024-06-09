@@ -4,11 +4,12 @@ import 'dart:developer';
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/main2/main2_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
+import 'package:myfit/application/notification/notification_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/local_storage.dart';
+import 'package:myfit/presentation/components/custom_search_bar.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
-import 'package:myfit/presentation/pages/main2/widget/main2_header.dart';
 import 'package:myfit/presentation/pages/main2/widget/widget.dart';
 import 'package:myfit/presentation/pages/schedule/widget/bottom_scan_container.dart';
 import 'package:auto_route/auto_route.dart';
@@ -43,6 +44,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
         ..getNearestLesson(context)
         ..getUserStatsMonth(context);
       ref.read(settingsProvider.notifier)
+        ..getUser(context)
         ..requestNotificationPermissions()
         ..setUserInfos()
         ..getCompletedLessonTypes(context) // for known activities
@@ -51,7 +53,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
       ref.read(mapProvider.notifier)
         ..getUserLocation()
         ..getRecommendationForVisit(context);
-
+      ref.read(notificationProvider.notifier).getAllNotifications();
       // web socket for updating lesson states
       channel = IOWebSocketChannel.connect(
           Uri.parse(
@@ -85,16 +87,11 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
 
   @override
   Widget build(BuildContext context) {
+    log('missing info: ${ref.watch(settingsProvider).missingInfo}');
+    log("token ${LocalStorage.getToken()}");
+    log("birthday ${LocalStorage.getUserBirthday()}");
     //final nearestLesson = ref.watch(main2Provider).nearestLesson;
     final event = ref.read(main2Provider.notifier);
-    log("login time ${LocalStorage.getLoginTime()}");
-    log("user id ${LocalStorage.getUserId()}");
-    log("token ${LocalStorage.getToken()}");
-    log("known activities ${ref.watch(settingsProvider).knownActivities}");
-    log("when photo access opens >> ${LocalStorage.getWhenUploadingPhotoOpens()}");
-    log("selected city lat >> ${LocalStorage.getSelectedCityLat()}");
-    log("selected city lon >> ${LocalStorage.getSelectedCityLon()}");
-    //LocalStorage.removeToken();
     ref.listen(main2Provider, (previous, next) {
       if (previous!.lessonEndsAt != next.lessonEndsAt &&
           next.lessonEndsAt != next.lessonStartsAt &&
@@ -115,10 +112,9 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: Main2Header(
+      appBar: CustomSearchBar(
         showBackButton: false,
-        canNavigateToSettings: true,
-      ),
+        canNavigateToSettings: true),
       body: SmartRefresher(
         controller: refreshController,
         header: const WaterDropMaterialHeader(
@@ -147,7 +143,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                           child: CustomText(
                             text: LocalStorage.getUserName().isNotEmpty
                                 ? "Привет, ${LocalStorage.getUserName()}!"
-                                : 'Привет, George!',
+                                : 'Привет',
                             fontWeight: FontWeight.w600,
                             fontSize: 20.sp,
                           ),
@@ -168,8 +164,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                         sliver: SliverToBoxAdapter(
                           child: nearestLesson == null
                               ? const PlaceholderComingActivity() //button "Найти себе занятие"
-                              : ComingActivity(
-                                  nearestLesson: nearestLesson, event: event),
+                              : ComingActivity(nearestLesson: nearestLesson, event: event),
                         ),
                       );
                     }),
@@ -209,8 +204,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                               : Main2Map(
                                   mapEvent: ref.read(mapProvider.notifier),
                                   showRecommended: showRecommended,
-                                  showOnlyKnown:
-                                      ref.watch(mapProvider).showOnlyKnown,
+                                  showOnlyKnown:ref.watch(mapProvider).showOnlyKnown,
                                   gyms: recommendedGyms["gyms"],
                                 );
                         }),
@@ -228,8 +222,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                             ? const SizedBox()
                             : DecoratedTextOne(
                                 lesson: recommendedGyms["lessonType"] ?? "",
-                                usersCount:
-                                    recommendedGyms["countUsers"].toString(),
+                                usersCount:recommendedGyms["countUsers"].toString(),
                               );
                       })),
                     ),

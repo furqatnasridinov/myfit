@@ -14,6 +14,7 @@ class Lesson {
   bool? showInCalendar;
   bool? isDeleted;
   bool? isLoading;
+  bool? autoAccept;
 
   Lesson({
     this.id,
@@ -30,7 +31,8 @@ class Lesson {
     this.lessonState,
     this.showInCalendar,
     this.isDeleted,
-    this.isLoading
+    this.isLoading,
+    this.autoAccept,
   });
 
   Lesson.fromJson(Map<String, dynamic> json) {
@@ -47,6 +49,7 @@ class Lesson {
     canSignUp = json['canSignUp'];
     lessonState = json['lessonState'];
     isDeleted = json['isDeleted'];
+    autoAccept = json['autoAccept'];
   }
 }
 

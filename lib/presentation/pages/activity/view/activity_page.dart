@@ -1,6 +1,4 @@
-// ignore_for_file: must_be_immutable
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+// ignore_for_file: must_be_immutable, use_build_context_synchronously
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
@@ -30,20 +28,20 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
   late final WebSocketChannel channel2;
   late RefreshController refreshController = RefreshController();
   ScrollController scrollController = ScrollController();
+  final calendarSectionKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: AppColors.backgroundColor,
-      statusBarBrightness: Brightness
-          .dark, // this is to make the status bar icons visible on the white background
-    ));
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
+        // прокрутка
+        if (ref.watch(activityProvider).isFromSearch) {
+          scrollToCalendar();
+        }
         ref.read(activityProvider.notifier)
           ..getListOf15CalendarDatesFromToday()
-          ..getGymInfo(context,true, gymId: widget.gymId)
+          ..getGymInfo(context, true, gymId: widget.gymId)
           ..getActivityTypes(
               context, true, ref.watch(mapProvider).selectedLessonTypeFromMap,
               isFromMap: widget.isFromMap ?? false,
@@ -54,9 +52,9 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
               // get infos after the selected activity is set
               .then((value) {
             ref.read(activityProvider.notifier)
+              ..getLessonsOfSelectedActivity(ref.watch(activityProvider).selectedActivity!, true)
               ..getPhotosOfSelectedActivity(ref.watch(activityProvider).selectedActivity!)
-              ..getDescribtionAndPeculiarities(ref.watch(activityProvider).selectedActivity!)
-              ..getLessonsOfSelectedActivity(ref.watch(activityProvider).selectedActivity!, true);
+              ..getDescribtionAndPeculiarities(ref.watch(activityProvider).selectedActivity!);
             // web socket for gettiing new lessons if they were added when the user is on the page
             channel2 = IOWebSocketChannel.connect(
                 Uri.parse("ws://77.222.53.122:8080/appGymPanel/${widget.gymId}"),
@@ -75,18 +73,16 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
     super.dispose();
   }
 
+  Future scrollToCalendar() async {
+    final context = calendarSectionKey.currentContext;
+    await Future.delayed(const Duration(milliseconds: 500));
+    await Scrollable.ensureVisible(context!,
+        duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
+  }
+
   @override
   Widget build(BuildContext context) {
     final event = ref.read(activityProvider.notifier);
-    ref.listen(activityProvider, (previous, next) {
-      if (previous!.isFromSearch != next.isFromSearch && next.isFromSearch) {
-        scrollController.animateTo(
-          scrollController.position.maxScrollExtent,
-          duration: const Duration(seconds: 1),
-          curve: Curves.easeInOut,
-        );
-      }
-    });
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SmartRefresher(
@@ -99,7 +95,7 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
         onRefresh: () async {
           ref.read(activityProvider.notifier)
             ..getListOf15CalendarDatesFromToday()
-            ..getGymInfo(context,true, gymId: widget.gymId)
+            ..getGymInfo(context, true, gymId: widget.gymId)
             ..getActivityTypes(context, false,
                 ref.watch(mapProvider).selectedLessonTypeFromMap,
                 gymId: widget.gymId)
@@ -131,15 +127,11 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
                 32.verticalSpace,
                 const GymDescription(),
                 32.verticalSpace,
-                TheOneWithChips(
-                  gymId: widget.gymId,
-                ),
+                TheOneWithChips(gymId: widget.gymId),
                 32.verticalSpace,
                 const RemainingVisits(),
                 const ActivityDescription(),
-                TheOneWithPhotos(
-                  event: event,
-                ),
+                TheOneWithPhotos(event: event),
                 const Speciality(),
                 32.verticalSpace,
                 TheOneWithCalendar(
@@ -147,8 +139,8 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
                   gymId: widget.gymId,
                 ),
                 TheOneWithLessons(
-                  gymId: widget.gymId,
-                ),
+                  key: calendarSectionKey,
+                  gymId: widget.gymId),
               ],
             ),
           ),

@@ -29,12 +29,16 @@ mixin _$SettingsState {
   String get weight => throw _privateConstructorUsedError;
   String get height => throw _privateConstructorUsedError;
   String get avatar => throw _privateConstructorUsedError;
+  String get gender => throw _privateConstructorUsedError;
+  String get birthday => throw _privateConstructorUsedError;
   bool get isPhoneEditModeEnabled => throw _privateConstructorUsedError;
   bool get isEmailEditModeEnabled => throw _privateConstructorUsedError;
   String get reminderTime => throw _privateConstructorUsedError;
+  UserInstance? get user => throw _privateConstructorUsedError;
   bool get isReminderDisabled => throw _privateConstructorUsedError;
   String? get qrcodeValue => throw _privateConstructorUsedError;
   bool get isNoAccessChangingPhoto => throw _privateConstructorUsedError;
+  bool get isPhotoUploading => throw _privateConstructorUsedError;
   UserSubscription? get currentSubscribtion =>
       throw _privateConstructorUsedError;
   UserSubscription? get nextSubscribtion => throw _privateConstructorUsedError;
@@ -43,6 +47,16 @@ mixin _$SettingsState {
   bool get isChangeSubscribtionLoading => throw _privateConstructorUsedError;
   String get cardNumber => throw _privateConstructorUsedError;
   bool get autoRenewal => throw _privateConstructorUsedError;
+  bool get dropDownOpened => throw _privateConstructorUsedError;
+  bool get genderDropDownOpened => throw _privateConstructorUsedError;
+  List<String> get missingInfo => throw _privateConstructorUsedError;
+  String get promocodeValue => throw _privateConstructorUsedError;
+  bool get isPromocodeLoading => throw _privateConstructorUsedError;
+  List<Promocode> get promocodesHistory => throw _privateConstructorUsedError;
+  bool get isPromocodeSuccess => throw _privateConstructorUsedError;
+  bool get isPromocodeError => throw _privateConstructorUsedError;
+  String get promocodeErrorMessage => throw _privateConstructorUsedError;
+  String get newPromocodeDescription => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $SettingsStateCopyWith<SettingsState> get copyWith =>
@@ -69,18 +83,32 @@ abstract class $SettingsStateCopyWith<$Res> {
       String weight,
       String height,
       String avatar,
+      String gender,
+      String birthday,
       bool isPhoneEditModeEnabled,
       bool isEmailEditModeEnabled,
       String reminderTime,
+      UserInstance? user,
       bool isReminderDisabled,
       String? qrcodeValue,
       bool isNoAccessChangingPhoto,
+      bool isPhotoUploading,
       UserSubscription? currentSubscribtion,
       UserSubscription? nextSubscribtion,
       List<Subscription> allAvailableSubscriptions,
       bool isChangeSubscribtionLoading,
       String cardNumber,
-      bool autoRenewal});
+      bool autoRenewal,
+      bool dropDownOpened,
+      bool genderDropDownOpened,
+      List<String> missingInfo,
+      String promocodeValue,
+      bool isPromocodeLoading,
+      List<Promocode> promocodesHistory,
+      bool isPromocodeSuccess,
+      bool isPromocodeError,
+      String promocodeErrorMessage,
+      String newPromocodeDescription});
 }
 
 /// @nodoc
@@ -109,18 +137,32 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     Object? weight = null,
     Object? height = null,
     Object? avatar = null,
+    Object? gender = null,
+    Object? birthday = null,
     Object? isPhoneEditModeEnabled = null,
     Object? isEmailEditModeEnabled = null,
     Object? reminderTime = null,
+    Object? user = freezed,
     Object? isReminderDisabled = null,
     Object? qrcodeValue = freezed,
     Object? isNoAccessChangingPhoto = null,
+    Object? isPhotoUploading = null,
     Object? currentSubscribtion = freezed,
     Object? nextSubscribtion = freezed,
     Object? allAvailableSubscriptions = null,
     Object? isChangeSubscribtionLoading = null,
     Object? cardNumber = null,
     Object? autoRenewal = null,
+    Object? dropDownOpened = null,
+    Object? genderDropDownOpened = null,
+    Object? missingInfo = null,
+    Object? promocodeValue = null,
+    Object? isPromocodeLoading = null,
+    Object? promocodesHistory = null,
+    Object? isPromocodeSuccess = null,
+    Object? isPromocodeError = null,
+    Object? promocodeErrorMessage = null,
+    Object? newPromocodeDescription = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -175,6 +217,14 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.avatar
           : avatar // ignore: cast_nullable_to_non_nullable
               as String,
+      gender: null == gender
+          ? _value.gender
+          : gender // ignore: cast_nullable_to_non_nullable
+              as String,
+      birthday: null == birthday
+          ? _value.birthday
+          : birthday // ignore: cast_nullable_to_non_nullable
+              as String,
       isPhoneEditModeEnabled: null == isPhoneEditModeEnabled
           ? _value.isPhoneEditModeEnabled
           : isPhoneEditModeEnabled // ignore: cast_nullable_to_non_nullable
@@ -187,6 +237,10 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.reminderTime
           : reminderTime // ignore: cast_nullable_to_non_nullable
               as String,
+      user: freezed == user
+          ? _value.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as UserInstance?,
       isReminderDisabled: null == isReminderDisabled
           ? _value.isReminderDisabled
           : isReminderDisabled // ignore: cast_nullable_to_non_nullable
@@ -198,6 +252,10 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
       isNoAccessChangingPhoto: null == isNoAccessChangingPhoto
           ? _value.isNoAccessChangingPhoto
           : isNoAccessChangingPhoto // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isPhotoUploading: null == isPhotoUploading
+          ? _value.isPhotoUploading
+          : isPhotoUploading // ignore: cast_nullable_to_non_nullable
               as bool,
       currentSubscribtion: freezed == currentSubscribtion
           ? _value.currentSubscribtion
@@ -223,6 +281,46 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.autoRenewal
           : autoRenewal // ignore: cast_nullable_to_non_nullable
               as bool,
+      dropDownOpened: null == dropDownOpened
+          ? _value.dropDownOpened
+          : dropDownOpened // ignore: cast_nullable_to_non_nullable
+              as bool,
+      genderDropDownOpened: null == genderDropDownOpened
+          ? _value.genderDropDownOpened
+          : genderDropDownOpened // ignore: cast_nullable_to_non_nullable
+              as bool,
+      missingInfo: null == missingInfo
+          ? _value.missingInfo
+          : missingInfo // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      promocodeValue: null == promocodeValue
+          ? _value.promocodeValue
+          : promocodeValue // ignore: cast_nullable_to_non_nullable
+              as String,
+      isPromocodeLoading: null == isPromocodeLoading
+          ? _value.isPromocodeLoading
+          : isPromocodeLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      promocodesHistory: null == promocodesHistory
+          ? _value.promocodesHistory
+          : promocodesHistory // ignore: cast_nullable_to_non_nullable
+              as List<Promocode>,
+      isPromocodeSuccess: null == isPromocodeSuccess
+          ? _value.isPromocodeSuccess
+          : isPromocodeSuccess // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isPromocodeError: null == isPromocodeError
+          ? _value.isPromocodeError
+          : isPromocodeError // ignore: cast_nullable_to_non_nullable
+              as bool,
+      promocodeErrorMessage: null == promocodeErrorMessage
+          ? _value.promocodeErrorMessage
+          : promocodeErrorMessage // ignore: cast_nullable_to_non_nullable
+              as String,
+      newPromocodeDescription: null == newPromocodeDescription
+          ? _value.newPromocodeDescription
+          : newPromocodeDescription // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -249,18 +347,32 @@ abstract class _$$SettingsStateImplCopyWith<$Res>
       String weight,
       String height,
       String avatar,
+      String gender,
+      String birthday,
       bool isPhoneEditModeEnabled,
       bool isEmailEditModeEnabled,
       String reminderTime,
+      UserInstance? user,
       bool isReminderDisabled,
       String? qrcodeValue,
       bool isNoAccessChangingPhoto,
+      bool isPhotoUploading,
       UserSubscription? currentSubscribtion,
       UserSubscription? nextSubscribtion,
       List<Subscription> allAvailableSubscriptions,
       bool isChangeSubscribtionLoading,
       String cardNumber,
-      bool autoRenewal});
+      bool autoRenewal,
+      bool dropDownOpened,
+      bool genderDropDownOpened,
+      List<String> missingInfo,
+      String promocodeValue,
+      bool isPromocodeLoading,
+      List<Promocode> promocodesHistory,
+      bool isPromocodeSuccess,
+      bool isPromocodeError,
+      String promocodeErrorMessage,
+      String newPromocodeDescription});
 }
 
 /// @nodoc
@@ -287,18 +399,32 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     Object? weight = null,
     Object? height = null,
     Object? avatar = null,
+    Object? gender = null,
+    Object? birthday = null,
     Object? isPhoneEditModeEnabled = null,
     Object? isEmailEditModeEnabled = null,
     Object? reminderTime = null,
+    Object? user = freezed,
     Object? isReminderDisabled = null,
     Object? qrcodeValue = freezed,
     Object? isNoAccessChangingPhoto = null,
+    Object? isPhotoUploading = null,
     Object? currentSubscribtion = freezed,
     Object? nextSubscribtion = freezed,
     Object? allAvailableSubscriptions = null,
     Object? isChangeSubscribtionLoading = null,
     Object? cardNumber = null,
     Object? autoRenewal = null,
+    Object? dropDownOpened = null,
+    Object? genderDropDownOpened = null,
+    Object? missingInfo = null,
+    Object? promocodeValue = null,
+    Object? isPromocodeLoading = null,
+    Object? promocodesHistory = null,
+    Object? isPromocodeSuccess = null,
+    Object? isPromocodeError = null,
+    Object? promocodeErrorMessage = null,
+    Object? newPromocodeDescription = null,
   }) {
     return _then(_$SettingsStateImpl(
       isloading: null == isloading
@@ -353,6 +479,14 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value.avatar
           : avatar // ignore: cast_nullable_to_non_nullable
               as String,
+      gender: null == gender
+          ? _value.gender
+          : gender // ignore: cast_nullable_to_non_nullable
+              as String,
+      birthday: null == birthday
+          ? _value.birthday
+          : birthday // ignore: cast_nullable_to_non_nullable
+              as String,
       isPhoneEditModeEnabled: null == isPhoneEditModeEnabled
           ? _value.isPhoneEditModeEnabled
           : isPhoneEditModeEnabled // ignore: cast_nullable_to_non_nullable
@@ -365,6 +499,10 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value.reminderTime
           : reminderTime // ignore: cast_nullable_to_non_nullable
               as String,
+      user: freezed == user
+          ? _value.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as UserInstance?,
       isReminderDisabled: null == isReminderDisabled
           ? _value.isReminderDisabled
           : isReminderDisabled // ignore: cast_nullable_to_non_nullable
@@ -376,6 +514,10 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
       isNoAccessChangingPhoto: null == isNoAccessChangingPhoto
           ? _value.isNoAccessChangingPhoto
           : isNoAccessChangingPhoto // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isPhotoUploading: null == isPhotoUploading
+          ? _value.isPhotoUploading
+          : isPhotoUploading // ignore: cast_nullable_to_non_nullable
               as bool,
       currentSubscribtion: freezed == currentSubscribtion
           ? _value.currentSubscribtion
@@ -401,6 +543,46 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value.autoRenewal
           : autoRenewal // ignore: cast_nullable_to_non_nullable
               as bool,
+      dropDownOpened: null == dropDownOpened
+          ? _value.dropDownOpened
+          : dropDownOpened // ignore: cast_nullable_to_non_nullable
+              as bool,
+      genderDropDownOpened: null == genderDropDownOpened
+          ? _value.genderDropDownOpened
+          : genderDropDownOpened // ignore: cast_nullable_to_non_nullable
+              as bool,
+      missingInfo: null == missingInfo
+          ? _value._missingInfo
+          : missingInfo // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      promocodeValue: null == promocodeValue
+          ? _value.promocodeValue
+          : promocodeValue // ignore: cast_nullable_to_non_nullable
+              as String,
+      isPromocodeLoading: null == isPromocodeLoading
+          ? _value.isPromocodeLoading
+          : isPromocodeLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      promocodesHistory: null == promocodesHistory
+          ? _value._promocodesHistory
+          : promocodesHistory // ignore: cast_nullable_to_non_nullable
+              as List<Promocode>,
+      isPromocodeSuccess: null == isPromocodeSuccess
+          ? _value.isPromocodeSuccess
+          : isPromocodeSuccess // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isPromocodeError: null == isPromocodeError
+          ? _value.isPromocodeError
+          : isPromocodeError // ignore: cast_nullable_to_non_nullable
+              as bool,
+      promocodeErrorMessage: null == promocodeErrorMessage
+          ? _value.promocodeErrorMessage
+          : promocodeErrorMessage // ignore: cast_nullable_to_non_nullable
+              as String,
+      newPromocodeDescription: null == newPromocodeDescription
+          ? _value.newPromocodeDescription
+          : newPromocodeDescription // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -422,21 +604,37 @@ class _$SettingsStateImpl extends _SettingsState {
       this.weight = "",
       this.height = "",
       this.avatar = "",
+      this.gender = "",
+      this.birthday = "",
       this.isPhoneEditModeEnabled = false,
       this.isEmailEditModeEnabled = false,
       this.reminderTime = "30",
+      this.user = null,
       this.isReminderDisabled = false,
       this.qrcodeValue = "",
       this.isNoAccessChangingPhoto = false,
+      this.isPhotoUploading = false,
       this.currentSubscribtion = null,
       this.nextSubscribtion = null,
       final List<Subscription> allAvailableSubscriptions = const [],
       this.isChangeSubscribtionLoading = false,
       this.cardNumber = "**** **** **** 1234",
-      this.autoRenewal = false})
+      this.autoRenewal = false,
+      this.dropDownOpened = false,
+      this.genderDropDownOpened = false,
+      final List<String> missingInfo = const [],
+      this.promocodeValue = "",
+      this.isPromocodeLoading = false,
+      final List<Promocode> promocodesHistory = const [],
+      this.isPromocodeSuccess = false,
+      this.isPromocodeError = false,
+      this.promocodeErrorMessage = "",
+      this.newPromocodeDescription = ""})
       : _listOfCities = listOfCities,
         _knownActivities = knownActivities,
         _allAvailableSubscriptions = allAvailableSubscriptions,
+        _missingInfo = missingInfo,
+        _promocodesHistory = promocodesHistory,
         super._();
 
   @override
@@ -492,6 +690,12 @@ class _$SettingsStateImpl extends _SettingsState {
   final String avatar;
   @override
   @JsonKey()
+  final String gender;
+  @override
+  @JsonKey()
+  final String birthday;
+  @override
+  @JsonKey()
   final bool isPhoneEditModeEnabled;
   @override
   @JsonKey()
@@ -501,6 +705,9 @@ class _$SettingsStateImpl extends _SettingsState {
   final String reminderTime;
   @override
   @JsonKey()
+  final UserInstance? user;
+  @override
+  @JsonKey()
   final bool isReminderDisabled;
   @override
   @JsonKey()
@@ -508,6 +715,9 @@ class _$SettingsStateImpl extends _SettingsState {
   @override
   @JsonKey()
   final bool isNoAccessChangingPhoto;
+  @override
+  @JsonKey()
+  final bool isPhotoUploading;
   @override
   @JsonKey()
   final UserSubscription? currentSubscribtion;
@@ -533,10 +743,53 @@ class _$SettingsStateImpl extends _SettingsState {
   @override
   @JsonKey()
   final bool autoRenewal;
+  @override
+  @JsonKey()
+  final bool dropDownOpened;
+  @override
+  @JsonKey()
+  final bool genderDropDownOpened;
+  final List<String> _missingInfo;
+  @override
+  @JsonKey()
+  List<String> get missingInfo {
+    if (_missingInfo is EqualUnmodifiableListView) return _missingInfo;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_missingInfo);
+  }
+
+  @override
+  @JsonKey()
+  final String promocodeValue;
+  @override
+  @JsonKey()
+  final bool isPromocodeLoading;
+  final List<Promocode> _promocodesHistory;
+  @override
+  @JsonKey()
+  List<Promocode> get promocodesHistory {
+    if (_promocodesHistory is EqualUnmodifiableListView)
+      return _promocodesHistory;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_promocodesHistory);
+  }
+
+  @override
+  @JsonKey()
+  final bool isPromocodeSuccess;
+  @override
+  @JsonKey()
+  final bool isPromocodeError;
+  @override
+  @JsonKey()
+  final String promocodeErrorMessage;
+  @override
+  @JsonKey()
+  final String newPromocodeDescription;
 
   @override
   String toString() {
-    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue, isNoAccessChangingPhoto: $isNoAccessChangingPhoto, currentSubscribtion: $currentSubscribtion, nextSubscribtion: $nextSubscribtion, allAvailableSubscriptions: $allAvailableSubscriptions, isChangeSubscribtionLoading: $isChangeSubscribtionLoading, cardNumber: $cardNumber, autoRenewal: $autoRenewal)';
+    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, gender: $gender, birthday: $birthday, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, user: $user, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue, isNoAccessChangingPhoto: $isNoAccessChangingPhoto, isPhotoUploading: $isPhotoUploading, currentSubscribtion: $currentSubscribtion, nextSubscribtion: $nextSubscribtion, allAvailableSubscriptions: $allAvailableSubscriptions, isChangeSubscribtionLoading: $isChangeSubscribtionLoading, cardNumber: $cardNumber, autoRenewal: $autoRenewal, dropDownOpened: $dropDownOpened, genderDropDownOpened: $genderDropDownOpened, missingInfo: $missingInfo, promocodeValue: $promocodeValue, isPromocodeLoading: $isPromocodeLoading, promocodesHistory: $promocodesHistory, isPromocodeSuccess: $isPromocodeSuccess, isPromocodeError: $isPromocodeError, promocodeErrorMessage: $promocodeErrorMessage, newPromocodeDescription: $newPromocodeDescription)';
   }
 
   @override
@@ -566,33 +819,57 @@ class _$SettingsStateImpl extends _SettingsState {
             (identical(other.weight, weight) || other.weight == weight) &&
             (identical(other.height, height) || other.height == height) &&
             (identical(other.avatar, avatar) || other.avatar == avatar) &&
+            (identical(other.gender, gender) || other.gender == gender) &&
+            (identical(other.birthday, birthday) ||
+                other.birthday == birthday) &&
             (identical(other.isPhoneEditModeEnabled, isPhoneEditModeEnabled) ||
                 other.isPhoneEditModeEnabled == isPhoneEditModeEnabled) &&
             (identical(other.isEmailEditModeEnabled, isEmailEditModeEnabled) ||
                 other.isEmailEditModeEnabled == isEmailEditModeEnabled) &&
             (identical(other.reminderTime, reminderTime) ||
                 other.reminderTime == reminderTime) &&
+            (identical(other.user, user) || other.user == user) &&
             (identical(other.isReminderDisabled, isReminderDisabled) ||
                 other.isReminderDisabled == isReminderDisabled) &&
             (identical(other.qrcodeValue, qrcodeValue) ||
                 other.qrcodeValue == qrcodeValue) &&
-            (identical(
-                    other.isNoAccessChangingPhoto, isNoAccessChangingPhoto) ||
+            (identical(other.isNoAccessChangingPhoto, isNoAccessChangingPhoto) ||
                 other.isNoAccessChangingPhoto == isNoAccessChangingPhoto) &&
+            (identical(other.isPhotoUploading, isPhotoUploading) ||
+                other.isPhotoUploading == isPhotoUploading) &&
             (identical(other.currentSubscribtion, currentSubscribtion) ||
                 other.currentSubscribtion == currentSubscribtion) &&
             (identical(other.nextSubscribtion, nextSubscribtion) ||
                 other.nextSubscribtion == nextSubscribtion) &&
             const DeepCollectionEquality().equals(
                 other._allAvailableSubscriptions, _allAvailableSubscriptions) &&
-            (identical(other.isChangeSubscribtionLoading,
-                    isChangeSubscribtionLoading) ||
+            (identical(other.isChangeSubscribtionLoading, isChangeSubscribtionLoading) ||
                 other.isChangeSubscribtionLoading ==
                     isChangeSubscribtionLoading) &&
             (identical(other.cardNumber, cardNumber) ||
                 other.cardNumber == cardNumber) &&
             (identical(other.autoRenewal, autoRenewal) ||
-                other.autoRenewal == autoRenewal));
+                other.autoRenewal == autoRenewal) &&
+            (identical(other.dropDownOpened, dropDownOpened) ||
+                other.dropDownOpened == dropDownOpened) &&
+            (identical(other.genderDropDownOpened, genderDropDownOpened) ||
+                other.genderDropDownOpened == genderDropDownOpened) &&
+            const DeepCollectionEquality()
+                .equals(other._missingInfo, _missingInfo) &&
+            (identical(other.promocodeValue, promocodeValue) ||
+                other.promocodeValue == promocodeValue) &&
+            (identical(other.isPromocodeLoading, isPromocodeLoading) ||
+                other.isPromocodeLoading == isPromocodeLoading) &&
+            const DeepCollectionEquality()
+                .equals(other._promocodesHistory, _promocodesHistory) &&
+            (identical(other.isPromocodeSuccess, isPromocodeSuccess) ||
+                other.isPromocodeSuccess == isPromocodeSuccess) &&
+            (identical(other.isPromocodeError, isPromocodeError) ||
+                other.isPromocodeError == isPromocodeError) &&
+            (identical(other.promocodeErrorMessage, promocodeErrorMessage) ||
+                other.promocodeErrorMessage == promocodeErrorMessage) &&
+            (identical(other.newPromocodeDescription, newPromocodeDescription) ||
+                other.newPromocodeDescription == newPromocodeDescription));
   }
 
   @override
@@ -611,18 +888,32 @@ class _$SettingsStateImpl extends _SettingsState {
         weight,
         height,
         avatar,
+        gender,
+        birthday,
         isPhoneEditModeEnabled,
         isEmailEditModeEnabled,
         reminderTime,
+        user,
         isReminderDisabled,
         qrcodeValue,
         isNoAccessChangingPhoto,
+        isPhotoUploading,
         currentSubscribtion,
         nextSubscribtion,
         const DeepCollectionEquality().hash(_allAvailableSubscriptions),
         isChangeSubscribtionLoading,
         cardNumber,
-        autoRenewal
+        autoRenewal,
+        dropDownOpened,
+        genderDropDownOpened,
+        const DeepCollectionEquality().hash(_missingInfo),
+        promocodeValue,
+        isPromocodeLoading,
+        const DeepCollectionEquality().hash(_promocodesHistory),
+        isPromocodeSuccess,
+        isPromocodeError,
+        promocodeErrorMessage,
+        newPromocodeDescription
       ]);
 
   @JsonKey(ignore: true)
@@ -647,18 +938,32 @@ abstract class _SettingsState extends SettingsState {
       final String weight,
       final String height,
       final String avatar,
+      final String gender,
+      final String birthday,
       final bool isPhoneEditModeEnabled,
       final bool isEmailEditModeEnabled,
       final String reminderTime,
+      final UserInstance? user,
       final bool isReminderDisabled,
       final String? qrcodeValue,
       final bool isNoAccessChangingPhoto,
+      final bool isPhotoUploading,
       final UserSubscription? currentSubscribtion,
       final UserSubscription? nextSubscribtion,
       final List<Subscription> allAvailableSubscriptions,
       final bool isChangeSubscribtionLoading,
       final String cardNumber,
-      final bool autoRenewal}) = _$SettingsStateImpl;
+      final bool autoRenewal,
+      final bool dropDownOpened,
+      final bool genderDropDownOpened,
+      final List<String> missingInfo,
+      final String promocodeValue,
+      final bool isPromocodeLoading,
+      final List<Promocode> promocodesHistory,
+      final bool isPromocodeSuccess,
+      final bool isPromocodeError,
+      final String promocodeErrorMessage,
+      final String newPromocodeDescription}) = _$SettingsStateImpl;
   const _SettingsState._() : super._();
 
   @override
@@ -688,17 +993,25 @@ abstract class _SettingsState extends SettingsState {
   @override
   String get avatar;
   @override
+  String get gender;
+  @override
+  String get birthday;
+  @override
   bool get isPhoneEditModeEnabled;
   @override
   bool get isEmailEditModeEnabled;
   @override
   String get reminderTime;
   @override
+  UserInstance? get user;
+  @override
   bool get isReminderDisabled;
   @override
   String? get qrcodeValue;
   @override
   bool get isNoAccessChangingPhoto;
+  @override
+  bool get isPhotoUploading;
   @override
   UserSubscription? get currentSubscribtion;
   @override
@@ -711,6 +1024,26 @@ abstract class _SettingsState extends SettingsState {
   String get cardNumber;
   @override
   bool get autoRenewal;
+  @override
+  bool get dropDownOpened;
+  @override
+  bool get genderDropDownOpened;
+  @override
+  List<String> get missingInfo;
+  @override
+  String get promocodeValue;
+  @override
+  bool get isPromocodeLoading;
+  @override
+  List<Promocode> get promocodesHistory;
+  @override
+  bool get isPromocodeSuccess;
+  @override
+  bool get isPromocodeError;
+  @override
+  String get promocodeErrorMessage;
+  @override
+  String get newPromocodeDescription;
   @override
   @JsonKey(ignore: true)
   _$$SettingsStateImplCopyWith<_$SettingsStateImpl> get copyWith =>

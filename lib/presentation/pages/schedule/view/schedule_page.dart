@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/schedule/schedule_notifier.dart';
 import 'package:myfit/application/schedule/schedule_provider.dart';
@@ -8,10 +9,10 @@ import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/presentation/components/animation_button_effect.dart';
 import 'package:myfit/presentation/components/custom_card.dart';
+import 'package:myfit/presentation/components/custom_search_bar.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:myfit/presentation/components/inter_text.dart';
 import 'package:myfit/presentation/components/ui_dropdown_menu.dart';
-import 'package:myfit/presentation/pages/main2/widget/main2_header.dart';
 import 'package:myfit/presentation/pages/schedule/widget/widget.dart';
 import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
@@ -50,15 +51,10 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     final event = ref.read(scheduleProvider.notifier);
-    //event.makeLessonCompleted(context,gymId: 35,lessonId: 833);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: Main2Header(
-        showBackButton: false,
-        canNavigateToSettings: true,
-      ),
-
+      appBar: CustomSearchBar(canNavigateToSettings: true, showBackButton: false),
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -111,8 +107,7 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
                           ); // today in this format => (2024-01-07 00:00:00)
                           final scheduleDate = DateTime.parse(date);
                           final formattedDay = event.formatDay(date);
-                          final formattedDayOfWeek =
-                              event.determineWeekday(date);
+                          final formattedDayOfWeek = event.determineWeekday(date);
 
                           // Проверка, является ли день текущим или будущим
                           bool isTodayOrFuture = scheduleDate
@@ -370,16 +365,24 @@ Widget listOfActivitiesEachItem(
                       ),
                       10.horizontalSpace,
                       // three dots
-                      DropDownMenuInsideCard(
+                     Consumer(builder: (context, ref, child) {
+                      final isFromSearch = ref.watch(activityProvider).isFromSearch;
+                       return  DropDownMenuInsideCard(
                         onTap: () => context.router.push(
                           NotesRoute(
                             gymName: name,
                           ),
                         ),
-                        onTap2: () => context.router.push(
+                        onTap2: () {
+                          if (isFromSearch) {
+                            ref.read(activityProvider.notifier).setIsFromSearch(false);
+                          }
+                          context.router.push(
                           ActivityRoute(gymId: gymId),
-                        ),
-                      ),
+                        );
+                        },
+                      );
+                     },),
                     ],
                   ),
                 ),

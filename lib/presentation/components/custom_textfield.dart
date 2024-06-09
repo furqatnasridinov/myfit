@@ -28,6 +28,7 @@ class CustomTextField extends StatelessWidget {
   void Function()? onTap;
   void Function(String)? onChanged;
   bool readOnly;
+  Widget? prefixIcon;
 
   CustomTextField(
       {Key? key,
@@ -51,7 +52,8 @@ class CustomTextField extends StatelessWidget {
       this.onEditingComplete,
       this.onTap,
       this.onTapOutside,
-      this.cursorColor = Colors.black})
+      this.prefixIcon,
+      this.cursorColor = AppColors.blueColor})
       : super(key: key);
 
   @override
@@ -80,10 +82,12 @@ class CustomTextField extends StatelessWidget {
         suffixIcon: suffixIcon,
         contentPadding: contentPadding,
         hintText: hintText,
-        hintStyle: GoogleFonts.inter(
+        hintStyle: GoogleFonts.raleway(
           fontSize: 14.sp,
           fontWeight: FontWeight.w400,
+          color: AppColors.greyText,
         ),
+        prefixIcon: prefixIcon,
         fillColor: Colors.white,
         filled: true,
         focusedBorder: OutlineInputBorder(
@@ -106,7 +110,7 @@ class CustomTextField extends StatelessWidget {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
           borderSide: BorderSide(
-            color: isError ? Colors.red : AppColors.greyBorder,
+            color: isError ? AppColors.redBorder : AppColors.greyBorder,
             width: 1.w,
           ),
         ),

@@ -1,6 +1,4 @@
 import 'package:myfit/application/map/map_notifier.dart';
-import 'package:myfit/application/map/map_provider.dart';
-import 'package:myfit/application/map/map_state.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/presentation/components/custom_card.dart';
@@ -12,10 +10,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'widget.dart';
 
 class NoGymsInSelectedDiapozone extends StatelessWidget {
-  final MapState state;
   final MapNotifier event;
   const NoGymsInSelectedDiapozone(
-      {super.key, required this.state, required this.event});
+      {super.key,required this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +23,7 @@ class NoGymsInSelectedDiapozone extends StatelessWidget {
           text: TextSpan(
             children: [
               TextSpan(
-                text:
-                    "В этом радиусе ничего не найдено, увеличьте радиус поиска.",
+                text:"В этом радиусе ничего не найдено, увеличьте радиус поиска.",
                 style: GoogleFonts.raleway(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
@@ -49,11 +45,8 @@ class NoGymsInSelectedDiapozone extends StatelessWidget {
                       ),
                       height: 290.h,
                       child: Consumer(builder: (context, ref, child) {
-                        final stateConsumer = ref.watch(mapProvider);
-                        final eventConsumer = ref.read(mapProvider.notifier);
                         return DiapozoneBottomSheet(
-                          event: eventConsumer,
-                          state: stateConsumer,
+                          event: event,
                         );
                       }),
                     );

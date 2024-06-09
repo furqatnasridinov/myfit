@@ -33,6 +33,7 @@ class PlaceholderComingActivity extends StatelessWidget {
           height: 56.h,
           buttonColor: AppColors.blueColor,
           textColor: Colors.white,
+          borderColor: AppColors.blueBorder,
           fontSize: 16.sp,
           fontWeight: FontWeight.w600,
           onPressed: () {

@@ -1,7 +1,7 @@
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/presentation/components/components.dart';
-import 'package:myfit/presentation/pages/main2/widget/main2_header.dart';
+import 'package:myfit/presentation/components/custom_search_bar.dart';
 import 'package:myfit/presentation/pages/settings/widget/widget.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +21,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   void initState() {
     super.initState();
-    ref.read(settingsProvider.notifier).getAllAvailableSubscribtions(context);
+    ref.read(settingsProvider.notifier)
+    ..getAllAvailableSubscribtions(context)
+    ..getListOfCities(context);
   }
 
   @override
@@ -29,8 +31,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final event = ref.read(settingsProvider.notifier);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar:
-           Main2Header(showBackButton: true, canNavigateToSettings: false),
+      resizeToAvoidBottomInset: false,
+      appBar: CustomSearchBar(showBackButton: true, canNavigateToSettings: false),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         child: Column(
@@ -39,8 +41,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             20.verticalSpace,
             Consumer(
               builder: (context, ref, child) {
-                final bool currentSubscribtionNull =
-                    ref.watch(settingsProvider).currentSubscribtion == null;
+                final bool currentSubscribtionNull = ref.watch(settingsProvider).currentSubscribtion == null;
                 return Row(
                   children: [
                     CustomText(
@@ -65,6 +66,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 );
               },
             ),
+            const FillInfosBlock(),
             32.verticalSpace,
             const MySubscribtion(),
             //32.verticalSpace,

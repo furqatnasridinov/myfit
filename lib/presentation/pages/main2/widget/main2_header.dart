@@ -1,4 +1,4 @@
-import 'dart:ui';
+/* import 'dart:ui';
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
@@ -273,7 +273,8 @@ class _MainHeaderState extends ConsumerState<Main2Header> {
       automaticallyImplyLeading: false,
       //backgroundColor: Colors.amber,
       toolbarHeight: 40.h,
-      backgroundColor: AppColors.backgroundColor,
+      //backgroundColor: AppColors.backgroundColor,
+      backgroundColor: Colors.red,
       elevation: 0,
       leadingWidth: (widget.showBackButton && !textfieldFocusnode.hasFocus) ? null : 0,
       centerTitle: false,
@@ -326,9 +327,7 @@ class _MainHeaderState extends ConsumerState<Main2Header> {
       // title
       title: AnimatedContainer(
         margin: EdgeInsets.only(
-            left: (widget.showBackButton && !textfieldFocusnode.hasFocus)
-                ? 0
-                : 13.w,
+            left: (widget.showBackButton && !textfieldFocusnode.hasFocus) ? 0 : 13.w,
             right: 16),
         duration: const Duration(milliseconds: 1000),
         curve: Curves.easeInOut,
@@ -481,3 +480,4 @@ Widget _listiles(
     ),
   );
 }
+ */

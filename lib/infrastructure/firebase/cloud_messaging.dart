@@ -1,8 +1,12 @@
 // ignore_for_file: unused_local_variable
 
+import 'package:myfit/application/notification/notification_notifier.dart';
+import 'package:myfit/domain/di/dependency_manager.dart';
 import 'package:myfit/infrastructure/local_notifications/notification_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:myfit/presentation/router/app_router.dart';
+import 'package:myfit/presentation/router/app_router.gr.dart';
 
 
 Future<void> handleBackgroundMessage(RemoteMessage message) async {
@@ -10,20 +14,21 @@ Future<void> handleBackgroundMessage(RemoteMessage message) async {
   final String textMessage = message.notification?.body ?? "";
     if (textMessage.isNotEmpty) {
       if (textMessage.contains("через 15 минут")) {
-       // getIt<AppRouter>().push(const QrCodeRoute());
+       getIt<AppRouter>().push(const QrCodeRoute());
       }
     }
 }
 
 class CloudMessaging {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  final NotificationNotifier notificationNotifier = NotificationNotifier(notificationRepo);
 
   void handleMessage(RemoteMessage message) {
     debugPrint("handleMessage: $message");
     final String textMessage = message.notification?.body ?? "";
     if (textMessage.isNotEmpty) {
       if (textMessage.contains("через 15 минут")) {
-       // getIt<AppRouter>().push(const QrCodeRoute());
+       getIt<AppRouter>().push(const QrCodeRoute());
       }
     }
   }
@@ -49,6 +54,7 @@ class CloudMessaging {
     // triggers when app is in foreground
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       final notif = message.notification;
+      notificationNotifier.getAllNotifications();
       LocalNotificationService().showDefaultNotification(notif?.title ?? "null", notif?.body ?? "null");
     });
   }

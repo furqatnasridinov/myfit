@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:myfit/application/map/map_state.dart';
@@ -232,7 +234,6 @@ class MapNotifier extends StateNotifier<MapState> {
       );
       state = state.copyWith(isloading: false);
     } else {
-      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
@@ -400,7 +401,6 @@ class MapNotifier extends StateNotifier<MapState> {
       state = state.copyWith(isloading: false);
      // setFlexes();
     } else {
-      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
     state = state.copyWith(isloading: false);
@@ -672,8 +672,7 @@ class MapNotifier extends StateNotifier<MapState> {
 
     List<LessonTypeWithGymsInside> listToCollect = [];
     double selectedDiapozone = state.selectedDiapozone;
-    final activityWithGyms =
-        List<LessonTypeWithGymsInside>.from(state.activitiesWithGymsInsideAll);
+    final activityWithGyms = List<LessonTypeWithGymsInside>.from(state.activitiesWithGymsInsideAll);
 
     if (selectedDiapozone == 5) {
       listToCollect.addAll(state.activitiesWithGymsInsideAll);
@@ -755,7 +754,6 @@ class MapNotifier extends StateNotifier<MapState> {
         },
       );
     } else {
-      // ignore: use_build_context_synchronously
       AppHelpers.showCheckTopSnackBar(context);
     }
   }

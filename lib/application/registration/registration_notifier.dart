@@ -128,9 +128,10 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
           phoneNumber, code);
       response.when(
         success: (data) async {
-          PageRouteInfo<dynamic> nextRoute = data.user?.firstName == null
+          /* PageRouteInfo<dynamic> nextRoute = data.user?.firstName == null 
               ? const Registration3Route()
-              : const Main2Route();
+              : const Main2Route(); */
+          PageRouteInfo<dynamic> nextRoute = const Registration3Route(); // remove this
           await LocalStorage.setToken(data.jwtToken ?? "");
           await LocalStorage.setPhoneNumber(phoneNumber);
           await LocalStorage.setUserId(data.user?.id.toString() ?? "0");
@@ -140,6 +141,7 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
               LocalStorage.setUserLastName(data.user?.lastName ?? ""),
               LocalStorage.setUserPatronomic(data.user?.patronymic ?? ""),
               //LocalStorage.setPhoneNumber(data.user?.login ?? ""),
+              LocalStorage.setUserBirthday(data.user?.birthdayDate ?? ""),
               LocalStorage.setSelectedCity(data.user?.city?.name ?? ""),
               LocalStorage.setSelectedCityLat(data.user?.city?.latitude ?? ""),
               LocalStorage.setSelectedCityLon(data.user?.city?.longitude ?? ""),
@@ -156,8 +158,7 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
           moveClientToNextPage(context, nextRoute);
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(
-              context, NetworkExceptions.getErrorMessage(error));
+          AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {

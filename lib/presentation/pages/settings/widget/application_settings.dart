@@ -1,5 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:myfit/application/main2/main2_provider.dart';
+import 'package:myfit/application/map/map_provider.dart';
+import 'package:myfit/application/notification/notification_provider.dart';
+import 'package:myfit/application/registration/registration_provider.dart';
+import 'package:myfit/application/schedule/schedule_provider.dart';
+import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/local_storage.dart';
 import 'package:myfit/presentation/components/animation_button_effect.dart';
@@ -117,6 +124,7 @@ class ApplicationSettings extends StatelessWidget {
                           child: CustomText(
                             text: "Вы уверены, что хотите выйти из аккаунта?",
                             fontSize: 14.sp,
+                            height: 1.1,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -136,19 +144,28 @@ class ApplicationSettings extends StatelessWidget {
                             )),
                             16.horizontalSpace,
                             Expanded(
-                              child: CustomButton(
-                                height: 40.h,
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w500,
-                                textColor: Colors.white,
-                                buttonColor: AppColors.blueColor,
-                                onPressed: () async {
-                                  await LocalStorage.instance.logOut();
-                                  // remove all routes and replace with splash route
-                                  context.router
-                                      .replaceAll([const SplashRoute()]);
+                              child: Consumer(
+                                builder: (context, ref, child) {
+                                  return CustomButton(
+                                    height: 40.h,
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w500,
+                                    textColor: Colors.white,
+                                    buttonColor: AppColors.blueColor,
+                                    onPressed: () async {
+                                      ref.invalidate(main2Provider);
+                                      ref.invalidate(mapProvider);
+                                      ref.invalidate(notificationProvider);
+                                      ref.invalidate(registrationProvider);
+                                      ref.invalidate(scheduleProvider);
+                                      ref.invalidate(settingsProvider);
+                                      await LocalStorage.instance.logOut();
+                                      // remove all routes and replace with splash route
+                                      context.router.replaceAll([const SplashRoute()]);
+                                    },
+                                    text: "Выйти",
+                                  );
                                 },
-                                text: "Выйти",
                               ),
                             ),
                           ],

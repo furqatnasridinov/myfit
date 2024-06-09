@@ -4,6 +4,7 @@ import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/application/settings/settings_state.dart';
 import 'package:myfit/infrastructure/models/request/send_phone_number_request.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/infrastructure/services/local_storage.dart';
 import 'package:myfit/presentation/components/custom_button.dart';
 import 'package:myfit/presentation/components/custom_card.dart';
@@ -126,7 +127,7 @@ class _PersonalInfoState extends State<PersonalInfo> {
                         children: [
                           CustomText(
                             text: widget.state.userName.isEmpty
-                                ? " widget.state.userName.isEmpty"
+                                ? "Не указано"
                                 : widget.state.userName,
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w500,
@@ -157,19 +158,15 @@ class _PersonalInfoState extends State<PersonalInfo> {
                         builder: (BuildContext context) {
                           return Dialog(
                             elevation: 0,
-                            insetPadding:
-                                EdgeInsets.symmetric(horizontal: 16.w),
+                            insetPadding:EdgeInsets.symmetric(horizontal: 16.w),
                             child: Consumer(builder: (context, ref, child) {
                               final stateConsumer = ref.watch(settingsProvider);
-                              final eventConsumer =
-                                  ref.read(settingsProvider.notifier);
+                              final eventConsumer = ref.read(settingsProvider.notifier);
                               return PopupBody(
                                 event: eventConsumer,
                                 state: stateConsumer,
                               );
                             }),
-
-                            /*  */
                           );
                         },
                       );
@@ -183,7 +180,7 @@ class _PersonalInfoState extends State<PersonalInfo> {
                 children: [
                   chipsLikeContainer(
                     widget.state.age.isEmpty ? "0" : widget.state.age,
-                    "лет",
+                    AppHelpers.getYearPrefix(int.tryParse(widget.state.age) ?? 0),
                     context,
                   ),
                   20.horizontalSpace,

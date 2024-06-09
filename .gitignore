@@ -42,3 +42,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# FVM Version Cache
+.fvm/
+.fvmrc
+#if you want all your group members to have the same version of flutter, 
+#you can remove the .fvmrc file from the .gitignore file not folder .fvm/

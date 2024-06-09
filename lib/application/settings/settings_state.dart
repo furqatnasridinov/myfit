@@ -1,7 +1,12 @@
+//import 'package:myfit/infrastructure/models/data/user_instance.dart';
+
+
+import 'package:myfit/infrastructure/models/data/promocode.dart';
 import 'package:myfit/infrastructure/models/data/user_subscribtion.dart';
 import 'package:myfit/infrastructure/models/response/auth_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../infrastructure/models/data/user_instance.dart';
 part 'settings_state.freezed.dart';
 
 @freezed
@@ -20,18 +25,32 @@ class SettingsState with _$SettingsState {
     @Default("") String weight,
     @Default("") String height,
     @Default("") String avatar,
+    @Default("") String gender,
+    @Default("") String birthday,
     @Default(false) bool isPhoneEditModeEnabled,
     @Default(false) bool isEmailEditModeEnabled,
     @Default("30") String reminderTime,
+    @Default(null) UserInstance? user,
     @Default(false) bool isReminderDisabled,
     @Default("") String? qrcodeValue,
     @Default(false) bool isNoAccessChangingPhoto,
+    @Default(false) bool isPhotoUploading,
     @Default(null) UserSubscription? currentSubscribtion,
     @Default(null) UserSubscription? nextSubscribtion,
     @Default([]) List<Subscription> allAvailableSubscriptions,
     @Default(false) bool isChangeSubscribtionLoading,
     @Default("**** **** **** 1234") String cardNumber,
     @Default(false) bool autoRenewal,
+    @Default(false) bool dropDownOpened,
+    @Default(false) bool genderDropDownOpened,
+    @Default([]) List<String> missingInfo,
+    @Default("") String promocodeValue,
+    @Default(false) bool isPromocodeLoading,
+    @Default([]) List<Promocode> promocodesHistory,
+    @Default(false) bool isPromocodeSuccess,
+    @Default(false) bool isPromocodeError,
+    @Default("") String promocodeErrorMessage,
+    @Default("") String newPromocodeDescription,
   }) = _SettingsState;
   const SettingsState._();
 }

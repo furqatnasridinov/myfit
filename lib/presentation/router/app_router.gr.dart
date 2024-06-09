@@ -9,8 +9,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i19;
-import 'package:flutter/material.dart' as _i21;
-import 'package:flutter/widgets.dart' as _i20;
+import 'package:flutter/material.dart' as _i20;
 import 'package:myfit/presentation/pages/activity/view/activity_page.dart'
     as _i1;
 import 'package:myfit/presentation/pages/auth/registration/registration_page.dart'
@@ -274,7 +273,7 @@ class MapRoute extends _i19.PageRouteInfo<void> {
 /// [_i6.NotesScreen]
 class NotesRoute extends _i19.PageRouteInfo<NotesRouteArgs> {
   NotesRoute({
-    _i21.Key? key,
+    _i20.Key? key,
     required String gymName,
     List<_i19.PageRouteInfo>? children,
   }) : super(
@@ -298,7 +297,7 @@ class NotesRouteArgs {
     required this.gymName,
   });
 
-  final _i21.Key? key;
+  final _i20.Key? key;
 
   final String gymName;
 
@@ -326,7 +325,7 @@ class NotificationRoute extends _i19.PageRouteInfo<void> {
 /// [_i8.PhotoViewScreen]
 class PhotoViewRoute extends _i19.PageRouteInfo<PhotoViewRouteArgs> {
   PhotoViewRoute({
-    _i21.Key? key,
+    _i20.Key? key,
     required List<String> photos,
     required int index,
     List<_i19.PageRouteInfo>? children,
@@ -353,7 +352,7 @@ class PhotoViewRouteArgs {
     required this.index,
   });
 
-  final _i21.Key? key;
+  final _i20.Key? key;
 
   final List<String> photos;
 
