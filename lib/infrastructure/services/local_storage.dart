@@ -259,6 +259,24 @@ class LocalStorage {
   static void removePatronomice() =>
       _preferences?.remove(AppConstants.keyUserPatronomic);
 
+  // save user birthday
+  static Future<void> setUserBirthday(String? birthday) async {
+    if (_preferences != null) {
+      await _preferences?.setString(
+        AppConstants.keyUserBirthday,
+        birthday ?? "??",
+      );
+    }
+  }
+
+  // get user birthday
+  static String getUserBirthday() =>
+      _preferences?.getString(AppConstants.keyUserBirthday) ?? "";
+
+  // remove user birthday
+  static void removeBirthday() =>
+      _preferences?.remove(AppConstants.keyUserBirthday);
+
   // save user gender
   static Future<void> setGender(String? gender) async {
     final String translatedGender = gender == "MALE" ? "Мужчина" : "Женщина";
@@ -396,6 +414,7 @@ class LocalStorage {
     removeKnownActivities();
     removeLoginTime();
     removeWhenUploadingPhotoOpens();
+    removeBirthday();
     // ...
   }
 }

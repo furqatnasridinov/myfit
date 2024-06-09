@@ -36,7 +36,7 @@ dependencies:
   dio: ^5.3.3
   firebase_core: ^2.27.0
   firebase_messaging: ^14.7.19
-  fl_chart: ^0.64.0
+  fl_chart: ^0.68.0
   flutter:
     sdk: flutter
   flutter_local_notifications: ^16.3.2
@@ -54,6 +54,7 @@ dependencies:
   im_stepper: ^1.0.1+1
   image_picker: ^1.0.7
   intl: ^0.18.1
+  mask_text_input_formatter: ^2.9.0
   mobile_scanner: ^4.0.0
   percent_indicator: ^4.2.3
   permission_handler: ^11.3.0

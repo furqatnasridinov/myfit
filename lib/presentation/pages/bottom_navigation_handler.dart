@@ -28,8 +28,7 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
             body: child,
             bottomNavigationBar: Consumer(
               builder: (context, ref, child) {
-                final mapPageBottomCardShown =
-                    ref.watch(mapProvider).isGymsPopupShown;
+                final mapPageBottomCardShown = ref.watch(mapProvider).isGymsPopupShown;
                 final showOnlyKnownOnMap = ref.watch(mapProvider).showOnlyKnown;
                 final recommendedShown = ref.watch(mapProvider).showRecommended;
                 final event = ref.read(mapProvider.notifier);

@@ -1,7 +1,5 @@
 import 'package:myfit/infrastructure/models/data/addresses.dart';
-import 'package:myfit/infrastructure/models/data/notification.dart';
 import 'package:myfit/infrastructure/models/data/subscribtion_card.dart';
-import 'package:myfit/infrastructure/services/app_constants.dart';
 
 class DummyData {
   final List<Addresses> dummyAddresses = [

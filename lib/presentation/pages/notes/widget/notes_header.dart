@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:myfit/application/main2/main2_provider.dart';
-import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/app_constants.dart';
@@ -158,7 +157,7 @@ class _MainHeaderState extends ConsumerState<NotesHeader> {
     entry = null;
   }
 
-  Future<void> _updateOverlay() async {
+  Future<void> updateOverlay() async {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       entry?.markNeedsBuild();
       //setState(() {});

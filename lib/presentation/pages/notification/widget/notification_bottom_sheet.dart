@@ -9,12 +9,8 @@ import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/presentation/components/custom_button.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
-import 'package:myfit/presentation/pages/notification/widget/lesson_cancelled.dart';
-import 'package:myfit/presentation/pages/notification/widget/lesson_changed.dart';
-import 'package:myfit/presentation/pages/notification/widget/lesson_completed.dart';
-import 'package:myfit/presentation/pages/notification/widget/lesson_confirmed.dart';
-import 'package:myfit/presentation/pages/notification/widget/lesson_starts_witihin_15_minutes.dart';
-import 'package:myfit/presentation/pages/notification/widget/visitscount_ending.dart';
+
+import 'widget.dart';
 
 class NotificationBottomSheet extends StatelessWidget {
   final void Function()? onNavigate;
@@ -106,7 +102,7 @@ class NotificationBottomSheet extends StatelessWidget {
               ),
               itemBuilder: (context, NotificationModel element) => buildGroupList2(element),
               itemComparator: (item1, item2) => item1.date.compareTo(item2.date),
-              stickyHeaderBackgroundColor: AppColors.backgroundColor,
+              stickyHeaderBackgroundColor: Colors.white,
               useStickyGroupSeparators: true,
               floatingHeader: false,
             ),
@@ -210,6 +206,19 @@ Widget buildGroupList2(NotificationModel notification) {
       unread: !notification.iSread,
       gymName: notification.gymName,
       gymId: notification.gymId,
+      time: AppHelpers.getFormattedTime(notification.date),
+      batteryIcon: AppHelpers().getBatteryIcon(
+          notification.visitedCount ?? 0, notification.visitPerMonth ?? 0),
+    );
+  }
+  if (notification.type == NotificationType.system) {
+    return SystemNotification(
+      unread: !notification.iSread,
+      title: notification.title,
+      gymId: notification.gymId,
+      gymName: notification.gymName,
+      lessonType: notification.lessonType,
+      description: notification.description,
       time: AppHelpers.getFormattedTime(notification.date),
       batteryIcon: AppHelpers().getBatteryIcon(
           notification.visitedCount ?? 0, notification.visitPerMonth ?? 0),

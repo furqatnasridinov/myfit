@@ -28,6 +28,7 @@ class CustomTextField extends StatelessWidget {
   void Function()? onTap;
   void Function(String)? onChanged;
   bool readOnly;
+  Widget? prefixIcon;
 
   CustomTextField(
       {Key? key,
@@ -51,7 +52,8 @@ class CustomTextField extends StatelessWidget {
       this.onEditingComplete,
       this.onTap,
       this.onTapOutside,
-      this.cursorColor = Colors.black})
+      this.prefixIcon,
+      this.cursorColor = AppColors.blueColor})
       : super(key: key);
 
   @override
@@ -83,7 +85,9 @@ class CustomTextField extends StatelessWidget {
         hintStyle: GoogleFonts.raleway(
           fontSize: 14.sp,
           fontWeight: FontWeight.w400,
+          color: AppColors.greyText,
         ),
+        prefixIcon: prefixIcon,
         fillColor: Colors.white,
         filled: true,
         focusedBorder: OutlineInputBorder(

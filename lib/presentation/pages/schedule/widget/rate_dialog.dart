@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, must_be_immutable
 
 import 'package:myfit/application/schedule/schedule_provider.dart';
 import 'package:myfit/infrastructure/models/request/rate_request.dart';

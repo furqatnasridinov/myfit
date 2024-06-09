@@ -144,7 +144,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                         alignment: Alignment.center,
                         child: SvgPicture.asset("assets/svg/myfitNew.svg"),
                       ),
-                      Align(
+                      /* Align(
                         alignment: Alignment.bottomCenter,
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 400),
@@ -153,7 +153,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                             isPinCodeValidate ? 0 : 0.96),
                           height: 100, 
                           width: 100),
-                      ),
+                      ), */
                       ],
                      ),
                     115.verticalSpace,
@@ -161,6 +161,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                       child: CustomText(
                         text:"Дождитесь смс на свой телефон и введите код из сообщения в поле ниже:",
                         fontSize: 14.sp,
+                        height: 1.1,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -304,7 +305,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
               ),
             ),
 
-          AnimatedPositioned(
+          /* AnimatedPositioned(
             duration: const Duration(milliseconds: 800),
             curve: Curves.easeInOut,
             top: 117.h,
@@ -325,7 +326,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
             curve: Curves.easeInOut,
             top: 160.h,
             right:isPinCodeValidate ? 30 : 90.w,
-            child: SvgPicture.asset("assets/svg/cloud3.svg")),
+            child: SvgPicture.asset("assets/svg/cloud3.svg")), */
           ],
         ),
       ),

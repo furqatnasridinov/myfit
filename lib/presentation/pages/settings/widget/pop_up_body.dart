@@ -1,11 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/settings/settings_notifier.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/application/settings/settings_state.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/infrastructure/services/local_storage.dart';
 import 'package:myfit/presentation/components/custom_button.dart';
 import 'package:myfit/presentation/components/custom_card.dart';
@@ -17,6 +20,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myfit/presentation/components/dummy_data.dart';
+import 'package:myfit/presentation/components/inter_text.dart';
 import '../../../../infrastructure/models/response/auth_response.dart';
 
 class PopupBody extends ConsumerStatefulWidget {
@@ -31,7 +35,10 @@ class PopupBody extends ConsumerStatefulWidget {
 class _PopupBodyState extends ConsumerState<PopupBody> {
   GlobalKey sizedBoxKey = GlobalKey();
   City? selectedCity;
-  bool isNameEmpty = false;
+  bool isNameWrong = false;
+  bool isSurnameWrong = false;
+  bool isBirhdayWrong = false;
+  String birthdayErrorMes = "";
   final FocusNode focusNode = FocusNode();
   final FocusNode genderFocusNode = FocusNode();
   late TextEditingController cityController;
@@ -41,7 +48,13 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
   late TextEditingController weightController;
   late TextEditingController heightController;
   late TextEditingController genderController;
-
+  late TextEditingController birthdayController;
+  final dateInputFormatter = MaskTextInputFormatter(
+    mask: '##.##.####',
+    filter: {"#": RegExp(r'[0-9]')},
+    initialText: AppHelpers.getBirthdayLikeInApp(LocalStorage.getUserBirthday()),
+    type: MaskAutoCompletionType.eager
+  );
   @override
   void initState() {
     super.initState();
@@ -49,17 +62,17 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
         TextEditingController(text: LocalStorage.getSelectedCity());
     nameController = TextEditingController(text: LocalStorage.getUserName());
     lastNameController = TextEditingController(
-        text: LocalStorage.getUserLastName().isEmpty
-            ? ""
-            : LocalStorage.getUserLastName());
+        text: LocalStorage.getUserLastName().isEmpty ? "" : LocalStorage.getUserLastName());
     ageController = TextEditingController(
         text: LocalStorage.getAge().isEmpty ? "" : LocalStorage.getAge());
     weightController = TextEditingController(
         text: LocalStorage.getWeight().isEmpty ? "" : LocalStorage.getWeight());
     heightController = TextEditingController(
         text: LocalStorage.getHeight().isEmpty ? "" : LocalStorage.getHeight());
-    genderController = TextEditingController(
-        text: LocalStorage.getGender());
+    genderController = TextEditingController(text: LocalStorage.getGender());
+    birthdayController = TextEditingController(
+        text: LocalStorage.getUserBirthday().isEmpty ? "" : AppHelpers.getBirthdayLikeInApp(LocalStorage.getUserBirthday()));
+    
   }
 
   @override
@@ -71,6 +84,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
     ageController.dispose();
     weightController.dispose();
     heightController.dispose();
+    birthdayController.dispose();
   }
 
   void setSelectedCity(City? city) {
@@ -86,7 +100,8 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
     return CustomCard(
       borderColor: Colors.transparent,
       width: double.maxFinite,
-      height: widget.state.isNoAccessChangingPhoto ? 575.h : 618.h,
+      height: widget.state.isNoAccessChangingPhoto ? 575.h + ((isBirhdayWrong || isNameWrong || isSurnameWrong) ? 40.h : 0) : 
+        618.h + ((isBirhdayWrong || isNameWrong || isSurnameWrong) ? 40.h : 0),
       child: Stack(
         children: [
           // name and last name row
@@ -102,7 +117,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                       text: "Ваше имя",
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w500,
-                      color: widget.state.missingInfo.contains("firstName")
+                      color: widget.state.missingInfo.contains("firstName") || isNameWrong
                           ? AppColors.redBorder : Colors.black,
                     ),
                     5.verticalSpace,
@@ -114,17 +129,26 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
                         ),
-                        isError: isNameEmpty || widget.state.missingInfo.contains("firstName"),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Zа-яА-Я]')),
+                        ],
+                        isError: isNameWrong || widget.state.missingInfo.contains("firstName"),
                         hasFocus: true,
                         cursorColor: AppColors.greyText,
+                        maxLength: 32,
                         contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
+                        counterStyle: const TextStyle(
+                          height: double.minPositive,
+                        ),
+                        counterText: "",
                         controller: nameController,
                         onChanged: (val) {
-                          if (val.trim().isEmpty && !isNameEmpty) {
-                            isNameEmpty = true;
+                          if (val.trim().length >= 2 && isNameWrong) {
+                            isNameWrong = false;
                             setState(() {});
-                          } else if (val.trim().isNotEmpty && isNameEmpty) {
-                            isNameEmpty = false;
+                          }
+                          if (val.trim().length < 2 && !isNameWrong) {
+                            isNameWrong = true;
                             setState(() {});
                           }
                         },
@@ -141,18 +165,36 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                       text: "Фамилия",
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w500,
+                      color: widget.state.missingInfo.contains("lastName") || isSurnameWrong
+                          ? AppColors.redBorder : Colors.black,
                     ),
                     5.verticalSpace,
                     SizedBox(
                       width: 150.w,
                       height: 40.h,
                       child: CustomTextField(
-                        style: GoogleFonts.raleway(
-                            fontSize: 14.sp, fontWeight: FontWeight.w400),
+                        style: GoogleFonts.raleway(fontSize: 14.sp, fontWeight: FontWeight.w400),
                         contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
+                        maxLength: 32,
+                        counterStyle: const TextStyle(height: double.minPositive),
+                        counterText: "",
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Zа-яА-Я]')),
+                        ],
+                        onChanged: (val){
+                          if (val.trim().length >= 2 && isSurnameWrong) {
+                            isSurnameWrong = false;
+                            setState(() {});
+                          }
+                          if (val.trim().length < 2 && !isSurnameWrong) {
+                            isSurnameWrong = true;
+                            setState(() {});
+                          }
+                        },
                         controller: lastNameController,
-                        /* hintText: LocalStorage.getUserLastName().isEmpty
-                            ? "Фамилия" : "", */
+                        isError: widget.state.missingInfo.contains("lastName") || isSurnameWrong,
+                        hintText: LocalStorage.getUserLastName().isEmpty
+                            ? "Фамилия" : "",
                       ),
                     ),
                   ],
@@ -161,26 +203,26 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
             ),
           ),
 
-          // age, weight, height row
+          // weight, height row
           Positioned(
             top: 235.h,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // возраст
+                /* // возраст
                 userParamsField(
                   text: "Возраст",
                   controller: ageController,
                   isError: widget.state.missingInfo.contains("age"),
-                ),
-                SizedBox(width: 15.w),
+                ), */
+                //SizedBox(width: 15.w),
                 // вес
                 userParamsField(
                   text: "Вес, кг",
                   controller: weightController,
                   isError: widget.state.missingInfo.contains("weight"),
                 ),
-                SizedBox(width: 15.w),
+                SizedBox(width: 9.w),
                 // рост
                 userParamsField(
                   text: "Рост, см",
@@ -465,109 +507,179 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
             ),
           ),
 
-          // gender
+          // gender and birthday
           Positioned(
             top: 77.h,
-            child: CustomText(
-              text: "Пол",
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w500,
-              color: widget.state.missingInfo.contains("gender")
-                  ? AppColors.redBorder : Colors.black,
-            ),
-          ),
-          Positioned(
-            top: 105.h,
-            child: // gender
-                Consumer(
-              builder: (context, ref, child) {
-                final genderDropDownOpened =ref.watch(settingsProvider).genderDropDownOpened;
-                return Column(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      height: 40.h,
-                      width: 309.w,
-                      child: CustomTextField(
-                        hintText: LocalStorage.getGender().isEmpty ? "Не указано" : "",
-                        isError: widget.state.missingInfo.contains("gender"),
-                        focusNode: genderFocusNode,
-                        style: GoogleFonts.raleway(
-                            fontSize: 14.sp, fontWeight: FontWeight.w400),
-                        contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
-                        onTap: () async {
-                          if (!genderDropDownOpened) {
-                            widget.event.openGenderDropDown();
-                            genderFocusNode.requestFocus();
-                          } else {
-                            genderFocusNode.unfocus();
-                            widget.event.closeGenderDropDown();
-                          }
-                        },
-                        suffixIcon: TweenAnimationBuilder<double>(
-                          duration: const Duration(milliseconds: 300),
-                          tween: Tween(
-                              begin: 0, end: genderDropDownOpened ? 1.0 : 0),
-                          builder: (BuildContext context, double angle,
-                              Widget? child) {
-                            return Transform.rotate(
-                              angle: angle * pi,
-                              child: Icon(
-                                Icons.keyboard_arrow_down,
-                                size: 20.sp,
-                                color: Colors.black.withOpacity(0.5),
-                              ),
-                            );
-                          },
-                        ),
-                        readOnly: true,
-                        controller: genderController,
-                      ),
+                    CustomText(
+                      text: "Пол",
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w500,
+                      color: widget.state.missingInfo.contains("gender")
+                          ? AppColors.redBorder
+                          : Colors.black,
                     ),
                     5.verticalSpace,
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                      height: genderDropDownOpened ? 80.h : 0,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16.0),
-                        color: Colors.white,
-                        border: Border.all(
-                          width: 1.0,
-                          color: const Color.fromRGBO(119, 170, 249, 1),
-                        ),
-                      ),
-                      padding: EdgeInsets.symmetric(
-                          vertical: 12.h, horizontal: 16.w),
-                      child: MediaQuery.removePadding(
-                        context: context,
-                        removeTop: true,
-                        removeBottom: true,
-                        child: Consumer(builder: (context, ref, child) {
-                          return SizedBox(
-                            width: 275.w,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: DummyData().genders.length,
-                              itemBuilder: (context, index) {
-                                final current = DummyData().genders[index];
-                                return _listiles(
-                                  current,
-                                  () {
-                                    genderController.text = current;
+                    Consumer(
+                      builder: (context, ref, child) {
+                        final genderDropDownOpened =
+                            ref.watch(settingsProvider).genderDropDownOpened;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // gender field
+                            SizedBox(
+                              height: 40.h,
+                              width: 150.w,
+                              child: CustomTextField(
+                                hintText: LocalStorage.getGender().isEmpty
+                                    ? "Не указано"
+                                    : "",
+                                isError:
+                                    widget.state.missingInfo.contains("gender"),
+                                focusNode: genderFocusNode,
+                                style: GoogleFonts.raleway(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w400),
+                                contentPadding:
+                                    EdgeInsets.zero.copyWith(left: 8.w),
+                                onTap: () async {
+                                  if (!genderDropDownOpened) {
+                                    widget.event.openGenderDropDown();
+                                    genderFocusNode.requestFocus();
+                                  } else {
                                     genderFocusNode.unfocus();
                                     widget.event.closeGenderDropDown();
+                                  }
+                                },
+                                suffixIcon: TweenAnimationBuilder<double>(
+                                  duration: const Duration(milliseconds: 300),
+                                  tween: Tween(
+                                      begin: 0,
+                                      end: genderDropDownOpened ? 1.0 : 0),
+                                  builder: (BuildContext context, double angle,
+                                      Widget? child) {
+                                    return Transform.rotate(
+                                      angle: angle * pi,
+                                      child: Icon(
+                                        Icons.keyboard_arrow_down,
+                                        size: 20.sp,
+                                        color: Colors.black.withOpacity(0.5),
+                                      ),
+                                    );
                                   },
-                                );
-                              },
+                                ),
+                                readOnly: true,
+                                controller: genderController,
+                              ),
                             ),
-                          );
-                        }),
+                            // overlay
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeInOut,
+                              height: genderDropDownOpened ? 80.h : 0,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16.0),
+                                color: Colors.white,
+                                border: Border.all(
+                                  width: 1.0,
+                                  color: const Color.fromRGBO(119, 170, 249, 1),
+                                ),
+                              ),
+                              margin: EdgeInsets.only(top: 3.h),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 12.h, horizontal: 16.w),
+                              child: MediaQuery.removePadding(
+                                context: context,
+                                removeTop: true,
+                                removeBottom: true,
+                                child: Consumer(builder: (context, ref, child) {
+                                  return SizedBox(
+                                    width: 120.w,
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: DummyData().genders.length,
+                                      itemBuilder: (context, index) {
+                                        final current =
+                                            DummyData().genders[index];
+                                        return _listiles(
+                                          current,
+                                          () {
+                                            genderController.text = current;
+                                            genderFocusNode.unfocus();
+                                            widget.event.closeGenderDropDown();
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  );
+                                }),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                7.5.horizontalSpace,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomText(
+                      text: "Дата рождения",
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w500,
+                      color: widget.state.missingInfo.contains("birthdayDate") || isBirhdayWrong
+                          ? AppColors.redBorder
+                          : Colors.black,
+                    ),
+                    5.verticalSpace,
+                    // gneder field
+                    SizedBox(
+                      height: 40.h,
+                      width: 150.w,
+                      child: CustomTextField(
+                        inputFormatters: [dateInputFormatter],
+                        hintText: "18.11.2003",
+                        isError: widget.state.missingInfo.contains("birthdayDate") || isBirhdayWrong,
+                        controller: birthdayController,
+                        keyboardType: TextInputType.datetime,
+                        onChanged: (value) {
+                          birthdayErrorMes = AppHelpers.getBirthdayErrorMes(value);
+                          setState(() {});
+                          if (value.length == 10) {
+                            final int age = AppHelpers.getYearFromBirthday(
+                              AppHelpers.getBirthdayLikeInServer(dateInputFormatter.getMaskedText()));
+                            if (age > 1 && age < 100) {
+                              if (isBirhdayWrong) {
+                                isBirhdayWrong = false;
+                                setState(() {});
+                              }
+                            } else {
+                              if (!isBirhdayWrong) {
+                                isBirhdayWrong = true;
+                                setState(() {});
+                              }
+                            }
+                          }
+                        },
+                        //focusNode: genderFocusNode,
+                        style: GoogleFonts.raleway(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            fontFeatures: const [FontFeature.liningFigures()]),
+                        contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
                       ),
                     ),
                   ],
-                );
-              },
+                ),
+              ],
             ),
           ),
 
@@ -578,77 +690,112 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
               final mapEvent = ref.watch(mapProvider.notifier);
               final cityDropDownOpened = ref.watch(settingsProvider).dropDownOpened;
               final genderDropDownOpened = ref.watch(settingsProvider).genderDropDownOpened;
-              return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomButton(
-                  width: 150.w,
-                  height: 40.h,
-                  fontSize: 14.sp,
-                  buttonColor: Colors.white,
-                  onPressed: () {
-                    if (cityDropDownOpened) {
-                      ref.read(settingsProvider.notifier).closeDropDown();
-                    }
-                    if (genderDropDownOpened) {
-                      ref.read(settingsProvider.notifier).closeGenderDropDown();
-                    }
-                    context.popRoute();
-                  },
-                  text: "Отменить",
-                ),
-                9.horizontalSpace,
-                CustomButton(
-                  showProgress: widget.state.isloading,
-                  width: 150.w,
-                  height: 40.h,
-                  fontSize: 14.sp,
-                  buttonColor: AppColors.blueColor,
-                  borderColor: AppColors.blueBorder,
-                  textColor: Colors.white,
-                  onPressed: () async {
-                    if (!isNameEmpty) {
-                      // check whether user added new data
-                      if (LocalStorage.getUserName() != nameController.text.trim()) {
-                        await widget.event.patchName(nameController.text.trim(), context);
-                      }
-                      if (LocalStorage.getUserLastName() != lastNameController.text.trim()) {
-                        await widget.event.patchLastname(lastNameController.text.trim(), context);
-                      }
-                      if (LocalStorage.getSelectedCity() != cityController.text) {
-                        await widget.event.patchCity(selectedCity, context);
-                        await mapEvent.setLocationFromSelectedCity();
-                      }
-                      if (LocalStorage.getAge() != ageController.text) {
-                        await widget.event.patchAge(ageController.text, context);
-                      }
-                      if (LocalStorage.getWeight() != weightController.text) {
-                        await widget.event.patchWeight(weightController.text, context);
-                      }
-                      if (LocalStorage.getHeight() != heightController.text) {
-                        await widget.event.patchHeight(heightController.text, context);
-                      }
-                      if (LocalStorage.getGender() != genderController.text) {
-                        await widget.event.patchGender(genderController.text, context);
-                      }
-                      if (widget.state.missingInfo.isNotEmpty) {
-                        widget.event.getUser(context);
-                      }
-                      if (cityDropDownOpened) {
-                        ref.read(settingsProvider.notifier).closeDropDown();
-                      }
-                      if (genderDropDownOpened) {
-                        ref.read(settingsProvider.notifier).closeGenderDropDown();
-                      }
-                      context.popRoute();
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomButton(
+                      width: 150.w,
+                      height: 40.h,
+                      fontSize: 14.sp,
+                      buttonColor: Colors.white,
+                      onPressed: () {
+                        if (cityDropDownOpened) {
+                          ref.read(settingsProvider.notifier).closeDropDown();
                         }
+                        if (genderDropDownOpened) {
+                          ref.read(settingsProvider.notifier).closeGenderDropDown();
+                        }
+                        birthdayController.clear();
+                        dateInputFormatter.clear(); 
+                        context.popRoute();
                       },
-                      text: "Сохранить",
+                      text: "Отменить",
                     ),
-              ],
-            );
+                    9.horizontalSpace,
+                    CustomButton(
+                      showProgress: widget.state.isloading,
+                      width: 150.w,
+                      height: 40.h,
+                      fontSize: 14.sp,
+                      buttonColor: AppColors.blueColor,
+                      borderColor: AppColors.blueBorder,
+                      textColor: Colors.white,
+                      onPressed: () async {
+                          final String birthdaySendToServer = birthdayController.text.length == 10 ? 
+                            AppHelpers.getBirthdayLikeInServer(birthdayController.text) : "";
+                          final bool birthdayChanged = birthdayController.text.length == 10 && !isBirhdayWrong && 
+                            LocalStorage.getUserBirthday() != birthdaySendToServer && birthdaySendToServer.isNotEmpty;
+                            if (isBirhdayWrong || isNameWrong || isSurnameWrong || birthdayController.text.length < 10) {
+                              if (!isBirhdayWrong && birthdayController.text.length < 10 ) {
+                                isBirhdayWrong = true;
+                                setState(() {});
+                              }
+                            } else{
+                            // check whether user added new data
+                              if (LocalStorage.getUserName() != nameController.text.trim()) {
+                                await widget.event.patchName(nameController.text.trim(), context);
+                              }
+                              if (LocalStorage.getUserLastName() != lastNameController.text.trim()) {
+                                await widget.event.patchLastname(lastNameController.text.trim(), context);
+                              }
+                              if (LocalStorage.getSelectedCity() != cityController.text) {
+                                await widget.event.patchCity(selectedCity, context);
+                                await mapEvent.setLocationFromSelectedCity();
+                              }
+                              if (birthdayChanged) {
+                                await widget.event.patchBirthday(birthdaySendToServer, context);
+                              }
+                              /* if (LocalStorage.getAge() != ageController.text) {
+                                await widget.event.patchAge(ageController.text, context);
+                              } */
+                              if (LocalStorage.getWeight() != weightController.text) {
+                                await widget.event.patchWeight(weightController.text, context);
+                              }
+                              if (LocalStorage.getHeight() != heightController.text) {
+                                await widget.event.patchHeight(heightController.text, context);
+                              }
+                              if (LocalStorage.getGender() != genderController.text) {
+                                await widget.event.patchGender(genderController.text, context);
+                              }
+                              if (widget.state.missingInfo.isNotEmpty) {
+                                widget.event.getUser(context);
+                              }
+                              if (cityDropDownOpened) {
+                                ref.read(settingsProvider.notifier).closeDropDown();
+                              }
+                              if (genderDropDownOpened) {
+                                ref.read(settingsProvider.notifier).closeGenderDropDown();
+                              }
+                              context.popRoute();
+                              birthdayController.clear();
+                              dateInputFormatter.clear(); 
+                              }
+                          },
+                          text: "Сохранить",
+                        ),
+                  ],),
+                    (isBirhdayWrong || isNameWrong || isSurnameWrong) ? 8.verticalSpace : 0.verticalSpace,
+                    if(isBirhdayWrong || isNameWrong || isSurnameWrong)
+                    SizedBox(
+                      width: 310.w,
+                      child: InterText(
+                        text: (isNameWrong && isSurnameWrong) ? "Имя и Фамилия должны содержать хотя бы по 2 буквы" : isNameWrong ? 
+                        "Имя должно содержать хотя бы 2 буквы" : isSurnameWrong ? "Фамилия должна содержать хотя бы 2 буквы"  
+                            : birthdayErrorMes,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.redText,
+                      ),
+                    ),
+                ],
+              );
+            
             },),
-          )
+          ),
+          
         ],
       ),
     );
@@ -746,7 +893,7 @@ Widget userParamsField(
       ),
       5.verticalSpace,
       SizedBox(
-        width: 93.w,
+        width: 150.w,
         height: 40.h,
         child: CustomTextField(
           isError: isError,
@@ -767,3 +914,4 @@ Widget userParamsField(
     ],
   );
 }
+

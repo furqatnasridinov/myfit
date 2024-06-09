@@ -68,6 +68,7 @@ class AppConstants {
   static const String keyIsNotificationDisabled ="key_is_notification_disabled";
   static const String keyNotificationTime = "key_notification_time";
   static const String keyWhenUploadingPhotoAccessOpens = "key_photo_access";
+  static const String keyUserBirthday = "key_birthday";
 
   // hero animations tags
   static const String registration3Hero = "registration_3_hero";
@@ -79,6 +80,8 @@ class AppConstants {
   static const String scheduledNotificationChannelName ="tmpScheduledChanelName";
 
     // long texts
+    static const String confirmationText2 =
+      "Продолжая вход я даю согласие на обработку персональных данных и подтверждаю, что прочитал(а)";
   static const String confirmationText =
       "Нажимая на кнопку «Продолжить» - я даю согласие на обработку персональных данных и подтверждаю, что прочитал(а) ";
   static const String userAgreement =
@@ -91,6 +94,8 @@ class AppConstants {
   static const String visitsCountIsEndingLongText = "Если до пополнения ещё долго - мы рекомендуем записаться в другой зал и попробовать что то новое. Движение - это жизнь!";
   static const String lessonChangedLongText = "Администратор заведения внёс изменения в занятие, на которое вы были записаны, по этому ваша запись отменена. Ознакомьтесь с изменениями и если вас всё устраивает - нажмите кнопку снизу этого уведомления.";
   static const String fiilYourProfileLongText = "Так мы сможем подобрать для вас предложения, которые с большей вероятностью смогут вас заинтересовать";
+  static const String inviteFriendLongText = "Всё очень просто, если вы пригласите 3 новых пользователей в MyFit и они оформят подписку - то вы получите подписку на месяц в подарок.";
+  static const String inviteFriendLongText2 = "Отправьте ссылку другу. Он получит скидку 10% на первое оформление подписки. Когда 3 друга впервые оформят подписку - вы получите подписку на месяц, бесплатно.";
 }
 
 enum NotificationType {

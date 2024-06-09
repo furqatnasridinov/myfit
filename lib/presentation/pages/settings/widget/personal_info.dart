@@ -4,6 +4,7 @@ import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/application/settings/settings_state.dart';
 import 'package:myfit/infrastructure/models/request/send_phone_number_request.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/infrastructure/services/local_storage.dart';
 import 'package:myfit/presentation/components/custom_button.dart';
 import 'package:myfit/presentation/components/custom_card.dart';
@@ -179,7 +180,7 @@ class _PersonalInfoState extends State<PersonalInfo> {
                 children: [
                   chipsLikeContainer(
                     widget.state.age.isEmpty ? "0" : widget.state.age,
-                    "лет",
+                    AppHelpers.getYearPrefix(int.tryParse(widget.state.age) ?? 0),
                     context,
                   ),
                   20.horizontalSpace,

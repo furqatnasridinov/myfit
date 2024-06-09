@@ -1,8 +1,12 @@
 import 'package:myfit/application/registration/registration_provider.dart';
+import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:myfit/presentation/components/animation_button_effect.dart';
 import 'package:myfit/presentation/components/components.dart';
+import 'package:myfit/presentation/components/custom_button.dart';
 import 'package:myfit/presentation/components/custom_card.dart';
+import 'package:myfit/presentation/components/inter_text.dart';
 import 'package:myfit/presentation/pages/auth/registration/custom_painter.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -28,33 +32,34 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
     phoneController = TextEditingController();
     super.initState();
     phoneController.addListener(() {
-  String currentText = phoneController.text;
-  if (!currentText.startsWith('+7 ')) {
-    // Reset to '+7' if the user tries to delete it
-    phoneController.value = const TextEditingValue(
-      text: '+7 ',
-      selection: TextSelection.collapsed(offset: 3),
-    );
-  } else if (currentText.length > 3) {
-    // Check if the cursor is at the end of the text
-    if (phoneController.selection.start != currentText.length) {
-      // If not, move it to the end
-      phoneController.selection = TextSelection.collapsed(offset: currentText.length);
-    } else {
-      // Remove mask characters from the input
-      String input =
-          currentText.substring(3).replaceAll(RegExp(r'[^0-9]'), '');
-      // Apply the mask only if there is more text beyond '+7'
-      String newText = '+7 ${applyMask(input, '(###) ###-##-##')}';
-      if (newText != currentText) {
-        phoneController.value = TextEditingValue(
-          text: newText,
-          selection: TextSelection.collapsed(offset: newText.length),
+      String currentText = phoneController.text;
+      if (!currentText.startsWith('+7 ')) {
+        // Reset to '+7' if the user tries to delete it
+        phoneController.value = const TextEditingValue(
+          text: '+7 ',
+          selection: TextSelection.collapsed(offset: 3),
         );
+      } else if (currentText.length > 3) {
+        // Check if the cursor is at the end of the text
+        if (phoneController.selection.start != currentText.length) {
+          // If not, move it to the end
+          phoneController.selection =
+              TextSelection.collapsed(offset: currentText.length);
+        } else {
+          // Remove mask characters from the input
+          String input =
+              currentText.substring(3).replaceAll(RegExp(r'[^0-9]'), '');
+          // Apply the mask only if there is more text beyond '+7'
+          String newText = '+7 ${applyMask(input, '(###) ###-##-##')}';
+          if (newText != currentText) {
+            phoneController.value = TextEditingValue(
+              text: newText,
+              selection: TextSelection.collapsed(offset: newText.length),
+            );
+          }
+        }
       }
-    }
-  }
-});
+    });
   }
 
   String applyMask(String input, String mask) {
@@ -87,133 +92,235 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
     final event = ref.read(registrationProvider.notifier);
     final isValidPhone = ref.watch(registrationProvider).isValidPhone;
     final phoneNumber = ref.watch(registrationProvider).phoneNumber;
-
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           // main body
-          Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // with textfield one
-                  CustomCard(
-                    child: Column(
-                      children: [
-                        CustomText(
-                          text:"Войдите, используя свой номер телефона. Это быстро и безопасно.",
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        16.verticalSpace,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // textfield
-                            SizedBox(
-                              width: 260.w,
-                              height: 40.h,
-                              //color: Colors.red,
-                              child: TextField(
-                                //inputFormatters: [phoneMask],
-                                //maxLength: 17,
-                                maxLines: 1,
-                                controller: phoneController,
-                                onChanged: (value) {
-                                  // Remove all non-numeric characters except the plus sign
-                                  String unformattedPhone = phoneController.text
-                                      .replaceAll(RegExp(r'[^\d+]'), '');
-                                  event.setPhone(unformattedPhone);
-                                },
-                                onTapOutside: (onTapOutside) {
-                                  FocusScope.of(context).unfocus();
-                                },
-                                keyboardType: TextInputType.phone,
-                                decoration: InputDecoration(
-                                  counterStyle: const TextStyle(
-                                    height: double.minPositive,
-                                  ),
-                                  counterText: "",
-                                  contentPadding:
-                                      EdgeInsets.zero.copyWith(left: 5.w),
-                                  hintText: "+7 (900) 855 45-58",
-                                  hintStyle: GoogleFonts.inter(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color: AppColors.greyText,
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8.r),
-                                    borderSide: BorderSide(
-                                      color: isValidPhone
-                                          ? AppColors.blueColor
-                                          : AppColors.greyBorder,
-                                      width: 1.w,
-                                    ),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8.r),
-                                    borderSide: BorderSide(
-                                      color: isValidPhone
-                                          ? AppColors.blueColor
-                                          : AppColors.greyBorder,
-                                      width: 1.w,
-                                    ),
-                                  ),
-                                  prefixIcon: Container(
-                                    margin: EdgeInsets.all(5.r),
-                                    padding: EdgeInsets.all(5.r),
-                                    width: 28.w,
-                                    height: 28.h,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.backgroundColor,
-                                      borderRadius: BorderRadius.circular(6.r),
-                                    ),
-                                    child: SvgPicture.asset(
-                                      "assets/svg/phone_icon.svg",
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            // button
-                            GestureDetector(
-                              onTap: () {
-                                if (isValidPhone) {
-                                  event.sendPhoneNumber(phoneNumber,context);
-                                }
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: Column(
+              //mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                150.verticalSpace,
+                SvgPicture.asset(
+                  "assets/svg/myfit_text.svg",
+                  //height: 66.h,
+                ),
+                5.verticalSpace,
+                CustomText(
+                  text: "Активная жизнь с одной подпиской",
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w400,
+                ),
+                120.verticalSpace,
+                // with textfield one
+                CustomCard(
+                  child: Column(
+                    children: [
+                      CustomText(
+                        text: "Войдите, используя свой номер телефона. Это быстро и безопасно.",
+                        fontSize: 14.sp,
+                        height: 1.1,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      16.verticalSpace,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // textfield
+                          SizedBox(
+                            width: 260.w,
+                            height: 40.h,
+                            //color: Colors.red,
+                            child: TextField(
+                              //inputFormatters: [phoneMask],
+                              //maxLength: 17,
+                              maxLines: 1,
+                              controller: phoneController,
+                              onChanged: (value) {
+                                // Remove all non-numeric characters except the plus sign
+                                String unformattedPhone = phoneController.text
+                                    .replaceAll(RegExp(r'[^\d+]'), '');
+                                event.setPhone(unformattedPhone);
                               },
-                              child: AnimationButtonEffect(
-                                disabled: !isValidPhone,
-                                child: SizedBox(
-                                  width: 40.w,
-                                  height: 40.h,
-                                  child: DecoratedBox(
-                                    decoration: BoxDecoration(
-                                      color: isValidPhone
-                                          ? AppColors.blueColor
-                                          : Colors.grey,
-                                      borderRadius: BorderRadius.circular(8.r),
-                                    ),
-                                    child: Icon(
-                                      Icons.send,
-                                      color: Colors.white,
-                                      size: 20.r,
-                                    ),
+                              onTapOutside: (onTapOutside) {
+                                FocusScope.of(context).unfocus();
+                              },
+                              keyboardType: TextInputType.phone,
+                              decoration: InputDecoration(
+                                counterStyle: const TextStyle(
+                                  height: double.minPositive,
+                                ),
+                                counterText: "",
+                                contentPadding:
+                                    EdgeInsets.zero.copyWith(left: 5.w),
+                                hintText: "+7 (900) 855 45-58",
+                                hintStyle: GoogleFonts.inter(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.greyText,
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(
+                                    color: isValidPhone
+                                        ? AppColors.blueColor
+                                        : AppColors.greyBorder,
+                                    width: 1.w,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(
+                                    color: isValidPhone
+                                        ? AppColors.blueColor
+                                        : AppColors.greyBorder,
+                                    width: 1.w,
+                                  ),
+                                ),
+                                prefixIcon: Container(
+                                  margin: EdgeInsets.all(5.r),
+                                  padding: EdgeInsets.all(5.r),
+                                  width: 28.w,
+                                  height: 28.h,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.backgroundColor,
+                                    borderRadius: BorderRadius.circular(6.r),
+                                  ),
+                                  child: SvgPicture.asset(
+                                    "assets/svg/phone_icon.svg",
                                   ),
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
+                          ),
+                          // button
+                          GestureDetector(
+                            onTap: () {
+                              if (isValidPhone) {
+                                event.sendPhoneNumber(phoneNumber, context);
+                              }
+                            },
+                            child: AnimationButtonEffect(
+                              disabled: !isValidPhone,
+                              child: SizedBox(
+                                width: 40.w,
+                                height: 40.h,
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: isValidPhone
+                                        ? AppColors.blueColor
+                                        : Colors.grey,
+                                    borderRadius: BorderRadius.circular(8.r),
+                                  ),
+                                  child: Icon(
+                                    Icons.send,
+                                    color: Colors.white,
+                                    size: 20.r,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  /* 32.verticalSpace,
+                ),
+                /* 32.verticalSpace,
+                InkWell(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Dialog(
+                          elevation: 0,
+                          insetPadding:
+                              EdgeInsets.symmetric(horizontal: 16.w),
+                          child: CustomCard(
+                              borderColor: Colors.transparent,
+                              width: double.maxFinite,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CustomText(
+                                    text: "Внимание!",
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  16.verticalSpace,
+                                  CustomText(
+                                    text: AppConstants.warningText,
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  16.verticalSpace,
+                                  CustomButton(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w500,
+                                    buttonColor: AppColors.blueColor,
+                                    textColor: Colors.white,
+                                    height: 40.h,
+                                    onPressed: () {
+                                      context.popRoute();
+                                    },
+                                    text: "Регистрация по номеру телефона",
+                                  ),
+                                  5.verticalSpace,
+                                  CustomButton(
+                                    buttonColor: Colors.white,
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w500,
+                                    height: 40.h,
+                                    onPressed: () {
+                                      context.replaceRoute(const MainRoute());
+                                    },
+                                    text: "Понимаю. Всё равно пропустить",
+                                  )
+                                ],
+                              )),
+                        );
+                      },
+                    );
+                  },
+                  child: InterText(
+                    text: "Пропустить",
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ), */
+              ],
+            ),
+          ),
+
+          // waves
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: CustomPaint(
+              size: Size(400, 200.h),
+              painter: Registration1CustomPainter(),
+            ),
+          ),
+
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: 16.w).copyWith(bottom: 40.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  InterText(
+                    text: AppConstants.confirmationText2,
+                    height: 1.1,
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  1.verticalSpace,
                   InkWell(
                     onTap: () {
                       showDialog(
@@ -222,7 +329,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                           return Dialog(
                             elevation: 0,
                             insetPadding:
-                                EdgeInsets.symmetric(horizontal: 16.w),
+                                REdgeInsets.symmetric(horizontal: 16.w),
                             child: CustomCard(
                                 borderColor: Colors.transparent,
                                 width: double.maxFinite,
@@ -231,15 +338,20 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     CustomText(
-                                      text: "Внимание!",
+                                      text: "Пользовательское соглашение",
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.w600,
                                     ),
                                     16.verticalSpace,
-                                    CustomText(
-                                      text: AppConstants.warningText,
-                                      fontSize: 13.sp,
-                                      fontWeight: FontWeight.w400,
+                                    SizedBox(
+                                      height: 250.h,
+                                      child: SingleChildScrollView(
+                                        child: InterText(
+                                          text: AppConstants.userAgreement,
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
                                     ),
                                     16.verticalSpace,
                                     CustomButton(
@@ -251,18 +363,18 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                                       onPressed: () {
                                         context.popRoute();
                                       },
-                                      text: "Регистрация по номеру телефона",
+                                      text: "Я согласен, продолжить",
                                     ),
                                     5.verticalSpace,
                                     CustomButton(
-                                      buttonColor: Colors.white,
                                       fontSize: 14.sp,
                                       fontWeight: FontWeight.w500,
                                       height: 40.h,
+                                      buttonColor: Colors.white,
                                       onPressed: () {
-                                        context.replaceRoute(const MainRoute());
+                                        context.popRoute();
                                       },
-                                      text: "Понимаю. Всё равно пропустить",
+                                      text: "Вернуться",
                                     )
                                   ],
                                 )),
@@ -271,26 +383,19 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                       );
                     },
                     child: InterText(
-                      text: "Пропустить",
-                      fontSize: 12.sp,
+                      text: "пользовательское соглашение",
+                      color: AppColors.blueText,
                       fontWeight: FontWeight.w400,
+                      fontSize: 12.sp,
+                      height: 1.1,
                     ),
-                  ), */
+                  ),
                 ],
               ),
             ),
           ),
 
-          // waves
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: CustomPaint(
-              size: Size(400, 180.h),
-              painter: Registration1CustomPainter(),
-            ),
-          ),
-
-          // cloud 1 
+          /* // cloud 1 
           Positioned(
             top: 50.h,
             left: 30.w,
@@ -309,7 +414,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
             top: 44.h,
             right: 30.w,
             child: SvgPicture.asset("assets/svg/cloud3.svg"),
-          ),
+          ), */
         ],
       ),
     );

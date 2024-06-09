@@ -17,8 +17,7 @@ class TabSectionAll extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bool showOnlyNew = ref.watch(notificationProvider).showNewOnly;
-    final list = showOnlyNew
-        ? ref.watch(notificationProvider).onlyNewNotifications
+    final list = showOnlyNew ? ref.watch(notificationProvider).onlyNewNotifications
         : ref.watch(notificationProvider).allNotifications;
     return Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 16.h),
@@ -134,6 +133,19 @@ Widget buildGroupList(NotificationModel notification) {
       unread: !notification.iSread,
       gymName: notification.gymName,
       gymId: notification.gymId,
+      time: AppHelpers.getFormattedTime(notification.date),
+      batteryIcon: AppHelpers().getBatteryIcon(
+          notification.visitedCount ?? 0, notification.visitPerMonth ?? 0),
+    );
+  }
+  if (notification.type == NotificationType.system) {
+    return SystemNotification(
+      unread: !notification.iSread,
+      title: notification.title,
+      gymId: notification.gymId,
+      gymName: notification.gymName,
+      lessonType: notification.lessonType,
+      description: notification.description,
       time: AppHelpers.getFormattedTime(notification.date),
       batteryIcon: AppHelpers().getBatteryIcon(
           notification.visitedCount ?? 0, notification.visitPerMonth ?? 0),

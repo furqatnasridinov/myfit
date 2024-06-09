@@ -1,4 +1,7 @@
 //import 'package:myfit/infrastructure/models/data/user_instance.dart';
+
+
+import 'package:myfit/infrastructure/models/data/promocode.dart';
 import 'package:myfit/infrastructure/models/data/user_subscribtion.dart';
 import 'package:myfit/infrastructure/models/response/auth_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -23,6 +26,7 @@ class SettingsState with _$SettingsState {
     @Default("") String height,
     @Default("") String avatar,
     @Default("") String gender,
+    @Default("") String birthday,
     @Default(false) bool isPhoneEditModeEnabled,
     @Default(false) bool isEmailEditModeEnabled,
     @Default("30") String reminderTime,
@@ -40,6 +44,13 @@ class SettingsState with _$SettingsState {
     @Default(false) bool dropDownOpened,
     @Default(false) bool genderDropDownOpened,
     @Default([]) List<String> missingInfo,
+    @Default("") String promocodeValue,
+    @Default(false) bool isPromocodeLoading,
+    @Default([]) List<Promocode> promocodesHistory,
+    @Default(false) bool isPromocodeSuccess,
+    @Default(false) bool isPromocodeError,
+    @Default("") String promocodeErrorMessage,
+    @Default("") String newPromocodeDescription,
   }) = _SettingsState;
   const SettingsState._();
 }

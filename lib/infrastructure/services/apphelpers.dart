@@ -1,6 +1,6 @@
-import 'dart:developer';
 
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -74,6 +74,57 @@ class AppHelpers {
           child: child,
         );
       },
+    );
+  }
+
+  static void showCustomBottomSnack(BuildContext context,  String text, String svgPath, {int marginBottom = 25}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+          content: Row(
+            children: [
+              SizedBox(
+                width: 28.w,
+                height: 28.h,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: AppColors.backgroundColor,
+                    borderRadius: BorderRadius.circular(6.r),
+                  ),  
+                  child: Padding(
+                    padding: EdgeInsets.all(5.r),
+                    child: SvgPicture.asset(
+                      svgPath,
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.blueColor,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              20.horizontalSpace,
+              Flexible(
+                child: Text(
+                  text,
+                  style: GoogleFonts.raleway(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                    height: 1.1,
+                    fontFeatures: const [FontFeature.liningFigures()],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          margin: EdgeInsets.only(left: 25.w, right: 25.w, bottom: marginBottom.h),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+            side: BorderSide(color: AppColors.blueColor, width: 1.w),
+          ),
+          duration: const Duration(seconds: 4),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.white),
     );
   }
 
@@ -245,6 +296,20 @@ class AppHelpers {
       return "Пол года";
     } else {
       return "$month месяцев";
+    }
+  }
+
+  static String getYearPrefix(int year) {
+    int lastDigit = year % 10;
+    int lastTwoDigits = year % 100;
+
+    if (lastDigit == 1 && lastTwoDigits != 11) {
+      return "год";
+    } else if ([2, 3, 4].contains(lastDigit) &&
+        ![12, 13, 14].contains(lastTwoDigits)) {
+      return "года";
+    } else {
+      return "лет";
     }
   }
 
@@ -427,6 +492,90 @@ class AppHelpers {
     return "${dateTime.year}-$month-$day@$hours:$minutes";
     }
 
-}
+  static String getCalendarlikeStringFromDateTime(DateTime dateTime) {
+    // from 2024-05-25 08:00:00.000 to 25.05.2024
+    try {
+      String month = dateTime.month.toString().padLeft(2, '0');
+      String day = dateTime.day.toString().padLeft(2, '0');
+      return "$day.$month.${dateTime.year}";
+    } catch (e) {
+      return "catched error getCalendarlikeStringFromDateTime";
+    }
+  }
 
+  static String getBirthdayLikeInServer(String text){
+    // from 18.11.2003 to 2003-11-18
+    List<String> parts = text.split('.');
+    return "${parts[2]}-${parts[1]}-${parts[0]}";
+  }
+
+  static String getBirthdayLikeInApp(String text){
+    // from 2003-11-18 to 18.11.2003
+    List<String> parts = text.split('-');
+    return "${parts[2]}.${parts[1]}.${parts[0]}";
+  }
+
+  static int getYearFromBirthday(String birthday){
+    // from 2003-11-18 to 20 
+    List<String> parts = birthday.split('-');
+    int month = int.parse(parts[1]);
+    int day = int.parse(parts[2]);
+    int year = int.parse(parts[0]);
+    final bool monthCoorect = month > 0 && month < 13;
+    final bool dayCorrect =  month == 2 ? day > 0 && day <= 29 : day > 0 && day < 32;
+    if (monthCoorect && dayCorrect) {
+      return DateTime.now().year - year;
+    }else{
+      return 0;
+    }
+  }
+
+  static String getCostPerMonth(int actualPrice, double priceAfterPromocode, int durationInMonth){
+    if (priceAfterPromocode == 0.0) {
+      return (actualPrice / durationInMonth).toString();
+    }else{
+      return (priceAfterPromocode / durationInMonth).toString();
+    }
+  }
+
+  static String getBirthdayErrorMes(String controllerText){
+    if (controllerText.isEmpty) {
+      return "Поле не может быть пустым";
+    }else if (controllerText.length != 10) {
+      return "Неверный формат даты";
+    }else if(controllerText.length == 10){
+      // 12.12.2000
+      final List<String> parts = controllerText.split('.');
+      final int day = int.parse(parts[0]);
+      final int month = int.parse(parts[1]);
+      final int year = int.parse(parts[2]);
+      final bool monthCorrect = month > 0 && month < 13;
+      final bool dayCorrect = month == 2 ? day > 0 && day <= 29 : day > 0 && day < 32;
+      final bool yearCorrect = year > DateTime.now().year - 100 && year < DateTime.now().year;
+      if (!monthCorrect && !dayCorrect && !yearCorrect) {
+        return "Неверный формат даты";
+      } 
+      if (!monthCorrect && !dayCorrect && yearCorrect) {
+        return "Неверно указаны месяц и день";
+      }
+      if (!monthCorrect && dayCorrect && yearCorrect) {
+        return "Неверно указан месяц";
+      }
+      if (monthCorrect && !dayCorrect && yearCorrect) {
+        return "Неверно указан день";
+      }
+      if (monthCorrect && dayCorrect && !yearCorrect) {
+        return "Неверно указан год";
+      }
+      if (monthCorrect && !dayCorrect && !yearCorrect) {
+        return "Неверно указаны день и год";
+      }
+      if (!monthCorrect && dayCorrect && !yearCorrect) {
+        return "Неверно указаны месяц и год";
+      }
+
+    }
+    return "";
+}
+}
 

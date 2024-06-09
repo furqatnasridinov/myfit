@@ -11,6 +11,7 @@ class UserInstance {
   int? age;
   int? weight;
   int? height;
+  String? birthdayDate;
 
   UserInstance(
       {this.id,
@@ -24,7 +25,8 @@ class UserInstance {
       this.city,
       this.age,
       this.weight,
-      this.height});
+      this.height,
+      this.birthdayDate});
 
   UserInstance.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -44,6 +46,7 @@ class UserInstance {
     age = json['age'];
     weight = json['weight'];
     height = json['height'];
+    birthdayDate = json['birthdayDate'];
   }
 
   Map<String, dynamic> toJson() {
@@ -64,6 +67,7 @@ class UserInstance {
     data['age'] = age;
     data['weight'] = weight;
     data['height'] = height;
+    data['birthdayDate'] = birthdayDate;
     return data;
   }
 }

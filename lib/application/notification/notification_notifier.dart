@@ -30,15 +30,17 @@ class NotificationNotifier extends StateNotifier<NotificationState>{
             final List<dynamic> responseBody = data["object"] as List<dynamic>;
             for (var element in responseBody) {
               final item = NotificationModel(
-                id: element["id"],
+                id: element["id"] ?? 0,
                 type: AppHelpers.getNotificationType(element["notificationType"]),
-                lessonType: element["lessonType"],
+                lessonType: element["lessonType"] ?? "",
                 iSread: element["isRead"],
                 date: DateTime.parse(element["createDate"].toString().replaceAll("T", " ")),
-                lessonStartDate: DateTime.parse(element["lessonTime"].toString().replaceAll("T", " ")),
+                lessonStartDate: element["lessonStartDate"] != null
+                    ? DateTime.parse(element["lessonStartDate"].toString().replaceAll("T", " "))
+                    : DateTime.now(),
                 title: element["message"],
                 description: element["messageFull"],
-                gymName: element["gymName"],
+                gymName: element["gymName"] ?? "",
                 gymId: element["gymId"] ?? 0,
                 grade: element["grade"] ?? 0,
                 rateId: element["lessonId"] ?? 0,

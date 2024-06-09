@@ -18,5 +18,7 @@ class AppColors {
   static const Color skeletonBg = Color.fromRGBO(218, 233, 255, 1);
   static const Color skeletonSecondary = Color.fromRGBO(235, 243, 255, 1);
   static const Color redBorder = Color.fromRGBO(255, 136, 136, 1);
+  static const Color redText = Color.fromRGBO(255, 61, 0, 1);
   static const Color primaryFadedBorder = Color.fromRGBO(157, 193, 245, 1);
+  static const Color disabledButton = Color.fromRGBO(220, 220, 220, 1);
 }

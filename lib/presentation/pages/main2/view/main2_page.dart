@@ -89,7 +89,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
   Widget build(BuildContext context) {
     log('missing info: ${ref.watch(settingsProvider).missingInfo}');
     log("token ${LocalStorage.getToken()}");
-    log(LocalStorage.getGender());
+    log("birthday ${LocalStorage.getUserBirthday()}");
     //final nearestLesson = ref.watch(main2Provider).nearestLesson;
     final event = ref.read(main2Provider.notifier);
     ref.listen(main2Provider, (previous, next) {
@@ -143,7 +143,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                           child: CustomText(
                             text: LocalStorage.getUserName().isNotEmpty
                                 ? "Привет, ${LocalStorage.getUserName()}!"
-                                : 'Привет, George!',
+                                : 'Привет',
                             fontWeight: FontWeight.w600,
                             fontSize: 20.sp,
                           ),

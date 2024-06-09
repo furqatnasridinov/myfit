@@ -1,4 +1,5 @@
 // ignore_for_file: division_optimization, must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -45,15 +46,13 @@ class ChooseSubscribtion extends StatelessWidget {
 
           // list of subscribtions
           Consumer(builder: (context, ref, child) {
-            final List<Subscription> allSubs =
-                ref.watch(settingsProvider).allAvailableSubscriptions;
-            final UserSubscription? nextSub =
-                ref.watch(settingsProvider).nextSubscribtion;
-            final UserSubscription? currentSub =
-                ref.watch(settingsProvider).currentSubscribtion;
+            final List<Subscription> allSubs = ref.watch(settingsProvider).allAvailableSubscriptions;
+            final UserSubscription? nextSub = ref.watch(settingsProvider).nextSubscribtion;
+            final UserSubscription? currentSub = ref.watch(settingsProvider).currentSubscribtion;
             final String cardNumber = ref.watch(settingsProvider).cardNumber;
             final notifier = ref.read(settingsProvider.notifier);
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ListView.builder(
                   itemBuilder: (context, index) {
@@ -63,24 +62,24 @@ class ChooseSubscribtion extends StatelessWidget {
                       currentSub?.subscription?.id ?? 0,
                       context,
                       current.durationInMonth.toString(),
-                      current.price.toString(),
-                      ((current.price ?? 0) / (current.durationInMonth ?? 1))
-                          .toInt()
-                          .toString(),
+                      current.priceAfterPromocode == 0.0 ? current.price.toString() : current.priceAfterPromocode!.toStringAsFixed(0),
+                      current.price ?? 0,
+                      current.priceAfterPromocode ?? 0.0,
+                      AppHelpers.getCostPerMonth(current.price ?? 0, current.priceAfterPromocode ?? 0.0, current.durationInMonth ?? 0),
                       "Оплата раз в ${AppHelpers().getMonthWord(int.parse(current.durationInMonth.toString()))} и посещение сотен разных активностей",
+                      currentSub?.subscription?.id == current.id,
                       nextSub?.subscription?.id == current.id,
                       cardNumber,
                       ref.watch(settingsProvider).isChangeSubscribtionLoading,
+                      ref.watch(settingsProvider).autoRenewal,
                       notifier,
                       () {
                         if (currentSub != null) {
-                          notifier.changeNextSubscription(context,
-                              id: current.id ?? 0);
+                          notifier.changeNextSubscription(context,id: current.id ?? 0);
                         } else {
                           notifier.purchaseSubscription(context,
                               id: current.id ?? 0,
-                              autoRenewal:
-                                  ref.watch(settingsProvider).autoRenewal);
+                              autoRenewal:ref.watch(settingsProvider).autoRenewal);
                         }
                       },
                     );
@@ -91,11 +90,16 @@ class ChooseSubscribtion extends StatelessWidget {
                 ),
                 if (currentSub != null && nextSub != null)
                   CustomText(
-                    text:
-                        "Ваш тариф: “${currentSub.subscription?.description}” закончится ${notifier.getEndDateOfCurrentSub()}, после чего подписка сменится на “${nextSub.subscription?.description}”.",
+                    text: getInfoText(
+                      autoRenewal: ref.watch(settingsProvider).autoRenewal,
+                      currentSub: currentSub,
+                      nextSub: nextSub,
+                      endDate: notifier.getEndDateOfCurrentSub(),
+                    ),
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
                     height: 1.1.h,
+                    textAlign: TextAlign.start,
                   ),
               ],
             );
@@ -111,12 +115,16 @@ Widget eachSubscription(
     int currentSubId,
     BuildContext context,
     String month,
-    String price,
+    String priceOfSub,
+    int initialPrice,
+    double priceAfterPromocode,
     String pricePerMonth,
     String description,
-    bool isSelected,
+    bool isCurrentSub,
+    bool isNextSub,
     String cardNumber,
     bool loading,
+    bool isAutoRenewal,
     SettingsNotifier notifier,
     void Function()? onTap) {
   return Padding(
@@ -136,7 +144,7 @@ Widget eachSubscription(
                 ),
                 elevation: 0,
                 insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: dialogContent(context, month, price, cardNumber, onTap),
+                child: dialogContent(context, month, priceOfSub, cardNumber, onTap),
               );
             },
           );
@@ -150,12 +158,10 @@ Widget eachSubscription(
             child: DecoratedBox(
                 decoration: BoxDecoration(
                   border: Border.all(
-                      color: isSelected
-                          ? AppColors.purpleText
-                          : AppColors.fadedBlueBorder),
+                      color: isNextSub ? AppColors.purpleText : AppColors.fadedBlueBorder),
                   shape: BoxShape.circle,
                 ),
-                child: isSelected
+                child: isNextSub
                     ? Center(
                         child: SizedBox(
                           width: 12.w,
@@ -177,10 +183,8 @@ Widget eachSubscription(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16.r),
               border: Border.all(
-                      color: isSelected
-                          ? Colors.transparent
-                          : AppColors.fadedBlueBorder),
-              gradient: isSelected
+                      color: isCurrentSub ? Colors.transparent : AppColors.fadedBlueBorder),
+              gradient: isCurrentSub
                   ? LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
@@ -196,7 +200,7 @@ Widget eachSubscription(
               decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16.r),
-                  boxShadow: isSelected
+                  boxShadow: isCurrentSub
                       ? const [
                           BoxShadow(
                             color: Color.fromRGBO(0, 0, 0, 0.15),
@@ -211,7 +215,7 @@ Widget eachSubscription(
                           ),
                         ]
                       : [],
-                  gradient: isSelected
+                  gradient: isCurrentSub
                       ? LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
@@ -235,31 +239,24 @@ Widget eachSubscription(
                           text: TextSpan(
                             children: [
                               TextSpan(
-                                text:
-                                    AppHelpers().getMonthWord(int.parse(month)),
+                                text:AppHelpers().getMonthWord(int.parse(month)),
                                 style: GoogleFonts.raleway(
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w600,
                                   fontFeatures: const [
                                     FontFeature.liningFigures()
                                   ],
-                                  color: isSelected
-                                      ? Colors.white
-                                      : AppColors.purpleText,
+                                  color: isCurrentSub ? Colors.white : AppColors.purpleText,
                                 ),
                               ),
                               TextSpan(
-                                text: index + 1 == currentSubId + 1
-                                    ? " (c ${notifier.getEndDateOfCurrentSub()})"
-                                    : "",
+                                text: (isNextSub  && isAutoRenewal)? " (c ${notifier.getEndDateOfCurrentSub()})" : isCurrentSub ? 
+                                        (" (до ${notifier.getEndDateOfCurrentSub()})") : "",
                                 style: GoogleFonts.inter(
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w400,
-                                  fontFeatures: const [
-                                    FontFeature.liningFigures()
-                                  ],
-                                  color:
-                                      isSelected ? Colors.white : Colors.grey,
+                                  fontFeatures: const [FontFeature.liningFigures()],
+                                  color: isCurrentSub ? Colors.white : Colors.grey,
                                 ),
                               ),
                             ],
@@ -269,11 +266,30 @@ Widget eachSubscription(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              CustomText(
-                                text: "₽$price",
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w700,
-                                color: isSelected ? Colors.white : Colors.black,
+                              Row(
+                                children: [
+                                  if (priceAfterPromocode != 0.0 &&
+                                      priceOfSub != initialPrice.toString())
+                                    CustomText(
+                                      text: "₽$initialPrice",
+                                      fontSize: 10.sp,
+                                      fontWeight: FontWeight.w500,
+                                      decoration: TextDecoration.lineThrough,
+                                      decorationColor: isCurrentSub
+                                          ? Colors.white
+                                          : Colors.black,
+                                      color: isCurrentSub
+                                          ? Colors.white
+                                          : Colors.black,
+                                    ),
+                                    3.horizontalSpace,
+                                  CustomText(
+                                    text: "₽$priceOfSub",
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w700,
+                                    color: isCurrentSub ? Colors.white : Colors.black,
+                                  ),
+                                ],
                               ),
                               RichText(
                                 text: TextSpan(
@@ -286,9 +302,7 @@ Widget eachSubscription(
                                           FontFeature.liningFigures()
                                         ],
                                         fontWeight: FontWeight.w700,
-                                        color: isSelected
-                                            ? Colors.white
-                                            : Colors.black,
+                                        color: isCurrentSub ? Colors.white : Colors.black,
                                       ),
                                     ),
                                     WidgetSpan(child: 4.horizontalSpace),
@@ -297,9 +311,7 @@ Widget eachSubscription(
                                       style: GoogleFonts.raleway(
                                         fontSize: 10.sp,
                                         fontWeight: FontWeight.w500,
-                                        color: isSelected
-                                            ? Colors.white
-                                            : Colors.black,
+                                        color: isCurrentSub ? Colors.white  : Colors.black,
                                       ),
                                     ),
                                   ],
@@ -315,7 +327,7 @@ Widget eachSubscription(
                       text: description,
                       fontSize: 10.sp,
                       fontWeight: FontWeight.w500,
-                      color: isSelected ? Colors.white : AppColors.greyText,
+                      color: isCurrentSub ? Colors.white : AppColors.greyText,
                     ),
                   ],
                 ),
@@ -442,4 +454,21 @@ Widget dialogContent(
       },
     ),
   );
+}
+
+
+String getInfoText({
+  required bool autoRenewal,
+  required UserSubscription? currentSub,
+  required UserSubscription? nextSub,
+  required String endDate,
+}) {
+  if (autoRenewal) {
+    if (currentSub?.subscription?.id == nextSub?.subscription?.id) {
+      return "Ваш тариф: “${currentSub?.subscription?.description}” закончится $endDate, после чего подписка продлится автоматически.";
+    }
+    return "Ваш тариф: “${currentSub?.subscription?.description} закончится $endDate, после чего подписка сменится на “${nextSub?.subscription?.description}.";
+  } else {
+    return "Ваш тариф: “${currentSub?.subscription?.description}” закончится $endDate.";
+  }
 }

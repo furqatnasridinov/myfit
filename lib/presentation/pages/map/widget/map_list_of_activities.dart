@@ -1,7 +1,6 @@
 // ignore_for_file: must_be_immutable
 import 'dart:async';
 import 'dart:math';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_notifier.dart';

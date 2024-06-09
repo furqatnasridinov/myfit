@@ -12,7 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MapInsideNearActivities extends StatelessWidget {
   final MainNotifier event;
-  MapInsideNearActivities({
+  const MapInsideNearActivities({
     super.key,
     required this.event,
   });

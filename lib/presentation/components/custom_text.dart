@@ -14,6 +14,8 @@ class CustomText extends StatelessWidget {
   bool? isUppercase;
   double? opacity;
   double? height;
+  TextDecoration? decoration;
+  Color? decorationColor;
   CustomText({
     Key? key,
     this.isUppercase = false,
@@ -26,6 +28,8 @@ class CustomText extends StatelessWidget {
     this.fontWeight,
     this.color = Colors.black,
     this.opacity = 1,
+    this.decoration,
+    this.decorationColor,
   }) : super(key: key);
 
   @override
@@ -41,6 +45,8 @@ class CustomText extends StatelessWidget {
         fontWeight: fontWeight,
         color: color?.withOpacity(opacity!),
         fontFeatures: const [FontFeature.liningFigures()],
+        decoration: decoration,
+        decorationColor: decorationColor,
       ),
     );
   }

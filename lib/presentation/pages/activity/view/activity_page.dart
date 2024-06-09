@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, use_build_context_synchronously
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';

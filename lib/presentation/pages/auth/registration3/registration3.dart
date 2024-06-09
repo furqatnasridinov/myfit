@@ -1,9 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'dart:math';
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/app_constants.dart';
@@ -35,16 +31,16 @@ class Registration3Screen extends ConsumerStatefulWidget {
 
 class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
   TextEditingController cityController = TextEditingController(
-      text: LocalStorage.getSelectedCity().isEmpty
-          ? ""
-          : LocalStorage.getSelectedCity());
-  TextEditingController nameController =
-      TextEditingController(text: LocalStorage.getUserName());
+      text: LocalStorage.getSelectedCity().isEmpty ? "" : LocalStorage.getSelectedCity());
+  TextEditingController nameController = TextEditingController(text: LocalStorage.getUserName());
+  TextEditingController surNameController = TextEditingController(text: LocalStorage.getUserLastName());
   FocusNode focusNode = FocusNode();
   FocusNode nameFocus = FocusNode();
+  FocusNode surNameFocus = FocusNode();
   final formKey = GlobalKey<FormState>();
   final layerlink = LayerLink();
   bool isNameNotGiven = false;
+  bool isSurNameNotGiven = false;
   bool isCityNotSelected = false;
   City? selectedCity;
   bool isAllFieldsSumbitted = false;
@@ -247,6 +243,12 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                       ),
                     ),
                   ),
+                  40.verticalSpace,
+                  CustomText(
+                    text: "Данные необходимы для посещения заведений",
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
                     Consumer(builder: (context, ref, child) {
                         final dropDownOpened = ref.watch(settingsProvider).dropDownOpened;
                         final notifier = ref.read(settingsProvider.notifier);
@@ -254,57 +256,142 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           48.verticalSpace,
-                          CustomText(
-                            text: "Как к вам обращаться",
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          5.verticalSpace,
-                          SizedBox(
-                            height: 40.h,
-                            width: double.maxFinite,
-                            child: CustomTextField(
-                              isError: isNameNotGiven,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                  RegExp(r'[a-zA-Zа-яА-Я]'),
+                          Row(
+                            children: [
+                              // name
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CustomText(
+                                      text: "Имя",
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    5.verticalSpace,
+                                    // name textfield
+                                    SizedBox(
+                                      height: 40.h,
+                                      width: double.maxFinite,
+                                      child: CustomTextField(
+                                        isError: isNameNotGiven,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                            RegExp(r'[a-zA-Zа-яА-Я]'),
+                                          ),
+                                        ],
+                                        counterStyle: const TextStyle(
+                                            height: double.minPositive),
+                                        counterText: "",
+                                        maxLength: 16,
+                                        style: GoogleFonts.raleway(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black,
+                                        ),
+                                        controller: nameController,
+                                        focusNode: nameFocus,
+                                        onChanged: (val) {
+                                          if (val.trim().length > 2 && isNameNotGiven) {
+                                            isNameNotGiven = false;
+                                            setState(() {});
+                                          }
+                                        },
+                                        onTapOutside: (onTapOutside) {
+                                          if (nameFocus.hasFocus) {
+                                            nameFocus.unfocus();
+                                          }
+                                        },
+                                        onTap: () {
+                                          if (!nameFocus.hasFocus) {
+                                            nameFocus.requestFocus();
+                                          }
+                                        },
+                                        onEditingComplete: () {
+                                          if (!nameFocus.hasFocus) {
+                                            nameFocus.requestFocus();
+                                          }
+                                        },
+                                        maxLines: 1,
+                                        contentPadding:
+                                            EdgeInsets.zero.copyWith(left: 10.w),
+                                        hintText: "Введите имя",
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                              counterStyle: const TextStyle(height: double.minPositive),
-                              counterText: "",
-                              maxLength: 16,
-                              style: GoogleFonts.raleway(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
                               ),
-                              controller: nameController,
-                              focusNode: nameFocus,
-                              onTapOutside: (onTapOutside) {
-                                if (nameFocus.hasFocus) {
-                                  nameFocus.unfocus();
-                                }
-                              },
-                              onTap: () {
-                                if (!nameFocus.hasFocus) {
-                                  nameFocus.requestFocus();
-                                }
-                              },
-                              onEditingComplete: () {
-                                if (!nameFocus.hasFocus) {
-                                  nameFocus.requestFocus();
-                                }
-                              },
-                              maxLines: 1,
-                              contentPadding: EdgeInsets.zero.copyWith(left: 10.w),
-                              hintText: "Ваше имя",
-                            ),
+                              5.horizontalSpace,
+                              // surName
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CustomText(
+                                      text: "Фамилия",
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    5.verticalSpace,
+                                    // surName textfield
+                                    SizedBox(
+                                      height: 40.h,
+                                      width: double.maxFinite,
+                                      child: CustomTextField(
+                                        isError: isSurNameNotGiven,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                            RegExp(r'[a-zA-Zа-яА-Я]'),
+                                          ),
+                                        ],
+                                        counterStyle: const TextStyle(
+                                            height: double.minPositive),
+                                        counterText: "",
+                                        maxLength: 16,
+                                        style: GoogleFonts.raleway(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black,
+                                        ),
+                                        controller: surNameController,
+                                        focusNode: surNameFocus,
+                                        onChanged: (val) {
+                                          if (val.trim().length > 2 && isSurNameNotGiven) {
+                                            isSurNameNotGiven = false;
+                                            setState(() {});
+                                          }
+                                        },
+                                        onTapOutside: (onTapOutside) {
+                                          if (surNameFocus.hasFocus) {
+                                            surNameFocus.unfocus();
+                                          }
+                                        },
+                                        onTap: () {
+                                          if (!surNameFocus.hasFocus) {
+                                            surNameFocus.requestFocus();
+                                          }
+                                        },
+                                        onEditingComplete: () {
+                                          if (!surNameFocus.hasFocus) {
+                                            surNameFocus.requestFocus();
+                                          }
+                                        },
+                                        maxLines: 1,
+                                        contentPadding:
+                                            EdgeInsets.zero.copyWith(left: 10.w),
+                                        hintText: "Введите фамилию",
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                          isNameNotGiven
+                          isNameNotGiven || isSurNameNotGiven
                               ? Padding(
                                   padding: EdgeInsets.only(top: 5.h),
                                   child: CustomText(
-                                    text:"Имя должна содержать хотя бы 3 буквы",
+                                    text: getErrorMes(nameController.text, surNameController.text),
                                     fontSize: 12.sp,
                                     fontWeight: FontWeight.w500,
                                     color: Colors.red,
@@ -392,6 +479,10 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                                           focusNode.unfocus();
                                           setSelectedCity(currentCity);
                                           ref.read(settingsProvider.notifier).closeDropDown();
+                                          if (isCityNotSelected) {
+                                            isCityNotSelected = false;
+                                           // setState(() {});
+                                          }
                                         },
                                       );
                                     },
@@ -445,11 +536,16 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w600,
                                 onPressed: () async {
-                                  if (nameController.text.length > 2 && cityController.text.isNotEmpty) {
+                                  if (nameController.text.length > 2 && cityController.text.isNotEmpty && surNameController.text.length > 2) {
                                     if (nameController.text != LocalStorage.getUserName()) {
                                       // if user changed name
                                       await LocalStorage.setUserName(nameController.text);
                                       event.patchName(nameController.text, context);
+                                    }
+                                    if (surNameController.text != LocalStorage.getUserLastName()) {
+                                      // if user changed surname
+                                      await LocalStorage.setUserLastName(surNameController.text);
+                                      event.patchLastname(surNameController.text, context);
                                     }
                                     if (cityController.text !=LocalStorage.getSelectedCity()) {
                                       // if user changed city
@@ -465,6 +561,10 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                                   } else {
                                     if (nameController.text.length < 2) {
                                       isNameNotGiven = true;
+                                      setState(() {});
+                                    }
+                                    if (surNameController.text.length < 2) {
+                                      isSurNameNotGiven = true;
                                       setState(() {});
                                     }
                                     if (cityController.text.isEmpty) {
@@ -486,7 +586,7 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
             ),
           ),
 
-           // cloud 1 
+           /* // cloud 1 
           Positioned(
             top: 117.h,
             left: 0.w,
@@ -514,7 +614,7 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
               "assets/svg/cloud3.svg",
               /* width: 90.w,
               height: 60.h, */
-              )),
+              )), */
           
         ],
       ),
@@ -537,4 +637,17 @@ Widget _listiles(
       ),
     ),
   );
+}
+
+String getErrorMes(String name, String surName){
+  if (name.length <2 && surName.length < 2) {
+    return "Имя и фамилия должны содержать хотя бы 3 буквы";
+  } else if (name.length < 2) {
+    return "Имя должно содержать хотя бы 3 буквы";
+  } else if (surName.length < 2) {
+    return "Фамилия должна содержать хотя бы 3 буквы";
+  } else {
+    return "Введите данные корректно";
+    
+  }
 }

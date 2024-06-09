@@ -34,6 +34,7 @@ class Subscription {
   int? durationInMonth;
   int? freezingDays;
   int? price;
+  double? priceAfterPromocode;
 
   Subscription(
       {this.id,
@@ -50,6 +51,7 @@ class Subscription {
     durationInMonth = json['duration'];
     freezingDays = json['freezingDays'];
     price = json['price'];
+    priceAfterPromocode = json['priceNew'];
   }
 
 }

@@ -31,6 +31,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final event = ref.read(settingsProvider.notifier);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
+      resizeToAvoidBottomInset: false,
       appBar: CustomSearchBar(showBackButton: true, canNavigateToSettings: false),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
