@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:myfit/application/main2/main2_provider.dart';
 import 'package:myfit/application/schedule/schedule_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
@@ -71,6 +72,7 @@ class TheOneWithLessons extends StatelessWidget {
                         scheduleEvent.getUsersSchedules(context);
                         if (currentSchedule.autoAccept == true) {
                           event.getGymInfo(context, false, gymId: gymId);
+                          ref.read(main2Provider.notifier).getNearestLesson(context);
                         }
                         // to add this lessontype to known lessontypes if it's not there
                         ref.read(settingsProvider.notifier).getWaitingLessonTypes(context);

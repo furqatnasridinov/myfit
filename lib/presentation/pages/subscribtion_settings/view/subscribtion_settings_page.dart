@@ -26,8 +26,7 @@ class _SubscribtionSettingsScreenState
   Offset position = Offset.zero;
 
   void getPostion() {
-    final RenderBox renderBox = howSubscribtionWorksBlockKey.currentContext!
-        .findRenderObject() as RenderBox;
+    final RenderBox renderBox = howSubscribtionWorksBlockKey.currentContext!.findRenderObject() as RenderBox;
     position = renderBox.localToGlobal(Offset.zero);
   }
 
@@ -91,9 +90,7 @@ class _SubscribtionSettingsScreenState
 
           // infos about Subscribtion
           SliverToBoxAdapter(
-            child: InfosAboutSubscribtion(
-              blockKey: howSubscribtionWorksBlockKey,
-            ),
+            child: InfosAboutSubscribtion(blockKey: howSubscribtionWorksBlockKey),
           ),
         ],
       ),

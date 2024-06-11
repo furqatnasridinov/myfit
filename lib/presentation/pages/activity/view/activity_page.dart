@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:myfit/presentation/pages/activity/widget/the_one_with_lessons.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import '../widget/widget.dart';
@@ -26,13 +27,16 @@ class ActivityScreen extends ConsumerStatefulWidget {
 class _ActivityPageState extends ConsumerState<ActivityScreen> {
   late final WebSocketChannel channel;
   late final WebSocketChannel channel2;
-  late RefreshController refreshController = RefreshController();
+  late ItemScrollController itemScrollController;
+  late RefreshController refreshController;
   ScrollController scrollController = ScrollController();
   final calendarSectionKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
+    itemScrollController = ItemScrollController();
+    refreshController = RefreshController();
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
         // прокрутка
@@ -80,9 +84,23 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
         duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
   }
 
+  void scrollCalendarToIndex() async{
+    await itemScrollController.scrollTo(
+        index: ref.watch(activityProvider).selectedDayFromSearchIndex,
+        duration: const Duration(milliseconds: 800),
+        curve: Curves.easeInOut);
+    ref.read(activityProvider.notifier).setIsFromSearch(false);
+  }
+
   @override
   Widget build(BuildContext context) {
     final event = ref.read(activityProvider.notifier);
+    ref.listen(activityProvider, (previous, next) {
+      if (previous?.selectedDayFromSearchIndex !=next.selectedDayFromSearchIndex && 
+            next.selectedDayFromSearchIndex != 9999 && next.isFromSearch) {
+        scrollCalendarToIndex();
+      }
+    },);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SmartRefresher(
@@ -137,6 +155,7 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
                 TheOneWithCalendar(
                   event: event,
                   gymId: widget.gymId,
+                  itemScrollController: itemScrollController,
                 ),
                 TheOneWithLessons(
                   key: calendarSectionKey,

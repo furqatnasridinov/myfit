@@ -293,8 +293,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   Future<void> getLessonsOfSelectedActivity(
       String selectedActivity, bool selectADefaultDay) async {
     final Map<String, dynamic> allLessons = state.allLessons;
-    final String selectedActivity =
-        state.selectedActivity ?? "no activity selected";
+    final String selectedActivity = state.selectedActivity ?? "no activity selected";
     final List<Lesson> listToCollectLessons = [];
     final List<String> listToColllectDays = [];
     final List<String> keys = allLessons.keys.toList();
@@ -348,10 +347,10 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       }
     }
 
-    if (state.isFromSearch && state.dayOfSelectedLessonFromSearch!.isNotEmpty) {
-      final formatted =
-          formatOriginalToCalendar(state.dayOfSelectedLessonFromSearch!);
-      state = state.copyWith(selectedCalendarDay: formatted);
+    if (state.isFromSearch && state.selectedDayFromSearch!.isNotEmpty) {
+      final formatted = formatOriginalToCalendar(state.selectedDayFromSearch!);
+      final int index = state.listOf15CalendarDaysFromNow.indexOf(formatted);
+      state = state.copyWith(selectedCalendarDay: formatted, selectedDayFromSearchIndex: index);
     }
 
     state = state.copyWith(
@@ -362,7 +361,11 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   }
 
   void setDayOfSelectedLessonFromSearch(String day) {
-    state = state.copyWith(dayOfSelectedLessonFromSearch: day);
+    state = state.copyWith(selectedDayFromSearch: day);
+  }
+
+  void removeSelectedDayFromSearchIndex() {
+    state = state.copyWith(selectedDayFromSearchIndex: 9999);
   }
 
   void handleWebSocket(WebSocketChannel channel, BuildContext context) {

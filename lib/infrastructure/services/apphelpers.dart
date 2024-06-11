@@ -532,9 +532,9 @@ class AppHelpers {
 
   static String getCostPerMonth(int actualPrice, double priceAfterPromocode, int durationInMonth){
     if (priceAfterPromocode == 0.0) {
-      return (actualPrice / durationInMonth).toString();
+      return (actualPrice / durationInMonth).toStringAsFixed(0);
     }else{
-      return (priceAfterPromocode / durationInMonth).toString();
+      return (priceAfterPromocode / durationInMonth).toStringAsFixed(0);
     }
   }
 

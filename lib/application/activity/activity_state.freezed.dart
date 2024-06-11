@@ -25,8 +25,8 @@ mixin _$ActivityState {
   GymResponse? get gym => throw _privateConstructorUsedError;
   DescribtionAndPeculiarities? get describtionAndPeculiarities =>
       throw _privateConstructorUsedError;
-  String? get dayOfSelectedLessonFromSearch =>
-      throw _privateConstructorUsedError;
+  String? get selectedDayFromSearch => throw _privateConstructorUsedError;
+  int get selectedDayFromSearchIndex => throw _privateConstructorUsedError;
   List<String>? get activityTypes => throw _privateConstructorUsedError;
   Map<String, dynamic> get allPhotos => throw _privateConstructorUsedError;
   Map<String, dynamic> get allLessons => throw _privateConstructorUsedError;
@@ -68,7 +68,8 @@ abstract class $ActivityStateCopyWith<$Res> {
       bool infoForTypeLoading,
       GymResponse? gym,
       DescribtionAndPeculiarities? describtionAndPeculiarities,
-      String? dayOfSelectedLessonFromSearch,
+      String? selectedDayFromSearch,
+      int selectedDayFromSearchIndex,
       List<String>? activityTypes,
       Map<String, dynamic> allPhotos,
       Map<String, dynamic> allLessons,
@@ -106,7 +107,8 @@ class _$ActivityStateCopyWithImpl<$Res, $Val extends ActivityState>
     Object? infoForTypeLoading = null,
     Object? gym = freezed,
     Object? describtionAndPeculiarities = freezed,
-    Object? dayOfSelectedLessonFromSearch = freezed,
+    Object? selectedDayFromSearch = freezed,
+    Object? selectedDayFromSearchIndex = null,
     Object? activityTypes = freezed,
     Object? allPhotos = null,
     Object? allLessons = null,
@@ -155,10 +157,14 @@ class _$ActivityStateCopyWithImpl<$Res, $Val extends ActivityState>
           ? _value.describtionAndPeculiarities
           : describtionAndPeculiarities // ignore: cast_nullable_to_non_nullable
               as DescribtionAndPeculiarities?,
-      dayOfSelectedLessonFromSearch: freezed == dayOfSelectedLessonFromSearch
-          ? _value.dayOfSelectedLessonFromSearch
-          : dayOfSelectedLessonFromSearch // ignore: cast_nullable_to_non_nullable
+      selectedDayFromSearch: freezed == selectedDayFromSearch
+          ? _value.selectedDayFromSearch
+          : selectedDayFromSearch // ignore: cast_nullable_to_non_nullable
               as String?,
+      selectedDayFromSearchIndex: null == selectedDayFromSearchIndex
+          ? _value.selectedDayFromSearchIndex
+          : selectedDayFromSearchIndex // ignore: cast_nullable_to_non_nullable
+              as int,
       activityTypes: freezed == activityTypes
           ? _value.activityTypes
           : activityTypes // ignore: cast_nullable_to_non_nullable
@@ -236,7 +242,8 @@ abstract class _$$ActivityStateImplCopyWith<$Res>
       bool infoForTypeLoading,
       GymResponse? gym,
       DescribtionAndPeculiarities? describtionAndPeculiarities,
-      String? dayOfSelectedLessonFromSearch,
+      String? selectedDayFromSearch,
+      int selectedDayFromSearchIndex,
       List<String>? activityTypes,
       Map<String, dynamic> allPhotos,
       Map<String, dynamic> allLessons,
@@ -272,7 +279,8 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
     Object? infoForTypeLoading = null,
     Object? gym = freezed,
     Object? describtionAndPeculiarities = freezed,
-    Object? dayOfSelectedLessonFromSearch = freezed,
+    Object? selectedDayFromSearch = freezed,
+    Object? selectedDayFromSearchIndex = null,
     Object? activityTypes = freezed,
     Object? allPhotos = null,
     Object? allLessons = null,
@@ -321,10 +329,14 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
           ? _value.describtionAndPeculiarities
           : describtionAndPeculiarities // ignore: cast_nullable_to_non_nullable
               as DescribtionAndPeculiarities?,
-      dayOfSelectedLessonFromSearch: freezed == dayOfSelectedLessonFromSearch
-          ? _value.dayOfSelectedLessonFromSearch
-          : dayOfSelectedLessonFromSearch // ignore: cast_nullable_to_non_nullable
+      selectedDayFromSearch: freezed == selectedDayFromSearch
+          ? _value.selectedDayFromSearch
+          : selectedDayFromSearch // ignore: cast_nullable_to_non_nullable
               as String?,
+      selectedDayFromSearchIndex: null == selectedDayFromSearchIndex
+          ? _value.selectedDayFromSearchIndex
+          : selectedDayFromSearchIndex // ignore: cast_nullable_to_non_nullable
+              as int,
       activityTypes: freezed == activityTypes
           ? _value._activityTypes
           : activityTypes // ignore: cast_nullable_to_non_nullable
@@ -397,7 +409,8 @@ class _$ActivityStateImpl extends _ActivityState {
       this.infoForTypeLoading = false,
       this.gym = null,
       this.describtionAndPeculiarities = null,
-      this.dayOfSelectedLessonFromSearch = "",
+      this.selectedDayFromSearch = "",
+      this.selectedDayFromSearchIndex = 9999,
       final List<String>? activityTypes = const [],
       final Map<String, dynamic> allPhotos = const {},
       final Map<String, dynamic> allLessons = const {},
@@ -449,7 +462,10 @@ class _$ActivityStateImpl extends _ActivityState {
   final DescribtionAndPeculiarities? describtionAndPeculiarities;
   @override
   @JsonKey()
-  final String? dayOfSelectedLessonFromSearch;
+  final String? selectedDayFromSearch;
+  @override
+  @JsonKey()
+  final int selectedDayFromSearchIndex;
   final List<String>? _activityTypes;
   @override
   @JsonKey()
@@ -557,7 +573,7 @@ class _$ActivityStateImpl extends _ActivityState {
 
   @override
   String toString() {
-    return 'ActivityState(isGymLoading: $isGymLoading, isActivitiesListLoading: $isActivitiesListLoading, isEnrollingLoading: $isEnrollingLoading, isPhotosLoading: $isPhotosLoading, isSchedulesLoading: $isSchedulesLoading, infoForTypeLoading: $infoForTypeLoading, gym: $gym, describtionAndPeculiarities: $describtionAndPeculiarities, dayOfSelectedLessonFromSearch: $dayOfSelectedLessonFromSearch, activityTypes: $activityTypes, allPhotos: $allPhotos, allLessons: $allLessons, lessonsOfSelectedActivity: $lessonsOfSelectedActivity, daysInWhichWeHaveLessons: $daysInWhichWeHaveLessons, selectedCalendarDay: $selectedCalendarDay, lessonsToShowAfterSelectingADay: $lessonsToShowAfterSelectingADay, selectedActivity: $selectedActivity, photosOfSelectedActivity: $photosOfSelectedActivity, infosForType: $infosForType, isFromSearch: $isFromSearch, listOf15CalendarDaysFromNow: $listOf15CalendarDaysFromNow, enrollingError: $enrollingError, isEnrollingError: $isEnrollingError)';
+    return 'ActivityState(isGymLoading: $isGymLoading, isActivitiesListLoading: $isActivitiesListLoading, isEnrollingLoading: $isEnrollingLoading, isPhotosLoading: $isPhotosLoading, isSchedulesLoading: $isSchedulesLoading, infoForTypeLoading: $infoForTypeLoading, gym: $gym, describtionAndPeculiarities: $describtionAndPeculiarities, selectedDayFromSearch: $selectedDayFromSearch, selectedDayFromSearchIndex: $selectedDayFromSearchIndex, activityTypes: $activityTypes, allPhotos: $allPhotos, allLessons: $allLessons, lessonsOfSelectedActivity: $lessonsOfSelectedActivity, daysInWhichWeHaveLessons: $daysInWhichWeHaveLessons, selectedCalendarDay: $selectedCalendarDay, lessonsToShowAfterSelectingADay: $lessonsToShowAfterSelectingADay, selectedActivity: $selectedActivity, photosOfSelectedActivity: $photosOfSelectedActivity, infosForType: $infosForType, isFromSearch: $isFromSearch, listOf15CalendarDaysFromNow: $listOf15CalendarDaysFromNow, enrollingError: $enrollingError, isEnrollingError: $isEnrollingError)';
   }
 
   @override
@@ -581,9 +597,11 @@ class _$ActivityStateImpl extends _ActivityState {
             (identical(other.describtionAndPeculiarities, describtionAndPeculiarities) ||
                 other.describtionAndPeculiarities ==
                     describtionAndPeculiarities) &&
-            (identical(other.dayOfSelectedLessonFromSearch, dayOfSelectedLessonFromSearch) ||
-                other.dayOfSelectedLessonFromSearch ==
-                    dayOfSelectedLessonFromSearch) &&
+            (identical(other.selectedDayFromSearch, selectedDayFromSearch) ||
+                other.selectedDayFromSearch == selectedDayFromSearch) &&
+            (identical(other.selectedDayFromSearchIndex, selectedDayFromSearchIndex) ||
+                other.selectedDayFromSearchIndex ==
+                    selectedDayFromSearchIndex) &&
             const DeepCollectionEquality()
                 .equals(other._activityTypes, _activityTypes) &&
             const DeepCollectionEquality()
@@ -607,8 +625,7 @@ class _$ActivityStateImpl extends _ActivityState {
                 .equals(other._infosForType, _infosForType) &&
             (identical(other.isFromSearch, isFromSearch) ||
                 other.isFromSearch == isFromSearch) &&
-            const DeepCollectionEquality()
-                .equals(other._listOf15CalendarDaysFromNow, _listOf15CalendarDaysFromNow) &&
+            const DeepCollectionEquality().equals(other._listOf15CalendarDaysFromNow, _listOf15CalendarDaysFromNow) &&
             (identical(other.enrollingError, enrollingError) || other.enrollingError == enrollingError) &&
             (identical(other.isEnrollingError, isEnrollingError) || other.isEnrollingError == isEnrollingError));
   }
@@ -624,7 +641,8 @@ class _$ActivityStateImpl extends _ActivityState {
         infoForTypeLoading,
         gym,
         describtionAndPeculiarities,
-        dayOfSelectedLessonFromSearch,
+        selectedDayFromSearch,
+        selectedDayFromSearchIndex,
         const DeepCollectionEquality().hash(_activityTypes),
         const DeepCollectionEquality().hash(_allPhotos),
         const DeepCollectionEquality().hash(_allLessons),
@@ -658,7 +676,8 @@ abstract class _ActivityState extends ActivityState {
       final bool infoForTypeLoading,
       final GymResponse? gym,
       final DescribtionAndPeculiarities? describtionAndPeculiarities,
-      final String? dayOfSelectedLessonFromSearch,
+      final String? selectedDayFromSearch,
+      final int selectedDayFromSearchIndex,
       final List<String>? activityTypes,
       final Map<String, dynamic> allPhotos,
       final Map<String, dynamic> allLessons,
@@ -692,7 +711,9 @@ abstract class _ActivityState extends ActivityState {
   @override
   DescribtionAndPeculiarities? get describtionAndPeculiarities;
   @override
-  String? get dayOfSelectedLessonFromSearch;
+  String? get selectedDayFromSearch;
+  @override
+  int get selectedDayFromSearchIndex;
   @override
   List<String>? get activityTypes;
   @override
