@@ -83,7 +83,7 @@ class _SubscribtionSettingsScreenState
             child: PaymentSection(),
           ),
 
-          // Invite Friends
+          // Invite Friends // referal
           const SliverToBoxAdapter(
             child: InviteFriendsSection(),
           ),

@@ -44,6 +44,9 @@ mixin _$SettingsState {
   UserSubscription? get nextSubscribtion => throw _privateConstructorUsedError;
   List<Subscription> get allAvailableSubscriptions =>
       throw _privateConstructorUsedError;
+  int get bonusSubsLength => throw _privateConstructorUsedError;
+  TextEditingController? get promocodeController =>
+      throw _privateConstructorUsedError;
   bool get isChangeSubscribtionLoading => throw _privateConstructorUsedError;
   String get cardNumber => throw _privateConstructorUsedError;
   bool get autoRenewal => throw _privateConstructorUsedError;
@@ -57,6 +60,7 @@ mixin _$SettingsState {
   bool get isPromocodeError => throw _privateConstructorUsedError;
   String get promocodeErrorMessage => throw _privateConstructorUsedError;
   String get newPromocodeDescription => throw _privateConstructorUsedError;
+  Referal? get referalInfo => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $SettingsStateCopyWith<SettingsState> get copyWith =>
@@ -96,6 +100,8 @@ abstract class $SettingsStateCopyWith<$Res> {
       UserSubscription? currentSubscribtion,
       UserSubscription? nextSubscribtion,
       List<Subscription> allAvailableSubscriptions,
+      int bonusSubsLength,
+      TextEditingController? promocodeController,
       bool isChangeSubscribtionLoading,
       String cardNumber,
       bool autoRenewal,
@@ -108,7 +114,8 @@ abstract class $SettingsStateCopyWith<$Res> {
       bool isPromocodeSuccess,
       bool isPromocodeError,
       String promocodeErrorMessage,
-      String newPromocodeDescription});
+      String newPromocodeDescription,
+      Referal? referalInfo});
 }
 
 /// @nodoc
@@ -150,6 +157,8 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     Object? currentSubscribtion = freezed,
     Object? nextSubscribtion = freezed,
     Object? allAvailableSubscriptions = null,
+    Object? bonusSubsLength = null,
+    Object? promocodeController = freezed,
     Object? isChangeSubscribtionLoading = null,
     Object? cardNumber = null,
     Object? autoRenewal = null,
@@ -163,6 +172,7 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     Object? isPromocodeError = null,
     Object? promocodeErrorMessage = null,
     Object? newPromocodeDescription = null,
+    Object? referalInfo = freezed,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -269,6 +279,14 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.allAvailableSubscriptions
           : allAvailableSubscriptions // ignore: cast_nullable_to_non_nullable
               as List<Subscription>,
+      bonusSubsLength: null == bonusSubsLength
+          ? _value.bonusSubsLength
+          : bonusSubsLength // ignore: cast_nullable_to_non_nullable
+              as int,
+      promocodeController: freezed == promocodeController
+          ? _value.promocodeController
+          : promocodeController // ignore: cast_nullable_to_non_nullable
+              as TextEditingController?,
       isChangeSubscribtionLoading: null == isChangeSubscribtionLoading
           ? _value.isChangeSubscribtionLoading
           : isChangeSubscribtionLoading // ignore: cast_nullable_to_non_nullable
@@ -321,6 +339,10 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.newPromocodeDescription
           : newPromocodeDescription // ignore: cast_nullable_to_non_nullable
               as String,
+      referalInfo: freezed == referalInfo
+          ? _value.referalInfo
+          : referalInfo // ignore: cast_nullable_to_non_nullable
+              as Referal?,
     ) as $Val);
   }
 }
@@ -360,6 +382,8 @@ abstract class _$$SettingsStateImplCopyWith<$Res>
       UserSubscription? currentSubscribtion,
       UserSubscription? nextSubscribtion,
       List<Subscription> allAvailableSubscriptions,
+      int bonusSubsLength,
+      TextEditingController? promocodeController,
       bool isChangeSubscribtionLoading,
       String cardNumber,
       bool autoRenewal,
@@ -372,7 +396,8 @@ abstract class _$$SettingsStateImplCopyWith<$Res>
       bool isPromocodeSuccess,
       bool isPromocodeError,
       String promocodeErrorMessage,
-      String newPromocodeDescription});
+      String newPromocodeDescription,
+      Referal? referalInfo});
 }
 
 /// @nodoc
@@ -412,6 +437,8 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     Object? currentSubscribtion = freezed,
     Object? nextSubscribtion = freezed,
     Object? allAvailableSubscriptions = null,
+    Object? bonusSubsLength = null,
+    Object? promocodeController = freezed,
     Object? isChangeSubscribtionLoading = null,
     Object? cardNumber = null,
     Object? autoRenewal = null,
@@ -425,6 +452,7 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     Object? isPromocodeError = null,
     Object? promocodeErrorMessage = null,
     Object? newPromocodeDescription = null,
+    Object? referalInfo = freezed,
   }) {
     return _then(_$SettingsStateImpl(
       isloading: null == isloading
@@ -531,6 +559,14 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value._allAvailableSubscriptions
           : allAvailableSubscriptions // ignore: cast_nullable_to_non_nullable
               as List<Subscription>,
+      bonusSubsLength: null == bonusSubsLength
+          ? _value.bonusSubsLength
+          : bonusSubsLength // ignore: cast_nullable_to_non_nullable
+              as int,
+      promocodeController: freezed == promocodeController
+          ? _value.promocodeController
+          : promocodeController // ignore: cast_nullable_to_non_nullable
+              as TextEditingController?,
       isChangeSubscribtionLoading: null == isChangeSubscribtionLoading
           ? _value.isChangeSubscribtionLoading
           : isChangeSubscribtionLoading // ignore: cast_nullable_to_non_nullable
@@ -583,6 +619,10 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value.newPromocodeDescription
           : newPromocodeDescription // ignore: cast_nullable_to_non_nullable
               as String,
+      referalInfo: freezed == referalInfo
+          ? _value.referalInfo
+          : referalInfo // ignore: cast_nullable_to_non_nullable
+              as Referal?,
     ));
   }
 }
@@ -617,6 +657,8 @@ class _$SettingsStateImpl extends _SettingsState {
       this.currentSubscribtion = null,
       this.nextSubscribtion = null,
       final List<Subscription> allAvailableSubscriptions = const [],
+      this.bonusSubsLength = 0,
+      this.promocodeController,
       this.isChangeSubscribtionLoading = false,
       this.cardNumber = "**** **** **** 1234",
       this.autoRenewal = false,
@@ -629,7 +671,8 @@ class _$SettingsStateImpl extends _SettingsState {
       this.isPromocodeSuccess = false,
       this.isPromocodeError = false,
       this.promocodeErrorMessage = "",
-      this.newPromocodeDescription = ""})
+      this.newPromocodeDescription = "",
+      this.referalInfo = null})
       : _listOfCities = listOfCities,
         _knownActivities = knownActivities,
         _allAvailableSubscriptions = allAvailableSubscriptions,
@@ -736,6 +779,11 @@ class _$SettingsStateImpl extends _SettingsState {
 
   @override
   @JsonKey()
+  final int bonusSubsLength;
+  @override
+  final TextEditingController? promocodeController;
+  @override
+  @JsonKey()
   final bool isChangeSubscribtionLoading;
   @override
   @JsonKey()
@@ -786,10 +834,13 @@ class _$SettingsStateImpl extends _SettingsState {
   @override
   @JsonKey()
   final String newPromocodeDescription;
+  @override
+  @JsonKey()
+  final Referal? referalInfo;
 
   @override
   String toString() {
-    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, gender: $gender, birthday: $birthday, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, user: $user, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue, isNoAccessChangingPhoto: $isNoAccessChangingPhoto, isPhotoUploading: $isPhotoUploading, currentSubscribtion: $currentSubscribtion, nextSubscribtion: $nextSubscribtion, allAvailableSubscriptions: $allAvailableSubscriptions, isChangeSubscribtionLoading: $isChangeSubscribtionLoading, cardNumber: $cardNumber, autoRenewal: $autoRenewal, dropDownOpened: $dropDownOpened, genderDropDownOpened: $genderDropDownOpened, missingInfo: $missingInfo, promocodeValue: $promocodeValue, isPromocodeLoading: $isPromocodeLoading, promocodesHistory: $promocodesHistory, isPromocodeSuccess: $isPromocodeSuccess, isPromocodeError: $isPromocodeError, promocodeErrorMessage: $promocodeErrorMessage, newPromocodeDescription: $newPromocodeDescription)';
+    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, gender: $gender, birthday: $birthday, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, user: $user, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue, isNoAccessChangingPhoto: $isNoAccessChangingPhoto, isPhotoUploading: $isPhotoUploading, currentSubscribtion: $currentSubscribtion, nextSubscribtion: $nextSubscribtion, allAvailableSubscriptions: $allAvailableSubscriptions, bonusSubsLength: $bonusSubsLength, promocodeController: $promocodeController, isChangeSubscribtionLoading: $isChangeSubscribtionLoading, cardNumber: $cardNumber, autoRenewal: $autoRenewal, dropDownOpened: $dropDownOpened, genderDropDownOpened: $genderDropDownOpened, missingInfo: $missingInfo, promocodeValue: $promocodeValue, isPromocodeLoading: $isPromocodeLoading, promocodesHistory: $promocodesHistory, isPromocodeSuccess: $isPromocodeSuccess, isPromocodeError: $isPromocodeError, promocodeErrorMessage: $promocodeErrorMessage, newPromocodeDescription: $newPromocodeDescription, referalInfo: $referalInfo)';
   }
 
   @override
@@ -843,6 +894,10 @@ class _$SettingsStateImpl extends _SettingsState {
                 other.nextSubscribtion == nextSubscribtion) &&
             const DeepCollectionEquality().equals(
                 other._allAvailableSubscriptions, _allAvailableSubscriptions) &&
+            (identical(other.bonusSubsLength, bonusSubsLength) ||
+                other.bonusSubsLength == bonusSubsLength) &&
+            (identical(other.promocodeController, promocodeController) ||
+                other.promocodeController == promocodeController) &&
             (identical(other.isChangeSubscribtionLoading, isChangeSubscribtionLoading) ||
                 other.isChangeSubscribtionLoading ==
                     isChangeSubscribtionLoading) &&
@@ -868,8 +923,8 @@ class _$SettingsStateImpl extends _SettingsState {
                 other.isPromocodeError == isPromocodeError) &&
             (identical(other.promocodeErrorMessage, promocodeErrorMessage) ||
                 other.promocodeErrorMessage == promocodeErrorMessage) &&
-            (identical(other.newPromocodeDescription, newPromocodeDescription) ||
-                other.newPromocodeDescription == newPromocodeDescription));
+            (identical(other.newPromocodeDescription, newPromocodeDescription) || other.newPromocodeDescription == newPromocodeDescription) &&
+            (identical(other.referalInfo, referalInfo) || other.referalInfo == referalInfo));
   }
 
   @override
@@ -901,6 +956,8 @@ class _$SettingsStateImpl extends _SettingsState {
         currentSubscribtion,
         nextSubscribtion,
         const DeepCollectionEquality().hash(_allAvailableSubscriptions),
+        bonusSubsLength,
+        promocodeController,
         isChangeSubscribtionLoading,
         cardNumber,
         autoRenewal,
@@ -913,7 +970,8 @@ class _$SettingsStateImpl extends _SettingsState {
         isPromocodeSuccess,
         isPromocodeError,
         promocodeErrorMessage,
-        newPromocodeDescription
+        newPromocodeDescription,
+        referalInfo
       ]);
 
   @JsonKey(ignore: true)
@@ -951,6 +1009,8 @@ abstract class _SettingsState extends SettingsState {
       final UserSubscription? currentSubscribtion,
       final UserSubscription? nextSubscribtion,
       final List<Subscription> allAvailableSubscriptions,
+      final int bonusSubsLength,
+      final TextEditingController? promocodeController,
       final bool isChangeSubscribtionLoading,
       final String cardNumber,
       final bool autoRenewal,
@@ -963,7 +1023,8 @@ abstract class _SettingsState extends SettingsState {
       final bool isPromocodeSuccess,
       final bool isPromocodeError,
       final String promocodeErrorMessage,
-      final String newPromocodeDescription}) = _$SettingsStateImpl;
+      final String newPromocodeDescription,
+      final Referal? referalInfo}) = _$SettingsStateImpl;
   const _SettingsState._() : super._();
 
   @override
@@ -1019,6 +1080,10 @@ abstract class _SettingsState extends SettingsState {
   @override
   List<Subscription> get allAvailableSubscriptions;
   @override
+  int get bonusSubsLength;
+  @override
+  TextEditingController? get promocodeController;
+  @override
   bool get isChangeSubscribtionLoading;
   @override
   String get cardNumber;
@@ -1044,6 +1109,8 @@ abstract class _SettingsState extends SettingsState {
   String get promocodeErrorMessage;
   @override
   String get newPromocodeDescription;
+  @override
+  Referal? get referalInfo;
   @override
   @JsonKey(ignore: true)
   _$$SettingsStateImplCopyWith<_$SettingsStateImpl> get copyWith =>

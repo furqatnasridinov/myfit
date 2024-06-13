@@ -23,6 +23,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     super.initState();
     ref.read(settingsProvider.notifier)
     ..getAllAvailableSubscribtions(context)
+    ..getReferalInfo(context)
     ..getListOfCities(context);
   }
 

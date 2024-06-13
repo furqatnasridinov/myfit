@@ -490,6 +490,7 @@ class AppHelpers {
     String month = dateTime.month.toString().padLeft(2, '0');
     String day = dateTime.day.toString().padLeft(2, '0');
     return "${dateTime.year}-$month-$day@$hours:$minutes";
+
     }
 
   static String getCalendarlikeStringFromDateTime(DateTime dateTime) {
@@ -577,5 +578,12 @@ class AppHelpers {
     }
     return "";
 }
+  static String getAutoRenewalDay(String currentSubEndDate){
+    // from 04.09.2024 to 2 сентября
+    List<String> parts = currentSubEndDate.split('.');
+    DateTime dateTime = DateTime(int.parse(parts[2]), int.parse(parts[1]), int.parse(parts[0]));
+    DateTime newDateTime = dateTime.subtract(const Duration(days: 2));
+    return "${newDateTime.day} ${getMonth(dateTime.month)}";
+  }
 }
 

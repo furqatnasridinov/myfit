@@ -105,8 +105,7 @@ void showInfoPopUp(BuildContext context) {
                       final currentSub =
                           ref.watch(settingsProvider).currentSubscribtion;
                       return CustomText(
-                        text:
-                            "Занятия этого заведения пополнятся ${currentSub?.endDataFormatted}",
+                        text:"Занятия этого заведения пополнятся ${currentSub?.endDataFormatted}",
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
                       );

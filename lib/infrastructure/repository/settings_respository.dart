@@ -304,4 +304,40 @@ class SettingsRepository implements SetttingsRepositoryInterface {
       );
     }
   }
+  
+  @override
+  Future<ApiResult<Map<String, dynamic>>> getReferalInfo() async{
+    try {
+      final client = inject<HttpService>().clientDio();
+      final response = await client.get(
+        "api/promotional/ref",
+      );
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      );
+    }
+  }
+  
+  @override
+  Future<ApiResult<Map<String, dynamic>>> getReferalBonus() async{
+    try {
+      final client = inject<HttpService>().clientDio();
+      final response = await client.post(
+        "api/promotional/ref/bonus",
+      );
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      );
+    }
+  }
 }

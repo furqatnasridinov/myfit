@@ -1,7 +1,11 @@
+import 'package:myfit/infrastructure/services/app_constants.dart';
+
 class Promocode {
   int? id;
   Promotional? promotional;
   String? activateTime;
+  PromocodeState? promotionalState;
+  String? endTime;
 
   Promocode({this.id, this.promotional, this.activateTime});
 
@@ -11,6 +15,9 @@ class Promocode {
         ? Promotional.fromJson(json['promotional'])
         : null;
     activateTime = json['activateTime'];
+    promotionalState = json['promotionalState'] == "WAITING" ? PromocodeState.waiting : json['promotionalState'] == "USED" ? 
+                          PromocodeState.used : PromocodeState.notUsed;
+    endTime = json['endTime'];
   }
 }
 
@@ -22,6 +29,7 @@ class Promotional {
   String? activateData;
   String? prolongationData;
   String? endData;
+  int? howMany;
 
   Promotional(
       {this.id,
@@ -40,5 +48,6 @@ class Promotional {
     activateData = json['activateData'];
     prolongationData = json['prolongationData'];
     endData = json['endData'];
+    howMany = json['howMany'];
   }
 }
