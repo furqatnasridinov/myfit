@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/notification/notification_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
@@ -164,17 +165,20 @@ class LessonCompleted extends StatelessWidget {
               ),
               16.horizontalSpace,
               Expanded(
-                child: CustomButton(
-                  onPressed: () {
-                    context.router.push(ActivityRoute(gymId: gymId));
-                  },
-                  text: "Записаться ещё",
-                  buttonColor: AppColors.blueColor,
-                  textColor: Colors.white,
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w500,
-                  height: 40.h,
-                ),
+                child: Consumer(builder: (context, ref, child) {
+                  return CustomButton(
+                      onPressed: () {
+                        ref.read(mapProvider.notifier).setSelectedActivityFromMap(lessonType);
+                        context.router.push(ActivityRoute(gymId: gymId));
+                      },
+                      text: "Записаться ещё",
+                      buttonColor: AppColors.blueColor,
+                      textColor: Colors.white,
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w500,
+                      height: 40.h,
+                    );
+                },),
               ),
             ],
           ),

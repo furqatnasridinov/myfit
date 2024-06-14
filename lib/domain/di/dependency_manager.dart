@@ -1,3 +1,4 @@
+import 'package:myfit/application/notification/notification_notifier.dart';
 import 'package:myfit/domain/handlers/http_service.dart';
 import 'package:myfit/domain/interface/activity.dart';
 import 'package:myfit/domain/interface/main.dart';
@@ -26,6 +27,7 @@ Future<void> setUpDependencies() async {
 }
 
 final gymRepo = getIt.get<ActivityRepositoryInterface>();
+final notificationNotifier = getIt.get<NotificationNotifier>();
 final mainRepo = getIt.get<MainRepositoryInterface>();
 final scheduleRepo  =getIt.get<ScheduleRepositoryInterface>();
 final registerRepo = getIt.get<RegisterRepositoryInterface>();

@@ -18,9 +18,9 @@ class CalendarSkeleton extends StatelessWidget {
           SizedBox(
             height: 73.h,
             child: ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
+              //physics: const NeverScrollableScrollPhysics(),
               scrollDirection: Axis.horizontal,
-              itemCount: 7,
+              itemCount: 70,
               //shrinkWrap: true,
               itemBuilder: (context, index) {
                 return Padding(

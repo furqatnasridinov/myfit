@@ -105,8 +105,7 @@ void showInfoPopUp(BuildContext context) {
                       final currentSub =
                           ref.watch(settingsProvider).currentSubscribtion;
                       return CustomText(
-                        text:
-                            "Занятия этого заведения пополнятся ${currentSub?.endDataFormatted}",
+                        text:"Занятия этого заведения пополнятся ${currentSub?.endDataFormatted}",
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
                       );
@@ -118,6 +117,7 @@ void showInfoPopUp(BuildContext context) {
                         "Как правило, каждое заведение выделяет для пользователей MyFit от 8 до 12 посещений в месяц. Если в одном зале посещения закончились - вы можете пойти в другой, заведений очень много, пробуйте новое без переплат!",
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
+                    height: 1.1,
                   ),
                   16.verticalSpace,
                   CustomText(
@@ -125,6 +125,7 @@ void showInfoPopUp(BuildContext context) {
                         "Количество оставшихся посещений всегда отображается на экране поиска занятий и в подробной карточке заведения.",
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
+                    height: 1.1,
                   ),
                 ],
               ),

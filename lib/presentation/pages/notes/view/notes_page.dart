@@ -1,6 +1,6 @@
 import 'package:myfit/application/notes/notes_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
-import 'package:myfit/presentation/pages/notes/widget/notes_header.dart';
+import 'package:myfit/presentation/components/custom_search_bar.dart';
 import 'package:myfit/presentation/pages/notes/widget/widget.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +32,7 @@ class _ScheduleItemScreen extends ConsumerState<NotesScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: AppColors.backgroundColor,
-      appBar: const NotesHeader(),
+      appBar:  CustomSearchBar(showBackButton: true, canNavigateToSettings: true),
       body: state.isloading
           ? const Center(
               child: CircularProgressIndicator(),

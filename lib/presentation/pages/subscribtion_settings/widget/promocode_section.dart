@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/presentation/components/animation_button_effect.dart';
 import 'package:myfit/presentation/components/components.dart';
@@ -32,6 +33,7 @@ class PromocodeSection extends StatelessWidget {
         final bool isPromocodeError = ref.watch(settingsProvider).isPromocodeError;
         final String promocodeErrorMessage = ref.watch(settingsProvider).promocodeErrorMessage;
         final String newPromocodeDescription = ref.watch(settingsProvider).newPromocodeDescription;
+        final TextEditingController controller = ref.watch(settingsProvider).promocodeController ?? TextEditingController();
           return Column(
             children: [
               Row(
@@ -56,13 +58,13 @@ class PromocodeSection extends StatelessWidget {
                           ),
                           elevation: 0,
                           insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
-                          child: promocodesHistoryDialog(),
+                          child: myPromocodesDialog(),
                         );
                       },
                     );
                     },
                     child: CustomText(
-                      text: "История",
+                      text: "Мои промокоды",
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w400,
                       color: AppColors.blueText,
@@ -83,9 +85,11 @@ class PromocodeSection extends StatelessWidget {
                                 //height: 40.h,
                                 child: CustomTextField(
                                   hintText: "Введите промокод",
+                                  controller: controller,
                                   style: GoogleFonts.raleway(
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.w500,
+                                    fontFeatures: const [FontFeature.liningFigures()],
                                   ),
                                   onChanged: (value) {
                                     notifier.setPromocodeValue(value.trim());
@@ -96,12 +100,10 @@ class PromocodeSection extends StatelessWidget {
                                       currentFocus.unfocus();
                                     }
                                   },
-                                  contentPadding:
-                                      EdgeInsets.zero.copyWith(left: 6.w),
+                                  contentPadding: EdgeInsets.zero.copyWith(left: 6.w),
                                   prefixIcon: Padding(
                                     padding: EdgeInsets.all(6.r),
-                                    child: SvgPicture.asset(
-                                        "assets/svg/promocode.svg"),
+                                    child: SvgPicture.asset("assets/svg/promocode.svg"),
                                   ),
                                 ),
                               ),
@@ -156,21 +158,27 @@ class PromocodeSection extends StatelessWidget {
 }
 
 
-Widget promocodesHistoryDialog(){
+Widget myPromocodesDialog(){
   return Padding(
     padding: EdgeInsets.all(16.r),
     child: Consumer(
       builder: (context, ref, child) {
-        final promocodesHistory = ref.read(settingsProvider).promocodesHistory;
-
+        final promocodesHistory = ref.watch(settingsProvider).promocodesHistory;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             CustomText(
-              text: "История активации промокодов",
+              text: "Очередь промокодов",
               fontSize: 16.sp,
               fontWeight: FontWeight.w600,
+            ),
+            5.verticalSpace,
+            CustomText(
+              text: AppConstants.promoLongText,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w400,
+              height: 1.1,
             ),
             24.verticalSpace,
             ListView.builder(
@@ -178,52 +186,9 @@ Widget promocodesHistoryDialog(){
               itemCount: promocodesHistory.length,
               itemBuilder: (context, index) {
                 final current = promocodesHistory[index];
-                return RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: current.promotional?.code ?? "",
-                        style: GoogleFonts.raleway(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black,
-                          fontFeatures: const [FontFeature.liningFigures()],
-                        ),
-                      ),
-                      WidgetSpan(child: 2.horizontalSpace),
-                      TextSpan(
-                        text: current.promotional?.description ?? "",
-                        style: GoogleFonts.raleway(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.black,
-                          fontFeatures: const [FontFeature.liningFigures()],
-                        ),
-                      ),
-                      WidgetSpan(child: 2.horizontalSpace),
-                      TextSpan(
-                        text: "- Активирован",
-                        style: GoogleFonts.raleway(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black,
-                          fontFeatures: const [FontFeature.liningFigures()],
-                        ),
-                      ),
-                      WidgetSpan(child: 2.horizontalSpace),
-                      TextSpan(
-                        text: AppHelpers.getCalendarlikeStringFromDateTime(
-                            DateTime.parse(current.promotional?.activateData
-                                    ?.replaceAll("T", " ") ?? "")),
-                        style: GoogleFonts.raleway(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black,
-                          fontFeatures: const [FontFeature.liningFigures()],
-                        ),
-                      ),
-                    ],
-                  ),
+                return eachPromo(
+                    current.promotional?.description ?? "",
+                    DateTime.tryParse(current.promotional?.activateData ?.replaceAll("T", " ") ?? ""),
                 );
               },
             ),
@@ -243,4 +208,47 @@ Widget promocodesHistoryDialog(){
       },
     ),
   );
+}
+
+
+Widget eachPromo(String description, DateTime? dateTime){
+  return Row(
+    children: [
+      Flexible(
+        child: Container(
+          padding: EdgeInsets.all(10.r),
+          decoration: BoxDecoration(
+            color: AppColors.backgroundColor,
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+          child: CustomText(
+            text: description,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+      10.horizontalSpace,
+      Flexible(
+        child: CustomText(
+          text: getCorrectText(dateTime),
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w400,
+          height: 1.1,
+        ),
+      )
+    ],
+  );
+}
+
+String getCorrectText(DateTime? date){
+  final now = DateTime.now();
+  if (date != null) {
+    if (now.isAfter(date)) {
+      return "Активирован ${AppHelpers.getCalendarlikeStringFromDateTime(date)}";
+    } else {
+      return " Будет использован ${AppHelpers.getCalendarlikeStringFromDateTime(date)}";
+    }
+  }
+  return "null";
 }

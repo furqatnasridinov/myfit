@@ -1,11 +1,13 @@
 //import 'package:myfit/infrastructure/models/data/user_instance.dart';
 
 
+import 'package:flutter/cupertino.dart';
 import 'package:myfit/infrastructure/models/data/promocode.dart';
 import 'package:myfit/infrastructure/models/data/user_subscribtion.dart';
 import 'package:myfit/infrastructure/models/response/auth_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../infrastructure/models/data/referal.dart';
 import '../../infrastructure/models/data/user_instance.dart';
 part 'settings_state.freezed.dart';
 
@@ -38,6 +40,9 @@ class SettingsState with _$SettingsState {
     @Default(null) UserSubscription? currentSubscribtion,
     @Default(null) UserSubscription? nextSubscribtion,
     @Default([]) List<Subscription> allAvailableSubscriptions,
+    @Default(false) bool allSubsLoading,
+    @Default(0) int bonusSubsLength,
+    TextEditingController? promocodeController,
     @Default(false) bool isChangeSubscribtionLoading,
     @Default("**** **** **** 1234") String cardNumber,
     @Default(false) bool autoRenewal,
@@ -51,6 +56,9 @@ class SettingsState with _$SettingsState {
     @Default(false) bool isPromocodeError,
     @Default("") String promocodeErrorMessage,
     @Default("") String newPromocodeDescription,
+    @Default(null) Referal? referalInfo,
+    @Default(false) bool referalInfoLoading,
+    @Default(false) takeBonusButtonClicked,
   }) = _SettingsState;
   const SettingsState._();
 }

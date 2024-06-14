@@ -1,10 +1,18 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'package:myfit/application/settings/settings_notifier.dart';
+import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
@@ -13,15 +21,15 @@ import 'package:myfit/presentation/components/components.dart';
 import 'package:myfit/presentation/components/custom_card.dart';
 
 class InviteFriendsSection extends StatelessWidget {
-  const InviteFriendsSection({super.key});
+   const InviteFriendsSection({
+    Key? key,
+  }) : super(key: key);
 
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: 16.w,
-      ).copyWith(top: 32.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 32.h),
       child: Column(
         children: [
           Row(
@@ -56,7 +64,16 @@ class InviteFriendsSection extends StatelessWidget {
           ),
           16.verticalSpace,
           CustomCard(
-            child: Column(
+            child: Consumer(builder: (context, ref, child) {
+              final notifier = ref.watch(settingsProvider.notifier);
+              final referal = ref.watch(settingsProvider).referalInfo;
+              final int receivedBonus = referal?.receivedBonus ?? 0;
+              final int tottalFriends = referal?.invitedUsers ?? 0;
+              const  int aim = 3;
+              final int  currentProgress = receivedBonus == 0  ? 
+                  tottalFriends : receivedBonus != 0 ? tottalFriends - (receivedBonus * aim) : 9999;
+              //const currentProgress = 1;
+              return Column(
               children: [
                 CustomText(
                   text: AppConstants.inviteFriendLongText2,
@@ -66,8 +83,7 @@ class InviteFriendsSection extends StatelessWidget {
                 ),
                 16.verticalSpace,
                 CustomText(
-                  text:
-                      "Друзья должны перейти именно по вашей ссылке, скопируйте её из поля ниже:",
+                  text:"Друзья должны перейти именно по вашей ссылке, скопируйте её из поля ниже:",
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
                   height: 1.1,
@@ -79,14 +95,14 @@ class InviteFriendsSection extends StatelessWidget {
                   child: Row(
                     children: [
                       Expanded(
-                        child: buildTextField(),
+                        child: buildTextField(referal?.refLink ?? ""),
                       ),
                       10.horizontalSpace,
                       AnimationButtonEffect(
                         child: GestureDetector(
                           onTap: () {
                             // copy to clipboard
-                            Clipboard.setData(const ClipboardData(text: "myfit.ru/invite/adv23rd"));
+                            Clipboard.setData(ClipboardData(text: "myfit.ru/invite/${referal?.refLink}"));
                             AppHelpers.showCustomBottomSnack(
                               context, 
                               "Ссылка для приглашения скопирована в буфер обмена",
@@ -101,8 +117,7 @@ class InviteFriendsSection extends StatelessWidget {
                               decoration: BoxDecoration(
                                   color: AppColors.blueColor,
                                   borderRadius: BorderRadius.circular(8.r),
-                                  border:
-                                      Border.all(color: AppColors.blueBorder)),
+                                  border: Border.all(color: AppColors.blueBorder)),
                               child: Padding(
                                 padding: EdgeInsets.all(9.r),
                                 child: SvgPicture.asset(
@@ -121,93 +136,25 @@ class InviteFriendsSection extends StatelessWidget {
 
                 // three progress indicators
                 16.verticalSpace,
+                //getBonusButton(),
+                if(currentProgress >= 3 && currentProgress != 9999) getBonusButton(notifier, context),
+                if(currentProgress <3)
                 Row(
                   children: [
-                    Expanded(
-                      child: Stack(
-                        children: [
-                          SizedBox(
-                            height: 30.h,
-                            //width: 100.w, //
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: AppColors.fadedPrimary3,
-                                borderRadius: BorderRadius.circular(16.r),
-                                border: Border.all(color: AppColors.fadedBlueBorder),
-                              ),
-                              child: const Center(
-                                child: SizedBox(),
-                              ),
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding:  EdgeInsets.all(5.r),
-                              child: SizedBox(
-                                height: 20.h,
-                                width: double.infinity,
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primaryFadedBorder,
-                                    borderRadius: BorderRadius.circular(16.r),
-                                   /*  gradient:  LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: [
-                                        AppColors.blueColor.withOpacity(0.26),
-                                        AppColors.blueBorder.withOpacity(0.49),
-                                      ],
-                                    ), */
-                                  ),
-                                  child: Icon(Icons.done, color: Colors.white, size: 16.sp),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    currentProgress >= 1 ? doneIndicator() : notDoneIndicator(),
                     8.horizontalSpace,
-                    Expanded(
-                      child: SizedBox(
-                        height: 30.h,
-                        //width: 100.w, //
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: AppColors.fadedPrimary3,
-                            borderRadius: BorderRadius.circular(16.r),
-                            border: Border.all(color: AppColors.fadedBlueBorder),
-                          ),
-                          child: Center(
-                            child: SvgPicture.asset("assets/svg/user.svg"),
-                          ),
-                        ),
-                        
-                      ),
-                    ),
+                    currentProgress >= 2 ? doneIndicator() : notDoneIndicator(),
                     8.horizontalSpace,
-                    Expanded(
-                      child: SizedBox(
-                        height: 30.h,
-                        //width: 100.w, //
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: AppColors.fadedPrimary3,
-                            borderRadius: BorderRadius.circular(16.r),
-                            border: Border.all(color: AppColors.fadedBlueBorder),
-                          ),
-                          child: Center(
-                            child: SvgPicture.asset("assets/svg/user.svg"),
-                          ),
-                        ),
-                        
-                      ),
-                    ),
+                    notDoneIndicator(),
                   ],
                 ),
+
+                // в случае если все currentProgress == 9999 (ошибка)
+                if(currentProgress == 9999)
+                errorButton(),
               ],
-            ),
+            );
+            },)
           ),
         ],
       ),
@@ -260,12 +207,12 @@ void showInviteInfoPopUp(BuildContext context) {
   );
 }
 
-Widget buildTextField() {
+Widget buildTextField(String ref) {
   return TextField(
     readOnly: true,
     decoration: InputDecoration(
       contentPadding: EdgeInsets.zero.copyWith(left: 6.w),
-      hintText: "myfit.ru/invite/adv23rd",
+      hintText: "myfit.ru/invite/$ref",
       hintStyle: GoogleFonts.raleway(
         fontSize: 14.sp,
         fontWeight: FontWeight.w500,
@@ -289,6 +236,180 @@ Widget buildTextField() {
         child: SvgPicture.asset(
           "assets/svg/friends.svg",
         ),
+      ),
+    ),
+  );
+}
+
+
+Widget doneIndicator() {
+  return Expanded(
+    child: Stack(
+      children: [
+        SizedBox(
+          height: 30.h,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: AppColors.fadedPrimary3,
+              borderRadius: BorderRadius.circular(16.r),
+              border: Border.all(color: AppColors.blueColor),
+              /* gradient: const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Color.fromRGBO(119, 170, 249, 0.16),
+                  Color.fromRGBO(89, 154, 254, 0.29),
+                ],
+              ), */
+            ),
+            child: const Center(
+              child: SizedBox(),
+            ),
+          ),
+        ),
+         SizedBox(
+          height: 29.h,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: AppColors.fadedPrimary3,
+              borderRadius: BorderRadius.circular(16.r),
+              gradient: const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Color.fromRGBO(119, 170, 249, 0.16),
+                  Color.fromRGBO(89, 154, 254, 0.29),
+                ],
+              ),
+            ),
+            child: const Center(
+              child: SizedBox(),
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: EdgeInsets.all(5.r),
+            child: SizedBox(
+              height: 20.h,
+              width: double.infinity,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: AppColors.primaryFadedBorder,
+                  borderRadius: BorderRadius.circular(16.r),
+                  border: Border.all(color: AppColors.blueColor.withOpacity(0.99)),
+                   /* gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      AppColors.blueColor.withOpacity(0.26),
+                      AppColors.blueBorder.withOpacity(0.49),
+                    ],
+                  ), */
+                ),
+                child: Icon(Icons.done, color: Colors.white, size: 16.sp),
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget notDoneIndicator() {
+  return Expanded(
+    child: SizedBox(
+      height: 30.h,
+      //width: 100.w, //
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: AppColors.fadedPrimary3,
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(color: AppColors.fadedBlueBorder),
+        ),
+        child: Center(
+          child: SvgPicture.asset("assets/svg/user.svg"),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget getBonusButton(SettingsNotifier settingsNotifier, BuildContext context){
+  return Consumer(builder: (context, ref, child) {
+    final bool loading = ref.watch(settingsProvider).allSubsLoading || ref.watch(settingsProvider).referalInfoLoading;
+    return GestureDetector(
+    onTap: () async{
+      settingsNotifier.setTakeButtonCliked(true);
+       await settingsNotifier.getReferalBonus(context);
+       settingsNotifier.getAllAvailableSubscribtions(context);
+    },
+    child: AnimationButtonEffect(
+      child: Container(
+        height: 30.h,
+        width: double.maxFinite,
+          decoration: BoxDecoration(
+            color: AppColors.blueColor,
+            borderRadius: BorderRadius.circular(16.r),
+            border: Border.all(color: AppColors.blueText),
+            boxShadow: const[
+              BoxShadow(
+                color: Color.fromRGBO(157, 193, 245, 1),
+                offset: Offset(0, 11),
+                blurRadius: 15.9,
+                spreadRadius: -10,
+              ),
+            ],
+          ),
+          child: loading ? const CupertinoActivityIndicator(color: Colors.white) : Center(
+            child: CustomText(
+              text: "Получить награду!",
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
+          ),
+      
+      ),
+    ),
+  );
+  },);
+}
+
+
+Widget errorButton(){
+  return GestureDetector(
+    onTap: () {
+      //
+    },
+    child: AnimationButtonEffect(
+      child: Container(
+        height: 30.h,
+        width: double.maxFinite,
+          decoration: BoxDecoration(
+            color: AppColors.redText.withOpacity(0.8),
+            borderRadius: BorderRadius.circular(16.r),
+            border: Border.all(color: AppColors.redBorder),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.redText.withOpacity(0.4),
+                offset: const Offset(0, 11),
+                blurRadius: 15.9,
+                spreadRadius: -10,
+              ),
+            ],
+          ),
+          child: Center(
+            child: CustomText(
+              text: "currentProgress == 9999",
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
+          ),
+      
       ),
     ),
   );

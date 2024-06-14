@@ -174,7 +174,7 @@ class MySubscribtion extends StatelessWidget {
                   10.verticalSpace,
                   CustomText(
                     text: autoRenewal
-                        ? "Списание произойдёт ${event.getEndDateOfCurrentSub()}"
+                        ? "Списание произойдёт ${AppHelpers.getAutoRenewalDay(event.getEndDateOfCurrentSub())}"
                         : "Истекает ${event.getWhenCurrentSubEnds(currentSubscribtion.endData ?? "")}",
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,

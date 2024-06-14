@@ -490,6 +490,7 @@ class AppHelpers {
     String month = dateTime.month.toString().padLeft(2, '0');
     String day = dateTime.day.toString().padLeft(2, '0');
     return "${dateTime.year}-$month-$day@$hours:$minutes";
+
     }
 
   static String getCalendarlikeStringFromDateTime(DateTime dateTime) {
@@ -532,9 +533,9 @@ class AppHelpers {
 
   static String getCostPerMonth(int actualPrice, double priceAfterPromocode, int durationInMonth){
     if (priceAfterPromocode == 0.0) {
-      return (actualPrice / durationInMonth).toString();
+      return (actualPrice / durationInMonth).toStringAsFixed(0);
     }else{
-      return (priceAfterPromocode / durationInMonth).toString();
+      return (priceAfterPromocode / durationInMonth).toStringAsFixed(0);
     }
   }
 
@@ -577,5 +578,37 @@ class AppHelpers {
     }
     return "";
 }
+  static String getAutoRenewalDay(String currentSubEndDate){
+    // from 04.09.2024 to 2 сентября
+    List<String> parts = currentSubEndDate.split('.');
+    DateTime dateTime = DateTime(int.parse(parts[2]), int.parse(parts[1]), int.parse(parts[0]));
+    DateTime newDateTime = dateTime.subtract(const Duration(days: 2));
+    return "${newDateTime.day} ${getMonth(dateTime.month)}";
+  }
+
+  static DateTime getCalendarDateTime(String formattedCalendarDay){
+    // from 13 Июн 2024 to DateTime
+    List<String> parts = formattedCalendarDay.split(" ");
+    if (parts.length != 3) {
+      throw const FormatException("Invalid format for formattedCalendarDay");
+    }
+    String day = parts[0].padLeft(2, '0');
+    String month = parts[1];
+    String year = parts[2];
+
+    // Convert month from string to number
+    Map<String, String> months = {
+      'Янв': "01", 'Фев': "02", 'Мар': "03", 'Апр': "04", 'Май': "05", 'Июн': "06",
+      'Июль': "07", 'Авг': "08", 'Сен': "09", 'Окт': "10", 'Ноя': "11", 'Дек': "12"
+    };
+    String monthNumber = months[month] ?? "";
+    if (monthNumber.isEmpty) {
+      throw const FormatException("Invalid month in formattedCalendarDay");
+    }
+
+    String formattedDate = "$year$monthNumber$day";  // 20240613
+    final DateTime result = DateTime.parse(formattedDate);
+    return result;
+  }
 }
 

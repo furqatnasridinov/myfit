@@ -96,6 +96,8 @@ class AppConstants {
   static const String fiilYourProfileLongText = "Так мы сможем подобрать для вас предложения, которые с большей вероятностью смогут вас заинтересовать";
   static const String inviteFriendLongText = "Всё очень просто, если вы пригласите 3 новых пользователей в MyFit и они оформят подписку - то вы получите подписку на месяц в подарок.";
   static const String inviteFriendLongText2 = "Отправьте ссылку другу. Он получит скидку 10% на первое оформление подписки. Когда 3 друга впервые оформят подписку - вы получите подписку на месяц, бесплатно.";
+  static const String promoLongText = "Промокоды на скидку активируются автоматически при следующей оплате. В первую очередь используется промокод с максимальной скидкой.";
+  static const String autoRenewalLongText = "Для вашего удобства теперь мы будем автоматически списывать оплату за подписку.";
 }
 
 enum NotificationType {
@@ -106,4 +108,10 @@ enum NotificationType {
   lessonChanged, // 
   visitsCountIsGettingLowOrEnded, //
   system,
+}
+
+enum PromocodeState{
+  waiting,
+  used,
+  notUsed,
 }

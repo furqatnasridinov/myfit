@@ -50,12 +50,10 @@ class QrCodeScreen extends StatelessWidget {
               try {
                 // barcode == https://myfit.com/aWQ9MTNuYW1lPUFiZHVsbG8gYWtv
                 // handle qrcode value
-                final List<String> parts =
-                    barcode.displayValue.toString().split("myfit.com/");
+                final List<String> parts = barcode.displayValue.toString().split("myfit.com/");
                 String b64Decoded = parts[1];
                 Codec<String, String> stringToBase64 = utf8.fuse(base64);
-                String decoded =
-                    stringToBase64.decode(b64Decoded); //id=13name=Abdullo ako
+                String decoded = stringToBase64.decode(b64Decoded); //id=13name=Abdullo ako
                 final List<String> parts2 = decoded.split("name=");
                 final String gymId = parts2[0].split("=")[1];
                 if (nearestLesson?.bodyData?.gym?.id == int.parse(gymId)) {
@@ -70,12 +68,11 @@ class QrCodeScreen extends StatelessWidget {
                     ..removeNearestLesson();
                   //await ref.read(main2Provider.notifier).getNearestLesson(context);
                   context.router.pop();
-                  AppHelpers.showSuccessSnack(
-                      context, "QR code успешно отсканирован!");
+                  AppHelpers.showSuccessSnack(context, "QR code успешно отсканирован!");
                 } else {
-                  AppHelpers.showErrorSnack(context,
-                      "QR code не соответствует текущему занятию!");
+                  AppHelpers.showErrorSnack(context,"QR code не соответствует текущему занятию!");
                   context.router.pop();
+                  context.router.push(ActivityRoute(gymId: int.parse(gymId)));
                 }
               } catch (e) {
                 AppHelpers.showErrorSnack(context, e.toString());

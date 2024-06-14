@@ -1,3 +1,4 @@
+import 'package:myfit/infrastructure/models/data/calendar_data.dart';
 import 'package:myfit/infrastructure/models/data/description_and_peculiarities.dart';
 import 'package:myfit/infrastructure/models/data/lesson.dart';
 import 'package:myfit/infrastructure/models/response/gym_response.dart';
@@ -17,11 +18,14 @@ class ActivityState with _$ActivityState {
     @Default(false) bool infoForTypeLoading,
     @Default(null) GymResponse? gym,
     @Default(null) DescribtionAndPeculiarities? describtionAndPeculiarities,
-    @Default("") String? dayOfSelectedLessonFromSearch,
+    @Default("") String? selectedDayFromSearch,
+    @Default(9999) int selectedDayFromSearchIndex,
     @Default([]) List<String>? activityTypes,
     @Default({}) Map<String, dynamic> allPhotos,
+    @Default(false) bool isCalendarLimited,
     @Default({}) Map<String, dynamic> allLessons,
     @Default([]) List<Lesson> lessonsOfSelectedActivity,
+    @Default(false) bool buttonLoading,
     @Default([])List<String> daysInWhichWeHaveLessons, // [Вс 25 Фев, Пн 26 Фев]
     @Default("") String? selectedCalendarDay,
     @Default([]) List<Lesson> lessonsToShowAfterSelectingADay,
@@ -29,7 +33,7 @@ class ActivityState with _$ActivityState {
     @Default([]) List<String> photosOfSelectedActivity,
     @Default({}) Map<String, dynamic> infosForType,
     @Default(false) bool isFromSearch,
-    @Default([]) List<String> listOf15CalendarDaysFromNow,
+    @Default([]) List<CalendarData> listOf45CalendarDaysFromNow,
     @Default(null) EnrollingErrorMessage? enrollingError,
     @Default(false) bool isEnrollingError,
   }) = _ActivityState;

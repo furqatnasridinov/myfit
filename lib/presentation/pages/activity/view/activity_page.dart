@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable, use_build_context_synchronously
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
+import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/local_storage.dart';
 import 'package:auto_route/auto_route.dart';
@@ -9,8 +10,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:myfit/presentation/pages/activity/widget/the_one_with_lessons.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import '../../../../infrastructure/models/data/user_subscribtion.dart';
 import '../widget/widget.dart';
 
 @RoutePage()
@@ -26,21 +29,26 @@ class ActivityScreen extends ConsumerStatefulWidget {
 class _ActivityPageState extends ConsumerState<ActivityScreen> {
   late final WebSocketChannel channel;
   late final WebSocketChannel channel2;
-  late RefreshController refreshController = RefreshController();
+  late ItemScrollController itemScrollController;
+  late RefreshController refreshController;
   ScrollController scrollController = ScrollController();
   final calendarSectionKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
+    itemScrollController = ItemScrollController();
+    refreshController = RefreshController();
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
-        // прокрутка
+         // прокрутка
         if (ref.watch(activityProvider).isFromSearch) {
           scrollToCalendar();
         }
+        final UserSubscription? currentSub = ref.read(settingsProvider).currentSubscribtion;
+        final DateTime? currentSubEnds = currentSub != null ? DateTime.tryParse(ref.read(settingsProvider).currentSubscribtion!.endData!.replaceAll("T", " ") ) : null;
         ref.read(activityProvider.notifier)
-          ..getListOf15CalendarDatesFromToday()
+          ..getListOf45CalendarDatesFromToday(currentSubEnds)
           ..getGymInfo(context, true, gymId: widget.gymId)
           ..getActivityTypes(
               context, true, ref.watch(mapProvider).selectedLessonTypeFromMap,
@@ -80,9 +88,23 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
         duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
   }
 
+  void scrollCalendarToIndex() async{
+    await itemScrollController.scrollTo(
+        index: ref.watch(activityProvider).selectedDayFromSearchIndex,
+        duration: const Duration(milliseconds: 800),
+        curve: Curves.easeInOut);
+    ref.read(activityProvider.notifier).setIsFromSearch(false);
+  }
+
   @override
   Widget build(BuildContext context) {
     final event = ref.read(activityProvider.notifier);
+    ref.listen(activityProvider, (previous, next) {
+      if (previous?.selectedDayFromSearchIndex !=next.selectedDayFromSearchIndex && 
+            next.selectedDayFromSearchIndex != 9999 && next.isFromSearch) {
+        scrollCalendarToIndex();
+      }
+    },);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SmartRefresher(
@@ -93,8 +115,10 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
           color: AppColors.blueColor,
         ),
         onRefresh: () async {
+           final UserSubscription? currentSub = ref.read(settingsProvider).currentSubscribtion;
+           final DateTime? currentSubEnds =  currentSub != null ? DateTime.tryParse(ref.read(settingsProvider).currentSubscribtion!.endData!.replaceAll("T", " ") ) : null;
           ref.read(activityProvider.notifier)
-            ..getListOf15CalendarDatesFromToday()
+            ..getListOf45CalendarDatesFromToday(currentSubEnds)
             ..getGymInfo(context, true, gymId: widget.gymId)
             ..getActivityTypes(context, false,
                 ref.watch(mapProvider).selectedLessonTypeFromMap,
@@ -105,12 +129,9 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
                 // get infos after the selected activity is set
                 .then((value) {
               ref.read(activityProvider.notifier)
-                ..getPhotosOfSelectedActivity(
-                    ref.watch(activityProvider).selectedActivity!)
-                ..getDescribtionAndPeculiarities(
-                    ref.watch(activityProvider).selectedActivity!)
-                ..getLessonsOfSelectedActivity(
-                    ref.watch(activityProvider).selectedActivity!, true);
+                ..getPhotosOfSelectedActivity(ref.watch(activityProvider).selectedActivity!)
+                ..getDescribtionAndPeculiarities(ref.watch(activityProvider).selectedActivity!)
+                ..getLessonsOfSelectedActivity(ref.watch(activityProvider).selectedActivity!, true);
             });
           await Future.delayed(const Duration(seconds: 1));
           refreshController.refreshCompleted();
@@ -137,6 +158,7 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
                 TheOneWithCalendar(
                   event: event,
                   gymId: widget.gymId,
+                  itemScrollController: itemScrollController,
                 ),
                 TheOneWithLessons(
                   key: calendarSectionKey,

@@ -35,8 +35,8 @@ class NotificationNotifier extends StateNotifier<NotificationState>{
                 lessonType: element["lessonType"] ?? "",
                 iSread: element["isRead"],
                 date: DateTime.parse(element["createDate"].toString().replaceAll("T", " ")),
-                lessonStartDate: element["lessonStartDate"] != null
-                    ? DateTime.parse(element["lessonStartDate"].toString().replaceAll("T", " "))
+                lessonStartDate: element["lessonTime"] != null
+                    ? DateTime.parse(element["lessonTime"].toString().replaceAll("T", " "))
                     : DateTime.now(),
                 title: element["message"],
                 description: element["messageFull"],
@@ -71,6 +71,7 @@ class NotificationNotifier extends StateNotifier<NotificationState>{
         },
       );
     } else {
+      debugPrint("iyuuuuv");
       //AppHelpers.showCheckTopSnackBar(context);
     }
   }

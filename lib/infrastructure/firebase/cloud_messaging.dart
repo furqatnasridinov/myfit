@@ -21,7 +21,6 @@ Future<void> handleBackgroundMessage(RemoteMessage message) async {
 
 class CloudMessaging {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  final NotificationNotifier notificationNotifier = NotificationNotifier(notificationRepo);
 
   void handleMessage(RemoteMessage message) {
     debugPrint("handleMessage: $message");
@@ -54,7 +53,7 @@ class CloudMessaging {
     // triggers when app is in foreground
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       final notif = message.notification;
-      notificationNotifier.getAllNotifications();
+      //notificationNotifier.getAllNotifications();
       LocalNotificationService().showDefaultNotification(notif?.title ?? "null", notif?.body ?? "null");
     });
   }

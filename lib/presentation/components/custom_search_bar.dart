@@ -116,6 +116,7 @@ class _CustomSearchBarState extends ConsumerState<CustomSearchBar> {
               },
               child: Consumer(builder: (context, ref, child) {
                 final lessonsFoundBySearch = ref.watch(mapProvider).lessonsFoundBySearch;
+                final isFromSearch = ref.watch(activityProvider).isFromSearch;
                 final gymsFoundBySearch = ref.watch(mapProvider).gymsFoundBySearch;
                 List combinedList = [
                   ...lessonsFoundBySearch,
@@ -167,10 +168,12 @@ class _CustomSearchBarState extends ConsumerState<CustomSearchBar> {
                                             "Заведение - ${current.name}",
                                             "${current.distanceFromClient} км",
                                             () {
+                                              if (isFromSearch) {
+                            ref.read(activityProvider.notifier).setIsFromSearch(false);
+                          }
                                               textfieldFocusnode.unfocus();
                                               setState(() {});
-                                              context.router.push(ActivityRoute(
-                                                  gymId: current.id ?? 0));
+                                              context.router.push(ActivityRoute(gymId: current.id ?? 0));
                                               controller.clear();
                                             },
                                           );
