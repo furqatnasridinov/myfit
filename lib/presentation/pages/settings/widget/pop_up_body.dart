@@ -52,7 +52,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
   final dateInputFormatter = MaskTextInputFormatter(
     mask: '##.##.####',
     filter: {"#": RegExp(r'[0-9]')},
-    initialText: AppHelpers.getBirthdayLikeInApp(LocalStorage.getUserBirthday()),
+    initialText: LocalStorage.getUserBirthday().isEmpty ? "" :  AppHelpers.getBirthdayLikeInApp(LocalStorage.getUserBirthday()),
     type: MaskAutoCompletionType.eager
   );
   @override
@@ -142,6 +142,8 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                         ),
                         counterText: "",
                         controller: nameController,
+                        hintText: LocalStorage.getUserName().isEmpty
+                            ? "Имя" : "",
                         onChanged: (val) {
                           if (val.trim().length >= 2 && isNameWrong) {
                             isNameWrong = false;
@@ -457,6 +459,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                         ),
                         readOnly: true,
                         controller: cityController,
+                        hintText: LocalStorage.getSelectedCity().isEmpty ? "Выберите город" : "",
                       ),
                     ),
                     5.verticalSpace,

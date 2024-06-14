@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:ffi';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -11,6 +12,7 @@ import 'package:myfit/application/map/map_notifier.dart';
 import 'package:myfit/application/schedule/schedule_notifier.dart';
 import 'package:myfit/domain/handlers/network_exceptions.dart';
 import 'package:myfit/domain/interface/activity.dart';
+import 'package:myfit/infrastructure/models/data/calendar_data.dart';
 import 'package:myfit/infrastructure/models/data/description_and_peculiarities.dart';
 import 'package:myfit/infrastructure/models/data/enrolling_error_message.dart';
 import 'package:myfit/infrastructure/models/data/lesson.dart';
@@ -61,6 +63,59 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
+
+  Future<void> getListOf45CalendarDatesFromToday(DateTime? currentSubEnds) async {
+    if (currentSubEnds != null) {
+      List<CalendarData> dates = [];
+      DateTime currentDate = DateTime.now();
+      // [ 'Пн 26 Дек', 'Вт 27 Дек' ...]
+
+      Map<String, String> daysOfWeek = {
+        "Mon": "Пн",
+        "Tue": "Вт",
+        "Wed": "Ср",
+        "Thu": "Чт",
+        "Fri": "Пт",
+        "Sat": "Сб",
+        "Sun": "Вс",
+      };
+
+      Map<String, String> months = {
+        'Jan': 'Янв',
+        'Feb': 'Фев',
+        'Mar': 'Мар',
+        'Apr': 'Апр',
+        'May': 'Май',
+        'Jun': 'Июн',
+        'Jul': 'Июль',
+        'Aug': 'Авг',
+        'Sep': 'Сен',
+        'Oct': 'Окт',
+        'Nov': 'Ноя',
+        'Dec': 'Дек',
+      };
+
+      for (int i = 0; i < 45; i++) {
+        int year = currentDate.year;
+        int day = currentDate.day;
+        String dayOfWeek = daysOfWeek[DateFormat('EEE').format(currentDate)] ?? "";
+        String month = months[DateFormat("MMM").format(currentDate)] ?? "";
+        String formattedDate = '$dayOfWeek $day $month';
+        DateTime dateTime = AppHelpers.getCalendarDateTime("$day $month $year");
+        final data = CalendarData(formattedCalendarDay: formattedDate, dateTime: dateTime);
+        dates.add(data);
+        currentDate = currentDate.add(const Duration(days: 1));
+      }
+
+      // ограничить список дат, к дню окончания подписки
+       final List<CalendarData> newDates = dates.where((element) => element.dateTime.isBefore(currentSubEnds)).toList();
+       final bool isCalendarLimited = newDates.length < dates.length;
+        state = state.copyWith(
+        listOf45CalendarDaysFromNow: newDates,
+        isCalendarLimited: isCalendarLimited,
+      );
+    }
+}
 
   Future<void> getActivityTypes(
       BuildContext context, bool selectFirst, String selectedActivityFromMap,
@@ -340,7 +395,9 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     // as selected day
     if (selectADefaultDay && !state.isFromSearch) {
       for (var element in listToColllectDays) {
-        if (state.listOf15CalendarDaysFromNow.contains(element)) {
+        final bool isContains = state.listOf45CalendarDaysFromNow
+            .any((element2) => element2.formattedCalendarDay == element);
+        if (isContains) {
           state = state.copyWith(selectedCalendarDay: element);
           break; // stop the loop
         }
@@ -349,8 +406,12 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
 
     if (state.isFromSearch && state.selectedDayFromSearch!.isNotEmpty) {
       final formatted = formatOriginalToCalendar(state.selectedDayFromSearch!);
-      final int index = state.listOf15CalendarDaysFromNow.indexOf(formatted);
-      state = state.copyWith(selectedCalendarDay: formatted, selectedDayFromSearchIndex: index);
+      final bool thisDayisInCalendar = state.listOf45CalendarDaysFromNow
+          .any((element) => element.formattedCalendarDay == formatted);
+      final int index = state.listOf45CalendarDaysFromNow.indexWhere((element) => element.formattedCalendarDay == formatted);
+      if (thisDayisInCalendar) {
+        state = state.copyWith(selectedCalendarDay: formatted, selectedDayFromSearchIndex: index);
+      }
     }
 
     state = state.copyWith(
@@ -530,80 +591,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
-  Future<void> getListOf15CalendarDatesFromToday() async {
-    List<String> dates = [];
-    DateTime currentDate = DateTime.now();
-    for (int i = 0; i < 45; i++) {
-      String dayOfWeek = DateFormat('EEE').format(currentDate);
-      switch (dayOfWeek) {
-        case "Mon":
-          dayOfWeek = "Пн";
-          break;
-        case "Tue":
-          dayOfWeek = "Вт";
-          break;
-        case "Wed":
-          dayOfWeek = "Ср";
-          break;
-        case "Thu":
-          dayOfWeek = "Чт";
-          break;
-        case "Fri":
-          dayOfWeek = "Пт";
-          break;
-        case "Sat":
-          dayOfWeek = "Сб";
-          break;
-        case "Sun":
-          dayOfWeek = "Вс";
-          break;
-      }
-      String month = DateFormat("MMM").format(currentDate);
-      switch (month) {
-        case 'Jan':
-          month = 'Янв';
-          break;
-        case 'Feb':
-          month = 'Фев';
-          break;
-        case 'Mar':
-          month = 'Мар';
-          break;
-        case 'Apr':
-          month = 'Апр';
-          break;
-        case 'May':
-          month = 'Май';
-          break;
-        case 'Jun':
-          month = 'Июн';
-          break;
-        case 'Jul':
-          month = 'Июль';
-          break;
-        case 'Aug':
-          month = 'Авг';
-          break;
-        case 'Sep':
-          month = 'Сен';
-          break;
-        case 'Oct':
-          month = 'Окт';
-          break;
-        case 'Nov':
-          month = 'Ноя';
-          break;
-        case 'Dec':
-          month = 'Дек';
-          break;
-      }
-      String formattedDate = '$dayOfWeek ${currentDate.day} $month';
-      dates.add(formattedDate);
-      currentDate = currentDate.add(const Duration(days: 1));
-    }
-    state = state.copyWith(listOf15CalendarDaysFromNow: dates);
-    // [ 'Пн 26 Дек', 'Вт 27 Дек' ...]
-  }
+  
 
   String getEndingTime(String startingTime, String duration) {
     var parts = startingTime.split(":");
@@ -712,6 +700,10 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     } else {
       return "error";
     }
+  }
+
+  void setButtonLoading(bool val){
+    state = state.copyWith(buttonLoading: val);
   }
 
   String getLinkToCompressedPhoto(String fileName) {

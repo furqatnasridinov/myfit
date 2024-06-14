@@ -1,13 +1,16 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import 'package:myfit/application/settings/settings_notifier.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
@@ -18,15 +21,15 @@ import 'package:myfit/presentation/components/components.dart';
 import 'package:myfit/presentation/components/custom_card.dart';
 
 class InviteFriendsSection extends StatelessWidget {
-  const InviteFriendsSection({super.key});
+   const InviteFriendsSection({
+    Key? key,
+  }) : super(key: key);
 
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: 16.w,
-      ).copyWith(top: 32.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 32.h),
       child: Column(
         children: [
           Row(
@@ -69,6 +72,7 @@ class InviteFriendsSection extends StatelessWidget {
               const  int aim = 3;
               final int  currentProgress = receivedBonus == 0  ? 
                   tottalFriends : receivedBonus != 0 ? tottalFriends - (receivedBonus * aim) : 9999;
+              //const currentProgress = 1;
               return Column(
               children: [
                 CustomText(
@@ -113,8 +117,7 @@ class InviteFriendsSection extends StatelessWidget {
                               decoration: BoxDecoration(
                                   color: AppColors.blueColor,
                                   borderRadius: BorderRadius.circular(8.r),
-                                  border:
-                                      Border.all(color: AppColors.blueBorder)),
+                                  border: Border.all(color: AppColors.blueBorder)),
                               child: Padding(
                                 padding: EdgeInsets.all(9.r),
                                 child: SvgPicture.asset(
@@ -249,14 +252,15 @@ Widget doneIndicator() {
             decoration: BoxDecoration(
               color: AppColors.fadedPrimary3,
               borderRadius: BorderRadius.circular(16.r),
-              gradient: const LinearGradient(
+              border: Border.all(color: AppColors.blueColor),
+              /* gradient: const LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
                   Color.fromRGBO(119, 170, 249, 0.16),
                   Color.fromRGBO(89, 154, 254, 0.29),
                 ],
-              ),
+              ), */
             ),
             child: const Center(
               child: SizedBox(),
@@ -292,17 +296,17 @@ Widget doneIndicator() {
               width: double.infinity,
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  //color: AppColors.primaryFadedBorder,
+                  color: AppColors.primaryFadedBorder,
                   borderRadius: BorderRadius.circular(16.r),
-                  //border: Border.all(color: AppColors.fadedBlueBorder),
-                   gradient: LinearGradient(
+                  border: Border.all(color: AppColors.blueColor.withOpacity(0.99)),
+                   /* gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
                       AppColors.blueColor.withOpacity(0.26),
                       AppColors.blueBorder.withOpacity(0.49),
                     ],
-                  ),
+                  ), */
                 ),
                 child: Icon(Icons.done, color: Colors.white, size: 16.sp),
               ),
@@ -334,8 +338,11 @@ Widget notDoneIndicator() {
 }
 
 Widget getBonusButton(SettingsNotifier settingsNotifier, BuildContext context){
-  return GestureDetector(
+  return Consumer(builder: (context, ref, child) {
+    final bool loading = ref.watch(settingsProvider).allSubsLoading || ref.watch(settingsProvider).referalInfoLoading;
+    return GestureDetector(
     onTap: () async{
+      settingsNotifier.setTakeButtonCliked(true);
        await settingsNotifier.getReferalBonus(context);
        settingsNotifier.getAllAvailableSubscribtions(context);
     },
@@ -356,7 +363,7 @@ Widget getBonusButton(SettingsNotifier settingsNotifier, BuildContext context){
               ),
             ],
           ),
-          child: Center(
+          child: loading ? const CupertinoActivityIndicator(color: Colors.white) : Center(
             child: CustomText(
               text: "Получить награду!",
               fontSize: 14.sp,
@@ -368,6 +375,7 @@ Widget getBonusButton(SettingsNotifier settingsNotifier, BuildContext context){
       ),
     ),
   );
+  },);
 }
 
 

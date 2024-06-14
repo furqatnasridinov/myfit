@@ -585,5 +585,30 @@ class AppHelpers {
     DateTime newDateTime = dateTime.subtract(const Duration(days: 2));
     return "${newDateTime.day} ${getMonth(dateTime.month)}";
   }
+
+  static DateTime getCalendarDateTime(String formattedCalendarDay){
+    // from 13 Июн 2024 to DateTime
+    List<String> parts = formattedCalendarDay.split(" ");
+    if (parts.length != 3) {
+      throw const FormatException("Invalid format for formattedCalendarDay");
+    }
+    String day = parts[0].padLeft(2, '0');
+    String month = parts[1];
+    String year = parts[2];
+
+    // Convert month from string to number
+    Map<String, String> months = {
+      'Янв': "01", 'Фев': "02", 'Мар': "03", 'Апр': "04", 'Май': "05", 'Июн': "06",
+      'Июль': "07", 'Авг': "08", 'Сен': "09", 'Окт': "10", 'Ноя': "11", 'Дек': "12"
+    };
+    String monthNumber = months[month] ?? "";
+    if (monthNumber.isEmpty) {
+      throw const FormatException("Invalid month in formattedCalendarDay");
+    }
+
+    String formattedDate = "$year$monthNumber$day";  // 20240613
+    final DateTime result = DateTime.parse(formattedDate);
+    return result;
+  }
 }
 

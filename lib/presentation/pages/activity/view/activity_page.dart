@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable, use_build_context_synchronously
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
+import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/local_storage.dart';
 import 'package:auto_route/auto_route.dart';
@@ -12,6 +13,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import '../../../../infrastructure/models/data/user_subscribtion.dart';
 import '../widget/widget.dart';
 
 @RoutePage()
@@ -39,12 +41,14 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
     refreshController = RefreshController();
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
-        // прокрутка
+         // прокрутка
         if (ref.watch(activityProvider).isFromSearch) {
           scrollToCalendar();
         }
+        final UserSubscription? currentSub = ref.read(settingsProvider).currentSubscribtion;
+        final DateTime? currentSubEnds = currentSub != null ? DateTime.tryParse(ref.read(settingsProvider).currentSubscribtion!.endData!.replaceAll("T", " ") ) : null;
         ref.read(activityProvider.notifier)
-          ..getListOf15CalendarDatesFromToday()
+          ..getListOf45CalendarDatesFromToday(currentSubEnds)
           ..getGymInfo(context, true, gymId: widget.gymId)
           ..getActivityTypes(
               context, true, ref.watch(mapProvider).selectedLessonTypeFromMap,
@@ -111,8 +115,10 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
           color: AppColors.blueColor,
         ),
         onRefresh: () async {
+           final UserSubscription? currentSub = ref.read(settingsProvider).currentSubscribtion;
+           final DateTime? currentSubEnds =  currentSub != null ? DateTime.tryParse(ref.read(settingsProvider).currentSubscribtion!.endData!.replaceAll("T", " ") ) : null;
           ref.read(activityProvider.notifier)
-            ..getListOf15CalendarDatesFromToday()
+            ..getListOf45CalendarDatesFromToday(currentSubEnds)
             ..getGymInfo(context, true, gymId: widget.gymId)
             ..getActivityTypes(context, false,
                 ref.watch(mapProvider).selectedLessonTypeFromMap,
@@ -123,12 +129,9 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
                 // get infos after the selected activity is set
                 .then((value) {
               ref.read(activityProvider.notifier)
-                ..getPhotosOfSelectedActivity(
-                    ref.watch(activityProvider).selectedActivity!)
-                ..getDescribtionAndPeculiarities(
-                    ref.watch(activityProvider).selectedActivity!)
-                ..getLessonsOfSelectedActivity(
-                    ref.watch(activityProvider).selectedActivity!, true);
+                ..getPhotosOfSelectedActivity(ref.watch(activityProvider).selectedActivity!)
+                ..getDescribtionAndPeculiarities(ref.watch(activityProvider).selectedActivity!)
+                ..getLessonsOfSelectedActivity(ref.watch(activityProvider).selectedActivity!, true);
             });
           await Future.delayed(const Duration(seconds: 1));
           refreshController.refreshCompleted();

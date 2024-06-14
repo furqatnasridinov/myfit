@@ -571,8 +571,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   Future<void> getAllAvailableSubscribtions(BuildContext context) async {
     final connected = await AppConnectivity().connectivity();
     if (connected) {
-      final response =
-          await _settingsRepositoryInterface.getAllAvailableSubscribtions();
+      state = state.copyWith(allSubsLoading: true);
+      final response = await _settingsRepositoryInterface.getAllAvailableSubscribtions();
       response.when(success: (data) {
         if (data["operationResult"] == "OK") {
           final List<dynamic> subscriptionsList = data["object"]["subscriptions"];
@@ -581,19 +581,25 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
             final listToCollect = <Subscription>[];
             for (var element in subscriptionsList) {
               final subscription = Subscription.fromJson(element);
-              listToCollect.add(subscription);
-            }
-            bool hasbonusSub = subscriptionsList.any((element) => element["price"] == 0);
-            if (hasbonusSub) {
-              final List<dynamic> bonusSubs = subscriptionsList.where((element) => element["price"] == 0).toList();
-              state = state.copyWith(bonusSubsLength: bonusSubs.length);
+              if (subscription.price == 0) {
+                //final int  allBonusesOfUser = state.referalInfo?.bonus ?? 0;
+                final int recievedBonuses = state.referalInfo?.receivedBonus ?? 0;
+                //final int bonusesAvailable = allBonusesOfUser - recievedBonuses;
+                if (recievedBonuses > 0 ) {
+                  listToCollect.add(subscription);
+                  state = state.copyWith(bonusSubsLength: recievedBonuses);
+                }
+              }else{
+                listToCollect.add(subscription);
+              }
             }
             state = state.copyWith(allAvailableSubscriptions: listToCollect);
           }
+          state = state.copyWith(allSubsLoading: false);
         }
       }, failure: (error, statusCode, operationInfo) {
-        AppHelpers.showErrorSnack(
-            context, NetworkExceptions.getErrorMessage(error));
+        AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
+        state = state.copyWith(allSubsLoading: false);
       });
     } else {
       AppHelpers.showCheckTopSnackBar(context);
@@ -613,7 +619,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
               subscription:Subscription.fromJson(listFromServer[0]["subscription"]),
               autoRenewal: listFromServer[0]["autoRenewal"],
               firstBuyData: listFromServer[0]["firstBuyData"],
-              endData: listFromServer[0]["endData"],
+              endData: listFromServer[0]["endData"], //"2024-07-04T11:43:58",
               prolongationData: listFromServer[0]["prolongationData"],
               endDataFormatted: getWhenCurrentSubEnds(listFromServer[0]["updateData"]),
             );
@@ -648,6 +654,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       {required int id, required bool autoRenewal}) async {
     final connected = await AppConnectivity().connectivity();
     if (connected) {
+      state = state.copyWith(isChangeSubscribtionLoading: true);
       final response = await _settingsRepositoryInterface.purchaseSubscription(
           id: id, autoRenewal: autoRenewal);
       response.when(success: (data) async {
@@ -656,10 +663,11 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           await getUserSubscribtions(context);
           context.popRoute();
           AppHelpers.showSuccessSnack(context, "Подписка успешно оформлена");
+          state = state.copyWith(isChangeSubscribtionLoading: false);
         }
       }, failure: (error, statusCode, operationInfo) {
-        AppHelpers.showErrorSnack(
-            context, NetworkExceptions.getErrorMessage(error));
+        AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
+        state = state.copyWith(isChangeSubscribtionLoading: false);
       });
     } else {
       AppHelpers.showCheckTopSnackBar(context);
@@ -807,14 +815,16 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   Future<void> getReferalBonus(BuildContext context) async {
     final connected = await AppConnectivity().connectivity();
     if (connected) {
+      state = state.copyWith(referalInfoLoading: true);
       final response = await _settingsRepositoryInterface.getReferalBonus();
       response.when(success: (data) {
         if (data["operationResult"] == "OK") {
          final referalInfo = Referal.fromJson(data["object"]);
-          state = state.copyWith(referalInfo: referalInfo);
+          state = state.copyWith(referalInfo: referalInfo, referalInfoLoading: false);
         }
       }, failure: (error, statusCode, operationInfo) {
         AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
+        state = state.copyWith(referalInfoLoading: false);
       });
     } else {
       AppHelpers.showCheckTopSnackBar(context);
@@ -953,6 +963,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     }
   }
 
+  void setTakeButtonCliked(bool val){
+    state = state.copyWith(takeBonusButtonClicked: val);
+  }
+
   void setPhone() {
     state = state.copyWith(phoneNumber: LocalStorage.getPhoneNumber());
   }
@@ -966,8 +980,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 
   void setAge() {
-    final int age = AppHelpers.getYearFromBirthday(LocalStorage.getUserBirthday());
-    state = state.copyWith(age: age.toString());
+    if (LocalStorage.getUserBirthday().isNotEmpty) {
+      final int age = AppHelpers.getYearFromBirthday(LocalStorage.getUserBirthday());
+      state = state.copyWith(age: age.toString());
+    }
   }
 
   void setWeight() {

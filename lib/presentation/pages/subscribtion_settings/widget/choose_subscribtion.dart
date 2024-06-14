@@ -77,7 +77,9 @@ class ChooseSubscribtion extends StatelessWidget {
                       ref.watch(settingsProvider).autoRenewal,
                       current.price == 0,
                       ref.watch(settingsProvider).bonusSubsLength,
+                      currentSub == null,
                       notifier,
+                      //onTap
                       () {
                         if (currentSub != null) {
                           notifier.changeNextSubscription(context,id: current.id ?? 0);
@@ -137,6 +139,7 @@ Widget eachSubscription(
     bool isAutoRenewal,
     bool isBonusSubs,
     int bonusSubsLength,
+    bool userDontHaveCurrentSub,
     SettingsNotifier notifier,
     void Function()? onTap) {
   return Padding(
@@ -156,13 +159,20 @@ Widget eachSubscription(
                   ),
                   elevation: 0,
                   insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: dialogContent(context, month, priceOfSub, cardNumber, isBonusSubs, onTap ),
+                  child: userDontHaveCurrentSub ? dialogContentForByuingNewSub(onTap) : 
+                  dialogContentForAddingAnoterSub(
+                  context,
+                  month,
+                  priceOfSub,
+                  cardNumber,
+                  isBonusSubs,
+                  description,
+                  onTap,
+                ),
                 );
               },
             );
           }
-       
-        
       },
       child: Row(
         children: [
@@ -389,12 +399,13 @@ Widget eachSubscription(
   );
 }
 
-Widget dialogContent(
+Widget dialogContentForAddingAnoterSub(
   BuildContext context,
   String month,
   String price,
   String cardNumber,
   bool isBonusSubs,
+  String description,
   void Function()? onPressed,
 ) {
   return Padding(
@@ -414,7 +425,7 @@ Widget dialogContent(
             ),
             24.verticalSpace,
             CustomText(
-              text: "Сейчас у вас активна подписка “${currentSub?.subscription?.description}”, она закончится ${notifier.getEndDateOfCurrentSub()}, после чего тариф сменится на “${AppHelpers().getMonthWord(int.parse(month))}”.",
+              text: "Сейчас у вас активна подписка “${currentSub?.subscription?.description}”, она закончится ${notifier.getEndDateOfCurrentSub()}, после чего тариф сменится на “$description”.",
               fontSize: 14.sp,
               fontWeight: FontWeight.w400,
               height: 1.1.h,
@@ -524,15 +535,35 @@ String getInfoText({
 }
 
 
-Widget bantik(){
-  return Stack(
-    children: [
-      Container(
-        width: 7.w,
-        height: 100.h,
-        color: AppColors.purpleText,
-      ),
-      SvgPicture.asset("assets/svg/bantik.svg"),
-    ],
+Widget dialogContentForByuingNewSub(
+  void Function()? onPressed,
+) {
+  return Padding(
+    padding: EdgeInsets.all(16.r),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CustomText(
+          text: "Подтверждение покупки ",
+          fontSize: 16.sp,
+          fontWeight: FontWeight.w600,
+        ),
+        24.verticalSpace,
+       Consumer(
+          builder: (context, ref, child) {
+            final bool loading = ref.watch(settingsProvider).isChangeSubscribtionLoading;
+            return CustomButton(
+              onPressed: onPressed,
+              text: loading ? "Подтверждение..." : 'Подтвердить',
+              height: 40.h,
+              buttonColor: Colors.white,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+            );
+          },
+        ),
+      ],
+    ),
   );
 }

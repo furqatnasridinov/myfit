@@ -40,6 +40,7 @@ class SettingsState with _$SettingsState {
     @Default(null) UserSubscription? currentSubscribtion,
     @Default(null) UserSubscription? nextSubscribtion,
     @Default([]) List<Subscription> allAvailableSubscriptions,
+    @Default(false) bool allSubsLoading,
     @Default(0) int bonusSubsLength,
     TextEditingController? promocodeController,
     @Default(false) bool isChangeSubscribtionLoading,
@@ -56,6 +57,8 @@ class SettingsState with _$SettingsState {
     @Default("") String promocodeErrorMessage,
     @Default("") String newPromocodeDescription,
     @Default(null) Referal? referalInfo,
+    @Default(false) bool referalInfoLoading,
+    @Default(false) takeBonusButtonClicked,
   }) = _SettingsState;
   const SettingsState._();
 }

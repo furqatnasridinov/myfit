@@ -32,6 +32,7 @@ class SystemNotification extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool visitRefreshed = title.contains("обновились посещения");
     return CustomCard(
       marginBottom: 16.h,
       child: Column(
@@ -39,19 +40,27 @@ class SystemNotification extends StatelessWidget {
         children: [
           Row(
             children: [
-              Padding(
-                padding: EdgeInsets.all(3.r),
-                child: SvgPicture.asset(
-                  "assets/svg/question2.svg",
-                  width: 24.w, height: 24.h,
-                ),
-              ),
-              6.horizontalSpace,
-              InterText(
-                text: "Системное уведомление",
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w400,
-                color: AppColors.blueText,
+              if(visitRefreshed)
+              buildBatteryTitle(),
+              if(!visitRefreshed)
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(3.r),
+                    child: SvgPicture.asset(
+                      "assets/svg/question2.svg",
+                      width: 24.w,
+                      height: 24.h,
+                    ),
+                  ),
+                  6.horizontalSpace,
+                  InterText(
+                    text: "Системное уведомление",
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.blueText,
+                  ),
+                ],
               ),
               const Spacer(),
               if(unread)
@@ -152,4 +161,24 @@ class SystemNotification extends StatelessWidget {
       ),
     );
   }
+}
+
+
+Widget buildBatteryTitle(){
+  return Row(
+    children: [
+      SvgPicture.asset(
+        "assets/svg/updatedBattery.svg",
+        width: 24.w,
+        height: 24.h,
+      ),
+      2.horizontalSpace,
+      InterText(
+        text: "Обновление!",
+        fontSize: 12.sp,
+        fontWeight: FontWeight.w400,
+        color: AppColors.greyText,
+      ),
+    ],
+  );
 }

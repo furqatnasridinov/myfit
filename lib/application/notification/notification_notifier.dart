@@ -71,6 +71,7 @@ class NotificationNotifier extends StateNotifier<NotificationState>{
         },
       );
     } else {
+      debugPrint("iyuuuuv");
       //AppHelpers.showCheckTopSnackBar(context);
     }
   }
