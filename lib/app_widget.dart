@@ -12,7 +12,7 @@ class AppWidget extends StatelessWidget {
    AppWidget({super.key});
 
   AppRouter appRouter = AppRouter();
-  
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -29,15 +29,20 @@ class AppWidget extends StatelessWidget {
           builder: (context, child) {
             return MaterialApp.router(
               routerConfig: appRouter.config(
-                  navigatorObservers: () => [MyRouteObserver()],
+                  //navigatorObservers: () => [MyRouteObserver()],
                   deepLinkBuilder: (link) {
+                    // будет вызвано при переходе по динамической ссылке 
+                    // only when app is in terminated state
                     log(link.path);
-                    if (link.path.contains('/qrcode/page')) {
-                      return const DeepLink([Main2Route(),QrCodeRoute()]);
-                      //context.router.push(const QrCodeRoute());
-                    } else {
-                      return DeepLink.defaultPath;
+                    switch (link.path) {
+                      case '/qrcode/page':
+                        return const DeepLink([Main2Route(), QrCodeRoute()]);
+                      case '/notification/page':
+                        return const DeepLink([Main2Route(), NotificationRoute()]);
+                      default:
+                        return DeepLink.defaultPath;
                     }
+                   
                   } 
                   ),
               debugShowCheckedModeBanner: false,

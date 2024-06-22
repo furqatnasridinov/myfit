@@ -28,7 +28,8 @@ abstract class SetttingsRepositoryInterface {
 
   // promocodes
   Future<ApiResult<Map<String, dynamic>>> applyPromocode({required String code});
-  Future<ApiResult<Map<String, dynamic>>> getPromocodes();
+  Future<ApiResult<Map<String, dynamic>>> getPromocodes(); // history
+  Future<ApiResult<Map<String, dynamic>>> getPromocodesQueue();
 
   // referal 
   Future<ApiResult<Map<String, dynamic>>> getReferalInfo();

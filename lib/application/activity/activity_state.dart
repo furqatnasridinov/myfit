@@ -20,6 +20,7 @@ class ActivityState with _$ActivityState {
     @Default(null) DescribtionAndPeculiarities? describtionAndPeculiarities,
     @Default("") String? selectedDayFromSearch,
     @Default(9999) int selectedDayFromSearchIndex,
+    @Default(false) bool showAnimationDontHaveSubs,
     @Default([]) List<String>? activityTypes,
     @Default({}) Map<String, dynamic> allPhotos,
     @Default(false) bool isCalendarLimited,

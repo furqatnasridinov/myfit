@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:ffi';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -65,7 +64,6 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   }
 
   Future<void> getListOf45CalendarDatesFromToday(DateTime? currentSubEnds) async {
-    if (currentSubEnds != null) {
       List<CalendarData> dates = [];
       DateTime currentDate = DateTime.now();
       // [ 'Пн 26 Дек', 'Вт 27 Дек' ...]
@@ -107,14 +105,16 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         currentDate = currentDate.add(const Duration(days: 1));
       }
 
-      // ограничить список дат, к дню окончания подписки
-       final List<CalendarData> newDates = dates.where((element) => element.dateTime.isBefore(currentSubEnds)).toList();
+      // ограничить список дат, к дню окончания подписки только для тех кто имеет активную подписку сейчас
+      
+
+       final List<CalendarData> newDates = currentSubEnds != null ? dates.where((element) => element.dateTime.isBefore(currentSubEnds)).toList() : dates;
        final bool isCalendarLimited = newDates.length < dates.length;
         state = state.copyWith(
         listOf45CalendarDaysFromNow: newDates,
         isCalendarLimited: isCalendarLimited,
       );
-    }
+    
 }
 
   Future<void> getActivityTypes(
@@ -445,7 +445,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
             getGymInfo(context, false, gymId: lessonData["gymId"]);
           }
         }
-        scheduleNotifier.getUsersSchedules(context);
+        scheduleNotifier.getUsersSchedules(context, false);
         await mapNotifier.getGymsList(context, [], {});
         mapNotifier.getGetListOfGymsFromDiapozone();
         if (lessonData["lessonState"] == "CONFIRMED") {
@@ -810,6 +810,9 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
                 ),
               ));
         });
+  }
+  void setAnimationDontHaveSub(bool val){
+    state = state.copyWith(showAnimationDontHaveSubs: val);
   }
 
   void showConflictGymDialog(

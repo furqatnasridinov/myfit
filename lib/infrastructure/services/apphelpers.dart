@@ -37,6 +37,15 @@ class AppHelpers {
       CustomSnackBar.info(
         message: text,
         maxLines: 3,
+        textStyle: GoogleFonts.inter(
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w500,
+          color: Colors.white,
+          height: 1.1
+        ),
+        icon: Icon(Icons.check_circle_outline, color: Colors.white, size: 40.r),
+        iconPositionLeft: 20.w,
+        iconRotationAngle: 0,
       ),
     );
   }
@@ -47,6 +56,16 @@ class AppHelpers {
       CustomSnackBar.error(
         message: text,
         maxLines: 3,
+        textStyle: GoogleFonts.inter(
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w500,
+          color: Colors.white,
+          height: 1.1
+        ),
+        messagePadding: EdgeInsets.symmetric(horizontal: 35.w),
+        icon: Icon(Icons.error, color: Colors.white, size: 30.r),
+        iconPositionLeft: 10.w,
+        iconRotationAngle: 0,
       ),
     );
   }
@@ -541,7 +560,7 @@ class AppHelpers {
 
   static String getBirthdayErrorMes(String controllerText){
     if (controllerText.isEmpty) {
-      return "Поле не может быть пустым";
+      return "Дата рождения : Поле не может быть пустым";
     }else if (controllerText.length != 10) {
       return "Неверный формат даты";
     }else if(controllerText.length == 10){
@@ -609,6 +628,18 @@ class AppHelpers {
     String formattedDate = "$year$monthNumber$day";  // 20240613
     final DateTime result = DateTime.parse(formattedDate);
     return result;
+  }
+
+  static DateTime gePhotoAccessTime(String? str){
+    if (str == null) {
+      // для upload photo access, если null означает клиент никогда не изменил аватар
+      // и мы можем вернуть текущую дату (этим дадим ему доступ)
+      return DateTime.now().subtract(const Duration(days: 10));
+    }else{
+      // 2024-06-09
+      final DateTime result = DateTime.parse(str);
+      return result;
+    }
   }
 }
 

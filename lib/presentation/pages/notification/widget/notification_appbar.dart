@@ -81,7 +81,7 @@ class NotificationAppbar extends StatelessWidget
                               : CircleAvatar(
                                   radius: 18.r,
                                   backgroundImage: NetworkImage(
-                                      "http://77.222.53.122/image/$avatar"),
+                                      "${AppConstants.baseUrl}image/$avatar"),
                                   onBackgroundImageError:
                                       (exception, stackTrace) {
                                     debugPrint(exception.toString());

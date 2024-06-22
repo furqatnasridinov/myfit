@@ -52,6 +52,7 @@ class SettingsState with _$SettingsState {
     @Default("") String promocodeValue,
     @Default(false) bool isPromocodeLoading,
     @Default([]) List<Promocode> promocodesHistory,
+    @Default([]) List<Promocode> promocodesQueue,
     @Default(false) bool isPromocodeSuccess,
     @Default(false) bool isPromocodeError,
     @Default("") String promocodeErrorMessage,

@@ -462,6 +462,7 @@ class MapNotifier extends StateNotifier<MapState> {
     await Future.delayed(const Duration(milliseconds: 100));
     final list = state.activitiesWithGymsInsideFromSelectedDiapozone;
     bool isAnyOpened = list.any((element) => element.isOpened);
+    int listOfgymsInside = isAnyOpened ? (list.firstWhere((element) => element.isOpened).listOfGyms?.length ?? 0)  : 0;
     if (state.isloading) {
       state = state.copyWith(
         topFlexValue: 0.21,
@@ -483,10 +484,24 @@ class MapNotifier extends StateNotifier<MapState> {
           bottomFlexValue: 0.645,
         );
       } else {
-        state = state.copyWith(
-          topFlexValue: 0.215, // + 0.055
-          bottomFlexValue: 0.59, // - 0.055
+        if (listOfgymsInside == 1) {
+          state = state.copyWith(
+            topFlexValue: 0.215, // + 0.055
+            bottomFlexValue: 0.59, // - 0.055
+          );
+        }
+        if (listOfgymsInside == 2) {
+          state = state.copyWith(
+            topFlexValue: 0.27,
+            bottomFlexValue: 0.535,
+          );
+        }
+        if (listOfgymsInside >= 3) {
+          state = state.copyWith(
+          topFlexValue: 0.325,
+          bottomFlexValue: 0.480,
         );
+        }
       }
     }
 
@@ -497,10 +512,24 @@ class MapNotifier extends StateNotifier<MapState> {
           bottomFlexValue: 0.590,
         );
       } else {
-        state = state.copyWith(
-          topFlexValue: 0.27,
-          bottomFlexValue: 0.535,
+        if (listOfgymsInside == 1) {
+          state = state.copyWith(
+            topFlexValue: 0.27,
+            bottomFlexValue: 0.535,
+          );
+        } 
+         if (listOfgymsInside == 2) {
+          state = state.copyWith(
+            topFlexValue: 0.325,
+            bottomFlexValue: 0.480,
+          );
+        } 
+        if (listOfgymsInside >= 3) {
+          state = state.copyWith(
+          topFlexValue: 0.380,
+          bottomFlexValue: 0.425,
         );
+        } 
       }
     }
 
@@ -511,10 +540,24 @@ class MapNotifier extends StateNotifier<MapState> {
           bottomFlexValue: 0.535,
         );
       } else {
-        state = state.copyWith(
-          topFlexValue: 0.325,
-          bottomFlexValue: 0.480,
-        );
+        if (listOfgymsInside == 1) {
+           state = state.copyWith(
+            topFlexValue: 0.325,
+            bottomFlexValue: 0.480,
+          );
+        }
+        if (listOfgymsInside == 2) {
+          state = state.copyWith(
+            topFlexValue: 0.380,
+            bottomFlexValue: 0.425,
+          );
+        }
+        if (listOfgymsInside >= 3) {
+          state = state.copyWith(
+            topFlexValue: 0.435,
+            bottomFlexValue: 0.37,
+          );
+        }
       }
     }
 

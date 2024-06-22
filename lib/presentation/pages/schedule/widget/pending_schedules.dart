@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:myfit/application/schedule/schedule_notifier.dart';
 import 'package:myfit/application/schedule/schedule_provider.dart';
+import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/presentation/components/animation_button_effect.dart';
@@ -205,7 +206,7 @@ Widget listOfActivitiesEachItem2(
                   // cancel lesson
                   () async {
                     await event.cancelActivity(id, context);
-                    event.getUsersSchedules(context);
+                    event.getUsersSchedules(context, false);
                   },
                 ),
               ],
@@ -264,7 +265,15 @@ Widget listOfActivitiesEachItem2(
                           ),
                         ),
                         5.horizontalSpace,
-                        AppHelpers().getBatteryIcon(visitedCount ?? 0, visitPerMonth ?? 0),
+                         Consumer(
+                          builder: (context, ref, child) {
+                            final bool showBattery = ref.watch(settingsProvider) .currentSubscribtion !=null;
+                            if (showBattery) {
+                              return AppHelpers().getBatteryIcon(visitedCount ?? 0, visitPerMonth ?? 0);
+                            }
+                            return const SizedBox();
+                          },
+                        ),
                       ],
                     ),
                   ),

@@ -6,6 +6,7 @@ part 'registration_state.freezed.dart';
 class RegistrationState with _$RegistrationState {
   const factory RegistrationState({
     @Default(false) bool isloading,
+    @Default(false) bool sendPhoneNumberLoading,
     @Default(false) bool isPinCodeValidate,
     @Default(false) bool isCodeError,
     @Default(59) int timeToCountDown,

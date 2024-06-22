@@ -71,7 +71,7 @@ class TheOneWithPhotos extends StatelessWidget {
                           child: Hero(
                             tag: index,
                             child: CachedNetworkImage(
-                              imageUrl:"http://77.222.53.122/image/$linkToCompressedPhoto",
+                              imageUrl:"${AppConstants.baseUrl}image/$linkToCompressedPhoto",
                               fit: BoxFit.cover,
                               errorWidget: (context, url, error) {
                                 return Image.asset(AppConstants.cristianBale);

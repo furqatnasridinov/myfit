@@ -279,7 +279,7 @@ class LocalStorage {
 
   // save user gender
   static Future<void> setGender(String? gender) async {
-    final String translatedGender = gender == "MALE" ? "Мужчина" : "Женщина";
+    final String translatedGender = gender!.isEmpty ? "" :  gender == "MALE" ? "Мужчина" : "Женщина";
       if (_preferences != null) {
       await _preferences?.setString(
         AppConstants.keyGender,

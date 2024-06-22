@@ -27,7 +27,7 @@ class PromocodeSection extends StatelessWidget {
          builder: (context, ref, child) {
         final notifier = ref.read(settingsProvider.notifier);
         final promoValue = ref.watch(settingsProvider).promocodeValue;
-        final bool showHistory =ref.watch(settingsProvider).promocodesHistory.isNotEmpty;
+        final bool showHistory =ref.watch(settingsProvider).promocodesQueue.isNotEmpty;
         final bool isPromocodeLoading = ref.watch(settingsProvider).isPromocodeLoading;
         final bool isPromocodeSuccess = ref.watch(settingsProvider).isPromocodeSuccess;
         final bool isPromocodeError = ref.watch(settingsProvider).isPromocodeError;
@@ -84,6 +84,7 @@ class PromocodeSection extends StatelessWidget {
                               Expanded(
                                 //height: 40.h,
                                 child: CustomTextField(
+                                  //hintText: "Например : ref1811friend",
                                   hintText: "Введите промокод",
                                   controller: controller,
                                   style: GoogleFonts.raleway(
@@ -95,10 +96,7 @@ class PromocodeSection extends StatelessWidget {
                                     notifier.setPromocodeValue(value.trim());
                                   },
                                   onTapOutside: (p0) {
-                                    final FocusScopeNode currentFocus = FocusScope.of(context);
-                                    if (!currentFocus.hasPrimaryFocus) {
-                                      currentFocus.unfocus();
-                                    }
+                                    FocusManager.instance.primaryFocus?.unfocus();
                                   },
                                   contentPadding: EdgeInsets.zero.copyWith(left: 6.w),
                                   prefixIcon: Padding(
@@ -163,7 +161,7 @@ Widget myPromocodesDialog(){
     padding: EdgeInsets.all(16.r),
     child: Consumer(
       builder: (context, ref, child) {
-        final promocodesHistory = ref.watch(settingsProvider).promocodesHistory;
+        final promocodesQueue = ref.watch(settingsProvider).promocodesQueue;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -183,12 +181,14 @@ Widget myPromocodesDialog(){
             24.verticalSpace,
             ListView.builder(
               shrinkWrap: true,
-              itemCount: promocodesHistory.length,
+              itemCount: promocodesQueue.length,
               itemBuilder: (context, index) {
-                final current = promocodesHistory[index];
+                final current = promocodesQueue[index];
                 return eachPromo(
                     current.promotional?.description ?? "",
-                    DateTime.tryParse(current.promotional?.activateData ?.replaceAll("T", " ") ?? ""),
+                    current.promotionalState ?? PromocodeState.notUsed,
+                    DateTime.tryParse(current.promotional?.activateData.toString().replaceAll("T", " ") ?? ""),
+                    DateTime.tryParse(current.promotional?.endData.toString().replaceAll("T", " ") ?? ""),
                 );
               },
             ),
@@ -211,44 +211,54 @@ Widget myPromocodesDialog(){
 }
 
 
-Widget eachPromo(String description, DateTime? dateTime){
-  return Row(
-    children: [
-      Flexible(
-        child: Container(
-          padding: EdgeInsets.all(10.r),
-          decoration: BoxDecoration(
-            color: AppColors.backgroundColor,
-            borderRadius: BorderRadius.circular(8.r),
+Widget eachPromo(
+  String description,
+  PromocodeState promoState,
+  DateTime? activateTime,
+  DateTime? endTime,
+) {
+  return Padding(
+    padding: EdgeInsets.only(bottom: 10.h),
+    child: Row(
+      children: [
+        Flexible(
+          child: Container(
+            padding: EdgeInsets.all(10.r),
+            decoration: BoxDecoration(
+              color: AppColors.backgroundColor,
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+            child: CustomText(
+              text: description,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w700,
+            ),
           ),
+        ),
+        10.horizontalSpace,
+        Flexible(
           child: CustomText(
-            text: description,
+            text: getCorrectText(promoState, activateTime),
             fontSize: 14.sp,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w400,
+            height: 1.1,
           ),
-        ),
-      ),
-      10.horizontalSpace,
-      Flexible(
-        child: CustomText(
-          text: getCorrectText(dateTime),
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w400,
-          height: 1.1,
-        ),
-      )
-    ],
+        )
+      ],
+    ),
   );
 }
 
-String getCorrectText(DateTime? date){
-  final now = DateTime.now();
-  if (date != null) {
-    if (now.isAfter(date)) {
-      return "Активирован ${AppHelpers.getCalendarlikeStringFromDateTime(date)}";
-    } else {
-      return " Будет использован ${AppHelpers.getCalendarlikeStringFromDateTime(date)}";
-    }
+String getCorrectText(PromocodeState state, DateTime? activateData){
+  final String activateTime = AppHelpers.getCalendarlikeStringFromDateTime(activateData ?? AppConstants.myBitrh);
+  if (state == PromocodeState.notUsed) {
+    return "В очереди ";
+  }
+  if (state == PromocodeState.used) {
+    return "Активирован $activateTime";
+  }
+  if (state == PromocodeState.waiting) {
+    return "Будет использован следующим ";
   }
   return "null";
 }

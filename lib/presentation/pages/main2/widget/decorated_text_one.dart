@@ -14,7 +14,7 @@ class DecoratedTextOne extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          height: 260.h,
+          height: 275.h,
           width: double.infinity,
           decoration: const BoxDecoration(
             //color: Colors.red,

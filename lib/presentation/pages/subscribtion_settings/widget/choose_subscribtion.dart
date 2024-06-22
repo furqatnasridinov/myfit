@@ -286,7 +286,7 @@ Widget eachSubscription(
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w400,
                                       fontFeatures: const [FontFeature.liningFigures()],
-                                      color: isCurrentSub ? Colors.white : Colors.grey,
+                                      color: isCurrentSub || isNextSub ? Colors.white : Colors.grey,
                                     ),
                                   ),
                                 ],

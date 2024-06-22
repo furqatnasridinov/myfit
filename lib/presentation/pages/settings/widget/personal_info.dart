@@ -19,6 +19,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../infrastructure/services/app_constants.dart';
+
 class PersonalInfo extends StatefulWidget {
   final SettingsNotifier event;
   final SettingsState state;
@@ -111,7 +113,7 @@ class _PersonalInfoState extends State<PersonalInfo> {
                           : CircleAvatar(
                               radius: 28.r,
                               backgroundImage: NetworkImage(
-                                  "http://77.222.53.122/image/${widget.state.avatar}"),
+                                  "${AppConstants.baseUrl}image/${widget.state.avatar}"),
                               onBackgroundImageError: (exception, stackTrace) {
                                 debugPrint(exception.toString());
                               },

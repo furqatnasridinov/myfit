@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:myfit/application/registration/registration_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
@@ -224,7 +225,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                               SizedBox(
                                 width: 22.w,
                                 height: 22.h,
-                                child: const CircularProgressIndicator(),
+                                child: CupertinoActivityIndicator(radius: 12.r)
                               ),
                               10.verticalSpace,
                               CustomText(

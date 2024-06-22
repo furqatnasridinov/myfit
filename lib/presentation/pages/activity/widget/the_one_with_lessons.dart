@@ -30,6 +30,9 @@ class TheOneWithLessons extends StatelessWidget {
         final int visitedCount = ref.watch(activityProvider).gym?.visitedCount ?? 0;
         final loading = ref.watch(activityProvider).isSchedulesLoading;
         final int visitRemaining = visitPerMonth - visitedCount;
+        final bool dontHaveSub = ref.watch(settingsProvider).currentSubscribtion == null;
+        final bool showAnimationDontHaveSubs = ref.watch(activityProvider).showAnimationDontHaveSubs;
+        
         if (lessonsToShowAfterSelectingADay.isEmpty && !loading) {
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(bottom: 16.h),
@@ -63,19 +66,25 @@ class TheOneWithLessons extends StatelessWidget {
                       currentSchedule.isLoading,
                       visitRemaining <= 0,
                       () async {
+                        if (dontHaveSub) {
+                          if (!showAnimationDontHaveSubs) {
+                            event.setAnimationDontHaveSub(true);
+                          }
+                        }else{
                         currentSchedule.isLoading = true;
                         await event.enrollToGym(context, currentSchedule.id ?? 0);
                         //get the updated list of lessons
                         await event.getAllLessons(context, false,  id: gymId);
                         await event.getLessonsOfSelectedActivity(currentSchedule.lessonType ?? "", false);
                         currentSchedule.isLoading = false;
-                        scheduleEvent.getUsersSchedules(context);
+                        scheduleEvent.getUsersSchedules(context, false);
                         if (currentSchedule.autoAccept == true) {
                           event.getGymInfo(context, false, gymId: gymId);
                           ref.read(main2Provider.notifier).getNearestLesson(context);
                         }
                         // to add this lessontype to known lessontypes if it's not there
                         ref.read(settingsProvider.notifier).getWaitingLessonTypes(context);
+                        }
                       },
                     );
                   },

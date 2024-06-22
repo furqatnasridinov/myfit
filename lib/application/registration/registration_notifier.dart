@@ -95,6 +95,7 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
       String? fcmToken = "";
+      state = state.copyWith(sendPhoneNumberLoading: true);
       try {
         fcmToken = Platform.isIOS  ? "" : await FirebaseMessaging.instance.getToken();
         debugPrint("fcm token: $fcmToken");
@@ -105,14 +106,16 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
       response.when(
         success: (data) {
           if (data["operationResult"] == "OK") {
-            context.router.push(
-              const Registration2Route(),
-            );
+            state = state.copyWith(sendPhoneNumberLoading: false);
+            context.router.push(const Registration2Route());
+          }else{
+            AppHelpers.showErrorSnack(context, "operationResult is not OK (sendPhoneNumber)");
+            state = state.copyWith(sendPhoneNumberLoading: false);
           }
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(
-              context, NetworkExceptions.getErrorMessage(error));
+          state = state.copyWith(sendPhoneNumberLoading: false);
+          AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {

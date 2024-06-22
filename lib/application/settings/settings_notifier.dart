@@ -105,8 +105,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           }
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(
-              context, NetworkExceptions.getErrorMessage(error));
+          AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
           state = state.copyWith(isCitiesLoading: false);
         },
       );
@@ -491,7 +490,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
          state = state.copyWith(isPhotoUploading: false);
         debugPrint("errorcha $errorcha");
         if (errorcha.contains("Смена фото не чаще 1 раза в неделю")) {
-          AppHelpers.showErrorSnack(context, "Фото не изменено.Сменить фото можно только один раз в неделью");
+          AppHelpers.showErrorSnack(context, "Фото не изменено.Сменить фото можно только один раз в неделю");
           final String whenAccessOpens = errorcha.split("неделю/")[1].replaceAll(")", "");
           LocalStorage.setWhenUploadingPhotoOpens(whenAccessOpens);
           if (!state.isNoAccessChangingPhoto) {
@@ -584,10 +583,11 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
               if (subscription.price == 0) {
                 //final int  allBonusesOfUser = state.referalInfo?.bonus ?? 0;
                 final int recievedBonuses = state.referalInfo?.receivedBonus ?? 0;
-                //final int bonusesAvailable = allBonusesOfUser - recievedBonuses;
-                if (recievedBonuses > 0 ) {
+                final int usedBonus = state.referalInfo?.usedBonus ?? 0;
+                final int bonusesAvailable = recievedBonuses - usedBonus;
+                if (bonusesAvailable > 0 || state.currentSubscribtion?.subscription?.id == subscription.id) {
                   listToCollect.add(subscription);
-                  state = state.copyWith(bonusSubsLength: recievedBonuses);
+                  state = state.copyWith(bonusSubsLength: bonusesAvailable);
                 }
               }else{
                 listToCollect.add(subscription);
@@ -642,8 +642,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           }
         }
       }, failure: (error, statusCode, operationInfo) {
-        AppHelpers.showErrorSnack(
-            contex, NetworkExceptions.getErrorMessage(error));
+        AppHelpers.showErrorSnack(contex, NetworkExceptions.getErrorMessage(error));
       });
     } else {
       AppHelpers.showCheckTopSnackBar(contex);
@@ -659,7 +658,9 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           id: id, autoRenewal: autoRenewal);
       response.when(success: (data) async {
         if (data["operationResult"] == "OK") {
-          // to get updated subscribtions
+          // to get updated subscribtions and promocodes(if they were used)
+          getPromocodesQueue(context);
+          getAllAvailableSubscribtions(context);
           await getUserSubscribtions(context);
           context.popRoute();
           AppHelpers.showSuccessSnack(context, "Подписка успешно оформлена");
@@ -711,8 +712,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           // nothing to do we already update autoRenewal
         } else {
           state = state.copyWith(autoRenewal: !val);
-          AppHelpers.showErrorSnack(
-              context, "Ошибка при изменении автопродления");
+          AppHelpers.showErrorSnack(context, "Ошибка при изменении автопродления");
         }
       }, failure: (error, statusCode, operationInfo) {
         state = state.copyWith(autoRenewal: !val);
@@ -748,7 +748,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
             isPromocodeSuccess: true,
             isPromocodeLoading: false);
             getAllAvailableSubscribtions(context);
-            getPromocodes(context);
+            getPromocodesQueue(context);
+            //getPromocodes(context);
             refreshDataAfterPromocodeSubmitted();
         }
       }, failure: (error, statusCode, operationInfo) {
@@ -784,6 +785,30 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
               listToCollect.add(promocode);
             }
            state = state.copyWith(promocodesHistory: listToCollect);
+          }
+        }
+      }, failure: (error, statusCode, operationInfo) {
+        AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
+      });
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> getPromocodesQueue(BuildContext context) async{
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      final response = await _settingsRepositoryInterface.getPromocodesQueue();
+      response.when(success: (data) {
+        if (data["operationResult"] == "OK") {
+          final listFromServer = data["object"] as List;
+          if (listFromServer.isNotEmpty) {
+            final listToCollect = <Promocode>[];
+            for (var element in listFromServer) {
+              final promocode = Promocode.fromJson(element);
+              listToCollect.add(promocode);
+            }
+           state = state.copyWith(promocodesQueue: listToCollect);
           }
         }
       }, failure: (error, statusCode, operationInfo) {
@@ -1054,6 +1079,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         promocodeErrorMessage: "",
       );  
     }
+    if (value.contains("myfit-russia.ru/inv/") && value.length > 23) {
+      value = value.split("inv/")[1];
+    }
+    state.promocodeController?.text = value;
     state = state.copyWith(promocodeValue: value);
   }
 

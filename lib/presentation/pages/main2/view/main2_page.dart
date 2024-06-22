@@ -40,6 +40,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     refreshController = RefreshController(initialRefresh: false);
     _scrollController = ScrollController();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      // сначала делаем запрос на getUserSub, если у ющера нету подписки 
       ref.read(main2Provider.notifier)
         ..getNearestLesson(context)
         ..getUserStatsMonth(context);
@@ -56,8 +57,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
       ref.read(notificationProvider.notifier).getAllNotifications();
       // web socket for updating lesson states
       channel = IOWebSocketChannel.connect(
-          Uri.parse(
-              "ws://77.222.53.122:8080/appSchedulePanel/${LocalStorage.getUserId()}"),
+          Uri.parse("wss://myfit-russia.ru:8443/appSchedulePanel/${LocalStorage.getUserId()}"),
           headers: {'Authorization': 'Bearer ${LocalStorage.getToken()}'});
       ref.read(activityProvider.notifier).handleWebSocket(channel, context);
     });
@@ -67,6 +67,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
   void dispose() {
     refreshController.dispose();
     channel.sink.close();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -169,7 +170,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                       );
                     }),
 
-                    // Бассейны поблизости
+                    // Рекомендуемые занятия
                     SliverPadding(
                       padding: EdgeInsets.only(left: 25.w).copyWith(top: 32.h),
                       sliver: SliverToBoxAdapter(
@@ -216,8 +217,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                       padding: EdgeInsets.only(top: 32.h),
                       sliver: SliverToBoxAdapter(
                           child: Consumer(builder: (context, ref, child) {
-                        final recommendedGyms =
-                            ref.watch(mapProvider).recommendedGyms;
+                        final recommendedGyms = ref.watch(mapProvider).recommendedGyms;
                         return recommendedGyms.isEmpty
                             ? const SizedBox()
                             : DecoratedTextOne(

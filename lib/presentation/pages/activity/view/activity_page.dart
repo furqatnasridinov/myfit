@@ -8,6 +8,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:myfit/presentation/components/shake_widget.dart';
 import 'package:myfit/presentation/pages/activity/widget/the_one_with_lessons.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -33,6 +34,9 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
   late RefreshController refreshController;
   ScrollController scrollController = ScrollController();
   final calendarSectionKey = GlobalKey();
+  final visitsRemaingKey = GlobalKey();
+  final shakeKey = GlobalKey<ShakeWidgetState>();
+
 
   @override
   void initState() {
@@ -65,7 +69,7 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
               ..getDescribtionAndPeculiarities(ref.watch(activityProvider).selectedActivity!);
             // web socket for gettiing new lessons if they were added when the user is on the page
             channel2 = IOWebSocketChannel.connect(
-                Uri.parse("ws://77.222.53.122:8080/appGymPanel/${widget.gymId}"),
+                Uri.parse("wss://myfit-russia.ru:8443/appGymPanel/${widget.gymId}"),
                 headers: {'Authorization': 'Bearer ${LocalStorage.getToken()}'});
             ref.read(activityProvider.notifier).handleWebSocket2(channel2, context);
           });
@@ -96,13 +100,32 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
     ref.read(activityProvider.notifier).setIsFromSearch(false);
   }
 
+  Future<void> scrollToDontHaveSub()async{
+    final context = visitsRemaingKey.currentContext;
+    await Scrollable.ensureVisible(
+      context!,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+    shakeKey.currentState?.shake();
+    await Future.delayed(const Duration(seconds: 1));
+    ref.read(activityProvider.notifier).setAnimationDontHaveSub(false);
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final event = ref.read(activityProvider.notifier);
     ref.listen(activityProvider, (previous, next) {
+      // для скрола к календарю
       if (previous?.selectedDayFromSearchIndex !=next.selectedDayFromSearchIndex && 
             next.selectedDayFromSearchIndex != 9999 && next.isFromSearch) {
         scrollCalendarToIndex();
+      }
+      // для скрола к у вас нету подписки
+      if (previous?.showAnimationDontHaveSubs != next.showAnimationDontHaveSubs &&
+          next.showAnimationDontHaveSubs) {
+          scrollToDontHaveSub();
       }
     },);
     return Scaffold(
@@ -142,15 +165,14 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const TheOneWithImage(),
+                TheOneWithImage(key: visitsRemaingKey),
                 32.verticalSpace,
                 Contacts(event: event),
                 32.verticalSpace,
                 const GymDescription(),
                 32.verticalSpace,
                 TheOneWithChips(gymId: widget.gymId),
-                32.verticalSpace,
-                const RemainingVisits(),
+                 RemainingVisits(shakeKey: shakeKey),
                 const ActivityDescription(),
                 TheOneWithPhotos(event: event),
                 const Speciality(),

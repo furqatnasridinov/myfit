@@ -2,6 +2,7 @@
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myfit/application/activity/activity_provider.dart';
+import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/presentation/components/custom_button.dart';
@@ -42,7 +43,11 @@ class PopUpMap extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            Consumer(builder: (context, ref, child) {
+              final activityTypes = ref.watch(activityProvider).activityTypes;
+              final currentSub = ref.watch(settingsProvider).currentSubscribtion;
+              final bool showVisitsLeft = currentSub != null;
+              return Row(
               children: [
                 Expanded(
                   child: SizedBox(
@@ -58,6 +63,7 @@ class PopUpMap extends StatelessWidget {
                             color: Colors.black,
                           ),
                         ),
+                        if(showVisitsLeft)
                         TextSpan(
                           text: " $visitRemaining/$visitPerMonth",
                           style: GoogleFonts.inter(
@@ -69,7 +75,6 @@ class PopUpMap extends StatelessWidget {
                           ),
                         ),
                       ],
-
                     ))
                   ),
                 ),
@@ -78,38 +83,33 @@ class PopUpMap extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   //color: Colors.red,
                   height: 26.h,
-                  child: Consumer(
-                    builder: (context, ref, child) {
-                      final activityTypes = ref.watch(activityProvider).activityTypes;
-                      //final activityEvent = ref.read(activityProvider.notifier);
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        itemCount: activityTypes?.length,
-                        itemBuilder: (context, index) {
-                          final name = activityTypes?[index];
-                          return Container(
-                            margin: EdgeInsets.only(right: 10.w),
-                            width: 24.w,
-                            height: 24.h,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6.r),
-                              color: AppColors.backgroundColor,
-                            ),
-                            child: SvgPicture.asset(
-                              AppHelpers().getIconSvg(name!).isEmpty
-                                  ? "assets/svg/gym.svg"
-                                  : AppHelpers().getIconSvg(name),
-                              height: 15.h,
-                            ),
-                          );
-                        },
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: activityTypes?.length,
+                    itemBuilder: (context, index) {
+                      final name = activityTypes?[index];
+                      return Container(
+                        margin: EdgeInsets.only(right: 10.w),
+                        width: 24.w,
+                        height: 24.h,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6.r),
+                          color: AppColors.backgroundColor,
+                        ),
+                        child: SvgPicture.asset(
+                          AppHelpers().getIconSvg(name!).isEmpty
+                              ? "assets/svg/gym.svg"
+                              : AppHelpers().getIconSvg(name),
+                          height: 15.h,
+                        ),
                       );
                     },
                   ),
                 ),
               ],
-            ),
+            );
+            },),
             10.verticalSpace,
             InterText(
               text: address,

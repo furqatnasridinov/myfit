@@ -57,6 +57,7 @@ mixin _$SettingsState {
   String get promocodeValue => throw _privateConstructorUsedError;
   bool get isPromocodeLoading => throw _privateConstructorUsedError;
   List<Promocode> get promocodesHistory => throw _privateConstructorUsedError;
+  List<Promocode> get promocodesQueue => throw _privateConstructorUsedError;
   bool get isPromocodeSuccess => throw _privateConstructorUsedError;
   bool get isPromocodeError => throw _privateConstructorUsedError;
   String get promocodeErrorMessage => throw _privateConstructorUsedError;
@@ -115,6 +116,7 @@ abstract class $SettingsStateCopyWith<$Res> {
       String promocodeValue,
       bool isPromocodeLoading,
       List<Promocode> promocodesHistory,
+      List<Promocode> promocodesQueue,
       bool isPromocodeSuccess,
       bool isPromocodeError,
       String promocodeErrorMessage,
@@ -175,6 +177,7 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     Object? promocodeValue = null,
     Object? isPromocodeLoading = null,
     Object? promocodesHistory = null,
+    Object? promocodesQueue = null,
     Object? isPromocodeSuccess = null,
     Object? isPromocodeError = null,
     Object? promocodeErrorMessage = null,
@@ -336,6 +339,10 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.promocodesHistory
           : promocodesHistory // ignore: cast_nullable_to_non_nullable
               as List<Promocode>,
+      promocodesQueue: null == promocodesQueue
+          ? _value.promocodesQueue
+          : promocodesQueue // ignore: cast_nullable_to_non_nullable
+              as List<Promocode>,
       isPromocodeSuccess: null == isPromocodeSuccess
           ? _value.isPromocodeSuccess
           : isPromocodeSuccess // ignore: cast_nullable_to_non_nullable
@@ -415,6 +422,7 @@ abstract class _$$SettingsStateImplCopyWith<$Res>
       String promocodeValue,
       bool isPromocodeLoading,
       List<Promocode> promocodesHistory,
+      List<Promocode> promocodesQueue,
       bool isPromocodeSuccess,
       bool isPromocodeError,
       String promocodeErrorMessage,
@@ -473,6 +481,7 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     Object? promocodeValue = null,
     Object? isPromocodeLoading = null,
     Object? promocodesHistory = null,
+    Object? promocodesQueue = null,
     Object? isPromocodeSuccess = null,
     Object? isPromocodeError = null,
     Object? promocodeErrorMessage = null,
@@ -634,6 +643,10 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value._promocodesHistory
           : promocodesHistory // ignore: cast_nullable_to_non_nullable
               as List<Promocode>,
+      promocodesQueue: null == promocodesQueue
+          ? _value._promocodesQueue
+          : promocodesQueue // ignore: cast_nullable_to_non_nullable
+              as List<Promocode>,
       isPromocodeSuccess: null == isPromocodeSuccess
           ? _value.isPromocodeSuccess
           : isPromocodeSuccess // ignore: cast_nullable_to_non_nullable
@@ -707,6 +720,7 @@ class _$SettingsStateImpl extends _SettingsState {
       this.promocodeValue = "",
       this.isPromocodeLoading = false,
       final List<Promocode> promocodesHistory = const [],
+      final List<Promocode> promocodesQueue = const [],
       this.isPromocodeSuccess = false,
       this.isPromocodeError = false,
       this.promocodeErrorMessage = "",
@@ -719,6 +733,7 @@ class _$SettingsStateImpl extends _SettingsState {
         _allAvailableSubscriptions = allAvailableSubscriptions,
         _missingInfo = missingInfo,
         _promocodesHistory = promocodesHistory,
+        _promocodesQueue = promocodesQueue,
         super._();
 
   @override
@@ -866,6 +881,15 @@ class _$SettingsStateImpl extends _SettingsState {
     return EqualUnmodifiableListView(_promocodesHistory);
   }
 
+  final List<Promocode> _promocodesQueue;
+  @override
+  @JsonKey()
+  List<Promocode> get promocodesQueue {
+    if (_promocodesQueue is EqualUnmodifiableListView) return _promocodesQueue;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_promocodesQueue);
+  }
+
   @override
   @JsonKey()
   final bool isPromocodeSuccess;
@@ -890,7 +914,7 @@ class _$SettingsStateImpl extends _SettingsState {
 
   @override
   String toString() {
-    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, gender: $gender, birthday: $birthday, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, user: $user, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue, isNoAccessChangingPhoto: $isNoAccessChangingPhoto, isPhotoUploading: $isPhotoUploading, currentSubscribtion: $currentSubscribtion, nextSubscribtion: $nextSubscribtion, allAvailableSubscriptions: $allAvailableSubscriptions, allSubsLoading: $allSubsLoading, bonusSubsLength: $bonusSubsLength, promocodeController: $promocodeController, isChangeSubscribtionLoading: $isChangeSubscribtionLoading, cardNumber: $cardNumber, autoRenewal: $autoRenewal, dropDownOpened: $dropDownOpened, genderDropDownOpened: $genderDropDownOpened, missingInfo: $missingInfo, promocodeValue: $promocodeValue, isPromocodeLoading: $isPromocodeLoading, promocodesHistory: $promocodesHistory, isPromocodeSuccess: $isPromocodeSuccess, isPromocodeError: $isPromocodeError, promocodeErrorMessage: $promocodeErrorMessage, newPromocodeDescription: $newPromocodeDescription, referalInfo: $referalInfo, referalInfoLoading: $referalInfoLoading, takeBonusButtonClicked: $takeBonusButtonClicked)';
+    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, gender: $gender, birthday: $birthday, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, user: $user, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue, isNoAccessChangingPhoto: $isNoAccessChangingPhoto, isPhotoUploading: $isPhotoUploading, currentSubscribtion: $currentSubscribtion, nextSubscribtion: $nextSubscribtion, allAvailableSubscriptions: $allAvailableSubscriptions, allSubsLoading: $allSubsLoading, bonusSubsLength: $bonusSubsLength, promocodeController: $promocodeController, isChangeSubscribtionLoading: $isChangeSubscribtionLoading, cardNumber: $cardNumber, autoRenewal: $autoRenewal, dropDownOpened: $dropDownOpened, genderDropDownOpened: $genderDropDownOpened, missingInfo: $missingInfo, promocodeValue: $promocodeValue, isPromocodeLoading: $isPromocodeLoading, promocodesHistory: $promocodesHistory, promocodesQueue: $promocodesQueue, isPromocodeSuccess: $isPromocodeSuccess, isPromocodeError: $isPromocodeError, promocodeErrorMessage: $promocodeErrorMessage, newPromocodeDescription: $newPromocodeDescription, referalInfo: $referalInfo, referalInfoLoading: $referalInfoLoading, takeBonusButtonClicked: $takeBonusButtonClicked)';
   }
 
   @override
@@ -969,12 +993,13 @@ class _$SettingsStateImpl extends _SettingsState {
                 other.isPromocodeLoading == isPromocodeLoading) &&
             const DeepCollectionEquality()
                 .equals(other._promocodesHistory, _promocodesHistory) &&
+            const DeepCollectionEquality()
+                .equals(other._promocodesQueue, _promocodesQueue) &&
             (identical(other.isPromocodeSuccess, isPromocodeSuccess) ||
                 other.isPromocodeSuccess == isPromocodeSuccess) &&
             (identical(other.isPromocodeError, isPromocodeError) ||
                 other.isPromocodeError == isPromocodeError) &&
-            (identical(other.promocodeErrorMessage, promocodeErrorMessage) ||
-                other.promocodeErrorMessage == promocodeErrorMessage) &&
+            (identical(other.promocodeErrorMessage, promocodeErrorMessage) || other.promocodeErrorMessage == promocodeErrorMessage) &&
             (identical(other.newPromocodeDescription, newPromocodeDescription) || other.newPromocodeDescription == newPromocodeDescription) &&
             (identical(other.referalInfo, referalInfo) || other.referalInfo == referalInfo) &&
             (identical(other.referalInfoLoading, referalInfoLoading) || other.referalInfoLoading == referalInfoLoading) &&
@@ -1022,6 +1047,7 @@ class _$SettingsStateImpl extends _SettingsState {
         promocodeValue,
         isPromocodeLoading,
         const DeepCollectionEquality().hash(_promocodesHistory),
+        const DeepCollectionEquality().hash(_promocodesQueue),
         isPromocodeSuccess,
         isPromocodeError,
         promocodeErrorMessage,
@@ -1078,6 +1104,7 @@ abstract class _SettingsState extends SettingsState {
       final String promocodeValue,
       final bool isPromocodeLoading,
       final List<Promocode> promocodesHistory,
+      final List<Promocode> promocodesQueue,
       final bool isPromocodeSuccess,
       final bool isPromocodeError,
       final String promocodeErrorMessage,
@@ -1163,6 +1190,8 @@ abstract class _SettingsState extends SettingsState {
   bool get isPromocodeLoading;
   @override
   List<Promocode> get promocodesHistory;
+  @override
+  List<Promocode> get promocodesQueue;
   @override
   bool get isPromocodeSuccess;
   @override

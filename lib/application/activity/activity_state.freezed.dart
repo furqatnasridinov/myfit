@@ -27,6 +27,7 @@ mixin _$ActivityState {
       throw _privateConstructorUsedError;
   String? get selectedDayFromSearch => throw _privateConstructorUsedError;
   int get selectedDayFromSearchIndex => throw _privateConstructorUsedError;
+  bool get showAnimationDontHaveSubs => throw _privateConstructorUsedError;
   List<String>? get activityTypes => throw _privateConstructorUsedError;
   Map<String, dynamic> get allPhotos => throw _privateConstructorUsedError;
   bool get isCalendarLimited => throw _privateConstructorUsedError;
@@ -72,6 +73,7 @@ abstract class $ActivityStateCopyWith<$Res> {
       DescribtionAndPeculiarities? describtionAndPeculiarities,
       String? selectedDayFromSearch,
       int selectedDayFromSearchIndex,
+      bool showAnimationDontHaveSubs,
       List<String>? activityTypes,
       Map<String, dynamic> allPhotos,
       bool isCalendarLimited,
@@ -113,6 +115,7 @@ class _$ActivityStateCopyWithImpl<$Res, $Val extends ActivityState>
     Object? describtionAndPeculiarities = freezed,
     Object? selectedDayFromSearch = freezed,
     Object? selectedDayFromSearchIndex = null,
+    Object? showAnimationDontHaveSubs = null,
     Object? activityTypes = freezed,
     Object? allPhotos = null,
     Object? isCalendarLimited = null,
@@ -171,6 +174,10 @@ class _$ActivityStateCopyWithImpl<$Res, $Val extends ActivityState>
           ? _value.selectedDayFromSearchIndex
           : selectedDayFromSearchIndex // ignore: cast_nullable_to_non_nullable
               as int,
+      showAnimationDontHaveSubs: null == showAnimationDontHaveSubs
+          ? _value.showAnimationDontHaveSubs
+          : showAnimationDontHaveSubs // ignore: cast_nullable_to_non_nullable
+              as bool,
       activityTypes: freezed == activityTypes
           ? _value.activityTypes
           : activityTypes // ignore: cast_nullable_to_non_nullable
@@ -258,6 +265,7 @@ abstract class _$$ActivityStateImplCopyWith<$Res>
       DescribtionAndPeculiarities? describtionAndPeculiarities,
       String? selectedDayFromSearch,
       int selectedDayFromSearchIndex,
+      bool showAnimationDontHaveSubs,
       List<String>? activityTypes,
       Map<String, dynamic> allPhotos,
       bool isCalendarLimited,
@@ -297,6 +305,7 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
     Object? describtionAndPeculiarities = freezed,
     Object? selectedDayFromSearch = freezed,
     Object? selectedDayFromSearchIndex = null,
+    Object? showAnimationDontHaveSubs = null,
     Object? activityTypes = freezed,
     Object? allPhotos = null,
     Object? isCalendarLimited = null,
@@ -355,6 +364,10 @@ class __$$ActivityStateImplCopyWithImpl<$Res>
           ? _value.selectedDayFromSearchIndex
           : selectedDayFromSearchIndex // ignore: cast_nullable_to_non_nullable
               as int,
+      showAnimationDontHaveSubs: null == showAnimationDontHaveSubs
+          ? _value.showAnimationDontHaveSubs
+          : showAnimationDontHaveSubs // ignore: cast_nullable_to_non_nullable
+              as bool,
       activityTypes: freezed == activityTypes
           ? _value._activityTypes
           : activityTypes // ignore: cast_nullable_to_non_nullable
@@ -437,6 +450,7 @@ class _$ActivityStateImpl extends _ActivityState {
       this.describtionAndPeculiarities = null,
       this.selectedDayFromSearch = "",
       this.selectedDayFromSearchIndex = 9999,
+      this.showAnimationDontHaveSubs = false,
       final List<String>? activityTypes = const [],
       final Map<String, dynamic> allPhotos = const {},
       this.isCalendarLimited = false,
@@ -494,6 +508,9 @@ class _$ActivityStateImpl extends _ActivityState {
   @override
   @JsonKey()
   final int selectedDayFromSearchIndex;
+  @override
+  @JsonKey()
+  final bool showAnimationDontHaveSubs;
   final List<String>? _activityTypes;
   @override
   @JsonKey()
@@ -607,7 +624,7 @@ class _$ActivityStateImpl extends _ActivityState {
 
   @override
   String toString() {
-    return 'ActivityState(isGymLoading: $isGymLoading, isActivitiesListLoading: $isActivitiesListLoading, isEnrollingLoading: $isEnrollingLoading, isPhotosLoading: $isPhotosLoading, isSchedulesLoading: $isSchedulesLoading, infoForTypeLoading: $infoForTypeLoading, gym: $gym, describtionAndPeculiarities: $describtionAndPeculiarities, selectedDayFromSearch: $selectedDayFromSearch, selectedDayFromSearchIndex: $selectedDayFromSearchIndex, activityTypes: $activityTypes, allPhotos: $allPhotos, isCalendarLimited: $isCalendarLimited, allLessons: $allLessons, lessonsOfSelectedActivity: $lessonsOfSelectedActivity, buttonLoading: $buttonLoading, daysInWhichWeHaveLessons: $daysInWhichWeHaveLessons, selectedCalendarDay: $selectedCalendarDay, lessonsToShowAfterSelectingADay: $lessonsToShowAfterSelectingADay, selectedActivity: $selectedActivity, photosOfSelectedActivity: $photosOfSelectedActivity, infosForType: $infosForType, isFromSearch: $isFromSearch, listOf45CalendarDaysFromNow: $listOf45CalendarDaysFromNow, enrollingError: $enrollingError, isEnrollingError: $isEnrollingError)';
+    return 'ActivityState(isGymLoading: $isGymLoading, isActivitiesListLoading: $isActivitiesListLoading, isEnrollingLoading: $isEnrollingLoading, isPhotosLoading: $isPhotosLoading, isSchedulesLoading: $isSchedulesLoading, infoForTypeLoading: $infoForTypeLoading, gym: $gym, describtionAndPeculiarities: $describtionAndPeculiarities, selectedDayFromSearch: $selectedDayFromSearch, selectedDayFromSearchIndex: $selectedDayFromSearchIndex, showAnimationDontHaveSubs: $showAnimationDontHaveSubs, activityTypes: $activityTypes, allPhotos: $allPhotos, isCalendarLimited: $isCalendarLimited, allLessons: $allLessons, lessonsOfSelectedActivity: $lessonsOfSelectedActivity, buttonLoading: $buttonLoading, daysInWhichWeHaveLessons: $daysInWhichWeHaveLessons, selectedCalendarDay: $selectedCalendarDay, lessonsToShowAfterSelectingADay: $lessonsToShowAfterSelectingADay, selectedActivity: $selectedActivity, photosOfSelectedActivity: $photosOfSelectedActivity, infosForType: $infosForType, isFromSearch: $isFromSearch, listOf45CalendarDaysFromNow: $listOf45CalendarDaysFromNow, enrollingError: $enrollingError, isEnrollingError: $isEnrollingError)';
   }
 
   @override
@@ -636,6 +653,8 @@ class _$ActivityStateImpl extends _ActivityState {
             (identical(other.selectedDayFromSearchIndex, selectedDayFromSearchIndex) ||
                 other.selectedDayFromSearchIndex ==
                     selectedDayFromSearchIndex) &&
+            (identical(other.showAnimationDontHaveSubs, showAnimationDontHaveSubs) ||
+                other.showAnimationDontHaveSubs == showAnimationDontHaveSubs) &&
             const DeepCollectionEquality()
                 .equals(other._activityTypes, _activityTypes) &&
             const DeepCollectionEquality()
@@ -655,10 +674,8 @@ class _$ActivityStateImpl extends _ActivityState {
             const DeepCollectionEquality().equals(
                 other._lessonsToShowAfterSelectingADay,
                 _lessonsToShowAfterSelectingADay) &&
-            (identical(other.selectedActivity, selectedActivity) ||
-                other.selectedActivity == selectedActivity) &&
-            const DeepCollectionEquality().equals(
-                other._photosOfSelectedActivity, _photosOfSelectedActivity) &&
+            (identical(other.selectedActivity, selectedActivity) || other.selectedActivity == selectedActivity) &&
+            const DeepCollectionEquality().equals(other._photosOfSelectedActivity, _photosOfSelectedActivity) &&
             const DeepCollectionEquality().equals(other._infosForType, _infosForType) &&
             (identical(other.isFromSearch, isFromSearch) || other.isFromSearch == isFromSearch) &&
             const DeepCollectionEquality().equals(other._listOf45CalendarDaysFromNow, _listOf45CalendarDaysFromNow) &&
@@ -679,6 +696,7 @@ class _$ActivityStateImpl extends _ActivityState {
         describtionAndPeculiarities,
         selectedDayFromSearch,
         selectedDayFromSearchIndex,
+        showAnimationDontHaveSubs,
         const DeepCollectionEquality().hash(_activityTypes),
         const DeepCollectionEquality().hash(_allPhotos),
         isCalendarLimited,
@@ -716,6 +734,7 @@ abstract class _ActivityState extends ActivityState {
       final DescribtionAndPeculiarities? describtionAndPeculiarities,
       final String? selectedDayFromSearch,
       final int selectedDayFromSearchIndex,
+      final bool showAnimationDontHaveSubs,
       final List<String>? activityTypes,
       final Map<String, dynamic> allPhotos,
       final bool isCalendarLimited,
@@ -754,6 +773,8 @@ abstract class _ActivityState extends ActivityState {
   String? get selectedDayFromSearch;
   @override
   int get selectedDayFromSearchIndex;
+  @override
+  bool get showAnimationDontHaveSubs;
   @override
   List<String>? get activityTypes;
   @override

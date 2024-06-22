@@ -55,7 +55,8 @@ class _SubscribtionSettingsScreenState
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getPostion();
       ref.read(settingsProvider.notifier)
-      ..getPromocodes(context)
+      //..getPromocodes(context)
+      ..getPromocodesQueue(context)
       ..cleanLastPromocodeError();
     });
     super.initState();

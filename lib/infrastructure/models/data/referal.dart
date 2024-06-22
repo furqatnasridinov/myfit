@@ -3,6 +3,7 @@ class Referal {
   String? refLink;
   int? bonus;
   int? receivedBonus;
+  int? usedBonus;
 
   Referal({this.invitedUsers, this.refLink, this.bonus, this.receivedBonus});
 
@@ -11,6 +12,7 @@ class Referal {
     refLink = json['refLink'];
     bonus = json['bonus'];
     receivedBonus = json['receivedBonus'];
+    usedBonus = json["usedBonus"];
   }
 
   Map<String, dynamic> toJson() {
@@ -19,6 +21,7 @@ class Referal {
     data['refLink'] = refLink;
     data['bonus'] = bonus;
     data['receivedBonus'] = receivedBonus;
+    data["usedBonus"] = usedBonus;
     return data;
   }
 }

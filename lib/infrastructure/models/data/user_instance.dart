@@ -12,6 +12,7 @@ class UserInstance {
   int? weight;
   int? height;
   String? birthdayDate;
+  String? changePhotoDate;
 
   UserInstance(
       {this.id,
@@ -47,6 +48,7 @@ class UserInstance {
     weight = json['weight'];
     height = json['height'];
     birthdayDate = json['birthdayDate'];
+    changePhotoDate = json['changePhotoDate'];
   }
 
   Map<String, dynamic> toJson() {
@@ -68,6 +70,7 @@ class UserInstance {
     data['weight'] = weight;
     data['height'] = height;
     data['birthdayDate'] = birthdayDate;
+    data['changePhotoDate'] = changePhotoDate;
     return data;
   }
 }

@@ -364,7 +364,7 @@ class _MainHeaderState extends State<MapHeader> {
                           : CircleAvatar(
                               radius: 18.r,
                               backgroundImage: NetworkImage(
-                                  "http://77.222.53.122/image/${settingsState.avatar}"),
+                                  "${AppConstants.baseUrl}image/${settingsState.avatar}"),
                               onBackgroundImageError: (exception, stackTrace) {
                                 debugPrint(exception.toString());
                               },

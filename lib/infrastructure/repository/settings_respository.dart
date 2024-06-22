@@ -340,4 +340,22 @@ class SettingsRepository implements SetttingsRepositoryInterface {
       );
     }
   }
+  
+  @override
+  Future<ApiResult<Map<String, dynamic>>> getPromocodesQueue() async{
+    try {
+      final client = inject<HttpService>().clientDio();
+      final response = await client.get(
+        "api/promotional/queue",
+      );
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      );
+    }
+  }
 }

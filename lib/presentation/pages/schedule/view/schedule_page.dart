@@ -13,6 +13,8 @@ import 'package:myfit/presentation/components/custom_search_bar.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:myfit/presentation/components/inter_text.dart';
 import 'package:myfit/presentation/components/ui_dropdown_menu.dart';
+import 'package:myfit/presentation/pages/schedule/skeleton/completed_schedules_skeleton.dart';
+import 'package:myfit/presentation/pages/schedule/skeleton/user_schedules_skeleton.dart';
 import 'package:myfit/presentation/pages/schedule/widget/widget.dart';
 import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
@@ -41,9 +43,9 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(scheduleProvider.notifier)
-        ..getUsersSchedules(context)
+        ..getUsersSchedules(context, true)
         ..getTwoWeekDays()
-        ..getCompletedSchedules(context);
+        ..getCompletedSchedules(context, true);
       // getting reminders from local storage to state
     });
   }
@@ -51,6 +53,9 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     final event = ref.read(scheduleProvider.notifier);
+    final isCompletedLoading = ref.watch(scheduleProvider).isCompletedSchedulesLoading;
+    final userSchedulesLoading = ref.watch(scheduleProvider).isUserSchedulesLoading;
+    final bool showLoading = isCompletedLoading || userSchedulesLoading;
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
@@ -62,8 +67,7 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
             Expanded(
               child: CustomScrollView(
                 controller: scrollController,
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                 slivers: [
                   // Ваше расписание
                   SliverPadding(
@@ -76,8 +80,9 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
                   // Прошедшие занятия
                   SliverPadding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    sliver: const SliverToBoxAdapter(
-                      child: CompletedSchedules(),
+                    sliver:  SliverToBoxAdapter(
+                      child: showLoading ?  const CompletedSchedulesSkeleton() 
+                        : const CompletedSchedules(),
                     ),
                   ),
 
@@ -90,9 +95,11 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
                   ),
 
                   // body builder
+                  if(showLoading)
+                  const UserSchedulesSkeleton(),
+                  if(!showLoading)
                   SliverPadding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w)
-                        .copyWith(top: 16.h),
+                    padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 16.h),
                     sliver: Consumer(builder: (context, ref, child) {
                       final state = ref.watch(scheduleProvider);
                       return SliverList.builder(
@@ -125,8 +132,7 @@ class _ScheduleScreen extends ConsumerState<ScheduleScreen> {
 
                           // Показываем день только если он сегодня/будущий или если есть активности в прошлом
                           if (isTodayOrFuture ||
-                              (scheduleForDay != null &&
-                                  scheduleForDay.listOfSchedules!.isNotEmpty)) {
+                              (scheduleForDay != null && scheduleForDay.listOfSchedules!.isNotEmpty)) {
                             // Если расписание найдено, показываем itemListBuilder,
                             // иначе daysWithNoSchedule
                             if (scheduleForDay != null) {
@@ -286,8 +292,7 @@ Widget listOfActivitiesEachItem(
                     )
                   : DecoratedBox(
                       decoration: BoxDecoration(
-                        border:
-                            Border.all(color: AppColors.blueColor, width: 1.w),
+                        border:Border.all(color: AppColors.blueColor, width: 1.w),
                         shape: BoxShape.circle,
                       ),
                       child: SizedBox(
@@ -446,8 +451,16 @@ Widget listOfActivitiesEachItem(
                                 ),
                               ),
                               5.horizontalSpace,
-                              AppHelpers().getBatteryIcon(
-                                  visitedCount ?? 0, visitPerMonth ?? 0),
+                              Consumer(
+                                builder: (context, ref, child) {
+                                  final bool showBattery = ref.watch(settingsProvider).currentSubscribtion != null;
+                                  if (showBattery) {
+                                    return AppHelpers().getBatteryIcon(visitedCount ?? 0, visitPerMonth ?? 0);
+                                  }
+                                  return const SizedBox();
+                                },
+                              ),
+                              
                             ],
                           ),
                         ),

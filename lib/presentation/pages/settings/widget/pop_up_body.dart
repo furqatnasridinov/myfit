@@ -8,6 +8,7 @@ import 'package:myfit/application/settings/settings_notifier.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/application/settings/settings_state.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/infrastructure/services/local_storage.dart';
 import 'package:myfit/presentation/components/custom_button.dart';
@@ -38,6 +39,8 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
   bool isNameWrong = false;
   bool isSurnameWrong = false;
   bool isBirhdayWrong = false;
+  bool isGenderWrong = false;
+  bool isCityWrong = false;
   String birthdayErrorMes = "";
   final FocusNode focusNode = FocusNode();
   final FocusNode genderFocusNode = FocusNode();
@@ -93,15 +96,15 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
 
   @override
   Widget build(BuildContext context) {
-    final DateTime whenAccessUploadingPhotoOpens =
-        DateTime.parse(LocalStorage.getWhenUploadingPhotoOpens());
-    final String formattedString = widget.event.formatDuration(
-        whenAccessUploadingPhotoOpens.difference(DateTime.now()));
+    final DateTime whenLastChangedPhoto = (AppHelpers.gePhotoAccessTime(widget.state.user?.changePhotoDate));
+    final DateTime whenAccessShouldOpen = whenLastChangedPhoto.add(const Duration(days: 7));
+    final bool canChangePhoto =DateTime.now().isAfter(whenAccessShouldOpen) ; 
+    final String formattedString = widget.event.formatDuration(whenAccessShouldOpen.difference(DateTime.now()));
     return CustomCard(
       borderColor: Colors.transparent,
       width: double.maxFinite,
-      height: widget.state.isNoAccessChangingPhoto ? 575.h + ((isBirhdayWrong || isNameWrong || isSurnameWrong) ? 40.h : 0) : 
-        618.h + ((isBirhdayWrong || isNameWrong || isSurnameWrong) ? 40.h : 0),
+      height: !canChangePhoto ? 575.h + ((isBirhdayWrong || isNameWrong || isSurnameWrong) ? 50.h : 0) : 
+        618.h + ((isBirhdayWrong || isNameWrong || isSurnameWrong) ? 50.h : 0),
       child: Stack(
         children: [
           // name and last name row
@@ -132,6 +135,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Zа-яА-Я]')),
                         ],
+                        textCapitalization: TextCapitalization.sentences,
                         isError: isNameWrong || widget.state.missingInfo.contains("firstName"),
                         hasFocus: true,
                         cursorColor: AppColors.greyText,
@@ -142,8 +146,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                         ),
                         counterText: "",
                         controller: nameController,
-                        hintText: LocalStorage.getUserName().isEmpty
-                            ? "Имя" : "",
+                        hintText: LocalStorage.getUserName().isEmpty ? "Имя" : "",
                         onChanged: (val) {
                           if (val.trim().length >= 2 && isNameWrong) {
                             isNameWrong = false;
@@ -178,6 +181,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                         style: GoogleFonts.raleway(fontSize: 14.sp, fontWeight: FontWeight.w400),
                         contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
                         maxLength: 32,
+                        textCapitalization: TextCapitalization.sentences,
                         counterStyle: const TextStyle(height: double.minPositive),
                         counterText: "",
                         inputFormatters: [
@@ -293,7 +297,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                                     ? const CupertinoActivityIndicator()
                                     : CircleAvatar(
                                         radius: 38.r,
-                                        backgroundImage: NetworkImage("http://77.222.53.122/image/${widget.state.avatar}"),
+                                        backgroundImage: NetworkImage("${AppConstants.baseUrl}image/${widget.state.avatar}"),
                                         onBackgroundImageError:
                                             (exception, stackTrace) {
                                           debugPrint(exception.toString());
@@ -301,7 +305,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                                       ),
                               ),
                               9.horizontalSpace,
-                              if (!widget.state.isNoAccessChangingPhoto)
+                              if (canChangePhoto)
                                 CustomButton(
                                   height: 36.h,
                                   width: 220.w,
@@ -312,7 +316,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                                   },
                                   text: "Заменить",
                                 ),
-                              if (widget.state.isNoAccessChangingPhoto)
+                              if (!canChangePhoto)
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -391,7 +395,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
             ),
           ),
 
-          if (!widget.state.isNoAccessChangingPhoto)
+          if (canChangePhoto)
             Positioned(
               top: 485.h,
               child: SizedBox(
@@ -493,6 +497,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                                   currentCity.name ?? "",
                                   () {
                                     cityController.text = currentCity.name ?? "??";
+                                    isCityWrong = false;
                                     focusNode.unfocus();
                                     setSelectedCity(currentCity);
                                     ref.read(settingsProvider.notifier).closeDropDown();
@@ -541,16 +546,13 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                               width: 150.w,
                               child: CustomTextField(
                                 hintText: LocalStorage.getGender().isEmpty
-                                    ? "Не указано"
-                                    : "",
-                                isError:
-                                    widget.state.missingInfo.contains("gender"),
+                                    ? "Не указано" : "",
+                                isError: widget.state.missingInfo.contains("gender"),
                                 focusNode: genderFocusNode,
                                 style: GoogleFonts.raleway(
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.w400),
-                                contentPadding:
-                                    EdgeInsets.zero.copyWith(left: 8.w),
+                                contentPadding: EdgeInsets.zero.copyWith(left: 8.w),
                                 onTap: () async {
                                   if (!genderDropDownOpened) {
                                     widget.event.openGenderDropDown();
@@ -608,14 +610,15 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                                       shrinkWrap: true,
                                       itemCount: DummyData().genders.length,
                                       itemBuilder: (context, index) {
-                                        final current =
-                                            DummyData().genders[index];
+                                        final current = DummyData().genders[index];
                                         return _listiles(
                                           current,
                                           () {
                                             genderController.text = current;
+                                            isGenderWrong = false;
                                             genderFocusNode.unfocus();
                                             widget.event.closeGenderDropDown();
+                                            setState(() {});
                                           },
                                         );
                                       },
@@ -688,7 +691,7 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
 
           // buttons
           Positioned(
-            top: widget.state.isNoAccessChangingPhoto ? 490.h : 535.h,
+            top: !canChangePhoto ? 490.h : 535.h,
             child: Consumer(builder: (context, ref, child) {
               final mapEvent = ref.watch(mapProvider.notifier);
               final cityDropDownOpened = ref.watch(settingsProvider).dropDownOpened;
@@ -731,12 +734,32 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                             AppHelpers.getBirthdayLikeInServer(birthdayController.text) : "";
                           final bool birthdayChanged = birthdayController.text.length == 10 && !isBirhdayWrong && 
                             LocalStorage.getUserBirthday() != birthdaySendToServer && birthdaySendToServer.isNotEmpty;
-                            if (isBirhdayWrong || isNameWrong || isSurnameWrong || birthdayController.text.length < 10) {
+                            /* if (isBirhdayWrong || isNameWrong || isSurnameWrong || birthdayController.text.length < 10) {
                               if (!isBirhdayWrong && birthdayController.text.length < 10 ) {
                                 isBirhdayWrong = true;
                                 setState(() {});
                               }
-                            } else{
+                            } */
+                           if (nameController.text.trim().length < 2 || lastNameController.text.trim().length <2 || 
+                                birthdayController.text.length < 10 || cityController.text.isEmpty || genderController.text.isEmpty) {
+                             if (!isBirhdayWrong && birthdayController.text.length < 10 ) {
+                                birthdayErrorMes = AppHelpers.getBirthdayErrorMes(birthdayController.text.trim());
+                                isBirhdayWrong = true; 
+                              }
+                              if (nameController.text.trim().length < 2 && !isNameWrong) {
+                                isNameWrong = true;
+                              }
+                              if (lastNameController.text.trim().length < 2 && !isSurnameWrong) {
+                                isSurnameWrong = true;
+                              }
+                              if (cityController.text.isEmpty && !isCityWrong) {
+                                isCityWrong = true;
+                              }
+                              if (genderController.text.isEmpty && !isGenderWrong) {
+                                isGenderWrong = true;
+                              }
+                              setState(() {});
+                           } else{
                             // check whether user added new data
                               if (LocalStorage.getUserName() != nameController.text.trim()) {
                                 await widget.event.patchName(nameController.text.trim(), context);
@@ -780,14 +803,14 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                           text: "Сохранить",
                         ),
                   ],),
-                    (isBirhdayWrong || isNameWrong || isSurnameWrong) ? 8.verticalSpace : 0.verticalSpace,
-                    if(isBirhdayWrong || isNameWrong || isSurnameWrong)
+                    (isBirhdayWrong || isNameWrong || isSurnameWrong || isGenderWrong || isCityWrong) ? 8.verticalSpace : 0.verticalSpace,
+                    if(isBirhdayWrong || isNameWrong || isSurnameWrong || isGenderWrong || isCityWrong)
                     SizedBox(
                       width: 310.w,
                       child: InterText(
                         text: (isNameWrong && isSurnameWrong) ? "Имя и Фамилия должны содержать хотя бы по 2 буквы" : isNameWrong ? 
-                        "Имя должно содержать хотя бы 2 буквы" : isSurnameWrong ? "Фамилия должна содержать хотя бы 2 буквы"  
-                            : birthdayErrorMes,
+                        "Имя должно содержать хотя бы 2 буквы" : isSurnameWrong ? "Фамилия должна содержать хотя бы 2 буквы" : isGenderWrong ? "Выберите пол" : 
+                          isCityWrong ? "Выберите город" : birthdayErrorMes,
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w400,
                         color: AppColors.redText,

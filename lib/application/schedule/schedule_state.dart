@@ -9,7 +9,8 @@ part 'schedule_state.freezed.dart';
 @freezed
 class ScheduleState with _$ScheduleState {
   const factory ScheduleState({
-    @Default(false) bool isloading,
+    @Default(false) bool isUserSchedulesLoading,
+    @Default(false) bool isCompletedSchedulesLoading,
     @Default({}) Map<String, dynamic> schedulesInMapForm,
     @Default([]) List<UserSchedulesResponse> listOfuserSchedules,
     @Default([]) List<CompletedSchedule> waitingSchedules,

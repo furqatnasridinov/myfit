@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
+import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
@@ -164,7 +165,15 @@ class LessonChanged extends StatelessWidget {
                     color: AppColors.greyText,
                   ),
                   6.horizontalSpace,
-                  batteryIcon,
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final bool showBattery = ref.watch(settingsProvider).currentSubscribtion != null;
+                      if (showBattery) {
+                        return batteryIcon;
+                      }
+                      return const SizedBox();
+                    },
+                  ),
                 ],
               ),
             ],

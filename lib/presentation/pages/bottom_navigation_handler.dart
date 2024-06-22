@@ -1,6 +1,7 @@
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/dynamic_link_handler.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
@@ -10,9 +11,22 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 @RoutePage()
-class BottomNavigationHandlerScreen extends StatelessWidget {
+class BottomNavigationHandlerScreen extends StatefulWidget {
   const BottomNavigationHandlerScreen({super.key});
 
+  @override
+  State<BottomNavigationHandlerScreen> createState() => _BottomNavigationHandlerScreenState();
+}
+
+class _BottomNavigationHandlerScreenState extends State<BottomNavigationHandlerScreen> {
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      DynamicLinkHandler.instance.initialize(context);
+    });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;

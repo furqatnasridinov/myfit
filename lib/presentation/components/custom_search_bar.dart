@@ -495,7 +495,7 @@ Widget avatarOnly(List<String> missingInfos, String avatar,
               : CircleAvatar(
                   radius: 17.r,
                   backgroundImage:
-                      NetworkImage("http://77.222.53.122/image/$avatar"),
+                      NetworkImage("${AppConstants.baseUrl}/image/$avatar"),
                   onBackgroundImageError: (exception, stackTrace) {
                     debugPrint(exception.toString());
                   },
@@ -549,14 +549,17 @@ Widget notificationIcon(BuildContext context) {
                 return NotificationBottomSheet(
                   list: ref.watch(notificationProvider).onlyNewNotifications,
                   onNavigate: (){
-                    // close bottom sheet
                     notifier.getAllNotifications();
+                    // close bottom sheet
                     context.popRoute();
                     context.router.push(const NotificationRoute());
                   },
                 );
               },
-            );
+            ).whenComplete(() {
+              // when closes, to get new list with read notifs
+              notifier.getAllNotifications();
+            },);
           }else{
             context.router.push(const NotificationRoute());
           }
