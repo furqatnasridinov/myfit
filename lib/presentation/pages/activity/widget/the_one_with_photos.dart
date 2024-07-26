@@ -51,8 +51,7 @@ class TheOneWithPhotos extends StatelessWidget {
                 itemCount: photosOfSelectedActivity.length,
                 itemBuilder: (context, index) {
                   final current = photosOfSelectedActivity[index];
-                  String linkToCompressedPhoto =
-                      event.getLinkToCompressedPhoto(current);
+                  String linkToCompressedPhoto = event.getLinkToCompressedPhoto(current);
                   return InkWell(
                     onTap: () {
                       context.router.push(PhotoViewRoute(

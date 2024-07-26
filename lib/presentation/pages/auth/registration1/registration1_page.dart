@@ -44,8 +44,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
         // Check if the cursor is at the end of the text
         if (phoneController.selection.start != currentText.length) {
           // If not, move it to the end
-          phoneController.selection =
-              TextSelection.collapsed(offset: currentText.length);
+          phoneController.selection = TextSelection.collapsed(offset: currentText.length);
         } else {
           // Remove mask characters from the input
           String input =
@@ -145,7 +144,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                                 // Remove all non-numeric characters except the plus sign
                                 if (!isLoading) {
                                   String unformattedPhone = phoneController.text.replaceAll(RegExp(r'[^\d+]'), '');
-                                 event.setPhone(unformattedPhone);
+                                  event.setPhone(unformattedPhone);
                                 }
                               },
                               onTapOutside: (onTapOutside) {

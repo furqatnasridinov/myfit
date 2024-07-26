@@ -1,3 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:myfit/application/activity/activity_notifier.dart';
+import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
@@ -11,19 +15,20 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 @RoutePage()
-class BottomNavigationHandlerScreen extends StatefulWidget {
+class BottomNavigationHandlerScreen extends ConsumerStatefulWidget {
   const BottomNavigationHandlerScreen({super.key});
 
   @override
-  State<BottomNavigationHandlerScreen> createState() => _BottomNavigationHandlerScreenState();
+  ConsumerState<BottomNavigationHandlerScreen> createState() => _BottomNavigationHandlerScreenState();
 }
 
-class _BottomNavigationHandlerScreenState extends State<BottomNavigationHandlerScreen> {
+class _BottomNavigationHandlerScreenState extends ConsumerState<BottomNavigationHandlerScreen> {
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      DynamicLinkHandler.instance.initialize(context);
+      final notifier = ref.read(settingsProvider.notifier);
+      DynamicLinkHandler.instance.initialize(context, notifier);
     });
     super.initState();
   }
@@ -45,6 +50,7 @@ class _BottomNavigationHandlerScreenState extends State<BottomNavigationHandlerS
                 final mapPageBottomCardShown = ref.watch(mapProvider).isGymsPopupShown;
                 final showOnlyKnownOnMap = ref.watch(mapProvider).showOnlyKnown;
                 final recommendedShown = ref.watch(mapProvider).showRecommended;
+                final ActivityNotifier activityNotifier = ref.read(activityProvider.notifier);
                 final event = ref.read(mapProvider.notifier);
                 return NavigationBar(
                   backgroundColor: Colors.white,
@@ -93,7 +99,7 @@ class _BottomNavigationHandlerScreenState extends State<BottomNavigationHandlerS
                             );
                             await event.getGetListOfGymsFromDiapozone();
                             await event.setFlexes();
-                            await event.getAllMarkers();
+                            await event.getAllMarkers(context, activityNotifier: activityNotifier);
                             event.addUserLocationMarker();
                           });
                         }

@@ -1,9 +1,12 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, use_build_context_synchronously
 import 'dart:async';
+import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart' as cluster;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:myfit/application/activity/activity_notifier.dart';
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
+import 'package:myfit/infrastructure/models/data/place_model.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/presentation/components/animation_button_effect.dart';
 import 'package:myfit/presentation/components/components.dart';
@@ -27,16 +30,18 @@ class MapScreen extends ConsumerStatefulWidget {
   ConsumerState<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends ConsumerState<MapScreen>
-    with WidgetsBindingObserver {
+class _MapScreenState extends ConsumerState<MapScreen> with WidgetsBindingObserver {
   late ScrollController activitiesListController;
-  final Completer<GoogleMapController> _controller =
-      Completer<GoogleMapController>();
+  final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
   bool wasLocationPermissionDenied = false;
+  Set<Marker> markers = {};
+  late cluster.ClusterManager? clusterManager;
+
   @override
   void initState() {
     super.initState();
     activitiesListController = ScrollController();
+    clusterManager = initClusterManager();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (ref.watch(mapProvider).showMapOnly) {
@@ -53,6 +58,42 @@ class _MapScreenState extends ConsumerState<MapScreen>
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
     activitiesListController.dispose();
+  }
+
+  cluster.ClusterManager initClusterManager() {
+    return cluster.ClusterManager<PlaceModel>(
+        [], // empty while first init
+        updateMarkers,
+        markerBuilder: markerBuilder,
+        extraPercent: 1,
+        //maxDistParams: cluster.MaxDistParams(10.0),
+        //stopClusteringZoom: 100.0,
+        //levels: [1, 4.25, 6.75, 8.25, 11.5, 14.5, 16.0, 16.5, 20.0, 21.0, 23.0, 25.0, 27.0, 29.0, 31.0, 33.0, 35.0, 37.0, 39.0, 41.0],
+        //clusterAlgorithm: cluster.ClusterAlgorithm.MAX_DIST
+    );
+  }
+
+   Future<Marker> Function(cluster.Cluster) get markerBuilder =>
+      (cluster) async {
+        return Marker(
+            markerId: MarkerId(cluster.getId()),
+            position: cluster.location,
+            onTap: () {
+              debugPrint(cluster.items.toString());
+            },
+            icon:  await ref.read(mapProvider.notifier).getClusterBitmap(
+                text: cluster.isMultiple ? cluster.count.toString() : "",
+                isMultiple: cluster.isMultiple,
+                userAvatar: ref.watch(settingsProvider).avatar,
+                isUser: ref.read(mapProvider.notifier).isUserLocation(cluster.location),
+              ),
+            );
+      };
+
+ void updateMarkers(Set<Marker> markers) {
+   setState(() {
+      this.markers = markers;
+   });
   }
 
   @override
@@ -80,9 +121,14 @@ class _MapScreenState extends ConsumerState<MapScreen>
 
   Future<void> checkPermissionAndSetLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      permission = await Geolocator.requestPermission();
+    }
     if (permission == LocationPermission.always ||
         permission == LocationPermission.whileInUse) {
-      ref.read(mapProvider.notifier).setUserPosition().then((value) async {
+      final String avatar = ref.watch(settingsProvider).avatar;
+      ref.read(mapProvider.notifier).setUserPosition(avatar: avatar).then((value) async {
         _controller.future.then((controller) async {
           await controller.animateCamera(
             CameraUpdate.newCameraPosition(
@@ -96,7 +142,11 @@ class _MapScreenState extends ConsumerState<MapScreen>
             ),
           );
         });
+        //clusterManager?.updateMap();
       });
+    }else{
+      // чтобы при повторном отказе не еще раз
+      wasLocationPermissionDenied = false;
     }
   }
 
@@ -108,14 +158,17 @@ class _MapScreenState extends ConsumerState<MapScreen>
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
+    final double height = MediaQuery.of(context).size.height;
+    final double width = MediaQuery.of(context).size.width;
     final state = ref.watch(mapProvider);
     final event = ref.read(mapProvider.notifier);
+    final ActivityNotifier activityNotifier = ref.read(activityProvider.notifier);
+
     ref.listen(mapProvider, (previous, next) {
-      if (previous!.showRecommended != next.showRecommended &&
-          !next.showRecommended) {
+      if (previous!.showRecommended != next.showRecommended && !next.showRecommended) {
         _controller.future.then((controller) async {
           await controller.animateCamera(
             CameraUpdate.newCameraPosition(
@@ -129,6 +182,12 @@ class _MapScreenState extends ConsumerState<MapScreen>
             ),
           );
         });
+      }
+
+      // when we get the list of markers, we set them to cluster manager
+      if (previous.listOfMarkers != next.listOfMarkers && next.listOfMarkers.isNotEmpty) {
+        //clusterManager?.setItems(AppHelpers.getPlacemodels(next.listOfMarkers));
+        //clusterManager?.updateMap();
       }
     });
     bool isAnyOpened = state.activitiesWithGymsInsideFromSelectedDiapozone.any((element) => element.isOpened);
@@ -147,7 +206,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
               duration: const Duration(milliseconds: 300),
               alignment: Alignment.bottomCenter,
               curve: Curves.easeInOut,
-              height: height * state.topFlexValue,
+              height: height * state.topFlexValue, 
               child: SizedBox(
                 child: CustomScrollView(
                     controller: activitiesListController,
@@ -199,14 +258,18 @@ class _MapScreenState extends ConsumerState<MapScreen>
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height,
+                            width: width,
+                            height: height,
                             child: GoogleMap(
-                              padding: EdgeInsets.only(bottom: height * (state.showMapOnly ? 0.5 : 0.7)),
+                              padding: EdgeInsets.only(
+                                bottom:height * (state.showMapOnly ? 0.5 : 0.7),
+                              ),
                               zoomControlsEnabled: false,
                               compassEnabled: false,
                               mapType: MapType.normal,
                               myLocationButtonEnabled: false,
+                              buildingsEnabled: false,
+                              mapToolbarEnabled: false,
                               //liteModeEnabled: true,
                               initialCameraPosition: CameraPosition(
                                 target: event.getInitialLatLon(),
@@ -214,6 +277,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                               ),
                               onMapCreated:(GoogleMapController controller) async {
                                 _controller.complete(controller);
+                                clusterManager?.setMapId(controller.mapId);
                                 await event.getGymsList(
                                   context,
                                   ref.watch(settingsProvider).knownActivities,
@@ -221,10 +285,14 @@ class _MapScreenState extends ConsumerState<MapScreen>
                                 );
                                 await event.getGetListOfGymsFromDiapozone();
                                 event.setFlexes();
-                                await event.getAllMarkers();
-                                await event.addUserLocationMarker();
+                                await event.addUserLocationMarker(avatar: ref.watch(settingsProvider).avatar);
+                                await event.getAllMarkers(context, activityNotifier: activityNotifier);
                               },
-                              markers: state.listOfMarkers.isEmpty ? {} : state.listOfMarkers,
+                              onCameraMove: (position) {
+                                //clusterManager?.onCameraMove(position);
+                              },
+                              //onCameraIdle: clusterManager?.updateMap,
+                              markers: state.listOfMarkers //markers,
                             ),
                           ),
                         ],
@@ -292,7 +360,10 @@ class _MapScreenState extends ConsumerState<MapScreen>
                       padding: EdgeInsets.only(right: 10.w),
                       child: GestureDetector(
                         onTap: () {
-                          event.locationButtonFunction(_controller);
+                          event.locationButtonFunction(
+                            _controller,
+                            avatar: ref.watch(settingsProvider).avatar,
+                          );
                         },
                         child: AnimationButtonEffect(
                           child: CustomCard(

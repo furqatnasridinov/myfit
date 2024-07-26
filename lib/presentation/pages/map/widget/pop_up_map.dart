@@ -98,9 +98,9 @@ class PopUpMap extends StatelessWidget {
                           color: AppColors.backgroundColor,
                         ),
                         child: SvgPicture.asset(
-                          AppHelpers().getIconSvg(name!).isEmpty
+                          AppHelpers.getIconSvg(name!).isEmpty
                               ? "assets/svg/gym.svg"
-                              : AppHelpers().getIconSvg(name),
+                              : AppHelpers.getIconSvg(name),
                           height: 15.h,
                         ),
                       );

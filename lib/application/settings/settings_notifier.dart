@@ -503,13 +503,21 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     }
   }
 
-  Future<void> pickImageFromGallery(BuildContext context) async {
+  Future<void> pickImageFromGallery(BuildContext context, {bool sendRuest = false }) async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      await uploadPicture(context, image: File(pickedFile.path));
-      await getUser(context);
+      // save image to local storage to show like preview
+      state = state.copyWith(avatarTmp: pickedFile.path);
+      if (sendRuest) {
+        await uploadPicture(context, image: File(pickedFile.path));
+        await getUser(context);
+      }
     }
+  }
+
+  void clearAvatarTmp() {
+    state = state.copyWith(avatarTmp: "");
   }
 
   Future<void> getUser(BuildContext context) async {
@@ -612,10 +620,12 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       final response = await _settingsRepositoryInterface.getUserSubscribtions();
       response.when(success: (data) {
         if (data["operationResult"] == "OK") {
-          final listFromServer = data["object"] as List;
+          final listFromServer = data["object"]["userSubscriptions"] as List;
+          final bool autoRenewal = data["object"]["autoRenewal"] ?? false;
+          setAutoRenewal(autoRenewal);
           if (listFromServer.isNotEmpty) {
             // первый json как currentSubscribtion
-            final userSubscription = UserSubscription(
+            final currentSub = UserSubscription(
               subscription:Subscription.fromJson(listFromServer[0]["subscription"]),
               autoRenewal: listFromServer[0]["autoRenewal"],
               firstBuyData: listFromServer[0]["firstBuyData"],
@@ -623,10 +633,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
               prolongationData: listFromServer[0]["prolongationData"],
               endDataFormatted: getWhenCurrentSubEnds(listFromServer[0]["updateData"]),
             );
-            state = state.copyWith(
-              currentSubscribtion: userSubscription,
-              autoRenewal: userSubscription.autoRenewal ?? false,
-            );
+            state = state.copyWith(currentSubscribtion: currentSub);
             // второй json как nextSubscribtion
             if (listFromServer.length > 1) {
               final nextSubscription = UserSubscription(
@@ -635,7 +642,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
                 firstBuyData: listFromServer[1]["firstBuyData"],
                 endData: listFromServer[1]["endData"],
                 prolongationData: listFromServer[1]["prolongationData"],
-                endDataFormatted: "46 дней",
+                endDataFormatted: "",
               );
               state = state.copyWith(nextSubscribtion: nextSubscription);
             }
@@ -647,6 +654,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     } else {
       AppHelpers.showCheckTopSnackBar(contex);
     }
+  }
+
+  void setAutoRenewal(bool val) {
+    state = state.copyWith(autoRenewal: val);
   }
 
   Future<void> purchaseSubscription(BuildContext context,
@@ -725,7 +736,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 
 
-  Future<void> applyPromocede(BuildContext context, {required String code}) async{
+  Future<void> applyPromocede(BuildContext context, {required String code, bool autoRefresh = true}) async{
     final connected = await AppConnectivity().connectivity();
     if (connected) {
       state = state.copyWith(isPromocodeLoading: true);
@@ -750,7 +761,9 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
             getAllAvailableSubscribtions(context);
             getPromocodesQueue(context);
             //getPromocodes(context);
-            refreshDataAfterPromocodeSubmitted();
+            if (autoRefresh) {
+              refreshDataAfterPromocodeSubmitted();
+            }
         }
       }, failure: (error, statusCode, operationInfo) {
         if (statusCode == 500) {
@@ -764,7 +777,9 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           isPromocodeLoading: false,
           isPromocodeError: true,
         );
-       // refreshDataAfterPromocodeSubmitted();
+        if (autoRefresh) {
+          refreshDataAfterPromocodeSubmitted();
+        }
       });
     } else {
       AppHelpers.showCheckTopSnackBar(context);
@@ -809,6 +824,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
               listToCollect.add(promocode);
             }
            state = state.copyWith(promocodesQueue: listToCollect);
+          }else{
+            state = state.copyWith(promocodesQueue: []);
           }
         }
       }, failure: (error, statusCode, operationInfo) {
@@ -1064,6 +1081,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     LocalStorage.setReminderDisabled(false);
   }
 
+  void setShowPromocodeResponse(bool val) {
+    state = state.copyWith(showPromocodeResponseInPromodesSection: val);
+  }
+
   void getReminderDisabledOrEnabled() {
     if (LocalStorage.isReminderDisabled()) {
       state = state.copyWith(isReminderDisabled: true);
@@ -1104,19 +1125,30 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 
   Future<void> refreshDataAfterPromocodeSubmitted()async{
-    await Future.delayed(const Duration(seconds: 4));
+    await Future.delayed(const Duration(seconds: 3));
     state.promocodeController?.clear();
     if (state.isPromocodeSuccess) {
       state = state.copyWith(
         isPromocodeSuccess: false,
         promocodeValue: "",
+        showPromocodeResponseInPromodesSection: false,
       );
     }
     if (state.isPromocodeError) {
       state = state.copyWith(
         isPromocodeError: false,
         promocodeErrorMessage: "",
+        showPromocodeResponseInPromodesSection: false,
       );
     }
+  }
+
+  void setIsFromReferalDeepLink(bool val) {
+    state = state.copyWith(isFromReferalDeepLink: val);
+  }
+
+  void setReferalDeepLinkValue(String value) {
+    List<String> parts = value.split("inv/");
+    state = state.copyWith(referalDeepLinkValue: parts[1]);
   }
 }

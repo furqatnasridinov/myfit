@@ -337,7 +337,7 @@ Widget listOfActivitiesEachItem(
                             padding: EdgeInsets.all(4.r),
                             // child: SvgPicture.asset("assets/svg/boxing.svg"),
                             child: SvgPicture.asset(
-                                AppHelpers().getIconSvg(lessonType)),
+                                AppHelpers.getIconSvg(lessonType)),
                           ),
                         ),
                       ),
@@ -532,29 +532,51 @@ Widget _plusButton(
           dropDownItemsList: [
             {
               'title': 'Найти что то новое',
-              'icon': SvgPicture.asset(
-                "assets/svg/search.svg",
-                colorFilter: const ColorFilter.mode(
-                  Color.fromRGBO(62, 134, 245, 1),
-                  BlendMode.srcIn,
+              'icon': SizedBox(
+                height: 28.h,
+                width: 28.w,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: AppColors.backgroundColor,
+                    borderRadius: BorderRadius.circular(6.r),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(3.r),
+                    child: SvgPicture.asset(
+                      "assets/svg/search.svg",
+                      colorFilter: const ColorFilter.mode(
+                        Color.fromRGBO(62, 134, 245, 1),
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
                 ),
-                height: 18.h,
-                width: 18.w,
               ),
               'action': () => {context.router.push(const MapRoute())}
             },
             if (ref.watch(settingsProvider).knownActivities.isNotEmpty)
               {
                 'title': 'Выбрать из уже знакомых занятий',
-                'icon': SvgPicture.asset(
-                  "assets/svg/copy.svg",
-                  colorFilter: const ColorFilter.mode(
-                    Color.fromRGBO(62, 134, 245, 1),
-                    BlendMode.srcIn,
+                'icon': SizedBox(
+                height: 28.h,
+                width: 28.w,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: AppColors.backgroundColor,
+                    borderRadius: BorderRadius.circular(6.r),
                   ),
-                  height: 18.h,
-                  width: 18.w,
+                  child: Padding(
+                    padding: EdgeInsets.all(3.r),
+                    child: SvgPicture.asset(
+                      "assets/svg/copy.svg",
+                      colorFilter: const ColorFilter.mode(
+                        Color.fromRGBO(62, 134, 245, 1),
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
                 ),
+              ),
                 'action': () => {
                       if (showRecommended)
                         {

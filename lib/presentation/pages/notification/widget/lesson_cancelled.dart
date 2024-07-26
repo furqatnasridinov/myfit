@@ -53,7 +53,7 @@ class LessonCancelled extends StatelessWidget {
                     child: Padding(
                       padding: EdgeInsets.all(3.r),
                       child: SvgPicture.asset(
-                        AppHelpers().getIconSvg(lessonType),
+                        AppHelpers.getIconSvg(lessonType),
                       ),
                     ),
                   ),

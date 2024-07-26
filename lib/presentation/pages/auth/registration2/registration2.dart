@@ -175,8 +175,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                         onTapOutside: (onTapOutside) {
                           FocusScope.of(context).unfocus();
                         },
-                        androidSmsAutofillMethod:
-                            AndroidSmsAutofillMethod.smsUserConsentApi,
+                        androidSmsAutofillMethod:AndroidSmsAutofillMethod.smsUserConsentApi,
                         closeKeyboardWhenCompleted: true,
                         controller: controller,
                         onChanged: (value) {
@@ -192,8 +191,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                         defaultPinTheme: event.getDefaultPinTheme(),
                         focusedPinTheme: event.getDefaultPinTheme(),
                         disabledPinTheme: event.getDefaultPinTheme(),
-                        submittedPinTheme: isCodeError
-                            ? event.getErrorPinTheme() : event.getSubmittedPinTheme(),
+                        submittedPinTheme: isCodeError ? event.getErrorPinTheme() : event.getSubmittedPinTheme(),
                       ),
                     ),
 
@@ -285,13 +283,12 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                         }
                       },
                       child: InterText(
-                        text: counterDown == 0
-                            ? "Отправить снова" : "Отправить ещё раз через $counterDown с",
+                        text: counterDown == 0 ? "Отправить снова" : "Отправить ещё раз через $counterDown с",
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w400,
                         color: AppColors.blueColor,
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),

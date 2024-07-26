@@ -3,7 +3,6 @@ import 'package:myfit/domain/handlers/api_result.dart';
 import 'package:myfit/domain/handlers/http_service.dart';
 import 'package:myfit/domain/handlers/network_exceptions.dart';
 import 'package:myfit/domain/interface/activity.dart';
-import 'package:myfit/infrastructure/models/response/get_gym_activities_response.dart';
 import 'package:myfit/infrastructure/models/response/gym_response.dart';
 
 class ActivityRepository implements ActivityRepositoryInterface {
@@ -25,13 +24,29 @@ class ActivityRepository implements ActivityRepositoryInterface {
   }
 
   @override
-  Future<ApiResult<GetGymActivitiesResponse>> getActivities(
+  Future<ApiResult<Map<String,dynamic>>>  getActivities(
       {required int gymId}) async {
     try {
       final client = inject<HttpService>().clientDio();
       final response = await client.get("api/gym/$gymId/types");
       return ApiResult.success(
-        data: GetGymActivitiesResponse.fromJson(response.data),
+        data: response.data,
+      );
+    } catch (e) {
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      );
+    }
+  }
+
+   @override
+  Future<ApiResult<Map<String, dynamic>>> getLessonTypesAndSubcategories({required int gymId}) async{
+    try {
+      final client = inject<HttpService>().clientDio();
+      final response = await client.get("api/admin/gyms/$gymId/lessonTypes");
+      return ApiResult.success(
+        data: response.data,
       );
     } catch (e) {
       return ApiResult.failure(
@@ -117,4 +132,6 @@ class ActivityRepository implements ActivityRepositoryInterface {
       );
     }
   }
+  
+ 
 }

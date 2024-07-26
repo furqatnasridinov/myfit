@@ -47,16 +47,16 @@ class DiapozoneBottomSheet extends StatelessWidget {
         ),
         20.verticalSpace,
         Consumer(builder: (context, ref, child) {
-          final listOfBool = ref.watch(mapProvider).listOfBool;
+          final double selectedDiapozone = ref.watch(mapProvider).selectedDiapozone;
           return Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             RadioButton700(
               title: '1 км',
               ontap: () {
-                event.changeDiapozoneAndGetActivities(0, 1, context);
+                event.changeDiapozoneAndGetActivities(1, context);
               },
-              isSelected: listOfBool[0],
+              isSelected: selectedDiapozone.toInt() == 1,
             ),
             Expanded(
               child: Divider(
@@ -66,27 +66,29 @@ class DiapozoneBottomSheet extends StatelessWidget {
             RadioButton700(
                 title: '2 км',
                 ontap: () {
-                  event.changeDiapozoneAndGetActivities(1, 2, context);
+                  event.changeDiapozoneAndGetActivities(2, context);
                 },
-                isSelected: listOfBool[1]),
+                  isSelected: selectedDiapozone.toInt() == 2,
+                ),
             Expanded(
               child: Divider(color: Colors.blue.shade100),
             ),
             RadioButton700(
                 title: '3 км',
                 ontap: () {
-                  event.changeDiapozoneAndGetActivities(2, 3, context);
+                  event.changeDiapozoneAndGetActivities(3, context);
                 },
-                isSelected: listOfBool[2]),
+                  isSelected: selectedDiapozone.toInt() == 3,
+                ),
             Expanded(
               child: Divider(color: Colors.blue.shade100),
             ),
             RadioButton700(
               title: '5+ km',
               ontap: () {
-                event.changeDiapozoneAndGetActivities(3, 5, context);
+                event.changeDiapozoneAndGetActivities(5, context);
               },
-              isSelected: listOfBool[3],
+              isSelected: selectedDiapozone.toInt() == 5,
             ),
           ],
         );

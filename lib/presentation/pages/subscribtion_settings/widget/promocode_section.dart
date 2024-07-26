@@ -34,6 +34,7 @@ class PromocodeSection extends StatelessWidget {
         final String promocodeErrorMessage = ref.watch(settingsProvider).promocodeErrorMessage;
         final String newPromocodeDescription = ref.watch(settingsProvider).newPromocodeDescription;
         final TextEditingController controller = ref.watch(settingsProvider).promocodeController ?? TextEditingController();
+        final bool showPromocodeResponse = ref.watch(settingsProvider).showPromocodeResponseInPromodesSection;
           return Column(
             children: [
               Row(
@@ -74,78 +75,83 @@ class PromocodeSection extends StatelessWidget {
               ),
               16.verticalSpace,
               CustomCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 40.h,
-                          child: Row(
-                            children: [
-                              Expanded(
-                                //height: 40.h,
-                                child: CustomTextField(
-                                  //hintText: "Например : ref1811friend",
-                                  hintText: "Введите промокод",
-                                  controller: controller,
-                                  style: GoogleFonts.raleway(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w500,
-                                    fontFeatures: const [FontFeature.liningFigures()],
-                                  ),
-                                  onChanged: (value) {
-                                    notifier.setPromocodeValue(value.trim());
-                                  },
-                                  onTapOutside: (p0) {
-                                    FocusManager.instance.primaryFocus?.unfocus();
-                                  },
-                                  contentPadding: EdgeInsets.zero.copyWith(left: 6.w),
-                                  prefixIcon: Padding(
-                                    padding: EdgeInsets.all(6.r),
-                                    child: SvgPicture.asset("assets/svg/promocode.svg"),
-                                  ),
-                                ),
-                              ),
-                              10.horizontalSpace,
-                              AnimationButtonEffect(
-                                disabled: promoValue.isEmpty,
-                                child: GestureDetector(
-                                  onTap: ()  {
-                                     notifier.applyPromocede(context, code: promoValue);
-                                  },
-                                  child: SizedBox(
-                                    width: 40.w,
-                                    height: 40.h,
-                                    child: DecoratedBox(
-                                      decoration: BoxDecoration(
-                                          color: promoValue.isEmpty ? AppColors.disabledButton :AppColors.blueColor,
-                                          borderRadius: BorderRadius.circular(8.r),
-                                          border: Border.all(
-                                              color: promoValue.isEmpty
-                                                  ? AppColors.disabledButton
-                                                  : AppColors.blueBorder)),
-                                      child: isPromocodeLoading
-                                          ? const CupertinoActivityIndicator(color: Colors.white) :
-                                       Icon(Icons.done,color: Colors.white, size: 18.sp),
+                    child: AnimatedSize(
+                      duration: const Duration(milliseconds: 300),
+                      alignment: Alignment.topCenter,
+                      curve: Curves.easeInOut,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 40.h,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  //height: 40.h,
+                                  child: CustomTextField(
+                                    //hintText: "Например : ref1811friend",
+                                    hintText: "Введите промокод",
+                                    controller: controller,
+                                    style: GoogleFonts.raleway(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w500,
+                                      fontFeatures: const [FontFeature.liningFigures()],
+                                    ),
+                                    onChanged: (value) {
+                                      notifier.setPromocodeValue(value.trim());
+                                    },
+                                    onTapOutside: (p0) {
+                                      FocusManager.instance.primaryFocus?.unfocus();
+                                    },
+                                    contentPadding: EdgeInsets.zero.copyWith(left: 6.w),
+                                    prefixIcon: Padding(
+                                      padding: EdgeInsets.all(6.r),
+                                      child: SvgPicture.asset("assets/svg/promocode.svg"),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                                10.horizontalSpace,
+                                AnimationButtonEffect(
+                                  disabled: promoValue.isEmpty,
+                                  child: GestureDetector(
+                                    onTap: ()  {
+                                       notifier.setShowPromocodeResponse(true);
+                                       notifier.applyPromocede(context, code: promoValue);
+                                    },
+                                    child: SizedBox(
+                                      width: 40.w,
+                                      height: 40.h,
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                            color: promoValue.isEmpty ? AppColors.disabledButton :AppColors.blueColor,
+                                            borderRadius: BorderRadius.circular(8.r),
+                                            border: Border.all(
+                                                color: promoValue.isEmpty
+                                                    ? AppColors.disabledButton
+                                                    : AppColors.blueBorder)),
+                                        child: isPromocodeLoading
+                                            ? const CupertinoActivityIndicator(color: Colors.white) :
+                                         Icon(Icons.done,color: Colors.white, size: 18.sp),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        if(isPromocodeError || isPromocodeSuccess)
-                        Padding(
-                          padding: EdgeInsets.only(top: 16.h),
-                          child: InterText(
-                            text: isPromocodeError
-                                ? promocodeErrorMessage
-                                : "Промокод активирован: ($newPromocodeDescription)",
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w400,
-                            color: isPromocodeError ? AppColors.redText : Colors.black,
-                          ),
-                        )
-                      ],
+                          if((isPromocodeError || isPromocodeSuccess) && showPromocodeResponse)
+                          Padding(
+                            padding: EdgeInsets.only(top: 16.h),
+                            child: InterText(
+                              text: isPromocodeError ? promocodeErrorMessage
+                                  : "Промокод активирован: ($newPromocodeDescription)",
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w400,
+                              color: isPromocodeError ? AppColors.redText : Colors.black,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
           ]);

@@ -7,3 +7,5 @@ export 'activity_description.dart';
 export 'speciality.dart';
 export 'remaining_visits.dart';
 export 'gym_description.dart';
+export 'the_one_with_lessons.dart';
+export 'selected_lesson_and_subcategory.dart';

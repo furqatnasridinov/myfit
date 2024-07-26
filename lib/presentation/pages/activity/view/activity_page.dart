@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:myfit/presentation/components/shake_widget.dart';
-import 'package:myfit/presentation/pages/activity/widget/the_one_with_lessons.dart';
+import 'package:myfit/presentation/pages/activity/widget/podActivities.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:web_socket_channel/io.dart';
@@ -64,9 +64,7 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
               // get infos after the selected activity is set
               .then((value) {
             ref.read(activityProvider.notifier)
-              ..getLessonsOfSelectedActivity(ref.watch(activityProvider).selectedActivity!, true)
-              ..getPhotosOfSelectedActivity(ref.watch(activityProvider).selectedActivity!)
-              ..getDescribtionAndPeculiarities(ref.watch(activityProvider).selectedActivity!);
+              .getLessonsOfSelectedActivity(ref.watch(activityProvider).selectedActivity!, true);
             // web socket for gettiing new lessons if they were added when the user is on the page
             channel2 = IOWebSocketChannel.connect(
                 Uri.parse("wss://myfit-russia.ru:8443/appGymPanel/${widget.gymId}"),
@@ -152,9 +150,7 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
                 // get infos after the selected activity is set
                 .then((value) {
               ref.read(activityProvider.notifier)
-                ..getPhotosOfSelectedActivity(ref.watch(activityProvider).selectedActivity!)
-                ..getDescribtionAndPeculiarities(ref.watch(activityProvider).selectedActivity!)
-                ..getLessonsOfSelectedActivity(ref.watch(activityProvider).selectedActivity!, true);
+                .getLessonsOfSelectedActivity(ref.watch(activityProvider).selectedActivity!, true);
             });
           await Future.delayed(const Duration(seconds: 1));
           refreshController.refreshCompleted();
@@ -172,7 +168,8 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
                 const GymDescription(),
                 32.verticalSpace,
                 TheOneWithChips(gymId: widget.gymId),
-                 RemainingVisits(shakeKey: shakeKey),
+                const Podactivities(),
+                RemainingVisits(shakeKey: shakeKey),
                 const ActivityDescription(),
                 TheOneWithPhotos(event: event),
                 const Speciality(),
@@ -182,6 +179,7 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
                   gymId: widget.gymId,
                   itemScrollController: itemScrollController,
                 ),
+                 const SelectedLessonAndSubcategory(),
                 TheOneWithLessons(
                   key: calendarSectionKey,
                   gymId: widget.gymId),

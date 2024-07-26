@@ -1,8 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 
 import 'package:app_links/app_links.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:myfit/application/settings/settings_notifier.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/presentation/router/app_router.gr.dart';
 
@@ -16,30 +19,38 @@ final class DynamicLinkHandler  {
   final _appLinks = AppLinks();
 
   /// Initializes the [DynamicLinkHandler].
-  Future<void> initialize(BuildContext context) async {
-    // * Listens to the dynamic links and manages navigation.
+  Future<void> initialize(BuildContext context, SettingsNotifier notifier) async {
+    // * Listens to the dynamic links and manage navigation.
     _appLinks.uriLinkStream.listen((event) {
-      _handleLinkData(event, context);
+      _handleLinkData(event, context, notifier);
     },).onError((error) {
-      log('$error', name: 'Dynamic Link Handler');
+      AppHelpers.showErrorSnack(context, 'Dynamic Link Handler Error: $error');
     });
-    _checkInitialLink(context);
+    //_checkInitialLink(context,notifier);
   }
 
-  Future<void> _checkInitialLink(BuildContext context) async {
+  Future<void> checkInitialLink(BuildContext context, SettingsNotifier notifier) async {
     final initialLink = await _appLinks.getInitialLink();
     if (initialLink != null) {
-      _handleLinkData(initialLink, context);
+      _handleLinkData(initialLink, context,notifier);
     }
   }
 
   // почему то срабатывает только когда приложение in background
   // когда приложение закрыто не срабатывает, поэтому для этого использовно auto_route deepLinkBuilder see in app_widget.dart line 33
   
-  void _handleLinkData(Uri data, BuildContext context) {
+  void _handleLinkData(Uri data, BuildContext context, SettingsNotifier notifier) {
     log('Link Data: $data', name: 'Dynamic Link Handler');
     try {
-      switch (data.path) {
+      if (data.path.contains("/inv")) {
+        //List<AutoRoutePage<dynamic>> stack =  context.router.stack;
+        //final bool shouldNavigate = context.router.stack.last.name != SubscribtionSettingsRoute.name;
+        notifier
+          ..setIsFromReferalDeepLink(true)
+          ..setReferalDeepLinkValue(data.path);
+        context.router.replaceAll(const [Main2Route(), SubscribtionSettingsRoute()]);
+      }else{
+        switch (data.path) {
         case '/qrcode/page':
           context.router.replaceAll(const [Main2Route(), QrCodeRoute()]);
           break;
@@ -48,11 +59,11 @@ final class DynamicLinkHandler  {
           break;
         default:
           context.router.replaceAll(const [Main2Route()]);
+        }
       }
     } catch (e) {
       AppHelpers.showErrorSnack(context, 'Dynamic Link Handler Error: $e');
     }
-    
   }
 
 }

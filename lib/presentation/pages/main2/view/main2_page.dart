@@ -2,10 +2,12 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:myfit/application/activity/activity_provider.dart';
+import 'package:myfit/application/main/main_provider.dart';
 import 'package:myfit/application/main2/main2_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/notification/notification_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
+import 'package:myfit/infrastructure/models/data/activity_near_client.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/local_storage.dart';
 import 'package:myfit/presentation/components/custom_search_bar.dart';
@@ -19,6 +21,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+
+import '../../main/widget/activities_nearby.dart';
 
 @RoutePage()
 class Main2Screen extends ConsumerStatefulWidget {
@@ -40,7 +44,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     refreshController = RefreshController(initialRefresh: false);
     _scrollController = ScrollController();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      // сначала делаем запрос на getUserSub, если у ющера нету подписки 
+      // сначала делаем запрос на getUserSub, если у ющера нету подписки
       ref.read(main2Provider.notifier)
         ..getNearestLesson(context)
         ..getUserStatsMonth(context);
@@ -51,13 +55,17 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
         ..getCompletedLessonTypes(context) // for known activities
         ..getWaitingLessonTypes(context) // for known activities
         ..getUserSubscribtions(context);
-      ref.read(mapProvider.notifier)
-        ..getUserLocation()
-        ..getRecommendationForVisit(context);
+      ref.read(mapProvider.notifier).getUserLocation().then(
+        (value) {
+          ref.read(mainProvider.notifier).getActivitiesNearBy(context);
+        },
+      );
+      //..getRecommendationForVisit(context);
       ref.read(notificationProvider.notifier).getAllNotifications();
       // web socket for updating lesson states
       channel = IOWebSocketChannel.connect(
-          Uri.parse("wss://myfit-russia.ru:8443/appSchedulePanel/${LocalStorage.getUserId()}"),
+          Uri.parse(
+              "wss://myfit-russia.ru:8443/appSchedulePanel/${LocalStorage.getUserId()}"),
           headers: {'Authorization': 'Bearer ${LocalStorage.getToken()}'});
       ref.read(activityProvider.notifier).handleWebSocket(channel, context);
     });
@@ -75,8 +83,8 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(minutes: 1), (timer) async {
       ref.read(main2Provider.notifier).determineWhenActivityStarts(
-            ref.watch(main2Provider).lessonStartsAt!,
-            ref.watch(main2Provider).lessonEndsAt!,
+            ref.watch(main2Provider).lessonStartsAt,
+            ref.watch(main2Provider).lessonEndsAt,
           );
     });
   }
@@ -113,9 +121,8 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: CustomSearchBar(
-        showBackButton: false,
-        canNavigateToSettings: true),
+      appBar:
+          CustomSearchBar(showBackButton: false, canNavigateToSettings: true),
       body: SmartRefresher(
         controller: refreshController,
         header: const WaterDropMaterialHeader(
@@ -159,7 +166,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
 
                     // Ближайшее занятие
                     Consumer(builder: (context, ref, child) {
-                      final nearestLesson =ref.watch(main2Provider).nearestLesson;
+                      final nearestLesson = ref.watch(main2Provider).nearestLesson;
                       return SliverPadding(
                         padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 5.h),
                         sliver: SliverToBoxAdapter(
@@ -170,14 +177,32 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                       );
                     }),
 
-                    // Рекомендуемые занятия
+                    Consumer(
+                      builder: (context, ref, child) {
+                        final mapNotifier  = ref.read(mapProvider.notifier);
+                        List<ActivityNearClient> filtered = [];
+                        final List<ActivityNearClient> activitiesNearClient = ref.watch(mainProvider).activitiesNearClient;
+                        if (activitiesNearClient.isNotEmpty) {
+                          filtered = mapNotifier.getFilteredActivitiesNearClient(activitiesNearClient);
+                        }
+                        return SliverToBoxAdapter(
+                          child: filtered.isEmpty ? const SizedBox() : ActivitiesNearby(
+                            activitiesNearClient: filtered,
+                          ),
+                        );
+                      },
+                    ),
+                    
+
+                    SliverPadding(padding: EdgeInsets.only(top: 20.w)),
+
+                    /*  // Рекомендуемые занятия
                     SliverPadding(
                       padding: EdgeInsets.only(left: 25.w).copyWith(top: 32.h),
                       sliver: SliverToBoxAdapter(
                         child: Consumer(
                           builder: (context, ref, child) {
-                            final recommendedGyms =
-                                ref.watch(mapProvider).recommendedGyms;
+                            final recommendedGyms = ref.watch(mapProvider).recommendedGyms;
                             return recommendedGyms.isEmpty
                                 ? const SizedBox.shrink()
                                 : CustomText(
@@ -196,10 +221,8 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                           .copyWith(top: 10.h),
                       sliver: SliverToBoxAdapter(
                         child: Consumer(builder: (context, ref, child) {
-                          final showRecommended =
-                              ref.watch(mapProvider).showRecommended;
-                          final recommendedGyms =
-                              ref.watch(mapProvider).recommendedGyms;
+                          final showRecommended = ref.watch(mapProvider).showRecommended;
+                          final recommendedGyms = ref.watch(mapProvider).recommendedGyms;
                           return recommendedGyms.isEmpty
                               ? const SizedBox.shrink()
                               : Main2Map(
@@ -225,7 +248,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                                 usersCount:recommendedGyms["countUsers"].toString(),
                               );
                       })),
-                    ),
+                    ), */
                   ],
                 ),
               ),

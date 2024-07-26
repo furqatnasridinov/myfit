@@ -245,7 +245,7 @@ class SettingsRepository implements SetttingsRepositoryInterface {
         statusCode: NetworkExceptions.getDioStatus(e),
       );
     }
-}
+  }
 
   @override
   Future<ApiResult<Map<String, dynamic>>> purchaseSubscription({required int id,required bool autoRenewal}) async{

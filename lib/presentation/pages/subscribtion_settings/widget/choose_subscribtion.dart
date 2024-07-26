@@ -79,6 +79,7 @@ class ChooseSubscribtion extends StatelessWidget {
                       ref.watch(settingsProvider).bonusSubsLength,
                       currentSub == null,
                       notifier,
+                      nextSub,
                       //onTap
                       () {
                         if (currentSub != null) {
@@ -141,6 +142,7 @@ Widget eachSubscription(
     int bonusSubsLength,
     bool userDontHaveCurrentSub,
     SettingsNotifier notifier,
+    UserSubscription? nextSub,
     void Function()? onTap) {
   return Padding(
     padding: EdgeInsets.only(bottom: 10.h),
@@ -182,12 +184,14 @@ Widget eachSubscription(
             child: DecoratedBox(
                 decoration: BoxDecoration(
                   border: Border.all(
-                      color: isNextSub ? AppColors.purpleText : AppColors.fadedBlueBorder),
+                      color: isNextSub
+                          ? AppColors.purpleText
+                          : AppColors.fadedBlueBorder),
                   shape: BoxShape.circle,
                 ),
                 child: isNextSub
                     ? Center(
-                        child: SizedBox(
+                        child: nextSub?.subscription?.id == currentSubId ? SizedBox(
                           width: 12.w,
                           height: 12.h,
                           child: const DecoratedBox(
@@ -196,7 +200,7 @@ Widget eachSubscription(
                               shape: BoxShape.circle,
                             ),
                           ),
-                        ),
+                        ) : SvgPicture.asset("assets/svg/nextSub.svg")
                       )
                     : const SizedBox.shrink()),
           ),
@@ -302,7 +306,7 @@ Widget eachSubscription(
                                       if (priceAfterPromocode != 0.0 &&
                                           priceOfSub != initialPrice.toString())
                                         CustomText(
-                                          text: "₽$initialPrice",
+                                          text: "$initialPrice₽",
                                           fontSize: 10.sp,
                                           fontWeight: FontWeight.w500,
                                           decoration: TextDecoration.lineThrough,
@@ -315,7 +319,7 @@ Widget eachSubscription(
                                         ),
                                         3.horizontalSpace,
                                       CustomText(
-                                        text: "₽$priceOfSub",
+                                        text: "$priceOfSub₽",
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w700,
                                         color: isCurrentSub ? Colors.white : Colors.black,
@@ -326,7 +330,7 @@ Widget eachSubscription(
                                     text: TextSpan(
                                       children: [
                                         TextSpan(
-                                          text: "₽$pricePerMonth",
+                                          text: "$pricePerMonth₽",
                                           style: GoogleFonts.raleway(
                                             fontSize: 10.sp,
                                             fontFeatures: const [
@@ -456,7 +460,7 @@ Widget dialogContentForAddingAnoterSub(
                 ),
                 WidgetSpan(child: 4.horizontalSpace),
                 TextSpan(
-                  text: "₽$price",
+                  text: "$price₽",
                   style: GoogleFonts.raleway(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w700,

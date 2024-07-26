@@ -102,7 +102,7 @@ class _PersonalInfoState extends State<PersonalInfo> {
                     },
                     child: CircleAvatar(
                       radius: 30.r,
-                      backgroundColor: AppColors.backgroundColor,
+                      backgroundColor: AppColors.fadedBlueBorder,
                       child: widget.state.avatar.isEmpty 
                           ? const Center(
                               child: Icon(
@@ -111,9 +111,9 @@ class _PersonalInfoState extends State<PersonalInfo> {
                               ),
                             )
                           : CircleAvatar(
-                              radius: 28.r,
-                              backgroundImage: NetworkImage(
-                                  "${AppConstants.baseUrl}image/${widget.state.avatar}"),
+                              radius: 27.r,
+                              backgroundColor: AppColors.fadedBlueBorder,
+                              backgroundImage: NetworkImage("${AppConstants.baseUrl}image/${widget.state.avatar}"),
                               onBackgroundImageError: (exception, stackTrace) {
                                 debugPrint(exception.toString());
                               },
@@ -171,7 +171,9 @@ class _PersonalInfoState extends State<PersonalInfo> {
                             }),
                           );
                         },
-                      );
+                      ).whenComplete(() {
+                        //
+                      },);
                     },
                   ),
                 ],

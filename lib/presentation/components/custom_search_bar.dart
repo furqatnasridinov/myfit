@@ -480,7 +480,12 @@ Widget avatarOnly(List<String> missingInfos, String avatar,
   return GestureDetector(
     onTap: () {
       if (canNavigateToSettings) {
-        context.router.push(const SettingsRoute());
+        final bool isPop = context.router.currentPath == "/subscribtion_settings";
+        if (isPop) {
+          context.router.pop();
+        }else{
+          context.router.push(const SettingsRoute());
+        }
       }
     },
     child: Stack(children: [
@@ -494,8 +499,8 @@ Widget avatarOnly(List<String> missingInfos, String avatar,
                   backgroundImage: const AssetImage(AppConstants.cristianBale))
               : CircleAvatar(
                   radius: 17.r,
-                  backgroundImage:
-                      NetworkImage("${AppConstants.baseUrl}/image/$avatar"),
+                  backgroundColor: AppColors.fadedBlueBorder,
+                  backgroundImage:NetworkImage("${AppConstants.baseUrl}/image/$avatar"),
                   onBackgroundImageError: (exception, stackTrace) {
                     debugPrint(exception.toString());
                   },

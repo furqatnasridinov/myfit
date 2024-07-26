@@ -1,4 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
+import 'dart:io';
+
 import 'package:myfit/application/main2/main2_state.dart';
 import 'package:myfit/domain/handlers/network_exceptions.dart';
 import 'package:myfit/domain/interface/schedule.dart';
@@ -6,6 +8,7 @@ import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/infrastructure/services/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Main2Notifier extends StateNotifier<Main2State> {
   Main2Notifier(this._scheduleRepositoryInterface) : super(const Main2State());
@@ -221,6 +224,16 @@ class Main2Notifier extends StateNotifier<Main2State> {
     }
   }
 
+  void launchMap(double lat, double lon) async{
+    final String url =  Platform.isAndroid ? 'https://www.google.com/maps/dir/?api=1&destination=$lat,$lon' : "http://maps.apple.com/?daddr=$lat,$lon";
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
 
   DateTime getEndTime(DateTime dateTime, String duration) {
     final durationParts = duration.split(':');
@@ -229,20 +242,20 @@ class Main2Notifier extends StateNotifier<Main2State> {
     return dateTime.add(Duration(hours: hours, minutes: minutes));
   }
 
-  void determineWhenActivityStarts(DateTime start, DateTime end) {
-    DateTime now = DateTime.now();
-    final fifteenMinutesBeforeStart =
-        start.subtract(const Duration(minutes: 15));
+  void determineWhenActivityStarts(DateTime? start, DateTime? end) {
+    if (start != null && end != null) {
+      DateTime now = DateTime.now();
+    final fifteenMinutesBeforeStart = start.subtract(const Duration(minutes: 15));
     if (isBetween(fifteenMinutesBeforeStart, end, now)) {
       state = state.copyWith(showScanButton: true);
     }
-
     if (start.isAfter(now)) {
       Duration resultOnDuration = start.difference(now);
       String formattedDifference = formatDuration(resultOnDuration);
       state = state.copyWith(whenActivityStarts: formattedDifference);
     } else {
       state = state.copyWith(lessonIsAlreadyStarted: true);
+    }
     }
   }
 

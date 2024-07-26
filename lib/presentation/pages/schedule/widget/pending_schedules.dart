@@ -297,26 +297,49 @@ Widget dropDownPending(
     dropDownItemsList: [
       {
         'title': 'Открыть расписание заведения',
-        'icon': SvgPicture.asset(
-          'assets/svg/calendar.svg',
-          colorFilter: const ColorFilter.mode(
-            Color.fromRGBO(62, 134, 245, 1),
-            BlendMode.srcIn,
-          ),
-          height: 18.h,
-          width: 18.w,
-        ),
+        'icon': SizedBox(
+                height: 28.h,
+                width: 28.w,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: AppColors.backgroundColor,
+                    borderRadius: BorderRadius.circular(6.r),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(3.r),
+                    child: SvgPicture.asset(
+                      "assets/svg/calendar.svg",
+                      colorFilter: const ColorFilter.mode(
+                        Color.fromRGBO(62, 134, 245, 1),
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
         'action': onNavigate,
       },
       {
         'title': 'Отменить запись',
-        'icon': SvgPicture.asset(
-          'assets/svg/close.svg',
+        'icon': SizedBox(
+                height: 28.h,
+                width: 28.w,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: AppColors.backgroundColor,
+                    borderRadius: BorderRadius.circular(6.r),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(3.r),
+                    child: SvgPicture.asset(
+                       'assets/svg/close.svg',
           colorFilter: const ColorFilter.mode(
               Color.fromRGBO(255, 61, 0, 1), BlendMode.srcIn),
-          height: 18.h,
-          width: 18.w,
-        ),
+                    ),
+                  ),
+                ),
+              ),
+        
         'action': onDelete
       },
     ],

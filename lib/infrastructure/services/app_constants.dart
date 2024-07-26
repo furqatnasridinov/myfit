@@ -32,6 +32,7 @@ class AppConstants {
   static const String markNotificationAsRead = "api/notification/markAsRead";
   static const String sendPhoneNumber = "api/user/loginCode";
   static const String sendCodeConfirmation = "api/user/loginCodeConfirmation";
+  static const String updateFcmToken = "api/user/updateFcmToken";
   //static const String getInfoForType = "api/gym/3/infoForType";
   //static const String enrollToGym = "api/schedule/1/add";
 
@@ -47,6 +48,7 @@ class AppConstants {
   static const double maktabi21Lon = 69.6473696903535;
   static const double panjshanbeLat = 40.278860846791375;
   static const double panjshanbeLon = 69.63038731695158;
+  static const int userMarkerId = 0;
 
   // shared prefs keys
   static const String keyPhoneNumber = "key_phone_number";

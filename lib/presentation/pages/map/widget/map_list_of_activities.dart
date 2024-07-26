@@ -200,7 +200,7 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                       children: [
                         SizedBox(
                           child: SvgPicture.asset(
-                            AppHelpers().getIconSvg(title),
+                            AppHelpers.getIconSvg(title),
                             height: 15.h,
                           ),
                         ),

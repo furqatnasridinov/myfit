@@ -1,4 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
+import 'dart:io';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -251,10 +252,13 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                     fontWeight: FontWeight.w500,
                   ),
                   5.verticalSpace,
-                  SizedBox(
+                  Consumer(builder: (context, ref, child) {
+                    final String avatarTmp = ref.watch(settingsProvider).avatarTmp;
+                    final String avatar = avatarTmp.isEmpty ? widget.state.avatar : avatarTmp;
+                    return SizedBox(
                     //color: Colors.red,
-                    height: widget.state.avatar.isEmpty ? null : 83.h,
-                    child: widget.state.avatar.isEmpty
+                    height: avatar.isEmpty ? null : 83.h,
+                    child: avatar.isEmpty
                         ? Row(
                             children: [
                               InkWell(
@@ -281,10 +285,11 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                                 borderColor: AppColors.fadedBlueBorder,
                                 buttonColor: AppColors.backgroundColor,
                                 fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
                                 onPressed: () async {
                                   await widget.event.pickImageFromGallery(context);
                                 },
-                                text: "Добавить фотографию",
+                                text: "Добавить фото",
                               )
                             ],
                           )
@@ -297,9 +302,12 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                                     ? const CupertinoActivityIndicator()
                                     : CircleAvatar(
                                         radius: 38.r,
-                                        backgroundImage: NetworkImage("${AppConstants.baseUrl}image/${widget.state.avatar}"),
-                                        onBackgroundImageError:
-                                            (exception, stackTrace) {
+                                        backgroundColor: AppColors.fadedBlueBorder,
+                                        backgroundImage: getBackgrondImage(
+                                          avatarTmp: avatarTmp,
+                                          avatarCurrent: avatar,
+                                        ),
+                                        onBackgroundImageError:(exception, stackTrace) {
                                           debugPrint(exception.toString());
                                         },
                                       ),
@@ -361,7 +369,8 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                                 ),
                             ],
                           ),
-                  ),
+                  );
+                  },)
                 ],
               )),
 
@@ -714,6 +723,9 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                         if (genderDropDownOpened) {
                           ref.read(settingsProvider.notifier).closeGenderDropDown();
                         }
+                        if (ref.watch(settingsProvider).avatarTmp.isNotEmpty) {
+                          widget.event.clearAvatarTmp();
+                        }
                         birthdayController.clear();
                         dateInputFormatter.clear(); 
                         context.popRoute();
@@ -734,12 +746,6 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                             AppHelpers.getBirthdayLikeInServer(birthdayController.text) : "";
                           final bool birthdayChanged = birthdayController.text.length == 10 && !isBirhdayWrong && 
                             LocalStorage.getUserBirthday() != birthdaySendToServer && birthdaySendToServer.isNotEmpty;
-                            /* if (isBirhdayWrong || isNameWrong || isSurnameWrong || birthdayController.text.length < 10) {
-                              if (!isBirhdayWrong && birthdayController.text.length < 10 ) {
-                                isBirhdayWrong = true;
-                                setState(() {});
-                              }
-                            } */
                            if (nameController.text.trim().length < 2 || lastNameController.text.trim().length <2 || 
                                 birthdayController.text.length < 10 || cityController.text.isEmpty || genderController.text.isEmpty) {
                              if (!isBirhdayWrong && birthdayController.text.length < 10 ) {
@@ -786,6 +792,10 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                               if (LocalStorage.getGender() != genderController.text) {
                                 await widget.event.patchGender(genderController.text, context);
                               }
+                              if (widget.state.avatarTmp.isNotEmpty) {
+                                await widget.event.uploadPicture(context, image: File(widget.state.avatarTmp));
+                                widget.event.getUser(context);
+                              }
                               if (widget.state.missingInfo.isNotEmpty) {
                                 widget.event.getUser(context);
                               }
@@ -794,6 +804,9 @@ class _PopupBodyState extends ConsumerState<PopupBody> {
                               }
                               if (genderDropDownOpened) {
                                 ref.read(settingsProvider.notifier).closeGenderDropDown();
+                              }
+                              if (widget.state.avatarTmp.isNotEmpty) {
+                                widget.event.clearAvatarTmp();
                               }
                               context.popRoute();
                               birthdayController.clear();
@@ -941,3 +954,11 @@ Widget userParamsField(
   );
 }
 
+ImageProvider<Object>? getBackgrondImage(
+    {String avatarTmp = "", String avatarCurrent = ""}) {
+  if (avatarTmp.isNotEmpty) {
+    return FileImage(File(avatarTmp));
+  } else {
+    return NetworkImage("${AppConstants.baseUrl}image/$avatarCurrent");
+  }
+}
