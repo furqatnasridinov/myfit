@@ -9,7 +9,6 @@ import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/presentation/components/custom_button.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
-
 import 'widget.dart';
 
 class NotificationBottomSheet extends StatelessWidget {

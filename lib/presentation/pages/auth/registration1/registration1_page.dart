@@ -1,5 +1,6 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:myfit/application/registration/registration_provider.dart';
-import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:myfit/presentation/components/animation_button_effect.dart';
@@ -43,8 +44,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
         // Check if the cursor is at the end of the text
         if (phoneController.selection.start != currentText.length) {
           // If not, move it to the end
-          phoneController.selection =
-              TextSelection.collapsed(offset: currentText.length);
+          phoneController.selection = TextSelection.collapsed(offset: currentText.length);
         } else {
           // Remove mask characters from the input
           String input =
@@ -92,6 +92,7 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
     final event = ref.read(registrationProvider.notifier);
     final isValidPhone = ref.watch(registrationProvider).isValidPhone;
     final phoneNumber = ref.watch(registrationProvider).phoneNumber;
+    final bool isLoading = ref.watch(registrationProvider).sendPhoneNumberLoading;
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       resizeToAvoidBottomInset: false,
@@ -141,9 +142,10 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                               controller: phoneController,
                               onChanged: (value) {
                                 // Remove all non-numeric characters except the plus sign
-                                String unformattedPhone = phoneController.text
-                                    .replaceAll(RegExp(r'[^\d+]'), '');
-                                event.setPhone(unformattedPhone);
+                                if (!isLoading) {
+                                  String unformattedPhone = phoneController.text.replaceAll(RegExp(r'[^\d+]'), '');
+                                  event.setPhone(unformattedPhone);
+                                }
                               },
                               onTapOutside: (onTapOutside) {
                                 FocusScope.of(context).unfocus();
@@ -199,12 +201,12 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                           // button
                           GestureDetector(
                             onTap: () {
-                              if (isValidPhone) {
+                              if (isValidPhone && !isLoading) {
                                 event.sendPhoneNumber(phoneNumber, context);
                               }
                             },
                             child: AnimationButtonEffect(
-                              disabled: !isValidPhone,
+                              disabled: !isValidPhone || isLoading,
                               child: SizedBox(
                                 width: 40.w,
                                 height: 40.h,
@@ -215,7 +217,8 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
                                         : Colors.grey,
                                     borderRadius: BorderRadius.circular(8.r),
                                   ),
-                                  child: Icon(
+                                  child: isLoading ? const CupertinoActivityIndicator(color: Colors.white) :  
+                                  Icon(
                                     Icons.send,
                                     color: Colors.white,
                                     size: 20.r,
@@ -308,90 +311,33 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: 16.w).copyWith(bottom: 40.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+              padding:EdgeInsets.symmetric(horizontal: 16.w).copyWith(bottom: 40.h),
+              child: RichText(text: TextSpan(
                 children: [
-                  InterText(
+                  TextSpan(
                     text: AppConstants.confirmationText2,
-                    height: 1.1,
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  1.verticalSpace,
-                  InkWell(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return Dialog(
-                            elevation: 0,
-                            insetPadding:
-                                REdgeInsets.symmetric(horizontal: 16.w),
-                            child: CustomCard(
-                                borderColor: Colors.transparent,
-                                width: double.maxFinite,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    CustomText(
-                                      text: "Пользовательское соглашение",
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    16.verticalSpace,
-                                    SizedBox(
-                                      height: 250.h,
-                                      child: SingleChildScrollView(
-                                        child: InterText(
-                                          text: AppConstants.userAgreement,
-                                          fontSize: 13.sp,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ),
-                                    16.verticalSpace,
-                                    CustomButton(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w500,
-                                      buttonColor: AppColors.blueColor,
-                                      textColor: Colors.white,
-                                      height: 40.h,
-                                      onPressed: () {
-                                        context.popRoute();
-                                      },
-                                      text: "Я согласен, продолжить",
-                                    ),
-                                    5.verticalSpace,
-                                    CustomButton(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w500,
-                                      height: 40.h,
-                                      buttonColor: Colors.white,
-                                      onPressed: () {
-                                        context.popRoute();
-                                      },
-                                      text: "Вернуться",
-                                    )
-                                  ],
-                                )),
-                          );
-                        },
-                      );
-                    },
-                    child: InterText(
-                      text: "пользовательское соглашение",
-                      color: AppColors.blueText,
-                      fontWeight: FontWeight.w400,
+                    style: GoogleFonts.inter(
+                      color: Colors.black,
                       fontSize: 12.sp,
+                      fontWeight: FontWeight.w400,
                       height: 1.1,
                     ),
                   ),
-                ],
-              ),
+                  TextSpan(
+                    text: " Пользовательское соглашение",
+                    recognizer: TapGestureRecognizer()
+                  ..onTap = () async {
+                    popUpConfirmation(context);
+                  },
+                    style: GoogleFonts.inter(
+                      color: AppColors.blueText,
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w400,
+                      height: 1.1,
+                    ),
+                  ),
+                ]
+              ))
             ),
           ),
 
@@ -419,4 +365,54 @@ class _Registration1ScreenState extends ConsumerState<Registration1Screen> {
       ),
     );
   }
+}
+
+void popUpConfirmation(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Dialog(
+        elevation: 0,
+        insetPadding: REdgeInsets.symmetric(horizontal: 16.w),
+        child: CustomCard(
+            borderColor: Colors.transparent,
+            width: double.maxFinite,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomText(
+                  text: "Пользовательское соглашение",
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+                16.verticalSpace,
+                SizedBox(
+                  height: 250.h,
+                  child: SingleChildScrollView(
+                    child: InterText(
+                      text: AppConstants.userAgreement,
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+                16.verticalSpace,
+                CustomButton(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
+                  buttonColor: AppColors.blueColor,
+                  textColor: Colors.white,
+                  borderColor: AppColors.blueBorder,
+                  height: 40.h,
+                  onPressed: () {
+                    context.popRoute();
+                  },
+                  text: "Принять",
+                ),
+              ],
+            )),
+      );
+    },
+  );
 }

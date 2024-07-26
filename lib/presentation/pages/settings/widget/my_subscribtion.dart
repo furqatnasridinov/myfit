@@ -7,7 +7,6 @@ import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../../router/app_router.gr.dart';
 
 class MySubscribtion extends StatelessWidget {
@@ -19,16 +18,11 @@ class MySubscribtion extends StatelessWidget {
       builder: (context, ref, child) {
         final event = ref.read(settingsProvider.notifier);
         final bool autoRenewal = ref.watch(settingsProvider).autoRenewal;
-        final currentSubscribtion =
-            ref.watch(settingsProvider).currentSubscribtion;
-        final String pricePerMonth = currentSubscribtion?.subscription !=
-                    null &&
+        final currentSubscribtion = ref.watch(settingsProvider).currentSubscribtion;
+/*         final String pricePerMonth = currentSubscribtion?.subscription != null &&
                 currentSubscribtion?.subscription?.durationInMonth != 0
             ? ((currentSubscribtion?.subscription?.price ?? 0) /
-                    (currentSubscribtion?.subscription?.durationInMonth ?? 1))
-                .toInt()
-                .toString()
-            : '0';
+                    (currentSubscribtion?.subscription?.durationInMonth ?? 1)).toInt().toString() : '0'; */
         return currentSubscribtion == null
             ? const SizedBox.shrink()
             : Column(
@@ -44,8 +38,7 @@ class MySubscribtion extends StatelessWidget {
                       ),
                       GestureDetector(
                         onTap: () {
-                          context.router
-                              .push(const SubscribtionSettingsRoute());
+                          context.router.push(const SubscribtionSettingsRoute());
                         },
                         child: CustomText(
                           text: "Настроить",
@@ -104,59 +97,6 @@ class MySubscribtion extends StatelessWidget {
                       ),
                       child: Stack(
                         children: [
-                          Padding(
-                            padding: EdgeInsets.only(left: 32.w),
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: 80.w,
-                                  height: 80.h,
-                                  child: Image.asset(
-                                    'assets/images/corona.png',
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                                16.horizontalSpace,
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    CustomText(
-                                      text:
-                                          "Подписка на ${AppHelpers().getMonthWord(currentSubscribtion.subscription?.durationInMonth ?? 0)}",
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white,
-                                    ),
-                                    RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: '₽$pricePerMonth',
-                                            style: GoogleFonts.raleway(
-                                              fontSize: 14.sp,
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.white,
-                                              fontFeatures: const [
-                                                FontFeature.liningFigures()
-                                              ],
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text: " в месяц",
-                                            style: GoogleFonts.inter(
-                                                fontSize: 12.sp,
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.white),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
                           Align(
                             alignment: Alignment.bottomCenter,
                             child: SizedBox(
@@ -167,6 +107,33 @@ class MySubscribtion extends StatelessWidget {
                               ),
                             ),
                           ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 32.w),
+                            child: Center(
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 80.w,
+                                    height: 80.h,
+                                    child: Image.asset(
+                                      'assets/images/corona.png',
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                  16.horizontalSpace,
+                                   Flexible(
+                                        child: CustomText(
+                                          text: "Подписка ${currentSubscribtion.subscription?.description}",
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          
                         ],
                       ),
                     ),

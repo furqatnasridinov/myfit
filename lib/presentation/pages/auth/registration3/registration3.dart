@@ -47,6 +47,7 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
   bool showReplayButton = false;
   bool topGapRemoved = false;
   bool hideButton = false;
+  bool buttonLoading = false;
 
   void setSelectedCity(City city) {
     selectedCity = city;
@@ -280,8 +281,8 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                                             RegExp(r'[a-zA-Zа-яА-Я]'),
                                           ),
                                         ],
-                                        counterStyle: const TextStyle(
-                                            height: double.minPositive),
+                                        counterStyle: const TextStyle(height: double.minPositive),
+                                        textCapitalization: TextCapitalization.sentences,
                                         counterText: "",
                                         maxLength: 16,
                                         style: GoogleFonts.raleway(
@@ -339,13 +340,13 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                                       width: double.maxFinite,
                                       child: CustomTextField(
                                         isError: isSurNameNotGiven,
+                                        textCapitalization: TextCapitalization.sentences,
                                         inputFormatters: [
                                           FilteringTextInputFormatter.allow(
                                             RegExp(r'[a-zA-Zа-яА-Я]'),
                                           ),
                                         ],
-                                        counterStyle: const TextStyle(
-                                            height: double.minPositive),
+                                        counterStyle: const TextStyle( height: double.minPositive),
                                         counterText: "",
                                         maxLength: 16,
                                         style: GoogleFonts.raleway(
@@ -535,25 +536,29 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                                 borderColor: AppColors.blueBorder,
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w600,
+                                showProgress: buttonLoading,
                                 onPressed: () async {
                                   if (nameController.text.length > 2 && cityController.text.isNotEmpty && surNameController.text.length > 2) {
+                                    buttonLoading = true;
+                                    setState(() {});
                                     if (nameController.text != LocalStorage.getUserName()) {
                                       // if user changed name
                                       await LocalStorage.setUserName(nameController.text);
-                                      event.patchName(nameController.text, context);
+                                      await event.patchName( nameController.text, context);
                                     }
                                     if (surNameController.text != LocalStorage.getUserLastName()) {
                                       // if user changed surname
                                       await LocalStorage.setUserLastName(surNameController.text);
-                                      event.patchLastname(surNameController.text, context);
+                                      await event.patchLastname(surNameController.text, context);
                                     }
                                     if (cityController.text !=LocalStorage.getSelectedCity()) {
                                       // if user changed city
                                       await LocalStorage.setSelectedCity(cityController.text);
                                       await LocalStorage.setSelectedCityLat(selectedCity?.latitude ?? "");
                                       await LocalStorage.setSelectedCityLon(selectedCity?.longitude ?? "");
-                                      event.patchCity(selectedCity, context);
+                                      await event.patchCity(selectedCity, context);
                                     }
+                                    buttonLoading = false;
                                     isAllFieldsSumbitted = true;
                                     setState(() {});
                                     await Future.delayed(const Duration(milliseconds: 200));

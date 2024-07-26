@@ -76,7 +76,8 @@ class NotificationScreen extends StatelessWidget {
               child: TabBarView(
                 children: [
                    TabSectionAll(),
-                   TabSectionActivities(),
+                   TabSectionAll(),
+                   //TabSectionActivities(),
                    TabSectionNews(),
                 ],
               ),

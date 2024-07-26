@@ -21,12 +21,11 @@ class _BlogScreen extends ConsumerState<MainScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ref.read(mainProvider.notifier)
+      /* ref.read(mainProvider.notifier)
         ..getAdvantages(context)
         ..getSubscribtions(context)
-        ..getComments(context);
-      ref.read(mainProvider.notifier).getGymsList(context).then((value) {
-        ref.read(mainProvider.notifier).getUniqueGymLocations();
+        ..getComments(context); */
+      ref.read(mainProvider.notifier).getActivitiesNearBy(context).then((value) {
         ref.read(mapProvider.notifier).getUserLocation().then((value) {
           ref.read(mapProvider.notifier).getYandexMapImageWithAllMarkers(
               context, ref.watch(mainProvider).latlongsYandexApi);
@@ -80,10 +79,10 @@ class _BlogScreen extends ConsumerState<MainScreen> {
                       event: event,
                     ),
                     32.verticalSpace,
-                    TheOneWithMap(
+                    /* TheOneWithMap(
                       event: event,
                       state: state,
-                    ),
+                    ), */
                     32.verticalSpace,
                     const TheOneWithButton(),
                     32.verticalSpace,

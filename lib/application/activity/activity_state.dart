@@ -1,6 +1,7 @@
 import 'package:myfit/infrastructure/models/data/calendar_data.dart';
 import 'package:myfit/infrastructure/models/data/description_and_peculiarities.dart';
 import 'package:myfit/infrastructure/models/data/lesson.dart';
+import 'package:myfit/infrastructure/models/data/subcategory.dart';
 import 'package:myfit/infrastructure/models/response/gym_response.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -20,6 +21,7 @@ class ActivityState with _$ActivityState {
     @Default(null) DescribtionAndPeculiarities? describtionAndPeculiarities,
     @Default("") String? selectedDayFromSearch,
     @Default(9999) int selectedDayFromSearchIndex,
+    @Default(false) bool showAnimationDontHaveSubs,
     @Default([]) List<String>? activityTypes,
     @Default({}) Map<String, dynamic> allPhotos,
     @Default(false) bool isCalendarLimited,
@@ -35,6 +37,9 @@ class ActivityState with _$ActivityState {
     @Default(false) bool isFromSearch,
     @Default([]) List<CalendarData> listOf45CalendarDaysFromNow,
     @Default(null) EnrollingErrorMessage? enrollingError,
+    @Default([]) List<SubCategory> subCategories,
+    @Default(null) SubCategory? selectedSubCategory,
+    @Default({}) Map<String, dynamic> lessonTypesAndSubcategories,
     @Default(false) bool isEnrollingError,
   }) = _ActivityState;
 

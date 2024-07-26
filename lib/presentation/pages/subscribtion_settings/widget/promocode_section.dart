@@ -27,13 +27,14 @@ class PromocodeSection extends StatelessWidget {
          builder: (context, ref, child) {
         final notifier = ref.read(settingsProvider.notifier);
         final promoValue = ref.watch(settingsProvider).promocodeValue;
-        final bool showHistory =ref.watch(settingsProvider).promocodesHistory.isNotEmpty;
+        final bool showHistory =ref.watch(settingsProvider).promocodesQueue.isNotEmpty;
         final bool isPromocodeLoading = ref.watch(settingsProvider).isPromocodeLoading;
         final bool isPromocodeSuccess = ref.watch(settingsProvider).isPromocodeSuccess;
         final bool isPromocodeError = ref.watch(settingsProvider).isPromocodeError;
         final String promocodeErrorMessage = ref.watch(settingsProvider).promocodeErrorMessage;
         final String newPromocodeDescription = ref.watch(settingsProvider).newPromocodeDescription;
         final TextEditingController controller = ref.watch(settingsProvider).promocodeController ?? TextEditingController();
+        final bool showPromocodeResponse = ref.watch(settingsProvider).showPromocodeResponseInPromodesSection;
           return Column(
             children: [
               Row(
@@ -74,80 +75,83 @@ class PromocodeSection extends StatelessWidget {
               ),
               16.verticalSpace,
               CustomCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 40.h,
-                          child: Row(
-                            children: [
-                              Expanded(
-                                //height: 40.h,
-                                child: CustomTextField(
-                                  hintText: "Введите промокод",
-                                  controller: controller,
-                                  style: GoogleFonts.raleway(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w500,
-                                    fontFeatures: const [FontFeature.liningFigures()],
-                                  ),
-                                  onChanged: (value) {
-                                    notifier.setPromocodeValue(value.trim());
-                                  },
-                                  onTapOutside: (p0) {
-                                    final FocusScopeNode currentFocus = FocusScope.of(context);
-                                    if (!currentFocus.hasPrimaryFocus) {
-                                      currentFocus.unfocus();
-                                    }
-                                  },
-                                  contentPadding: EdgeInsets.zero.copyWith(left: 6.w),
-                                  prefixIcon: Padding(
-                                    padding: EdgeInsets.all(6.r),
-                                    child: SvgPicture.asset("assets/svg/promocode.svg"),
-                                  ),
-                                ),
-                              ),
-                              10.horizontalSpace,
-                              AnimationButtonEffect(
-                                disabled: promoValue.isEmpty,
-                                child: GestureDetector(
-                                  onTap: ()  {
-                                     notifier.applyPromocede(context, code: promoValue);
-                                  },
-                                  child: SizedBox(
-                                    width: 40.w,
-                                    height: 40.h,
-                                    child: DecoratedBox(
-                                      decoration: BoxDecoration(
-                                          color: promoValue.isEmpty ? AppColors.disabledButton :AppColors.blueColor,
-                                          borderRadius: BorderRadius.circular(8.r),
-                                          border: Border.all(
-                                              color: promoValue.isEmpty
-                                                  ? AppColors.disabledButton
-                                                  : AppColors.blueBorder)),
-                                      child: isPromocodeLoading
-                                          ? const CupertinoActivityIndicator(color: Colors.white) :
-                                       Icon(Icons.done,color: Colors.white, size: 18.sp),
+                    child: AnimatedSize(
+                      duration: const Duration(milliseconds: 300),
+                      alignment: Alignment.topCenter,
+                      curve: Curves.easeInOut,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 40.h,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  //height: 40.h,
+                                  child: CustomTextField(
+                                    //hintText: "Например : ref1811friend",
+                                    hintText: "Введите промокод",
+                                    controller: controller,
+                                    style: GoogleFonts.raleway(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w500,
+                                      fontFeatures: const [FontFeature.liningFigures()],
+                                    ),
+                                    onChanged: (value) {
+                                      notifier.setPromocodeValue(value.trim());
+                                    },
+                                    onTapOutside: (p0) {
+                                      FocusManager.instance.primaryFocus?.unfocus();
+                                    },
+                                    contentPadding: EdgeInsets.zero.copyWith(left: 6.w),
+                                    prefixIcon: Padding(
+                                      padding: EdgeInsets.all(6.r),
+                                      child: SvgPicture.asset("assets/svg/promocode.svg"),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                                10.horizontalSpace,
+                                AnimationButtonEffect(
+                                  disabled: promoValue.isEmpty,
+                                  child: GestureDetector(
+                                    onTap: ()  {
+                                       notifier.setShowPromocodeResponse(true);
+                                       notifier.applyPromocede(context, code: promoValue);
+                                    },
+                                    child: SizedBox(
+                                      width: 40.w,
+                                      height: 40.h,
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                            color: promoValue.isEmpty ? AppColors.disabledButton :AppColors.blueColor,
+                                            borderRadius: BorderRadius.circular(8.r),
+                                            border: Border.all(
+                                                color: promoValue.isEmpty
+                                                    ? AppColors.disabledButton
+                                                    : AppColors.blueBorder)),
+                                        child: isPromocodeLoading
+                                            ? const CupertinoActivityIndicator(color: Colors.white) :
+                                         Icon(Icons.done,color: Colors.white, size: 18.sp),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        if(isPromocodeError || isPromocodeSuccess)
-                        Padding(
-                          padding: EdgeInsets.only(top: 16.h),
-                          child: InterText(
-                            text: isPromocodeError
-                                ? promocodeErrorMessage
-                                : "Промокод активирован: ($newPromocodeDescription)",
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w400,
-                            color: isPromocodeError ? AppColors.redText : Colors.black,
-                          ),
-                        )
-                      ],
+                          if((isPromocodeError || isPromocodeSuccess) && showPromocodeResponse)
+                          Padding(
+                            padding: EdgeInsets.only(top: 16.h),
+                            child: InterText(
+                              text: isPromocodeError ? promocodeErrorMessage
+                                  : "Промокод активирован: ($newPromocodeDescription)",
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w400,
+                              color: isPromocodeError ? AppColors.redText : Colors.black,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
           ]);
@@ -163,7 +167,7 @@ Widget myPromocodesDialog(){
     padding: EdgeInsets.all(16.r),
     child: Consumer(
       builder: (context, ref, child) {
-        final promocodesHistory = ref.watch(settingsProvider).promocodesHistory;
+        final promocodesQueue = ref.watch(settingsProvider).promocodesQueue;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -183,12 +187,14 @@ Widget myPromocodesDialog(){
             24.verticalSpace,
             ListView.builder(
               shrinkWrap: true,
-              itemCount: promocodesHistory.length,
+              itemCount: promocodesQueue.length,
               itemBuilder: (context, index) {
-                final current = promocodesHistory[index];
+                final current = promocodesQueue[index];
                 return eachPromo(
                     current.promotional?.description ?? "",
-                    DateTime.tryParse(current.promotional?.activateData ?.replaceAll("T", " ") ?? ""),
+                    current.promotionalState ?? PromocodeState.notUsed,
+                    DateTime.tryParse(current.promotional?.activateData.toString().replaceAll("T", " ") ?? ""),
+                    DateTime.tryParse(current.promotional?.endData.toString().replaceAll("T", " ") ?? ""),
                 );
               },
             ),
@@ -211,44 +217,54 @@ Widget myPromocodesDialog(){
 }
 
 
-Widget eachPromo(String description, DateTime? dateTime){
-  return Row(
-    children: [
-      Flexible(
-        child: Container(
-          padding: EdgeInsets.all(10.r),
-          decoration: BoxDecoration(
-            color: AppColors.backgroundColor,
-            borderRadius: BorderRadius.circular(8.r),
+Widget eachPromo(
+  String description,
+  PromocodeState promoState,
+  DateTime? activateTime,
+  DateTime? endTime,
+) {
+  return Padding(
+    padding: EdgeInsets.only(bottom: 10.h),
+    child: Row(
+      children: [
+        Flexible(
+          child: Container(
+            padding: EdgeInsets.all(10.r),
+            decoration: BoxDecoration(
+              color: AppColors.backgroundColor,
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+            child: CustomText(
+              text: description,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w700,
+            ),
           ),
+        ),
+        10.horizontalSpace,
+        Flexible(
           child: CustomText(
-            text: description,
+            text: getCorrectText(promoState, activateTime),
             fontSize: 14.sp,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w400,
+            height: 1.1,
           ),
-        ),
-      ),
-      10.horizontalSpace,
-      Flexible(
-        child: CustomText(
-          text: getCorrectText(dateTime),
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w400,
-          height: 1.1,
-        ),
-      )
-    ],
+        )
+      ],
+    ),
   );
 }
 
-String getCorrectText(DateTime? date){
-  final now = DateTime.now();
-  if (date != null) {
-    if (now.isAfter(date)) {
-      return "Активирован ${AppHelpers.getCalendarlikeStringFromDateTime(date)}";
-    } else {
-      return " Будет использован ${AppHelpers.getCalendarlikeStringFromDateTime(date)}";
-    }
+String getCorrectText(PromocodeState state, DateTime? activateData){
+  final String activateTime = AppHelpers.getCalendarlikeStringFromDateTime(activateData ?? AppConstants.myBitrh);
+  if (state == PromocodeState.notUsed) {
+    return "В очереди ";
+  }
+  if (state == PromocodeState.used) {
+    return "Активирован $activateTime";
+  }
+  if (state == PromocodeState.waiting) {
+    return "Будет использован следующим ";
   }
   return "null";
 }

@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:developer';
 import 'dart:io';
 import 'package:myfit/application/registration/registration_state.dart';
 import 'package:myfit/domain/handlers/network_exceptions.dart';
@@ -94,25 +95,25 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
   Future<void> sendPhoneNumber(String phoneNumber, BuildContext context) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
-      String? fcmToken = "";
+      state = state.copyWith(sendPhoneNumberLoading: true);
       try {
-        fcmToken = Platform.isIOS  ? "" : await FirebaseMessaging.instance.getToken();
-        debugPrint("fcm token: $fcmToken");
       } catch (e) {
          AppHelpers.showErrorSnack(context, "Ошибка при получении fcm token ${e.toString()}");
       }
-      final response = await _registerRepositoryInterface.sendPhoneNumber(phoneNumber, fcmToken);
+      final response = await _registerRepositoryInterface.sendPhoneNumber(phoneNumber);
       response.when(
         success: (data) {
           if (data["operationResult"] == "OK") {
-            context.router.push(
-              const Registration2Route(),
-            );
+            state = state.copyWith(sendPhoneNumberLoading: false);
+            context.router.push(const Registration2Route());
+          }else{
+            AppHelpers.showErrorSnack(context, "operationResult is not OK (sendPhoneNumber)");
+            state = state.copyWith(sendPhoneNumberLoading: false);
           }
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(
-              context, NetworkExceptions.getErrorMessage(error));
+          state = state.copyWith(sendPhoneNumberLoading: false);
+          AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {
@@ -124,8 +125,10 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
       String phoneNumber, String code, BuildContext context) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
-      final response = await _registerRepositoryInterface.codeConfirmation(
-          phoneNumber, code);
+       String? fcmToken = "";
+       fcmToken = Platform.isIOS  ? "" : await FirebaseMessaging.instance.getToken();
+      log("fcm token: $fcmToken");
+      final response = await _registerRepositoryInterface.codeConfirmation(phoneNumber, code);
       response.when(
         success: (data) async {
           /* PageRouteInfo<dynamic> nextRoute = data.user?.firstName == null 
@@ -155,6 +158,7 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
           // save login time locally
           final String dateTimeToString = DateTime.now().toString();
           LocalStorage.setLoginTime(dateTimeToString);
+          await updateFcmToken(context, token: fcmToken ?? "");
           moveClientToNextPage(context, nextRoute);
         },
         failure: (error, statusCode, operationInfo) {
@@ -166,9 +170,21 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
     }
   }
 
+  Future<void> updateFcmToken(BuildContext context,{required String token}) async {
+    final response = await _registerRepositoryInterface.updateFcmToken(token: token);
+    response.when(
+      success: (data) {
+        log("fcm token updated");
+      },
+      failure: (error, statusCode, operationInfo) {
+        AppHelpers.showErrorSnack(context, error.toString());
+      },
+    );
+  }
+
   Future<void> moveClientToNextPage(
       BuildContext context, PageRouteInfo<dynamic> nextRoute) async {
-    await Future.delayed(const Duration(milliseconds: 1500)).then((value) {
+    await Future.delayed(const Duration(milliseconds: 500)).then((value) {
       if (nextRoute.routeName == "Main2Route") {
         context.router.replaceAll([nextRoute]);
       } else {

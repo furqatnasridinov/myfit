@@ -390,27 +390,49 @@ Widget dropDownCompleted(
         ? [
             {
               'title': 'Оставить отзыв',
-              'icon': SvgPicture.asset(
-                'assets/svg/edit_icon.svg',
-                colorFilter: const ColorFilter.mode(
-                  Color.fromRGBO(62, 134, 245, 1),
-                  BlendMode.srcIn,
+              'icon': SizedBox(
+                height: 28.h,
+                width: 28.w,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: AppColors.backgroundColor,
+                    borderRadius: BorderRadius.circular(6.r),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(3.r),
+                    child: SvgPicture.asset(
+                      "assets/svg/edit_icon.svg",
+                      colorFilter: const ColorFilter.mode(
+                        Color.fromRGBO(62, 134, 245, 1),
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
                 ),
-                height: 18.h,
-                width: 18.w,
               ),
               'action': onRateClicked,
             },
             {
               'title': 'Открыть расписание заведения',
-              'icon': SvgPicture.asset(
-                'assets/svg/calendar.svg',
-                colorFilter: const ColorFilter.mode(
-                  Color.fromRGBO(62, 134, 245, 1),
-                  BlendMode.srcIn,
+              'icon': SizedBox(
+                height: 28.h,
+                width: 28.w,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: AppColors.backgroundColor,
+                    borderRadius: BorderRadius.circular(6.r),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(3.r),
+                    child: SvgPicture.asset(
+                      "assets/svg/calendar.svg",
+                      colorFilter: const ColorFilter.mode(
+                        Color.fromRGBO(62, 134, 245, 1),
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
                 ),
-                height: 18.h,
-                width: 18.w,
               ),
               'action': onNavigate
             },
@@ -418,14 +440,25 @@ Widget dropDownCompleted(
         : [
             {
               'title': 'Открыть расписание заведения',
-              'icon': SvgPicture.asset(
-                'assets/svg/calendar.svg',
-                colorFilter: const ColorFilter.mode(
-                  Color.fromRGBO(62, 134, 245, 1),
-                  BlendMode.srcIn,
+              'icon': SizedBox(
+                height: 28.h,
+                width: 28.w,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: AppColors.backgroundColor,
+                    borderRadius: BorderRadius.circular(6.r),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(3.r),
+                    child: SvgPicture.asset(
+                      "assets/svg/calendar.svg",
+                      colorFilter: const ColorFilter.mode(
+                        Color.fromRGBO(62, 134, 245, 1),
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
                 ),
-                height: 18.h,
-                width: 18.w,
               ),
               'action': onNavigate
             },

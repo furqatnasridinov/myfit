@@ -1,4 +1,5 @@
 // ignore_for_file: must_be_immutable
+import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/presentation/components/ui_dropdown_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,27 +27,49 @@ class DropDownMenuInsideCard extends StatelessWidget {
           dropDownItemsList: [
             {
               'title': 'Открыть заметки',
-              'icon': SvgPicture.asset(
-                'assets/svg/edit_icon.svg',
-                colorFilter: const ColorFilter.mode(
-                  Color.fromRGBO(62, 134, 245, 1),
-                  BlendMode.srcIn,
+              'icon': SizedBox(
+                height: 28.h,
+                width: 28.w,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: AppColors.backgroundColor,
+                    borderRadius: BorderRadius.circular(6.r),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(3.r),
+                    child: SvgPicture.asset(
+                      "assets/svg/edit_icon.svg",
+                      colorFilter: const ColorFilter.mode(
+                        Color.fromRGBO(62, 134, 245, 1),
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
                 ),
-                height: 18.h,
-                width: 18.w,
               ),
               'action': onTap,
             },
             {
               'title': 'Подробнее о заведении',
-              'icon': SvgPicture.asset(
-                'assets/svg/copy.svg',
-                colorFilter: const ColorFilter.mode(
-                  Color.fromRGBO(62, 134, 245, 1),
-                  BlendMode.srcIn,
+              'icon': SizedBox(
+                height: 28.h,
+                width: 28.w,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: AppColors.backgroundColor,
+                    borderRadius: BorderRadius.circular(6.r),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(3.r),
+                    child: SvgPicture.asset(
+                      "assets/svg/copy.svg",
+                      colorFilter: const ColorFilter.mode(
+                        Color.fromRGBO(62, 134, 245, 1),
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
                 ),
-                height: 18.h,
-                width: 18.w,
               ),
               'action': onTap2,
             },

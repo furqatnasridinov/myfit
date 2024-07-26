@@ -92,8 +92,7 @@ class Main2Map extends StatelessWidget {
                     }
                   },
                 ),
-              )
-              .toSet(),
+              ).toSet(),
         ),
       ),
     );

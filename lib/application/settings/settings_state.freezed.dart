@@ -57,6 +57,7 @@ mixin _$SettingsState {
   String get promocodeValue => throw _privateConstructorUsedError;
   bool get isPromocodeLoading => throw _privateConstructorUsedError;
   List<Promocode> get promocodesHistory => throw _privateConstructorUsedError;
+  List<Promocode> get promocodesQueue => throw _privateConstructorUsedError;
   bool get isPromocodeSuccess => throw _privateConstructorUsedError;
   bool get isPromocodeError => throw _privateConstructorUsedError;
   String get promocodeErrorMessage => throw _privateConstructorUsedError;
@@ -64,6 +65,11 @@ mixin _$SettingsState {
   Referal? get referalInfo => throw _privateConstructorUsedError;
   bool get referalInfoLoading => throw _privateConstructorUsedError;
   dynamic get takeBonusButtonClicked => throw _privateConstructorUsedError;
+  dynamic get isFromReferalDeepLink => throw _privateConstructorUsedError;
+  String get referalDeepLinkValue => throw _privateConstructorUsedError;
+  bool get showPromocodeResponseInPromodesSection =>
+      throw _privateConstructorUsedError;
+  String get avatarTmp => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $SettingsStateCopyWith<SettingsState> get copyWith =>
@@ -115,13 +121,18 @@ abstract class $SettingsStateCopyWith<$Res> {
       String promocodeValue,
       bool isPromocodeLoading,
       List<Promocode> promocodesHistory,
+      List<Promocode> promocodesQueue,
       bool isPromocodeSuccess,
       bool isPromocodeError,
       String promocodeErrorMessage,
       String newPromocodeDescription,
       Referal? referalInfo,
       bool referalInfoLoading,
-      dynamic takeBonusButtonClicked});
+      dynamic takeBonusButtonClicked,
+      dynamic isFromReferalDeepLink,
+      String referalDeepLinkValue,
+      bool showPromocodeResponseInPromodesSection,
+      String avatarTmp});
 }
 
 /// @nodoc
@@ -175,6 +186,7 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     Object? promocodeValue = null,
     Object? isPromocodeLoading = null,
     Object? promocodesHistory = null,
+    Object? promocodesQueue = null,
     Object? isPromocodeSuccess = null,
     Object? isPromocodeError = null,
     Object? promocodeErrorMessage = null,
@@ -182,6 +194,10 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     Object? referalInfo = freezed,
     Object? referalInfoLoading = null,
     Object? takeBonusButtonClicked = freezed,
+    Object? isFromReferalDeepLink = freezed,
+    Object? referalDeepLinkValue = null,
+    Object? showPromocodeResponseInPromodesSection = null,
+    Object? avatarTmp = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -336,6 +352,10 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.promocodesHistory
           : promocodesHistory // ignore: cast_nullable_to_non_nullable
               as List<Promocode>,
+      promocodesQueue: null == promocodesQueue
+          ? _value.promocodesQueue
+          : promocodesQueue // ignore: cast_nullable_to_non_nullable
+              as List<Promocode>,
       isPromocodeSuccess: null == isPromocodeSuccess
           ? _value.isPromocodeSuccess
           : isPromocodeSuccess // ignore: cast_nullable_to_non_nullable
@@ -364,6 +384,23 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.takeBonusButtonClicked
           : takeBonusButtonClicked // ignore: cast_nullable_to_non_nullable
               as dynamic,
+      isFromReferalDeepLink: freezed == isFromReferalDeepLink
+          ? _value.isFromReferalDeepLink
+          : isFromReferalDeepLink // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      referalDeepLinkValue: null == referalDeepLinkValue
+          ? _value.referalDeepLinkValue
+          : referalDeepLinkValue // ignore: cast_nullable_to_non_nullable
+              as String,
+      showPromocodeResponseInPromodesSection: null ==
+              showPromocodeResponseInPromodesSection
+          ? _value.showPromocodeResponseInPromodesSection
+          : showPromocodeResponseInPromodesSection // ignore: cast_nullable_to_non_nullable
+              as bool,
+      avatarTmp: null == avatarTmp
+          ? _value.avatarTmp
+          : avatarTmp // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -415,13 +452,18 @@ abstract class _$$SettingsStateImplCopyWith<$Res>
       String promocodeValue,
       bool isPromocodeLoading,
       List<Promocode> promocodesHistory,
+      List<Promocode> promocodesQueue,
       bool isPromocodeSuccess,
       bool isPromocodeError,
       String promocodeErrorMessage,
       String newPromocodeDescription,
       Referal? referalInfo,
       bool referalInfoLoading,
-      dynamic takeBonusButtonClicked});
+      dynamic takeBonusButtonClicked,
+      dynamic isFromReferalDeepLink,
+      String referalDeepLinkValue,
+      bool showPromocodeResponseInPromodesSection,
+      String avatarTmp});
 }
 
 /// @nodoc
@@ -473,6 +515,7 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     Object? promocodeValue = null,
     Object? isPromocodeLoading = null,
     Object? promocodesHistory = null,
+    Object? promocodesQueue = null,
     Object? isPromocodeSuccess = null,
     Object? isPromocodeError = null,
     Object? promocodeErrorMessage = null,
@@ -480,6 +523,10 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     Object? referalInfo = freezed,
     Object? referalInfoLoading = null,
     Object? takeBonusButtonClicked = freezed,
+    Object? isFromReferalDeepLink = freezed,
+    Object? referalDeepLinkValue = null,
+    Object? showPromocodeResponseInPromodesSection = null,
+    Object? avatarTmp = null,
   }) {
     return _then(_$SettingsStateImpl(
       isloading: null == isloading
@@ -634,6 +681,10 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value._promocodesHistory
           : promocodesHistory // ignore: cast_nullable_to_non_nullable
               as List<Promocode>,
+      promocodesQueue: null == promocodesQueue
+          ? _value._promocodesQueue
+          : promocodesQueue // ignore: cast_nullable_to_non_nullable
+              as List<Promocode>,
       isPromocodeSuccess: null == isPromocodeSuccess
           ? _value.isPromocodeSuccess
           : isPromocodeSuccess // ignore: cast_nullable_to_non_nullable
@@ -661,6 +712,22 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
       takeBonusButtonClicked: freezed == takeBonusButtonClicked
           ? _value.takeBonusButtonClicked!
           : takeBonusButtonClicked,
+      isFromReferalDeepLink: freezed == isFromReferalDeepLink
+          ? _value.isFromReferalDeepLink!
+          : isFromReferalDeepLink,
+      referalDeepLinkValue: null == referalDeepLinkValue
+          ? _value.referalDeepLinkValue
+          : referalDeepLinkValue // ignore: cast_nullable_to_non_nullable
+              as String,
+      showPromocodeResponseInPromodesSection: null ==
+              showPromocodeResponseInPromodesSection
+          ? _value.showPromocodeResponseInPromodesSection
+          : showPromocodeResponseInPromodesSection // ignore: cast_nullable_to_non_nullable
+              as bool,
+      avatarTmp: null == avatarTmp
+          ? _value.avatarTmp
+          : avatarTmp // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -707,18 +774,24 @@ class _$SettingsStateImpl extends _SettingsState {
       this.promocodeValue = "",
       this.isPromocodeLoading = false,
       final List<Promocode> promocodesHistory = const [],
+      final List<Promocode> promocodesQueue = const [],
       this.isPromocodeSuccess = false,
       this.isPromocodeError = false,
       this.promocodeErrorMessage = "",
       this.newPromocodeDescription = "",
       this.referalInfo = null,
       this.referalInfoLoading = false,
-      this.takeBonusButtonClicked = false})
+      this.takeBonusButtonClicked = false,
+      this.isFromReferalDeepLink = false,
+      this.referalDeepLinkValue = "",
+      this.showPromocodeResponseInPromodesSection = false,
+      this.avatarTmp = ""})
       : _listOfCities = listOfCities,
         _knownActivities = knownActivities,
         _allAvailableSubscriptions = allAvailableSubscriptions,
         _missingInfo = missingInfo,
         _promocodesHistory = promocodesHistory,
+        _promocodesQueue = promocodesQueue,
         super._();
 
   @override
@@ -866,6 +939,15 @@ class _$SettingsStateImpl extends _SettingsState {
     return EqualUnmodifiableListView(_promocodesHistory);
   }
 
+  final List<Promocode> _promocodesQueue;
+  @override
+  @JsonKey()
+  List<Promocode> get promocodesQueue {
+    if (_promocodesQueue is EqualUnmodifiableListView) return _promocodesQueue;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_promocodesQueue);
+  }
+
   @override
   @JsonKey()
   final bool isPromocodeSuccess;
@@ -887,10 +969,22 @@ class _$SettingsStateImpl extends _SettingsState {
   @override
   @JsonKey()
   final dynamic takeBonusButtonClicked;
+  @override
+  @JsonKey()
+  final dynamic isFromReferalDeepLink;
+  @override
+  @JsonKey()
+  final String referalDeepLinkValue;
+  @override
+  @JsonKey()
+  final bool showPromocodeResponseInPromodesSection;
+  @override
+  @JsonKey()
+  final String avatarTmp;
 
   @override
   String toString() {
-    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, gender: $gender, birthday: $birthday, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, user: $user, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue, isNoAccessChangingPhoto: $isNoAccessChangingPhoto, isPhotoUploading: $isPhotoUploading, currentSubscribtion: $currentSubscribtion, nextSubscribtion: $nextSubscribtion, allAvailableSubscriptions: $allAvailableSubscriptions, allSubsLoading: $allSubsLoading, bonusSubsLength: $bonusSubsLength, promocodeController: $promocodeController, isChangeSubscribtionLoading: $isChangeSubscribtionLoading, cardNumber: $cardNumber, autoRenewal: $autoRenewal, dropDownOpened: $dropDownOpened, genderDropDownOpened: $genderDropDownOpened, missingInfo: $missingInfo, promocodeValue: $promocodeValue, isPromocodeLoading: $isPromocodeLoading, promocodesHistory: $promocodesHistory, isPromocodeSuccess: $isPromocodeSuccess, isPromocodeError: $isPromocodeError, promocodeErrorMessage: $promocodeErrorMessage, newPromocodeDescription: $newPromocodeDescription, referalInfo: $referalInfo, referalInfoLoading: $referalInfoLoading, takeBonusButtonClicked: $takeBonusButtonClicked)';
+    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, gender: $gender, birthday: $birthday, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, user: $user, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue, isNoAccessChangingPhoto: $isNoAccessChangingPhoto, isPhotoUploading: $isPhotoUploading, currentSubscribtion: $currentSubscribtion, nextSubscribtion: $nextSubscribtion, allAvailableSubscriptions: $allAvailableSubscriptions, allSubsLoading: $allSubsLoading, bonusSubsLength: $bonusSubsLength, promocodeController: $promocodeController, isChangeSubscribtionLoading: $isChangeSubscribtionLoading, cardNumber: $cardNumber, autoRenewal: $autoRenewal, dropDownOpened: $dropDownOpened, genderDropDownOpened: $genderDropDownOpened, missingInfo: $missingInfo, promocodeValue: $promocodeValue, isPromocodeLoading: $isPromocodeLoading, promocodesHistory: $promocodesHistory, promocodesQueue: $promocodesQueue, isPromocodeSuccess: $isPromocodeSuccess, isPromocodeError: $isPromocodeError, promocodeErrorMessage: $promocodeErrorMessage, newPromocodeDescription: $newPromocodeDescription, referalInfo: $referalInfo, referalInfoLoading: $referalInfoLoading, takeBonusButtonClicked: $takeBonusButtonClicked, isFromReferalDeepLink: $isFromReferalDeepLink, referalDeepLinkValue: $referalDeepLinkValue, showPromocodeResponseInPromodesSection: $showPromocodeResponseInPromodesSection, avatarTmp: $avatarTmp)';
   }
 
   @override
@@ -969,16 +1063,21 @@ class _$SettingsStateImpl extends _SettingsState {
                 other.isPromocodeLoading == isPromocodeLoading) &&
             const DeepCollectionEquality()
                 .equals(other._promocodesHistory, _promocodesHistory) &&
+            const DeepCollectionEquality()
+                .equals(other._promocodesQueue, _promocodesQueue) &&
             (identical(other.isPromocodeSuccess, isPromocodeSuccess) ||
                 other.isPromocodeSuccess == isPromocodeSuccess) &&
             (identical(other.isPromocodeError, isPromocodeError) ||
                 other.isPromocodeError == isPromocodeError) &&
-            (identical(other.promocodeErrorMessage, promocodeErrorMessage) ||
-                other.promocodeErrorMessage == promocodeErrorMessage) &&
+            (identical(other.promocodeErrorMessage, promocodeErrorMessage) || other.promocodeErrorMessage == promocodeErrorMessage) &&
             (identical(other.newPromocodeDescription, newPromocodeDescription) || other.newPromocodeDescription == newPromocodeDescription) &&
             (identical(other.referalInfo, referalInfo) || other.referalInfo == referalInfo) &&
             (identical(other.referalInfoLoading, referalInfoLoading) || other.referalInfoLoading == referalInfoLoading) &&
-            const DeepCollectionEquality().equals(other.takeBonusButtonClicked, takeBonusButtonClicked));
+            const DeepCollectionEquality().equals(other.takeBonusButtonClicked, takeBonusButtonClicked) &&
+            const DeepCollectionEquality().equals(other.isFromReferalDeepLink, isFromReferalDeepLink) &&
+            (identical(other.referalDeepLinkValue, referalDeepLinkValue) || other.referalDeepLinkValue == referalDeepLinkValue) &&
+            (identical(other.showPromocodeResponseInPromodesSection, showPromocodeResponseInPromodesSection) || other.showPromocodeResponseInPromodesSection == showPromocodeResponseInPromodesSection) &&
+            (identical(other.avatarTmp, avatarTmp) || other.avatarTmp == avatarTmp));
   }
 
   @override
@@ -1022,13 +1121,18 @@ class _$SettingsStateImpl extends _SettingsState {
         promocodeValue,
         isPromocodeLoading,
         const DeepCollectionEquality().hash(_promocodesHistory),
+        const DeepCollectionEquality().hash(_promocodesQueue),
         isPromocodeSuccess,
         isPromocodeError,
         promocodeErrorMessage,
         newPromocodeDescription,
         referalInfo,
         referalInfoLoading,
-        const DeepCollectionEquality().hash(takeBonusButtonClicked)
+        const DeepCollectionEquality().hash(takeBonusButtonClicked),
+        const DeepCollectionEquality().hash(isFromReferalDeepLink),
+        referalDeepLinkValue,
+        showPromocodeResponseInPromodesSection,
+        avatarTmp
       ]);
 
   @JsonKey(ignore: true)
@@ -1078,13 +1182,18 @@ abstract class _SettingsState extends SettingsState {
       final String promocodeValue,
       final bool isPromocodeLoading,
       final List<Promocode> promocodesHistory,
+      final List<Promocode> promocodesQueue,
       final bool isPromocodeSuccess,
       final bool isPromocodeError,
       final String promocodeErrorMessage,
       final String newPromocodeDescription,
       final Referal? referalInfo,
       final bool referalInfoLoading,
-      final dynamic takeBonusButtonClicked}) = _$SettingsStateImpl;
+      final dynamic takeBonusButtonClicked,
+      final dynamic isFromReferalDeepLink,
+      final String referalDeepLinkValue,
+      final bool showPromocodeResponseInPromodesSection,
+      final String avatarTmp}) = _$SettingsStateImpl;
   const _SettingsState._() : super._();
 
   @override
@@ -1164,6 +1273,8 @@ abstract class _SettingsState extends SettingsState {
   @override
   List<Promocode> get promocodesHistory;
   @override
+  List<Promocode> get promocodesQueue;
+  @override
   bool get isPromocodeSuccess;
   @override
   bool get isPromocodeError;
@@ -1177,6 +1288,14 @@ abstract class _SettingsState extends SettingsState {
   bool get referalInfoLoading;
   @override
   dynamic get takeBonusButtonClicked;
+  @override
+  dynamic get isFromReferalDeepLink;
+  @override
+  String get referalDeepLinkValue;
+  @override
+  bool get showPromocodeResponseInPromodesSection;
+  @override
+  String get avatarTmp;
   @override
   @JsonKey(ignore: true)
   _$$SettingsStateImplCopyWith<_$SettingsStateImpl> get copyWith =>

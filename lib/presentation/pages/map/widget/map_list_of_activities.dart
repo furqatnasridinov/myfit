@@ -6,6 +6,7 @@ import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_notifier.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/map/map_state.dart';
+import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/models/data/lessontype_with_gyms_inside.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
@@ -39,28 +40,24 @@ class MapListOfActivities extends StatefulWidget {
 class _MapListOfActivitiesState extends State<MapListOfActivities> {
   @override
   Widget build(BuildContext context) {
-   /*  WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.state.activitiesWithGymsInsideFromSelectedDiapozone.length >
-              4 &&
-          widget.state.activitiesWithGymsInsideFromSelectedDiapozone.last
-              .isOpened) {
-        widget.activitiesListController.animateTo(
-          200,
+     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.state.activitiesWithGymsInsideFromSelectedDiapozone.length > 4 &&
+          widget.state.activitiesWithGymsInsideFromSelectedDiapozone.last.isOpened) {
+          widget.activitiesListController.animateTo(
+          400,
           curve: Curves.linear,
-          duration: const Duration(microseconds: 100),
+          duration: const Duration(milliseconds: 100),
         );
       }
-    }); */
+    });
     return widget.state.isloading
         ? const SearchingActivitiesCard()
-        : widget.state.activitiesWithGymsInsideFromSelectedDiapozone.isEmpty &&
-                !widget.state.isloading
+        : widget.state.activitiesWithGymsInsideFromSelectedDiapozone.isEmpty && !widget.state.isloading
             ? NoGymsInSelectedDiapozone(event: widget.event)
             : SizedBox(
                 child: Column(
                 children: [
-                  if (widget.state.locationPermissionDenied ||
-                      widget.state.locationServiceIsNotEnabled)
+                  if (widget.state.locationPermissionDenied || widget.state.locationServiceIsNotEnabled)
                     EnableLocationPermission(
                       event: widget.event,
                       state: widget.state,
@@ -203,7 +200,7 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                       children: [
                         SizedBox(
                           child: SvgPicture.asset(
-                            AppHelpers().getIconSvg(title),
+                            AppHelpers.getIconSvg(title),
                             height: 15.h,
                           ),
                         ),
@@ -264,6 +261,7 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                       child: Consumer(
                         builder: (context, ref, child) {
                           final activityEvent = ref.read(activityProvider.notifier);
+                          final currentSub = ref.watch(settingsProvider).currentSubscribtion;
                           return ListView.builder(
                               itemCount: gymsList.length,
                               shrinkWrap: true,
@@ -277,6 +275,7 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                                   gymsList[index].distanceFromClient ?? 3469,
                                   "",
                                   gymsList[index].isSelected,
+                                  currentSub != null,
                                   () {
                                     for (var element in gymsList) {
                                       if (element.isSelected == true) {
@@ -331,6 +330,7 @@ _listOfGymsBuilder(
   double distance,
   String? icon,
   bool isSelected,
+  bool showBattery,
   void Function()? onTap,
 ) {
   return GestureDetector(
@@ -392,8 +392,8 @@ _listOfGymsBuilder(
                         color: AppColors.greyText,
                       ),
                       const Spacer(),
-                      AppHelpers().getBatteryIcon(
-                          visitedCount ?? 0, visitPerMonth ?? 0),
+                      if(showBattery)
+                      AppHelpers().getBatteryIcon(visitedCount ?? 0, visitPerMonth ?? 0),
                       //AppHelpers().getBatteryIcon(10, 12),
                     ],
                   ),

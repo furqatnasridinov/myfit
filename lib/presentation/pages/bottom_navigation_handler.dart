@@ -1,6 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:myfit/application/activity/activity_notifier.dart';
+import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/dynamic_link_handler.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
@@ -10,9 +15,23 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 @RoutePage()
-class BottomNavigationHandlerScreen extends StatelessWidget {
+class BottomNavigationHandlerScreen extends ConsumerStatefulWidget {
   const BottomNavigationHandlerScreen({super.key});
 
+  @override
+  ConsumerState<BottomNavigationHandlerScreen> createState() => _BottomNavigationHandlerScreenState();
+}
+
+class _BottomNavigationHandlerScreenState extends ConsumerState<BottomNavigationHandlerScreen> {
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final notifier = ref.read(settingsProvider.notifier);
+      DynamicLinkHandler.instance.initialize(context, notifier);
+    });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -31,6 +50,7 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
                 final mapPageBottomCardShown = ref.watch(mapProvider).isGymsPopupShown;
                 final showOnlyKnownOnMap = ref.watch(mapProvider).showOnlyKnown;
                 final recommendedShown = ref.watch(mapProvider).showRecommended;
+                final ActivityNotifier activityNotifier = ref.read(activityProvider.notifier);
                 final event = ref.read(mapProvider.notifier);
                 return NavigationBar(
                   backgroundColor: Colors.white,
@@ -79,7 +99,7 @@ class BottomNavigationHandlerScreen extends StatelessWidget {
                             );
                             await event.getGetListOfGymsFromDiapozone();
                             await event.setFlexes();
-                            await event.getAllMarkers();
+                            await event.getAllMarkers(context, activityNotifier: activityNotifier);
                             event.addUserLocationMarker();
                           });
                         }

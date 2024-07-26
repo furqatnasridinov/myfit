@@ -1,6 +1,7 @@
-
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:myfit/infrastructure/models/data/place_model.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,7 +9,9 @@ import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
+
 class AppHelpers {
+
   static showCheckTopSnackBar(
     BuildContext context,
   ) {
@@ -37,6 +40,14 @@ class AppHelpers {
       CustomSnackBar.info(
         message: text,
         maxLines: 3,
+        textStyle: GoogleFonts.inter(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+            height: 1.1),
+        icon: Icon(Icons.check_circle_outline, color: Colors.white, size: 40.r),
+        iconPositionLeft: 20.w,
+        iconRotationAngle: 0,
       ),
     );
   }
@@ -47,6 +58,15 @@ class AppHelpers {
       CustomSnackBar.error(
         message: text,
         maxLines: 3,
+        textStyle: GoogleFonts.inter(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+            height: 1.1),
+        messagePadding: EdgeInsets.symmetric(horizontal: 35.w),
+        icon: Icon(Icons.error, color: Colors.white, size: 30.r),
+        iconPositionLeft: 10.w,
+        iconRotationAngle: 0,
       ),
     );
   }
@@ -77,7 +97,9 @@ class AppHelpers {
     );
   }
 
-  static void showCustomBottomSnack(BuildContext context,  String text, String svgPath, {int marginBottom = 25}) {
+  static void showCustomBottomSnack(
+      BuildContext context, String text, String svgPath,
+      {int marginBottom = 25}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
           content: Row(
@@ -89,7 +111,7 @@ class AppHelpers {
                   decoration: BoxDecoration(
                     color: AppColors.backgroundColor,
                     borderRadius: BorderRadius.circular(6.r),
-                  ),  
+                  ),
                   child: Padding(
                     padding: EdgeInsets.all(5.r),
                     child: SvgPicture.asset(
@@ -117,7 +139,8 @@ class AppHelpers {
               ),
             ],
           ),
-          margin: EdgeInsets.only(left: 25.w, right: 25.w, bottom: marginBottom.h),
+          margin:
+              EdgeInsets.only(left: 25.w, right: 25.w, bottom: marginBottom.h),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.r),
             side: BorderSide(color: AppColors.blueColor, width: 1.w),
@@ -128,7 +151,7 @@ class AppHelpers {
     );
   }
 
-  String getIconSvg(String activityName) {
+  static String getIconSvg(String activityName) {
     String path = "assets/svg/boxing.svg"; // будет по умолчанию
     switch (activityName) {
       case "Йога":
@@ -267,7 +290,6 @@ class AppHelpers {
     return color;
   }
 
-
   String getCorrectWordFromUsersCount(int usersCount) {
     int lastDigit = usersCount % 10;
     int lastTwoDigits = usersCount % 100;
@@ -332,7 +354,7 @@ class AppHelpers {
     }
   }
 
-  String getTranslatedLessonType({required String engLessonType}){
+  String getTranslatedLessonType({required String engLessonType}) {
     String translatedLessonType = "Яхай";
     switch (engLessonType) {
       case "CARDIO":
@@ -366,13 +388,13 @@ class AppHelpers {
     return translatedLessonType;
   }
 
-  static String getFormattedDay(DateTime dateTime){
+  static String getFormattedDay(DateTime dateTime) {
     // from 2024-05-25 00:00:00.000 to Cуббота, 25 мая
     String day = getWeekDay(dateTime.weekday);
     return "$day, ${dateTime.day} ${getMonth(dateTime.month)}";
   }
 
-  static String getFormattedDay2(String day){
+  static String getFormattedDay2(String day) {
     // from 2024-05-25 to Cуббота, 25 мая
     DateTime dateTime = DateTime.parse(day);
     String dayName = getWeekDay(dateTime.weekday);
@@ -383,7 +405,7 @@ class AppHelpers {
     String hours = dateTime.hour.toString().padLeft(2, '0');
     String minutes = dateTime.minute.toString().padLeft(2, '0');
     return "$hours:$minutes";
-}
+  }
 
   static String getMonth(int month) {
     switch (month) {
@@ -451,7 +473,8 @@ class AppHelpers {
         return NotificationType.visitsCountIsGettingLowOrEnded;
       case "QR_CODE":
         return NotificationType.lessonStartsWithin15minutes;
-      default: return NotificationType.system;
+      default:
+        return NotificationType.system;
     }
   }
 
@@ -470,7 +493,8 @@ class AppHelpers {
     return "${time.day}.$month в $hours:$minutes";
   }
 
-  static String getChangedLessonEndsAt({required DateTime startTime, required String durationInString}){
+  static String getChangedLessonEndsAt(
+      {required DateTime startTime, required String durationInString}) {
     // from start time 2024-05-25 10:00:00.000 and durationInString 01:00:00 to 25.05 до 11:00
     // consider minutes too
     List<String> durationParts = durationInString.split(':');
@@ -480,8 +504,8 @@ class AppHelpers {
     String hoursStr = endTime.hour.toString().padLeft(2, '0');
     String minutesStr = endTime.minute.toString().padLeft(2, '0');
     String month = endTime.month.toString().padLeft(2, '0');
-    return "${endTime.day}.$month до $hoursStr:$minutesStr";   
-}
+    return "${endTime.day}.$month до $hoursStr:$minutesStr";
+  }
 
   static String getStringFromDateTime(DateTime dateTime) {
     // from 2024-05-25 08:00:00.000 to 2024-05-25@08:00
@@ -490,8 +514,7 @@ class AppHelpers {
     String month = dateTime.month.toString().padLeft(2, '0');
     String day = dateTime.day.toString().padLeft(2, '0');
     return "${dateTime.year}-$month-$day@$hours:$minutes";
-
-    }
+  }
 
   static String getCalendarlikeStringFromDateTime(DateTime dateTime) {
     // from 2024-05-25 08:00:00.000 to 25.05.2024
@@ -504,58 +527,62 @@ class AppHelpers {
     }
   }
 
-  static String getBirthdayLikeInServer(String text){
+  static String getBirthdayLikeInServer(String text) {
     // from 18.11.2003 to 2003-11-18
     List<String> parts = text.split('.');
     return "${parts[2]}-${parts[1]}-${parts[0]}";
   }
 
-  static String getBirthdayLikeInApp(String text){
+  static String getBirthdayLikeInApp(String text) {
     // from 2003-11-18 to 18.11.2003
     List<String> parts = text.split('-');
     return "${parts[2]}.${parts[1]}.${parts[0]}";
   }
 
-  static int getYearFromBirthday(String birthday){
-    // from 2003-11-18 to 20 
+  static int getYearFromBirthday(String birthday) {
+    // from 2003-11-18 to 20
     List<String> parts = birthday.split('-');
     int month = int.parse(parts[1]);
     int day = int.parse(parts[2]);
     int year = int.parse(parts[0]);
     final bool monthCoorect = month > 0 && month < 13;
-    final bool dayCorrect =  month == 2 ? day > 0 && day <= 29 : day > 0 && day < 32;
+    final bool dayCorrect =
+        month == 2 ? day > 0 && day <= 29 : day > 0 && day < 32;
     if (monthCoorect && dayCorrect) {
       return DateTime.now().year - year;
-    }else{
+    } else {
       return 0;
     }
   }
 
-  static String getCostPerMonth(int actualPrice, double priceAfterPromocode, int durationInMonth){
+  static String getCostPerMonth(
+      int actualPrice, double priceAfterPromocode, int durationInMonth) {
     if (priceAfterPromocode == 0.0) {
       return (actualPrice / durationInMonth).toStringAsFixed(0);
-    }else{
+    } else {
       return (priceAfterPromocode / durationInMonth).toStringAsFixed(0);
     }
   }
 
-  static String getBirthdayErrorMes(String controllerText){
+  static String getBirthdayErrorMes(String controllerText) {
     if (controllerText.isEmpty) {
-      return "Поле не может быть пустым";
-    }else if (controllerText.length != 10) {
+      return "Дата рождения : Поле не может быть пустым";
+    } else if (controllerText.length != 10) {
       return "Неверный формат даты";
-    }else if(controllerText.length == 10){
+    } else if (controllerText.length == 10) {
       // 12.12.2000
       final List<String> parts = controllerText.split('.');
       final int day = int.parse(parts[0]);
       final int month = int.parse(parts[1]);
       final int year = int.parse(parts[2]);
       final bool monthCorrect = month > 0 && month < 13;
-      final bool dayCorrect = month == 2 ? day > 0 && day <= 29 : day > 0 && day < 32;
-      final bool yearCorrect = year > DateTime.now().year - 100 && year < DateTime.now().year;
+      final bool dayCorrect =
+          month == 2 ? day > 0 && day <= 29 : day > 0 && day < 32;
+      final bool yearCorrect =
+          year > DateTime.now().year - 100 && year < DateTime.now().year;
       if (!monthCorrect && !dayCorrect && !yearCorrect) {
         return "Неверный формат даты";
-      } 
+      }
       if (!monthCorrect && !dayCorrect && yearCorrect) {
         return "Неверно указаны месяц и день";
       }
@@ -574,19 +601,20 @@ class AppHelpers {
       if (!monthCorrect && dayCorrect && !yearCorrect) {
         return "Неверно указаны месяц и год";
       }
-
     }
     return "";
-}
-  static String getAutoRenewalDay(String currentSubEndDate){
+  }
+
+  static String getAutoRenewalDay(String currentSubEndDate) {
     // from 04.09.2024 to 2 сентября
     List<String> parts = currentSubEndDate.split('.');
-    DateTime dateTime = DateTime(int.parse(parts[2]), int.parse(parts[1]), int.parse(parts[0]));
+    DateTime dateTime =
+        DateTime(int.parse(parts[2]), int.parse(parts[1]), int.parse(parts[0]));
     DateTime newDateTime = dateTime.subtract(const Duration(days: 2));
     return "${newDateTime.day} ${getMonth(dateTime.month)}";
   }
 
-  static DateTime getCalendarDateTime(String formattedCalendarDay){
+  static DateTime getCalendarDateTime(String formattedCalendarDay) {
     // from 13 Июн 2024 to DateTime
     List<String> parts = formattedCalendarDay.split(" ");
     if (parts.length != 3) {
@@ -598,17 +626,52 @@ class AppHelpers {
 
     // Convert month from string to number
     Map<String, String> months = {
-      'Янв': "01", 'Фев': "02", 'Мар': "03", 'Апр': "04", 'Май': "05", 'Июн': "06",
-      'Июль': "07", 'Авг': "08", 'Сен': "09", 'Окт': "10", 'Ноя': "11", 'Дек': "12"
+      'Янв': "01",
+      'Фев': "02",
+      'Мар': "03",
+      'Апр': "04",
+      'Май': "05",
+      'Июн': "06",
+      'Июль': "07",
+      'Авг': "08",
+      'Сен': "09",
+      'Окт': "10",
+      'Ноя': "11",
+      'Дек': "12"
     };
     String monthNumber = months[month] ?? "";
     if (monthNumber.isEmpty) {
       throw const FormatException("Invalid month in formattedCalendarDay");
     }
 
-    String formattedDate = "$year$monthNumber$day";  // 20240613
+    String formattedDate = "$year$monthNumber$day"; // 20240613
     final DateTime result = DateTime.parse(formattedDate);
     return result;
   }
-}
 
+  static DateTime gePhotoAccessTime(String? str) {
+    if (str == null) {
+      // для upload photo access, если null означает клиент никогда не изменил аватар
+      // и мы можем вернуть текущую дату (этим дадим ему доступ)
+      return DateTime.now().subtract(const Duration(days: 10));
+    } else {
+      // 2024-06-09
+      final DateTime result = DateTime.parse(str);
+      return result;
+    }
+  }
+
+   static List<PlaceModel> getPlacemodels(Set<Marker> markers){
+      if (markers.isEmpty) {
+        return [];
+      }else{
+      return markers.map((e) => PlaceModel(
+                name: e.mapsId.value,
+                latLng: e.position,
+                type: 0,
+                id: e.mapsId.value == "user" ? AppConstants.userMarkerId : int.parse(e.mapsId.value))).toList();
+      }
+  }
+ 
+
+}

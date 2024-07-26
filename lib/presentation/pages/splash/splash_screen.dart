@@ -1,4 +1,5 @@
 import 'package:myfit/application/splash/splash_provider.dart';
+import 'package:myfit/infrastructure/services/local_storage.dart';
 import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -19,12 +20,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     ref.read(splashprovider.notifier).checkUserIfExists(
       context,
       goMain: () {
-        //context.replaceRoute(const Registration4Route());
-       context.replaceRoute(const BottomNavigationHandlerRoute());
+        if (LocalStorage.getUserName().isEmpty || LocalStorage.getUserLastName().isEmpty) {
+          context.replaceRoute(const Registration3Route());
+        }else{
+          context.replaceRoute(const BottomNavigationHandlerRoute());
+        }       
       },
       goLogin: () {
         context.replaceRoute(const Registration1Route());
-        //context.replaceRoute(const Registration3Route());
       },
     );
   }

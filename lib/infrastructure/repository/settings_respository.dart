@@ -245,7 +245,7 @@ class SettingsRepository implements SetttingsRepositoryInterface {
         statusCode: NetworkExceptions.getDioStatus(e),
       );
     }
-}
+  }
 
   @override
   Future<ApiResult<Map<String, dynamic>>> purchaseSubscription({required int id,required bool autoRenewal}) async{
@@ -329,6 +329,24 @@ class SettingsRepository implements SetttingsRepositoryInterface {
       final client = inject<HttpService>().clientDio();
       final response = await client.post(
         "api/promotional/ref/bonus",
+      );
+      return ApiResult.success(
+        data: response.data,
+      );
+    } catch (e) {
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      );
+    }
+  }
+  
+  @override
+  Future<ApiResult<Map<String, dynamic>>> getPromocodesQueue() async{
+    try {
+      final client = inject<HttpService>().clientDio();
+      final response = await client.get(
+        "api/promotional/queue",
       );
       return ApiResult.success(
         data: response.data,

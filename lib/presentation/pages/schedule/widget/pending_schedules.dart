@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:myfit/application/schedule/schedule_notifier.dart';
 import 'package:myfit/application/schedule/schedule_provider.dart';
+import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/presentation/components/animation_button_effect.dart';
@@ -205,7 +206,7 @@ Widget listOfActivitiesEachItem2(
                   // cancel lesson
                   () async {
                     await event.cancelActivity(id, context);
-                    event.getUsersSchedules(context);
+                    event.getUsersSchedules(context, false);
                   },
                 ),
               ],
@@ -264,7 +265,15 @@ Widget listOfActivitiesEachItem2(
                           ),
                         ),
                         5.horizontalSpace,
-                        AppHelpers().getBatteryIcon(visitedCount ?? 0, visitPerMonth ?? 0),
+                         Consumer(
+                          builder: (context, ref, child) {
+                            final bool showBattery = ref.watch(settingsProvider) .currentSubscribtion !=null;
+                            if (showBattery) {
+                              return AppHelpers().getBatteryIcon(visitedCount ?? 0, visitPerMonth ?? 0);
+                            }
+                            return const SizedBox();
+                          },
+                        ),
                       ],
                     ),
                   ),
@@ -288,26 +297,49 @@ Widget dropDownPending(
     dropDownItemsList: [
       {
         'title': 'Открыть расписание заведения',
-        'icon': SvgPicture.asset(
-          'assets/svg/calendar.svg',
-          colorFilter: const ColorFilter.mode(
-            Color.fromRGBO(62, 134, 245, 1),
-            BlendMode.srcIn,
-          ),
-          height: 18.h,
-          width: 18.w,
-        ),
+        'icon': SizedBox(
+                height: 28.h,
+                width: 28.w,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: AppColors.backgroundColor,
+                    borderRadius: BorderRadius.circular(6.r),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(3.r),
+                    child: SvgPicture.asset(
+                      "assets/svg/calendar.svg",
+                      colorFilter: const ColorFilter.mode(
+                        Color.fromRGBO(62, 134, 245, 1),
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
         'action': onNavigate,
       },
       {
         'title': 'Отменить запись',
-        'icon': SvgPicture.asset(
-          'assets/svg/close.svg',
+        'icon': SizedBox(
+                height: 28.h,
+                width: 28.w,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: AppColors.backgroundColor,
+                    borderRadius: BorderRadius.circular(6.r),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(3.r),
+                    child: SvgPicture.asset(
+                       'assets/svg/close.svg',
           colorFilter: const ColorFilter.mode(
               Color.fromRGBO(255, 61, 0, 1), BlendMode.srcIn),
-          height: 18.h,
-          width: 18.w,
-        ),
+                    ),
+                  ),
+                ),
+              ),
+        
         'action': onDelete
       },
     ],

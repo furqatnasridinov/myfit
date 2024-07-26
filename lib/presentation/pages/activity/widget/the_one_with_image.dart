@@ -13,6 +13,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../infrastructure/services/app_constants.dart';
+
 class TheOneWithImage extends StatefulWidget {
   const TheOneWithImage({Key? key}) : super(key: key);
 
@@ -56,7 +58,7 @@ class _TheOneWithImageState extends State<TheOneWithImage> {
             child: Hero(
               tag: mainPictureUrl ?? "",
               child: CachedNetworkImage(
-                imageUrl: "http://77.222.53.122/image/$mainPictureUrl",
+                imageUrl: "${AppConstants.baseUrl}image/$mainPictureUrl",
                 errorWidget: (context, url, error) {
                   return Image.asset(
                     "assets/images/avatar.png",

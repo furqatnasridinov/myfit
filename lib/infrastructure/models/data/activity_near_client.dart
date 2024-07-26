@@ -15,9 +15,10 @@ class GymDataMain {
   String? address;
   String? latitude;
   String? longitude;
+  double? distanceFromClient;
 
   GymDataMain(
-      {this.id, this.name, this.address, this.latitude, this.longitude});
+      {this.id, this.name, this.address, this.latitude, this.longitude, this.distanceFromClient});
 
   GymDataMain.fromJson(Map<String, dynamic> json) {
     id = json['id'];

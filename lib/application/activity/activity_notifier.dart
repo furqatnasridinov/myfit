@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:ffi';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -16,6 +15,7 @@ import 'package:myfit/infrastructure/models/data/calendar_data.dart';
 import 'package:myfit/infrastructure/models/data/description_and_peculiarities.dart';
 import 'package:myfit/infrastructure/models/data/enrolling_error_message.dart';
 import 'package:myfit/infrastructure/models/data/lesson.dart';
+import 'package:myfit/infrastructure/models/data/subcategory.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/infrastructure/services/connectivity.dart';
@@ -65,7 +65,6 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   }
 
   Future<void> getListOf45CalendarDatesFromToday(DateTime? currentSubEnds) async {
-    if (currentSubEnds != null) {
       List<CalendarData> dates = [];
       DateTime currentDate = DateTime.now();
       // [ 'Пн 26 Дек', 'Вт 27 Дек' ...]
@@ -107,14 +106,16 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         currentDate = currentDate.add(const Duration(days: 1));
       }
 
-      // ограничить список дат, к дню окончания подписки
-       final List<CalendarData> newDates = dates.where((element) => element.dateTime.isBefore(currentSubEnds)).toList();
+      // ограничить список дат, к дню окончания подписки только для тех кто имеет активную подписку сейчас
+      
+
+       final List<CalendarData> newDates = currentSubEnds != null ? dates.where((element) => element.dateTime.isBefore(currentSubEnds)).toList() : dates;
        final bool isCalendarLimited = newDates.length < dates.length;
         state = state.copyWith(
         listOf45CalendarDaysFromNow: newDates,
         isCalendarLimited: isCalendarLimited,
       );
-    }
+    
 }
 
   Future<void> getActivityTypes(
@@ -124,31 +125,62 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     final connected = await AppConnectivity().connectivity();
     if (connected) {
       state = state.copyWith(isActivitiesListLoading: true);
-      final response =
-          await _activityRepositoryInterface.getActivities(gymId: gymId);
+      final response = await _activityRepositoryInterface.getActivities(gymId: gymId);
       response.when(
         success: (data) {
-          if (data.object!.isNotEmpty) {
+          final Map<String, dynamic> map = data["object"];
+          state = state.copyWith(lessonTypesAndSubcategories: map);
+          final List<String> activities = map.keys.toList();
+          if (activities.isNotEmpty) {
             state = state.copyWith(
-              activityTypes: data.object,
+              activityTypes: activities,
               isActivitiesListLoading: false,
-            );
+            );            
             if (selectedActivityFromMap.isNotEmpty) {
               state = state.copyWith(selectedActivity: selectedActivityFromMap);
+             final List<SubCategory> formattedList =  (map[selectedActivityFromMap] as List).map((e) => SubCategory.fromJson(e)).toList();
+             setDescribtionsAndPhotosOfSubcategory(formattedList[0]);
+              state = state.copyWith(
+                subCategories: formattedList,
+                selectedSubCategory: formattedList[0],
+              );
             }
             if (selectFirst && selectedActivityFromMap.isEmpty) {
-              state = state.copyWith(selectedActivity: data.object!.first);
+              state = state.copyWith(selectedActivity: activities[0]);
+              final List<SubCategory> formattedList =  (map[activities[0]] as List).map((e) => SubCategory.fromJson(e)).toList();
+              setDescribtionsAndPhotosOfSubcategory(formattedList[0]);
+              state = state.copyWith(
+                subCategories: formattedList,
+                selectedSubCategory: formattedList[0],
+              );
             }
           }
         },
         failure: (error, statusCode, operationInfo) {
           state = state.copyWith(isActivitiesListLoading: false);
-          AppHelpers.showErrorSnack(
-              context, NetworkExceptions.getErrorMessage(error));
+          AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {
       AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  void changeSelectedSubCategory(SubCategory subCategory) {
+    state = state.copyWith(selectedSubCategory: subCategory);
+    setDescribtionsAndPhotosOfSubcategory(subCategory);
+  }
+
+  void setDescribtionsAndPhotosOfSubcategory(SubCategory subCategory){
+    if (subCategory.inheritance == true) {
+      getDescribtionAndPeculiarities(state.selectedActivity ?? "");
+      getPhotosOfSelectedActivity(state.selectedActivity ?? "");
+    }else{
+      final DescribtionAndPeculiarities data = DescribtionAndPeculiarities(
+        typeDescription: subCategory.typeDescription, 
+        peculiarities: subCategory.peculiarities);
+      final List<String> photos = subCategory.gymSubActivePictures ?? [];
+      state = state.copyWith(describtionAndPeculiarities: data, photosOfSelectedActivity: photos);
     }
   }
 
@@ -307,10 +339,18 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
   }
 
   Future<void> setSingleSelectedActivity(String? value) async {
-    if (value == state.selectedActivity) {
+    if (value == state.selectedActivity || value == null) {
       return;
     } else {
-      state = state.copyWith(selectedActivity: value);
+      final Map<String,dynamic> map = state.lessonTypesAndSubcategories;
+      final List<SubCategory> formattedList = (map[value] as List).map((e) => SubCategory.fromJson(e)).toList();
+      final SubCategory selectedSubCategory = formattedList[0];
+      setDescribtionsAndPhotosOfSubcategory(selectedSubCategory);
+      state = state.copyWith(
+        selectedActivity: value,
+        subCategories: formattedList,
+        selectedSubCategory: selectedSubCategory,
+      );
     }
   }
 
@@ -445,7 +485,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
             getGymInfo(context, false, gymId: lessonData["gymId"]);
           }
         }
-        scheduleNotifier.getUsersSchedules(context);
+        scheduleNotifier.getUsersSchedules(context, false);
         await mapNotifier.getGymsList(context, [], {});
         mapNotifier.getGetListOfGymsFromDiapozone();
         if (lessonData["lessonState"] == "CONFIRMED") {
@@ -726,9 +766,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
               backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.r),
-                  side: const BorderSide(
-                    color: AppColors.blueBorder,
-                  )),
+                  side: const BorderSide(color: AppColors.blueBorder)),
               elevation: 0,
               insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
               child: Padding(
@@ -810,6 +848,9 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
                 ),
               ));
         });
+  }
+  void setAnimationDontHaveSub(bool val){
+    state = state.copyWith(showAnimationDontHaveSubs: val);
   }
 
   void showConflictGymDialog(

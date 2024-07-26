@@ -16,10 +16,12 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
       : super(const ScheduleState());
   final ScheduleRepositoryInterface _scheduleRepositoryInterface;
 
-  Future<void> getUsersSchedules(BuildContext context) async {
+  Future<void> getUsersSchedules(BuildContext context, bool showLoading,) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
-      state = state.copyWith(isloading: true);
+      if (showLoading) {
+        state = state.copyWith(isUserSchedulesLoading: true);
+      }
       final response = await _scheduleRepositoryInterface.getUsersSchedules();
       response.when(
         success: (data) {
@@ -79,14 +81,14 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
             state = state.copyWith(
               listOfuserSchedules: listToCollect,
               waitingSchedules: waitingListToCollect,
-              isloading: false,
+              isUserSchedulesLoading: false,
             );
           }
         },
         failure: (error, statusCode, operationInfo) {
           AppHelpers.showErrorSnack(
               context, NetworkExceptions.getErrorMessage(error));
-          state = state.copyWith(isloading: false);
+          state = state.copyWith(isUserSchedulesLoading: false);
         },
       );
     } else {
@@ -184,11 +186,13 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
     state = state.copyWith(qrLoading: false);
   }
 
-  Future<void> getCompletedSchedules(BuildContext context) async {
+  Future<void> getCompletedSchedules(BuildContext context, bool showLoading) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
-      final response =
-          await _scheduleRepositoryInterface.getCompletedSchedules();
+      if (showLoading) {
+        state = state.copyWith(isCompletedSchedulesLoading: true);
+      }
+      final response = await _scheduleRepositoryInterface.getCompletedSchedules();
       response.when(success: (data) {
         if (data["object"].length > 0) {
           final List<CompletedSchedule> listToCollect = [];
@@ -212,9 +216,10 @@ class ScheduleNotifier extends StateNotifier<ScheduleState> {
               .compareTo(DateFormat("dd.MM.yy HH:mm").parse(b.time)));
           state = state.copyWith(completedSchedules: listToCollect);
         }
+        state = state.copyWith(isCompletedSchedulesLoading: false);
       }, failure: (error, statusCode, operationInfo) {
-        AppHelpers.showErrorSnack(
-            context, NetworkExceptions.getErrorMessage(error));
+        AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
+        state = state.copyWith(isCompletedSchedulesLoading: false);
       });
     } else {
       AppHelpers.showCheckTopSnackBar(context);

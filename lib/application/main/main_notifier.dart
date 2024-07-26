@@ -1,8 +1,8 @@
+import 'package:geolocator/geolocator.dart';
 import 'package:myfit/application/main/main_state.dart';
 import 'package:myfit/domain/handlers/network_exceptions.dart';
 import 'package:myfit/domain/interface/main.dart';
 import 'package:myfit/infrastructure/models/data/activity_near_client.dart';
-import 'package:myfit/infrastructure/models/data/each_markers_models.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/infrastructure/services/connectivity.dart';
 import 'package:flutter/material.dart';
@@ -92,7 +92,7 @@ class MainNotifier extends StateNotifier<MainState> {
     state = state.copyWith(commentsAutoPlayMode: false);
   }
 
-  Future<void> getGymsList(BuildContext context) async {
+  Future<void> getActivitiesNearBy(BuildContext context) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
       final response = await _mainRepositoryInterface.getGymsList();
@@ -112,8 +112,7 @@ class MainNotifier extends StateNotifier<MainState> {
           state = state.copyWith(activitiesNearClient: listcha);
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(
-              context, NetworkExceptions.getErrorMessage(error));
+          AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {
@@ -121,45 +120,6 @@ class MainNotifier extends StateNotifier<MainState> {
       AppHelpers.showCheckTopSnackBar(context);
     }
   }
-
-  void getUniqueGymLocations() {
-    final list = state.activitiesNearClient;
-    final Set<String> uniqueLocations = {};
-    for (final activity in list) {
-      if (activity.gymdata != null) {
-        for (final gym in activity.gymdata!) {
-          final location = "${gym.longitude},${gym.latitude}";
-          uniqueLocations.add(location);
-        }
-      }
-    }
-    final latlonString = uniqueLocations.map((e) => "$e,round").join('~');
-    state = state.copyWith(latlongsYandexApi: latlonString);
-  }
-
-  Future<void> getAllMarkers() async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    List<EachMarkersModel> markers = [];
-    for (var element in state.activitiesNearClient) {
-      element.gymdata?.forEach((e) {
-        // Use forEach instead of map
-        final marker = EachMarkersModel(
-          name: element.activityName ?? "?",
-          latitude: double.parse(e.latitude!),
-          longitude: double.parse(e.longitude!),
-          address: e.address ?? "?",
-          id: e.id!,
-          visitedCount: 0,
-          visitPerMonth: 0,
-        );
-        if (!markers.any((element) => element.id == marker.id)) {
-          markers.add(marker);
-        }
-      });
-    }
-    state = state.copyWith(listOfMarkers: markers);
-  }
-
 
 
 

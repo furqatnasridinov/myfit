@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:myfit/application/registration/registration_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
@@ -174,8 +175,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                         onTapOutside: (onTapOutside) {
                           FocusScope.of(context).unfocus();
                         },
-                        androidSmsAutofillMethod:
-                            AndroidSmsAutofillMethod.smsUserConsentApi,
+                        androidSmsAutofillMethod:AndroidSmsAutofillMethod.smsUserConsentApi,
                         closeKeyboardWhenCompleted: true,
                         controller: controller,
                         onChanged: (value) {
@@ -191,8 +191,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                         defaultPinTheme: event.getDefaultPinTheme(),
                         focusedPinTheme: event.getDefaultPinTheme(),
                         disabledPinTheme: event.getDefaultPinTheme(),
-                        submittedPinTheme: isCodeError
-                            ? event.getErrorPinTheme() : event.getSubmittedPinTheme(),
+                        submittedPinTheme: isCodeError ? event.getErrorPinTheme() : event.getSubmittedPinTheme(),
                       ),
                     ),
 
@@ -224,7 +223,7 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                               SizedBox(
                                 width: 22.w,
                                 height: 22.h,
-                                child: const CircularProgressIndicator(),
+                                child: CupertinoActivityIndicator(radius: 12.r)
                               ),
                               10.verticalSpace,
                               CustomText(
@@ -284,13 +283,12 @@ class _Registration2ScreenState extends ConsumerState<Registration2Screen> {
                         }
                       },
                       child: InterText(
-                        text: counterDown == 0
-                            ? "Отправить снова" : "Отправить ещё раз через $counterDown с",
+                        text: counterDown == 0 ? "Отправить снова" : "Отправить ещё раз через $counterDown с",
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w400,
                         color: AppColors.blueColor,
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),

@@ -1,6 +1,5 @@
 //import 'package:myfit/infrastructure/models/data/user_instance.dart';
 
-
 import 'package:flutter/cupertino.dart';
 import 'package:myfit/infrastructure/models/data/promocode.dart';
 import 'package:myfit/infrastructure/models/data/user_subscribtion.dart';
@@ -52,6 +51,7 @@ class SettingsState with _$SettingsState {
     @Default("") String promocodeValue,
     @Default(false) bool isPromocodeLoading,
     @Default([]) List<Promocode> promocodesHistory,
+    @Default([]) List<Promocode> promocodesQueue,
     @Default(false) bool isPromocodeSuccess,
     @Default(false) bool isPromocodeError,
     @Default("") String promocodeErrorMessage,
@@ -59,6 +59,10 @@ class SettingsState with _$SettingsState {
     @Default(null) Referal? referalInfo,
     @Default(false) bool referalInfoLoading,
     @Default(false) takeBonusButtonClicked,
+    @Default(false) isFromReferalDeepLink,
+    @Default("") String referalDeepLinkValue,
+    @Default(false) bool showPromocodeResponseInPromodesSection,
+    @Default("") String avatarTmp,
   }) = _SettingsState;
   const SettingsState._();
 }

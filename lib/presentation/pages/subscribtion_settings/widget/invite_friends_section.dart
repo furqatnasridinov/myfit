@@ -102,7 +102,7 @@ class InviteFriendsSection extends StatelessWidget {
                         child: GestureDetector(
                           onTap: () {
                             // copy to clipboard
-                            Clipboard.setData(ClipboardData(text: "myfit.ru/invite/${referal?.refLink}"));
+                            Clipboard.setData(ClipboardData(text: "https://myfit-russia.ru/inv/${referal?.refLink}"));
                             AppHelpers.showCustomBottomSnack(
                               context, 
                               "Ссылка для приглашения скопирована в буфер обмена",
@@ -212,7 +212,7 @@ Widget buildTextField(String ref) {
     readOnly: true,
     decoration: InputDecoration(
       contentPadding: EdgeInsets.zero.copyWith(left: 6.w),
-      hintText: "myfit.ru/invite/$ref",
+      hintText: "myfit-russia.ru/inv/$ref",
       hintStyle: GoogleFonts.raleway(
         fontSize: 14.sp,
         fontWeight: FontWeight.w500,
@@ -250,37 +250,9 @@ Widget doneIndicator() {
           height: 30.h,
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: AppColors.fadedPrimary3,
+              color: AppColors.fadedBlueBorder,
               borderRadius: BorderRadius.circular(16.r),
-              border: Border.all(color: AppColors.blueColor),
-              /* gradient: const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color.fromRGBO(119, 170, 249, 0.16),
-                  Color.fromRGBO(89, 154, 254, 0.29),
-                ],
-              ), */
-            ),
-            child: const Center(
-              child: SizedBox(),
-            ),
-          ),
-        ),
-         SizedBox(
-          height: 29.h,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: AppColors.fadedPrimary3,
-              borderRadius: BorderRadius.circular(16.r),
-              gradient: const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color.fromRGBO(119, 170, 249, 0.16),
-                  Color.fromRGBO(89, 154, 254, 0.29),
-                ],
-              ),
+              border: Border.all(color: AppColors.fadedBlueBorder),
             ),
             child: const Center(
               child: SizedBox(),
@@ -298,15 +270,7 @@ Widget doneIndicator() {
                 decoration: BoxDecoration(
                   color: AppColors.primaryFadedBorder,
                   borderRadius: BorderRadius.circular(16.r),
-                  border: Border.all(color: AppColors.blueColor.withOpacity(0.99)),
-                   /* gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      AppColors.blueColor.withOpacity(0.26),
-                      AppColors.blueBorder.withOpacity(0.49),
-                    ],
-                  ), */
+                  border: Border.all(color: AppColors.fadedBlueBorder),
                 ),
                 child: Icon(Icons.done, color: Colors.white, size: 16.sp),
               ),
@@ -342,7 +306,7 @@ Widget getBonusButton(SettingsNotifier settingsNotifier, BuildContext context){
     final bool loading = ref.watch(settingsProvider).allSubsLoading || ref.watch(settingsProvider).referalInfoLoading;
     return GestureDetector(
     onTap: () async{
-      settingsNotifier.setTakeButtonCliked(true);
+       settingsNotifier.setTakeButtonCliked(true);
        await settingsNotifier.getReferalBonus(context);
        settingsNotifier.getAllAvailableSubscribtions(context);
     },
@@ -378,6 +342,25 @@ Widget getBonusButton(SettingsNotifier settingsNotifier, BuildContext context){
   },);
 }
 
+class WaveClipperTwo extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    var path = Path();
+    // Add your custom wave path here
+    // Example wave path, adjust according to your needs
+    path.lineTo(0, size.height);
+    path.quadraticBezierTo(size.width / 4, size.height - 20, size.width / 2, size.height);
+    path.quadraticBezierTo(3 / 4 * size.width, size.height + 20, size.width, size.height);
+    path.lineTo(size.width, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return false;
+  }
+}
 
 Widget errorButton(){
   return GestureDetector(

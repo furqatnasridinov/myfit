@@ -51,8 +51,7 @@ class TheOneWithPhotos extends StatelessWidget {
                 itemCount: photosOfSelectedActivity.length,
                 itemBuilder: (context, index) {
                   final current = photosOfSelectedActivity[index];
-                  String linkToCompressedPhoto =
-                      event.getLinkToCompressedPhoto(current);
+                  String linkToCompressedPhoto = event.getLinkToCompressedPhoto(current);
                   return InkWell(
                     onTap: () {
                       context.router.push(PhotoViewRoute(
@@ -71,7 +70,7 @@ class TheOneWithPhotos extends StatelessWidget {
                           child: Hero(
                             tag: index,
                             child: CachedNetworkImage(
-                              imageUrl:"http://77.222.53.122/image/$linkToCompressedPhoto",
+                              imageUrl:"${AppConstants.baseUrl}image/$linkToCompressedPhoto",
                               fit: BoxFit.cover,
                               errorWidget: (context, url, error) {
                                 return Image.asset(AppConstants.cristianBale);

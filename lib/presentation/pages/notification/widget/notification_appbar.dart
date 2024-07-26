@@ -80,8 +80,8 @@ class NotificationAppbar extends StatelessWidget
                                       AppConstants.cristianBale))
                               : CircleAvatar(
                                   radius: 18.r,
-                                  backgroundImage: NetworkImage(
-                                      "http://77.222.53.122/image/$avatar"),
+                                  backgroundColor: AppColors.fadedBlueBorder,
+                                  backgroundImage: NetworkImage("${AppConstants.baseUrl}image/$avatar"),
                                   onBackgroundImageError:
                                       (exception, stackTrace) {
                                     debugPrint(exception.toString());

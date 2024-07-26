@@ -45,21 +45,18 @@ class TheOneWithChips extends StatelessWidget {
                           await event.removeSelectedCalendarDay();
                           event
                             ..setSingleSelectedActivity(current)
-                            ..getDescribtionAndPeculiarities(current)
-                            ..getPhotosOfSelectedActivity(current)
+                            //..getDescribtionAndPeculiarities(current)
+                            //..getPhotosOfSelectedActivity(current)
                             ..getLessonsOfSelectedActivity(current, true);
                         },
                         child: AnimationButtonEffect(
-                          child: DecoratedBox(
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(6.r),
-                              border: Border.all(
-                                color: isActive
-                                    ? Colors.transparent
-                                    : AppColors.blueBorder,
-                              ),
-                              color:
-                                  isActive ? AppColors.blueColor : Colors.white,
+                              border: Border.all(color: isActive? Colors.transparent: AppColors.blueBorder),
+                              color: isActive ? AppColors.blueColor : Colors.white,
                             ),
                             child: Padding(
                               padding: EdgeInsets.symmetric(
@@ -75,29 +72,6 @@ class TheOneWithChips extends StatelessWidget {
                             ),
                           ),
                         ),
-
-                        /* Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: 5.h,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6.r),
-                            border: Border.all(
-                              color: isActive
-                                  ? Colors.transparent
-                                  : AppColors.blueBorder,
-                            ),
-                            color:
-                                isActive ? AppColors.blueColor : Colors.white,
-                          ),
-                          child: CustomText(
-                            text: current,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                            color: isActive ? Colors.white : Colors.black,
-                          ),
-                        ), */
                       );
                     }),
                   ),

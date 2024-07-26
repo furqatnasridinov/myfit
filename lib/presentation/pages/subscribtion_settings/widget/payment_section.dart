@@ -16,6 +16,8 @@ import 'package:myfit/presentation/components/custom_card.dart';
 import 'package:myfit/presentation/components/custom_switch.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
 
+import '../../../../infrastructure/models/data/user_subscribtion.dart';
+
 class PaymentSection extends StatelessWidget {
   const PaymentSection({super.key});
 
@@ -84,7 +86,7 @@ class PaymentSection extends StatelessWidget {
                                       const Spacer(),
                                       GestureDetector(
                                         onTap: () {
-                                          //event.deleteCard();
+                                          event.deleteCard();
                                         },
                                         child: CustomText(
                                           text: "Удалить карту",
@@ -105,6 +107,7 @@ class PaymentSection extends StatelessWidget {
                       children: [
                         Consumer(builder: (contex, ref, child) {
                           final autoRenewal = ref.watch(settingsProvider).autoRenewal;
+                          final UserSubscription? currentSub =  ref.watch(settingsProvider).currentSubscribtion;
                           final event = ref.read(settingsProvider.notifier);
                           return CustomSwitch(
                             value: autoRenewal,
@@ -118,12 +121,11 @@ class PaymentSection extends StatelessWidget {
                                       return Dialog(
                                         backgroundColor: Colors.white,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(16.r),
+                                          borderRadius: BorderRadius.circular(16.r),
                                         ),
                                         elevation: 0,
                                         insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
-                                        child: autoRenewalDialog(),
+                                        child: autoRenewalDialog(currentSub),
                                       );
                                     },
                                   );
@@ -147,7 +149,7 @@ class PaymentSection extends StatelessWidget {
   }
 }
 
-Widget autoRenewalDialog(){
+Widget autoRenewalDialog(UserSubscription? currentSub){
   return Padding(
     padding: EdgeInsets.all(16.r),
     child: Consumer(
@@ -192,7 +194,7 @@ Widget autoRenewalDialog(){
                   ),
                 ),
                 TextSpan(
-                  text: " до начала следующего периода. Следующее списание ",
+                  text:currentSub != null ? " до начала следующего периода. Следующее списание " : " до начала следующего периода.",
                   style: GoogleFonts.raleway(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
@@ -201,6 +203,7 @@ Widget autoRenewalDialog(){
                     fontFeatures: const [FontFeature.liningFigures()],
                   ),
                 ),
+                if(currentSub != null)
                 TextSpan(
                   text: AppHelpers.getAutoRenewalDay(notifier.getEndDateOfCurrentSub()),
                   style: GoogleFonts.raleway(

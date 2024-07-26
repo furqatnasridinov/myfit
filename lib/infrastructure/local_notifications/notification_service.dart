@@ -30,7 +30,12 @@ class LocalNotificationService {
       android: androidNotificationDetail,
       
     );
-    notificationPlugin.show(1, title, body, notificationDetails);
+    notificationPlugin.show(
+      1,
+      title,
+      body,
+      notificationDetails,
+    );
   }
 
   void showScheduledNotification({

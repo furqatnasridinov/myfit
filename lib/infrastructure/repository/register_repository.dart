@@ -8,10 +8,10 @@ import 'package:myfit/infrastructure/services/app_constants.dart';
 
 class RegisterRepository implements RegisterRepositoryInterface {
   @override
-  Future<ApiResult<Map<String,dynamic>>> sendPhoneNumber(String phoneNumber,String? fcmToken) async {
+  Future<ApiResult<Map<String,dynamic>>> sendPhoneNumber(String phoneNumber) async {
     try {
       final client = inject<HttpService>().clientDio();
-      final dataToSend = {"login": phoneNumber, "fcmToken" : fcmToken};
+      final dataToSend = {"login": phoneNumber};
       final response = await client.post(
         AppConstants.sendPhoneNumber,
         data: dataToSend,
@@ -41,6 +41,26 @@ class RegisterRepository implements RegisterRepositoryInterface {
       );
       return ApiResult.success(
         data: AuthResponse.fromJson(response.data["object"]),
+      );
+    } catch (e) {      
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      );
+    }
+  }
+  
+  @override
+  Future<ApiResult<Map<String,dynamic>>> updateFcmToken({required String token}) async{
+    try {
+      final client = inject<HttpService>().clientDio();
+      final dataToSend = {"fcmToken": token};
+      final response = await client.post(
+        AppConstants.updateFcmToken,
+        data: dataToSend,
+      );
+      return ApiResult.success(
+        data: response.data,
       );
     } catch (e) {      
       return ApiResult.failure(

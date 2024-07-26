@@ -20,6 +20,7 @@ class CustomTextField extends StatelessWidget {
   TextStyle? counterStyle;
   bool hasFocus;
   bool isError;
+  TextCapitalization textCapitalization;
   Color? cursorColor = AppColors.greyText;
   String? Function(String?)? validator;
   List<TextInputFormatter>? inputFormatters;
@@ -53,6 +54,7 @@ class CustomTextField extends StatelessWidget {
       this.onTap,
       this.onTapOutside,
       this.prefixIcon,
+      this.textCapitalization = TextCapitalization.none,
       this.cursorColor = AppColors.blueColor})
       : super(key: key);
 
@@ -62,6 +64,7 @@ class CustomTextField extends StatelessWidget {
       /* onTapOutside: (onTapOutside) {
         FocusScope.of(context).unfocus();
       }, */
+      textCapitalization: textCapitalization,
       inputFormatters: inputFormatters,
       focusNode: focusNode,
       readOnly: readOnly,

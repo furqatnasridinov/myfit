@@ -105,8 +105,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           }
         },
         failure: (error, statusCode, operationInfo) {
-          AppHelpers.showErrorSnack(
-              context, NetworkExceptions.getErrorMessage(error));
+          AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
           state = state.copyWith(isCitiesLoading: false);
         },
       );
@@ -491,7 +490,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
          state = state.copyWith(isPhotoUploading: false);
         debugPrint("errorcha $errorcha");
         if (errorcha.contains("Смена фото не чаще 1 раза в неделю")) {
-          AppHelpers.showErrorSnack(context, "Фото не изменено.Сменить фото можно только один раз в неделью");
+          AppHelpers.showErrorSnack(context, "Фото не изменено.Сменить фото можно только один раз в неделю");
           final String whenAccessOpens = errorcha.split("неделю/")[1].replaceAll(")", "");
           LocalStorage.setWhenUploadingPhotoOpens(whenAccessOpens);
           if (!state.isNoAccessChangingPhoto) {
@@ -504,13 +503,21 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     }
   }
 
-  Future<void> pickImageFromGallery(BuildContext context) async {
+  Future<void> pickImageFromGallery(BuildContext context, {bool sendRuest = false }) async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      await uploadPicture(context, image: File(pickedFile.path));
-      await getUser(context);
+      // save image to local storage to show like preview
+      state = state.copyWith(avatarTmp: pickedFile.path);
+      if (sendRuest) {
+        await uploadPicture(context, image: File(pickedFile.path));
+        await getUser(context);
+      }
     }
+  }
+
+  void clearAvatarTmp() {
+    state = state.copyWith(avatarTmp: "");
   }
 
   Future<void> getUser(BuildContext context) async {
@@ -584,10 +591,11 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
               if (subscription.price == 0) {
                 //final int  allBonusesOfUser = state.referalInfo?.bonus ?? 0;
                 final int recievedBonuses = state.referalInfo?.receivedBonus ?? 0;
-                //final int bonusesAvailable = allBonusesOfUser - recievedBonuses;
-                if (recievedBonuses > 0 ) {
+                final int usedBonus = state.referalInfo?.usedBonus ?? 0;
+                final int bonusesAvailable = recievedBonuses - usedBonus;
+                if (bonusesAvailable > 0 || state.currentSubscribtion?.subscription?.id == subscription.id) {
                   listToCollect.add(subscription);
-                  state = state.copyWith(bonusSubsLength: recievedBonuses);
+                  state = state.copyWith(bonusSubsLength: bonusesAvailable);
                 }
               }else{
                 listToCollect.add(subscription);
@@ -612,10 +620,12 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       final response = await _settingsRepositoryInterface.getUserSubscribtions();
       response.when(success: (data) {
         if (data["operationResult"] == "OK") {
-          final listFromServer = data["object"] as List;
+          final listFromServer = data["object"]["userSubscriptions"] as List;
+          final bool autoRenewal = data["object"]["autoRenewal"] ?? false;
+          setAutoRenewal(autoRenewal);
           if (listFromServer.isNotEmpty) {
             // первый json как currentSubscribtion
-            final userSubscription = UserSubscription(
+            final currentSub = UserSubscription(
               subscription:Subscription.fromJson(listFromServer[0]["subscription"]),
               autoRenewal: listFromServer[0]["autoRenewal"],
               firstBuyData: listFromServer[0]["firstBuyData"],
@@ -623,10 +633,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
               prolongationData: listFromServer[0]["prolongationData"],
               endDataFormatted: getWhenCurrentSubEnds(listFromServer[0]["updateData"]),
             );
-            state = state.copyWith(
-              currentSubscribtion: userSubscription,
-              autoRenewal: userSubscription.autoRenewal ?? false,
-            );
+            state = state.copyWith(currentSubscribtion: currentSub);
             // второй json как nextSubscribtion
             if (listFromServer.length > 1) {
               final nextSubscription = UserSubscription(
@@ -635,19 +642,22 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
                 firstBuyData: listFromServer[1]["firstBuyData"],
                 endData: listFromServer[1]["endData"],
                 prolongationData: listFromServer[1]["prolongationData"],
-                endDataFormatted: "46 дней",
+                endDataFormatted: "",
               );
               state = state.copyWith(nextSubscribtion: nextSubscription);
             }
           }
         }
       }, failure: (error, statusCode, operationInfo) {
-        AppHelpers.showErrorSnack(
-            contex, NetworkExceptions.getErrorMessage(error));
+        AppHelpers.showErrorSnack(contex, NetworkExceptions.getErrorMessage(error));
       });
     } else {
       AppHelpers.showCheckTopSnackBar(contex);
     }
+  }
+
+  void setAutoRenewal(bool val) {
+    state = state.copyWith(autoRenewal: val);
   }
 
   Future<void> purchaseSubscription(BuildContext context,
@@ -659,7 +669,9 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           id: id, autoRenewal: autoRenewal);
       response.when(success: (data) async {
         if (data["operationResult"] == "OK") {
-          // to get updated subscribtions
+          // to get updated subscribtions and promocodes(if they were used)
+          getPromocodesQueue(context);
+          getAllAvailableSubscribtions(context);
           await getUserSubscribtions(context);
           context.popRoute();
           AppHelpers.showSuccessSnack(context, "Подписка успешно оформлена");
@@ -711,8 +723,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           // nothing to do we already update autoRenewal
         } else {
           state = state.copyWith(autoRenewal: !val);
-          AppHelpers.showErrorSnack(
-              context, "Ошибка при изменении автопродления");
+          AppHelpers.showErrorSnack(context, "Ошибка при изменении автопродления");
         }
       }, failure: (error, statusCode, operationInfo) {
         state = state.copyWith(autoRenewal: !val);
@@ -725,7 +736,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 
 
-  Future<void> applyPromocede(BuildContext context, {required String code}) async{
+  Future<void> applyPromocede(BuildContext context, {required String code, bool autoRefresh = true}) async{
     final connected = await AppConnectivity().connectivity();
     if (connected) {
       state = state.copyWith(isPromocodeLoading: true);
@@ -748,8 +759,11 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
             isPromocodeSuccess: true,
             isPromocodeLoading: false);
             getAllAvailableSubscribtions(context);
-            getPromocodes(context);
-            refreshDataAfterPromocodeSubmitted();
+            getPromocodesQueue(context);
+            //getPromocodes(context);
+            if (autoRefresh) {
+              refreshDataAfterPromocodeSubmitted();
+            }
         }
       }, failure: (error, statusCode, operationInfo) {
         if (statusCode == 500) {
@@ -763,7 +777,9 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           isPromocodeLoading: false,
           isPromocodeError: true,
         );
-       // refreshDataAfterPromocodeSubmitted();
+        if (autoRefresh) {
+          refreshDataAfterPromocodeSubmitted();
+        }
       });
     } else {
       AppHelpers.showCheckTopSnackBar(context);
@@ -784,6 +800,32 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
               listToCollect.add(promocode);
             }
            state = state.copyWith(promocodesHistory: listToCollect);
+          }
+        }
+      }, failure: (error, statusCode, operationInfo) {
+        AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
+      });
+    } else {
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
+  Future<void> getPromocodesQueue(BuildContext context) async{
+    final connected = await AppConnectivity().connectivity();
+    if (connected) {
+      final response = await _settingsRepositoryInterface.getPromocodesQueue();
+      response.when(success: (data) {
+        if (data["operationResult"] == "OK") {
+          final listFromServer = data["object"] as List;
+          if (listFromServer.isNotEmpty) {
+            final listToCollect = <Promocode>[];
+            for (var element in listFromServer) {
+              final promocode = Promocode.fromJson(element);
+              listToCollect.add(promocode);
+            }
+           state = state.copyWith(promocodesQueue: listToCollect);
+          }else{
+            state = state.copyWith(promocodesQueue: []);
           }
         }
       }, failure: (error, statusCode, operationInfo) {
@@ -1039,6 +1081,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     LocalStorage.setReminderDisabled(false);
   }
 
+  void setShowPromocodeResponse(bool val) {
+    state = state.copyWith(showPromocodeResponseInPromodesSection: val);
+  }
+
   void getReminderDisabledOrEnabled() {
     if (LocalStorage.isReminderDisabled()) {
       state = state.copyWith(isReminderDisabled: true);
@@ -1054,6 +1100,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         promocodeErrorMessage: "",
       );  
     }
+    if (value.contains("myfit-russia.ru/inv/") && value.length > 23) {
+      value = value.split("inv/")[1];
+    }
+    state.promocodeController?.text = value;
     state = state.copyWith(promocodeValue: value);
   }
 
@@ -1075,19 +1125,30 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 
   Future<void> refreshDataAfterPromocodeSubmitted()async{
-    await Future.delayed(const Duration(seconds: 4));
+    await Future.delayed(const Duration(seconds: 3));
     state.promocodeController?.clear();
     if (state.isPromocodeSuccess) {
       state = state.copyWith(
         isPromocodeSuccess: false,
         promocodeValue: "",
+        showPromocodeResponseInPromodesSection: false,
       );
     }
     if (state.isPromocodeError) {
       state = state.copyWith(
         isPromocodeError: false,
         promocodeErrorMessage: "",
+        showPromocodeResponseInPromodesSection: false,
       );
     }
+  }
+
+  void setIsFromReferalDeepLink(bool val) {
+    state = state.copyWith(isFromReferalDeepLink: val);
+  }
+
+  void setReferalDeepLinkValue(String value) {
+    List<String> parts = value.split("inv/");
+    state = state.copyWith(referalDeepLinkValue: parts[1]);
   }
 }

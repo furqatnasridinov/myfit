@@ -1,6 +1,6 @@
 class AppConstants {
   //  urls
-  static const String baseUrl = "http://77.222.53.122:/";
+  static const String baseUrl = "https://myfit-russia.ru/";
   static const String getYandexMapImage = "https://static-maps.yandex.ru/1.x/";
   static const String getAdvantages = "api/main/advantages";
   static const String getSubscribtions = "api/main/subscription";
@@ -32,6 +32,7 @@ class AppConstants {
   static const String markNotificationAsRead = "api/notification/markAsRead";
   static const String sendPhoneNumber = "api/user/loginCode";
   static const String sendCodeConfirmation = "api/user/loginCodeConfirmation";
+  static const String updateFcmToken = "api/user/updateFcmToken";
   //static const String getInfoForType = "api/gym/3/infoForType";
   //static const String enrollToGym = "api/schedule/1/add";
 
@@ -47,6 +48,7 @@ class AppConstants {
   static const double maktabi21Lon = 69.6473696903535;
   static const double panjshanbeLat = 40.278860846791375;
   static const double panjshanbeLon = 69.63038731695158;
+  static const int userMarkerId = 0;
 
   // shared prefs keys
   static const String keyPhoneNumber = "key_phone_number";
@@ -79,9 +81,12 @@ class AppConstants {
   static const String scheduledNotificationChannelId = "tmpScheduledChanelId";
   static const String scheduledNotificationChannelName ="tmpScheduledChanelName";
 
+  //  days
+  static  DateTime myBitrh = DateTime.parse("2003-11-18 18:11:00");
+
     // long texts
     static const String confirmationText2 =
-      "Продолжая вход я даю согласие на обработку персональных данных и подтверждаю, что прочитал(а)";
+      "Продолжая вход я даю согласие на обработку персональных данных и принимаю";
   static const String confirmationText =
       "Нажимая на кнопку «Продолжить» - я даю согласие на обработку персональных данных и подтверждаю, что прочитал(а) ";
   static const String userAgreement =
@@ -98,6 +103,7 @@ class AppConstants {
   static const String inviteFriendLongText2 = "Отправьте ссылку другу. Он получит скидку 10% на первое оформление подписки. Когда 3 друга впервые оформят подписку - вы получите подписку на месяц, бесплатно.";
   static const String promoLongText = "Промокоды на скидку активируются автоматически при следующей оплате. В первую очередь используется промокод с максимальной скидкой.";
   static const String autoRenewalLongText = "Для вашего удобства теперь мы будем автоматически списывать оплату за подписку.";
+  static const String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 }
 
 enum NotificationType {

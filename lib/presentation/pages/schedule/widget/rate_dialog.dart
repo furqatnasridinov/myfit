@@ -238,7 +238,7 @@ class _RateDialogState extends State<RateDialog> {
                             );
                             await event.makeARate(context, request: request);
                             // get updated list of schedule
-                            event.getCompletedSchedules(context);
+                            event.getCompletedSchedules(context,false);
                             widget.afterMakingRate?.call();
                             context.router.pop();
                           }
