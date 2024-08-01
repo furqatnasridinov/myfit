@@ -166,6 +166,22 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
+  Future<void> setSingleSelectedActivity(String? value) async {
+    if (value == state.selectedActivity || value == null) {
+      return;
+    } else {
+      final Map<String,dynamic> map = state.lessonTypesAndSubcategories;
+      final List<SubCategory> formattedList = (map[value] as List).map((e) => SubCategory.fromJson(e)).toList();
+      final SubCategory selectedSubCategory = formattedList[0];
+      state = state.copyWith(
+        selectedActivity: value,
+        subCategories: formattedList,
+        selectedSubCategory: selectedSubCategory,
+      );
+      setDescribtionsAndPhotosOfSubcategory(selectedSubCategory);
+    }
+  }
+
   void changeSelectedSubCategory(SubCategory subCategory) {
     state = state.copyWith(selectedSubCategory: subCategory);
     setDescribtionsAndPhotosOfSubcategory(subCategory);
@@ -179,8 +195,17 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       final DescribtionAndPeculiarities data = DescribtionAndPeculiarities(
         typeDescription: subCategory.typeDescription, 
         peculiarities: subCategory.peculiarities);
-      final List<String> photos = subCategory.gymSubActivePictures ?? [];
-      state = state.copyWith(describtionAndPeculiarities: data, photosOfSelectedActivity: photos);
+      final List photosListJson = subCategory.gymSubActivePictures ?? [];
+      List<String> photos = [];
+      if (photosListJson.isNotEmpty) {
+        for (var element in photosListJson) {
+          photos.add(element["pictureUrl"]);
+        }
+      }
+      state = state.copyWith(
+        describtionAndPeculiarities: data, 
+        photosOfSelectedActivity: photos
+      );
     }
   }
 
@@ -338,21 +363,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
-  Future<void> setSingleSelectedActivity(String? value) async {
-    if (value == state.selectedActivity || value == null) {
-      return;
-    } else {
-      final Map<String,dynamic> map = state.lessonTypesAndSubcategories;
-      final List<SubCategory> formattedList = (map[value] as List).map((e) => SubCategory.fromJson(e)).toList();
-      final SubCategory selectedSubCategory = formattedList[0];
-      setDescribtionsAndPhotosOfSubcategory(selectedSubCategory);
-      state = state.copyWith(
-        selectedActivity: value,
-        subCategories: formattedList,
-        selectedSubCategory: selectedSubCategory,
-      );
-    }
-  }
+  
 
   Future<void> getAllLessons(
     BuildContext context,
