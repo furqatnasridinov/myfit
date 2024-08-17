@@ -1,4 +1,6 @@
 // ignore_for_file: must_be_immutable, use_build_context_synchronously
+import 'dart:async';
+
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
@@ -28,7 +30,7 @@ class ActivityScreen extends ConsumerStatefulWidget {
 }
 
 class _ActivityPageState extends ConsumerState<ActivityScreen> {
-  late final WebSocketChannel channel;
+  //late final WebSocketChannel channel;
   late final WebSocketChannel channel2;
   late ItemScrollController itemScrollController;
   late RefreshController refreshController;
@@ -45,32 +47,17 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
     refreshController = RefreshController();
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
+        ref.read(activityProvider.notifier).resetLastGymInfo();
          // прокрутка
         if (ref.watch(activityProvider).isFromSearch) {
           scrollToCalendar();
         }
-        final UserSubscription? currentSub = ref.read(settingsProvider).currentSubscribtion;
-        final DateTime? currentSubEnds = currentSub != null ? DateTime.tryParse(ref.read(settingsProvider).currentSubscribtion!.endData!.replaceAll("T", " ") ) : null;
-        ref.read(activityProvider.notifier)
-          ..getListOf45CalendarDatesFromToday(currentSubEnds)
-          ..getGymInfo(context, true, gymId: widget.gymId)
-          ..getActivityTypes(
-              context, true, ref.watch(mapProvider).selectedLessonTypeFromMap,
-              isFromMap: widget.isFromMap ?? false,
-              gymId: widget.gymId) // and make first item as active
-          ..getInfoForType(context, id: widget.gymId)
-          ..getAllPhotos(context, widget.gymId)
-          ..getAllLessons(context, true, id: widget.gymId)
-              // get infos after the selected activity is set
-              .then((value) {
-            ref.read(activityProvider.notifier)
-              .getLessonsOfSelectedActivity(ref.watch(activityProvider).selectedActivity!, true);
-            // web socket for gettiing new lessons if they were added when the user is on the page
-            channel2 = IOWebSocketChannel.connect(
-                Uri.parse("wss://myfit-russia.ru:8443/appGymPanel/${widget.gymId}"),
-                headers: {'Authorization': 'Bearer ${LocalStorage.getToken()}'});
-            ref.read(activityProvider.notifier).handleWebSocket2(channel2, context);
-          });
+        getInitialDatas();
+        // web socket for gettiing new lessons if they were added, when the user is on the page
+        channel2 = IOWebSocketChannel.connect(
+            Uri.parse("wss://myfit-russia.ru:8443/appGymPanel/${widget.gymId}"),
+            headers: {'Authorization': 'Bearer ${LocalStorage.getToken()}'});
+        ref.read(activityProvider.notifier).handleWebSocket2(channel2, context);
       },
     );
   }
@@ -81,6 +68,23 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
     channel2.sink.close();
     refreshController.dispose();
     super.dispose();
+  }
+
+
+  Future<void> getInitialDatas() async{
+    final UserSubscription? currentSub = ref.read(settingsProvider).currentSubscribtion;
+    final DateTime? currentSubEnds = currentSub != null ? DateTime.tryParse(ref.read(settingsProvider).currentSubscribtion!.endData!.replaceAll("T", " ") ) : null;
+    final notifier = ref.read(activityProvider.notifier);
+    notifier.getListOf45CalendarDatesFromToday(currentSubEnds);
+    notifier.getGymInfo(context, true, gymId: widget.gymId);
+    notifier.getInfoForType(context, id: widget.gymId);
+    notifier.getAllPhotos(context, widget.gymId);
+    await notifier.getActivityTypes(
+              context, true, ref.watch(mapProvider).selectedLessonTypeFromMap,
+              isFromMap: widget.isFromMap ?? false,
+              gymId: widget.gymId);
+    await notifier.getAllLessons(context, true, id: widget.gymId);
+    notifier.getLessonsOfSelectedActivity(ref.watch(activityProvider).selectedActivity!, true);
   }
 
   Future scrollToCalendar() async {
@@ -116,7 +120,7 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
     final event = ref.read(activityProvider.notifier);
     ref.listen(activityProvider, (previous, next) {
       // для скрола к календарю
-      if (previous?.selectedDayFromSearchIndex !=next.selectedDayFromSearchIndex && 
+      if (previous?.selectedDayFromSearchIndex != next.selectedDayFromSearchIndex && 
             next.selectedDayFromSearchIndex != 9999 && next.isFromSearch) {
         scrollCalendarToIndex();
       }
@@ -136,22 +140,7 @@ class _ActivityPageState extends ConsumerState<ActivityScreen> {
           color: AppColors.blueColor,
         ),
         onRefresh: () async {
-           final UserSubscription? currentSub = ref.read(settingsProvider).currentSubscribtion;
-           final DateTime? currentSubEnds =  currentSub != null ? DateTime.tryParse(ref.read(settingsProvider).currentSubscribtion!.endData!.replaceAll("T", " ") ) : null;
-          ref.read(activityProvider.notifier)
-            ..getListOf45CalendarDatesFromToday(currentSubEnds)
-            ..getGymInfo(context, true, gymId: widget.gymId)
-            ..getActivityTypes(context, false,
-                ref.watch(mapProvider).selectedLessonTypeFromMap,
-                gymId: widget.gymId)
-            ..getInfoForType(context, id: widget.gymId)
-            ..getAllPhotos(context, widget.gymId)
-            ..getAllLessons(context, true, id: widget.gymId)
-                // get infos after the selected activity is set
-                .then((value) {
-              ref.read(activityProvider.notifier)
-                .getLessonsOfSelectedActivity(ref.watch(activityProvider).selectedActivity!, true);
-            });
+          getInitialDatas();
           await Future.delayed(const Duration(seconds: 1));
           refreshController.refreshCompleted();
         },

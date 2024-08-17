@@ -45,6 +45,7 @@ class SettingsState with _$SettingsState {
     @Default(false) bool isChangeSubscribtionLoading,
     @Default("**** **** **** 1234") String cardNumber,
     @Default(false) bool autoRenewal,
+    @Default(false) bool autoRenewalGyms,
     @Default(false) bool dropDownOpened,
     @Default(false) bool genderDropDownOpened,
     @Default([]) List<String> missingInfo,

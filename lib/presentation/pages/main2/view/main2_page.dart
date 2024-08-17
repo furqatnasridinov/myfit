@@ -12,6 +12,7 @@ import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/local_storage.dart';
 import 'package:myfit/presentation/components/custom_search_bar.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
+import 'package:myfit/presentation/pages/main2/widget/activity_nearby_skeleton.dart';
 import 'package:myfit/presentation/pages/main2/widget/widget.dart';
 import 'package:myfit/presentation/pages/schedule/widget/bottom_scan_container.dart';
 import 'package:auto_route/auto_route.dart';
@@ -64,8 +65,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
       ref.read(notificationProvider.notifier).getAllNotifications();
       // web socket for updating lesson states
       channel = IOWebSocketChannel.connect(
-          Uri.parse(
-              "wss://myfit-russia.ru:8443/appSchedulePanel/${LocalStorage.getUserId()}"),
+          Uri.parse("wss://myfit-russia.ru:8443/appSchedulePanel/${LocalStorage.getUserId()}"),
           headers: {'Authorization': 'Bearer ${LocalStorage.getToken()}'});
       ref.read(activityProvider.notifier).handleWebSocket(channel, context);
     });
@@ -121,8 +121,7 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       extendBodyBehindAppBar: true,
-      appBar:
-          CustomSearchBar(showBackButton: false, canNavigateToSettings: true),
+      appBar:CustomSearchBar(showBackButton: false, canNavigateToSettings: true),
       body: SmartRefresher(
         controller: refreshController,
         header: const WaterDropMaterialHeader(
@@ -180,15 +179,15 @@ class _LoginScreen extends ConsumerState<Main2Screen> {
                     Consumer(
                       builder: (context, ref, child) {
                         final mapNotifier  = ref.read(mapProvider.notifier);
+                        final bool loading = ref.watch(mapProvider).getLocationLoading || ref.watch(mainProvider).getNearestActivitiesLoading;
                         List<ActivityNearClient> filtered = [];
                         final List<ActivityNearClient> activitiesNearClient = ref.watch(mainProvider).activitiesNearClient;
                         if (activitiesNearClient.isNotEmpty) {
                           filtered = mapNotifier.getFilteredActivitiesNearClient(activitiesNearClient);
                         }
                         return SliverToBoxAdapter(
-                          child: filtered.isEmpty ? const SizedBox() : ActivitiesNearby(
-                            activitiesNearClient: filtered,
-                          ),
+                          child: loading ? const ActivityNearbySkeleton() : (filtered.isEmpty && !loading)
+                              ? const SizedBox() : ActivitiesNearby(activitiesNearClient: filtered,),
                         );
                       },
                     ),

@@ -1,11 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:myfit/application/main2/main2_provider.dart';
 import 'package:myfit/application/schedule/schedule_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
+import 'package:myfit/infrastructure/models/data/lesson.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/presentation/components/custom_card.dart';
@@ -65,6 +65,7 @@ class TheOneWithLessons extends StatelessWidget {
                       currentSchedule.lessonState ?? "",
                       currentSchedule.isLoading,
                       visitRemaining <= 0,
+                      currentSchedule.subcategories ?? [],
                       () async {
                         if (dontHaveSub) {
                           if (!showAnimationDontHaveSubs) {
@@ -106,7 +107,8 @@ Widget activityCard(
   String name,
   String? status,
   bool? isloading,
-  cannotEnrollDueToVisitLimit,
+  bool cannotEnrollDueToVisitLimit,
+  List<Subcategory> subcategories,
   void Function()? enrollFunction,
 ) {
   if (canSignUp || (!canSignUp && status == "CONFIRMED")) {
@@ -187,12 +189,27 @@ Widget activityCard(
               fontWeight: FontWeight.w400,
             ),
             5.verticalSpace,
-            CustomText(
-              text: duration,
-              fontSize: 10.sp,
-              fontWeight: FontWeight.w500,
-              color: AppColors.greyText,
-            )
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CustomText(
+                  text: duration,
+                  fontSize: 10.sp,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.greyText,
+                ),
+                const Spacer(),
+                subcategories.isNotEmpty
+                    ? Wrap(
+                          spacing: 5.w,
+                          runSpacing: 5.h,
+                          children: subcategories
+                              .map((e) => sub(name: e.name ?? ""))
+                              .toList(),
+                        )
+                    : const SizedBox.shrink(),
+              ],
+            ),
           ],
         ),
       ),
@@ -200,4 +217,29 @@ Widget activityCard(
   } else {
     return const SizedBox.shrink();
   }
+}
+
+
+Widget sub({required String name}) {
+  return SizedBox(
+    height: 22.h,
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6.r),
+        border: Border.all(
+          color: AppColors.blueColor,
+        ),
+      ),
+      child: Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.w),
+          child: CustomText(
+            text: name,
+            fontSize: 10.sp,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    ),
+  );
 }

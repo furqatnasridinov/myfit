@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/presentation/components/custom_button.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myfit/presentation/router/app_router.gr.dart';
 
 import '../../../../infrastructure/services/app_constants.dart';
 
@@ -55,18 +57,15 @@ class _TheOneWithImageState extends State<TheOneWithImage> {
           SizedBox(
             height: 210.h,
             width: double.maxFinite,
-            child: Hero(
-              tag: mainPictureUrl ?? "",
-              child: CachedNetworkImage(
-                imageUrl: "${AppConstants.baseUrl}image/$mainPictureUrl",
-                errorWidget: (context, url, error) {
-                  return Image.asset(
-                    "assets/images/avatar.png",
-                    fit: BoxFit.cover,
-                  );
-                },
-                fit: BoxFit.cover,
-              ),
+            child: CachedNetworkImage(
+              imageUrl: "${AppConstants.baseUrl}image/$mainPictureUrl",
+              errorWidget: (context, url, error) {
+                return Image.asset(
+                  "assets/images/avatar.png",
+                  fit: BoxFit.cover,
+                );
+              },
+              fit: BoxFit.cover,
             ),
           ),
           GestureDetector(
@@ -112,18 +111,20 @@ class _TheOneWithImageState extends State<TheOneWithImage> {
                     onTap: () {
                       context.popRoute();
                     },
-                    child: Container(
+                    child: SizedBox(
                       width: 40.w,
                       height: 40.h,
-                      decoration: const BoxDecoration(
+                      child: DecoratedBox(
+                        decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.white,
                       ),
-                      child: Center(
-                        child: SvgPicture.asset(
-                          "assets/svg/back_icon.svg",
-                          width: 5.w,
-                          height: 10.h,
+                        child: Center(
+                          child: SvgPicture.asset(
+                            "assets/svg/back_icon.svg",
+                            width: 5.w,
+                            height: 10.h,
+                          ),
                         ),
                       ),
                     ),
@@ -148,17 +149,29 @@ class _TheOneWithImageState extends State<TheOneWithImage> {
                   UiDropDownMenu(
                     dropDownItemsList: [
                       {
+                        'title': 'Купить абонемент в этот зал',
+                        'icon': iconWrapper(
+                          svg: SvgPicture.asset(
+                            "assets/svg/membership.svg",
+                            height: 18.h,
+                            width: 18.w,
+                          ),
+                        ),
+                        'action': () => {context.pushRoute( BuyMembershipRoute(gymId: ref.read(activityProvider).gym!.id ?? 0))},
+                      },
+                      {
                         'title': 'Сообщить об ошибке на странице',
-                        'icon': SvgPicture.asset(
+                        'icon': iconWrapper(svg: SvgPicture.asset(
                           "assets/svg/complaint.svg",
                           height: 18.h,
                           width: 18.w,
-                        ),
+                          colorFilter: const ColorFilter.mode(AppColors.blueColor, BlendMode.srcIn),
+                        ),),
                         'action': () => {showPopUp(true, context)}
                       },
                       {
                         'title': 'Пожаловаться на неприемлемый контент',
-                        'icon': SvgPicture.asset(
+                        'icon': iconWrapper(svg: SvgPicture.asset(
                           "assets/svg/complaint.svg",
                           colorFilter: const ColorFilter.mode(
                             Colors.red,
@@ -166,23 +179,25 @@ class _TheOneWithImageState extends State<TheOneWithImage> {
                           ),
                           height: 18.h,
                           width: 18.w,
-                        ),
+                        ),),
                         'action': () => {showPopUp(false, context)}
                       }
                     ],
-                    customOffset: [-30.0.w, -30.0.h],
+                    customOffset: [-30.0.w, -42.0.h],
                     width: 317.w,
                     maxWidth: 317.w,
-                    dropDownChild: Container(
+                    dropDownChild: SizedBox(
                       //color: Colors.red,
                       width: 37.w,
                       height: 37.h,
-                      padding: EdgeInsets.only(
+                      child: Padding(
+                        padding: EdgeInsets.only(
                           top: 7.h, right: 7.w, left: 6.w, bottom: 6.h),
-                      child: Icon(
-                        Icons.more_vert,
-                        color: Colors.white,
-                        size: 25.r,
+                        child: Icon(
+                          Icons.more_vert,
+                          color: Colors.white,
+                          size: 25.r,
+                        ),
                       ),
                     ),
                   ),
@@ -366,4 +381,20 @@ void showPopUp(bool isFirstOne, BuildContext context) {
           );
         });
       });
+}
+
+Widget iconWrapper({required Widget svg}) {
+  return SizedBox(
+    width: 28.w,
+    height: 28.h,
+    child: DecoratedBox(decoration: BoxDecoration(
+      color: AppColors.backgroundColor,
+      borderRadius: BorderRadius.circular(6.r),
+    ),
+    child: Padding(
+      padding: EdgeInsets.all(5.r),
+      child: svg
+      ),
+    ),
+  );
 }

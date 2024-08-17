@@ -15,6 +15,7 @@ class Lesson {
   bool? isDeleted;
   bool? isLoading;
   bool? autoAccept;
+  List<Subcategory>? subcategories;
 
   Lesson({
     this.id,
@@ -33,6 +34,7 @@ class Lesson {
     this.isDeleted,
     this.isLoading,
     this.autoAccept,
+    this.subcategories,
   });
 
   Lesson.fromJson(Map<String, dynamic> json) {
@@ -50,6 +52,11 @@ class Lesson {
     lessonState = json['lessonState'];
     isDeleted = json['isDeleted'];
     autoAccept = json['autoAccept'];
+    subcategories = json['gymSubActives'] != null && json['gymSubActives'] != []
+        ? (json['gymSubActives'] as List)
+            .map((i) => Subcategory.fromJson(i))
+            .toList()
+        : [];
   }
 }
 
@@ -76,5 +83,34 @@ class Owner {
     lastName = json['lastName'];
     patronymic = json['patronymic'];
     gender = json['gender'];
+  }
+}
+
+class Subcategory {
+  int? id;
+  String? typeDescription;
+  String? peculiarities;
+  String? name;
+  int? orderNumber;
+  List<String>? gymSubActivePictures;
+  bool? inheritance;
+
+  Subcategory(
+      {this.id,
+      this.typeDescription,
+      this.peculiarities,
+      this.name,
+      this.orderNumber,
+      this.gymSubActivePictures,
+      this.inheritance});
+
+  Subcategory.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    typeDescription = json['typeDescription'];
+    peculiarities = json['peculiarities'];
+    name = json['name'];
+    orderNumber = json['orderNumber'];
+    gymSubActivePictures = json['gymSubActivePictures'].cast<String>();
+    inheritance = json['inheritance'];
   }
 }

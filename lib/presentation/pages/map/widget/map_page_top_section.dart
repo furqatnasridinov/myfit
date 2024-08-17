@@ -3,7 +3,6 @@ import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/presentation/components/animation_button_effect.dart';
-import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:myfit/presentation/pages/map/widget/widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -57,9 +56,9 @@ class MapPageTopSection extends StatelessWidget {
                     padding: EdgeInsets.only(
                       left: 16.w,
                       right: 16.w,
-                      bottom: 40.h,
+                      bottom: 30.h,
                     ),
-                    height: 290.h,
+                    height: 360.h,
                     child: DiapozoneBottomSheet(
                       event: event,
                     ),
@@ -90,23 +89,5 @@ class MapPageTopSection extends StatelessWidget {
         },
       ),
     );
-  }
-
-  List<Step> getSteps() {
-    List<Step> steps = [
-      Step(
-        title: CustomText(text: "1"),
-        content: const SizedBox(),
-      ),
-      Step(
-        title: CustomText(text: "2"),
-        content: const SizedBox(),
-      ),
-      Step(
-        title: CustomText(text: "3"),
-        content: const SizedBox(),
-      ),
-    ];
-    return steps;
   }
 }

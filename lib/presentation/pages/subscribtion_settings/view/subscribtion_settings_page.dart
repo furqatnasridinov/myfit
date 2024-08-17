@@ -143,11 +143,6 @@ class _SubscribtionSettingsScreenState
                 child: PromocodeSection(),
               ),
           
-              // Payment
-              const SliverToBoxAdapter(
-                child: PaymentSection(),
-              ),
-          
               // Invite Friends // referal
                const SliverToBoxAdapter(
                 child: InviteFriendsSection(),

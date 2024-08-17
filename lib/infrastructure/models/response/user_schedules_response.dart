@@ -74,6 +74,9 @@ class Gym {
   String? telegram;
   String? email;
   String? vk;
+  List<String>? daysOfWeek;
+  String? startTime;
+  String? endTime;
   int? visitedCount;
   int? visitPerMonth;
 
@@ -89,6 +92,9 @@ class Gym {
       this.telegram,
       this.email,
       this.vk,
+      this.daysOfWeek = const [],
+      this.startTime,
+      this.endTime,
       this.visitedCount,
       this.visitPerMonth});
 
@@ -104,6 +110,9 @@ class Gym {
     telegram = json['telegram'];
     email = json['email'];
     vk = json['vk'];
+    daysOfWeek = json['daysOfWeek'].cast<String>();
+    startTime = json['startTime'];
+    endTime = json['endTime'];
     visitedCount = json['visitedCount'];
     visitPerMonth = json['visitPerMonth'];
   }

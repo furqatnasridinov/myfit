@@ -44,6 +44,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with WidgetsBindingObserv
     clusterManager = initClusterManager();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      //initDatas();
       if (ref.watch(mapProvider).showMapOnly) {
         ref.read(mapProvider.notifier).reduceMap();
       }
@@ -117,6 +118,25 @@ class _MapScreenState extends ConsumerState<MapScreen> with WidgetsBindingObserv
   void _checkLocationPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
     wasLocationPermissionDenied = permission == LocationPermission.denied;
+  }
+
+  Future<void> initDatas() async {
+    //final Position? userPosition = ref.watch(mapProvider).userPosition;
+    final event = ref.read(mapProvider.notifier);
+    final ActivityNotifier activityNotifier = ref.read(activityProvider.notifier);
+    /* if (userPosition == null) {
+      await event.getUserLocation();
+    } */
+    await event.getGymsList(
+      context,
+      ref.watch(settingsProvider).knownActivities,
+      ref.watch(mapProvider).recommendedGyms,
+    );
+    await event.getGetListOfGymsFromDiapozone();
+    event.setFlexes();
+    await event.addUserLocationMarker(
+        avatar: ref.watch(settingsProvider).avatar);
+    await event.getAllMarkers(context, activityNotifier: activityNotifier);
   }
 
   Future<void> checkPermissionAndSetLocation() async {
@@ -278,6 +298,9 @@ class _MapScreenState extends ConsumerState<MapScreen> with WidgetsBindingObserv
                               onMapCreated:(GoogleMapController controller) async {
                                 _controller.complete(controller);
                                 clusterManager?.setMapId(controller.mapId);
+                                /* if (state.userPosition == null) {
+                                  await event.getUserLocation();
+                                } */
                                 await event.getGymsList(
                                   context,
                                   ref.watch(settingsProvider).knownActivities,
@@ -320,32 +343,36 @@ class _MapScreenState extends ConsumerState<MapScreen> with WidgetsBindingObserv
                           }
                         },
                         child: AnimationButtonEffect(
-                          child: CustomCard(
-                              radius: 8.r,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  15.horizontalSpace,
-                                  CustomText(
-                                    text: state.showMapOnly ? "Показать список активностей" : "Карта на весь экран",
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  10.horizontalSpace,
-                                  SizedBox(
-                                    width: 18.w,
-                                    height: 18.h,
-                                    child: Center(
-                                      child: SvgPicture.asset(
-                                        state.showMapOnly ? "assets/svg/arrow_down.svg" : "assets/svg/arrow_up.svg",
-                                        width: 18.w,
-                                        height: 18.h,
+                          child: AnimatedSize(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                            child: CustomCard(
+                                radius: 8.r,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    15.horizontalSpace,
+                                    CustomText(
+                                      text: state.showMapOnly ? "Показать список активностей" : "Карта на весь экран",
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    10.horizontalSpace,
+                                    SizedBox(
+                                      width: 18.w,
+                                      height: 18.h,
+                                      child: Center(
+                                        child: SvgPicture.asset(
+                                          state.showMapOnly ? "assets/svg/arrow_down.svg" : "assets/svg/arrow_up.svg",
+                                          width: 18.w,
+                                          height: 18.h,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  15.horizontalSpace,
-                                ],
-                              )),
+                                    15.horizontalSpace,
+                                  ],
+                                )),
+                          ),
                         ),
                       ),
                     ),

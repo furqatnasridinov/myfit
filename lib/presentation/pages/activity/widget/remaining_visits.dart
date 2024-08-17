@@ -72,8 +72,7 @@ void showInfoPopUp(BuildContext context) {
                 children: [
                   Consumer(
                     builder: (context, ref, child) {
-                      final currentSub =
-                          ref.watch(settingsProvider).currentSubscribtion;
+                      final currentSub = ref.watch(settingsProvider).currentSubscribtion;
                       return CustomText(
                         text:"Занятия этого заведения пополнятся ${currentSub?.endDataFormatted}",
                         fontSize: 16.sp,

@@ -23,86 +23,86 @@ class PaymentSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 32.h),
-        child: Consumer(builder: (contex, ref, child) {
-          final cardNumber = ref.watch(settingsProvider).cardNumber;
-          final event = ref.read(settingsProvider.notifier);
-          return Column(
+    return Consumer(builder: (contex, ref, child) {
+      final cardNumber = ref.watch(settingsProvider).cardNumber;
+      final event = ref.read(settingsProvider.notifier);
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomText(
+            text: "Привязка карты",
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+          16.verticalSpace,
+          CustomCard(child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CustomText(
-                text: "Оплата",
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-              16.verticalSpace,
-              CustomCard(child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AnimationButtonEffect(
-                    disabled: cardNumber.isNotEmpty,
-                    child: GestureDetector(
-                      onTap: () {
-                        if (cardNumber.isEmpty) {
-                          event.addCard("**** **** **** 1234");
-                        }
-                      },
-                      child: SizedBox(
-                        height: 50.h,
-                        width: double.maxFinite,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16.r),
-                              border: Border.all(color: AppColors.fadedBlueBorder)),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16.w),
-                            child: cardNumber.isEmpty
-                                ? Row(
-                                    children: [
-                                      Icon(
-                                        Icons.add,
-                                        size: 15.r,
-                                        color: AppColors.blueColor,
-                                      ),
-                                      10.horizontalSpace,
-                                      CustomText(
-                                        text: "Добавить новую карту",
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w600,
-                                      )
-                                    ],
-                                  )
-                                : Row(
-                                    children: [
-                                      SvgPicture.asset("assets/svg/card_icon.svg"),
-                                      10.horizontalSpace,
-                                      CustomText(
-                                        text: cardNumber,
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                      const Spacer(),
-                                      GestureDetector(
-                                        onTap: () {
-                                          event.deleteCard();
-                                        },
-                                        child: CustomText(
-                                          text: "Удалить карту",
-                                          fontSize: 14.sp,
-                                          color: Colors.red,
-                                        ),
-                                      ),
-                                    ],
+              AnimationButtonEffect(
+                disabled: cardNumber.isNotEmpty,
+                child: GestureDetector(
+                  onTap: () {
+                    if (cardNumber.isEmpty) {
+                      event.addCard("**** **** **** 1234");
+                    }
+                  },
+                  child: SizedBox(
+                    height: 50.h,
+                    width: double.maxFinite,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16.r),
+                          border: Border.all(color: AppColors.fadedBlueBorder)),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        child: cardNumber.isEmpty
+                            ? Row(
+                                children: [
+                                  Icon(
+                                    Icons.add,
+                                    size: 15.r,
+                                    color: AppColors.blueColor,
                                   ),
-                          ),
-                        ),
+                                  10.horizontalSpace,
+                                  CustomText(
+                                    text: "Добавить новую карту",
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w600,
+                                  )
+                                ],
+                              )
+                            : Row(
+                                children: [
+                                  SvgPicture.asset("assets/svg/card_icon.svg"),
+                                  10.horizontalSpace,
+                                  CustomText(
+                                    text: cardNumber,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  const Spacer(),
+                                  GestureDetector(
+                                    onTap: () {
+                                      event.deleteCard();
+                                    },
+                                    child: CustomText(
+                                      text: "Удалить карту",
+                                      fontSize: 14.sp,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ],
+                              ),
                       ),
                     ),
                   ),
-                  cardNumber.isEmpty ? 0.verticalSpace : 16.verticalSpace,
-                  if (cardNumber.isNotEmpty)
+                ),
+              ),
+              cardNumber.isEmpty ? 0.verticalSpace : 16.verticalSpace,
+              if (cardNumber.isNotEmpty)
+                Column(
+                  children: [
                     Row(
                       children: [
                         Consumer(builder: (contex, ref, child) {
@@ -140,12 +140,35 @@ class PaymentSection extends StatelessWidget {
                           fontWeight: FontWeight.w400,
                         )
                       ],
-                    )
-                ],
-              ),),
+                    ),
+                    16.verticalSpace,
+                    Row(
+                      children: [
+                        Consumer(builder: (contex, ref, child) {
+                          final value = ref.watch(settingsProvider).autoRenewalGyms;
+                          final event = ref.read(settingsProvider.notifier);
+                          return CustomSwitch(
+                            value: value,
+                            onChanged: (value) async{
+                              event.setAutoRenewalGyms(value);
+                            },
+                          );
+                        }),
+                        10.horizontalSpace,
+                        CustomText(
+                          text: "Автопродление абонементов в залы",
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w400,
+                        )
+                      ],
+                    ),
+                  ],
+                )
             ],
-          );
-        }));
+          ),),
+        ],
+      );
+    });
   }
 }
 

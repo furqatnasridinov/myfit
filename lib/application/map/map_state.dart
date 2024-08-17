@@ -14,6 +14,7 @@ part 'map_state.freezed.dart';
 class MapState with _$MapState {
   const factory MapState({
     @Default(false) bool isloading,
+    @Default(false) bool getLocationLoading,
     @Default(null) Position? userPosition,
     @Default({}) Set<Marker> listOfMarkers,
     @Default(null) Marker? activeMarker,
@@ -31,8 +32,8 @@ class MapState with _$MapState {
     @Default([])List<LessonTypeWithGymsInside> activitiesWithGymsInsideFromSelectedDiapozone,
     @Default(false) bool showMapOnly,
     @Default(null) Uint8List? mapScreenShot,
-    @Default(0.21) double topFlexValue,
-    @Default(0.6) double bottomFlexValue,
+    @Default(0.41) double topFlexValue,
+    @Default(0.4) double bottomFlexValue,
     @Default(false) bool isLocationIconHidden,
     @Default(false) bool isGymsPopupShown,
     @Default("") String selectedLessonTypeFromMap,

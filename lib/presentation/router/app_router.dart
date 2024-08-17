@@ -9,15 +9,10 @@ class AppRouter extends $AppRouter {
           page: BottomNavigationHandlerRoute.page,
           path: '/bottomNavigationHandler',
           children: [
-            AutoRoute(
-              page: MapRoute.page,
-            ),
-            AutoRoute(
-              page: Main2Route.page,
-            ),
-            AutoRoute(
-              page: ScheduleRoute.page,
-            ),
+            AutoRoute(page: MapRoute.page),
+            AutoRoute(page: Main2Route.page),
+            AutoRoute(page: ScheduleRoute.page),
+            AutoRoute(page: MembershipsRoute.page),
           ],
         ),
         AutoRoute(
@@ -75,6 +70,19 @@ class AppRouter extends $AppRouter {
         ),
         AutoRoute(
           page: SubscribtionSettingsRoute.page,
-          path: "/subscribtion_settings"),
+          path: "/subscribtion_settings",
+        ),
+        AutoRoute(
+          page: BuyMembershipRoute.page,
+          path: "/buy_membership",
+        ),
+        AutoRoute(
+          page: MembershipDetailsRoute.page,
+          path: "/membership_details",
+        ),
+        AutoRoute(
+          page: PaymentSettingsRoute.page,
+          path: "/payment_settings",
+        ),
       ];
 }

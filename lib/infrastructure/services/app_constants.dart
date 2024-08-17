@@ -33,6 +33,7 @@ class AppConstants {
   static const String sendPhoneNumber = "api/user/loginCode";
   static const String sendCodeConfirmation = "api/user/loginCodeConfirmation";
   static const String updateFcmToken = "api/user/updateFcmToken";
+  static const String searchMembership = "api/crm/membership/search";
   //static const String getInfoForType = "api/gym/3/infoForType";
   //static const String enrollToGym = "api/schedule/1/add";
 

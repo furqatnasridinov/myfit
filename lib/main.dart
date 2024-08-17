@@ -24,7 +24,8 @@ void main() async {
       statusBarColor: AppColors.backgroundColor,
       statusBarBrightness: Brightness.dark,
       statusBarIconBrightness: Brightness.dark,
-     //systemNavigationBarColor:AppColors.backgroundColor,//Colors.white,
+      //systemNavigationBarColor: Colors.red,
+      systemNavigationBarIconBrightness: Brightness.dark,
     ),
   );
 

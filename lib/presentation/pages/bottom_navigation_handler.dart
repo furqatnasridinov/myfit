@@ -40,6 +40,7 @@ class _BottomNavigationHandlerScreenState extends ConsumerState<BottomNavigation
         Main2Route(),
         ScheduleRoute(),
         MapRoute(),
+        MembershipsRoute(),
       ],
       builder: (context, child) {
         final tabsRouter = AutoTabsRouter.of(context);
@@ -52,68 +53,79 @@ class _BottomNavigationHandlerScreenState extends ConsumerState<BottomNavigation
                 final recommendedShown = ref.watch(mapProvider).showRecommended;
                 final ActivityNotifier activityNotifier = ref.read(activityProvider.notifier);
                 final event = ref.read(mapProvider.notifier);
-                return NavigationBar(
-                  backgroundColor: Colors.white,
-                  height: (mapPageBottomCardShown && tabsRouter.activeIndex == 2)
-                          ? 0 : height * 0.09,
-                  elevation: 10,
-                  shadowColor: Colors.black,
-                  selectedIndex: tabsRouter.activeIndex,
-                  indicatorColor: AppColors.fadedPrimary3,
-                  surfaceTintColor: Colors.transparent,
-                  onDestinationSelected: (int index) {
-                    if (index != 2 && showOnlyKnownOnMap) {
-                      ref.read(mapProvider.notifier).removePopUp();
-                    }
-                  },
-                  indicatorShape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14.r),
+                return SafeArea(
+                  bottom: false,
+                  child: NavigationBar(
+                    backgroundColor: Colors.white,
+                    height: (mapPageBottomCardShown && tabsRouter.activeIndex == 2)
+                            ? 0 : height * 0.09,
+                    elevation: 10,
+                    shadowColor: Colors.black,
+                    selectedIndex: tabsRouter.activeIndex,
+                    indicatorColor: AppColors.fadedPrimary3,
+                    surfaceTintColor: Colors.transparent,
+                    onDestinationSelected: (int index) {
+                      if (index != 2 && showOnlyKnownOnMap) {
+                        ref.read(mapProvider.notifier).removePopUp();
+                      }
+                    },
+                    indicatorShape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14.r),
+                    ),
+                    destinations: [
+                      eachItem(
+                        () {
+                          tabsRouter.setActiveIndex(0);
+                        },
+                        "assets/svg/home.svg",
+                        "Главная",
+                        tabsRouter.activeIndex == 0,
+                      ),
+                      eachItem(
+                        () {
+                          tabsRouter.setActiveIndex(1);
+                        },
+                        "assets/svg/schedule.svg",
+                        "Расписание",
+                        tabsRouter.activeIndex == 1,
+                      ),
+                      eachItem(
+                        () async {
+                          tabsRouter.setActiveIndex(2);
+                          if (showOnlyKnownOnMap || recommendedShown) {
+                            event.setShowOnlyKnown(false).then((value) => event.setShowRecommended(false))
+                            .then((value) async {
+                              await event.getGymsList(
+                                context,
+                                ref.watch(settingsProvider).knownActivities,
+                                ref.watch(mapProvider).recommendedGyms,
+                              );
+                              await event.getGetListOfGymsFromDiapozone();
+                              await event.setFlexes();
+                              await event.getAllMarkers(context, activityNotifier: activityNotifier);
+                              event.addUserLocationMarker();
+                            });
+                          }
+                          if (mapPageBottomCardShown) {
+                            ref.read(mapProvider.notifier)
+                              ..removePopUp()
+                              ..showLocationButton();
+                          }
+                        },
+                        "assets/svg/map.svg",
+                        "Поиск занятий",
+                        tabsRouter.activeIndex == 2,
+                      ),
+                      eachItem(
+                        () {
+                          tabsRouter.setActiveIndex(3);
+                        },
+                        "assets/svg/membership.svg",
+                        "Абонементы",
+                        tabsRouter.activeIndex == 3,
+                      ),
+                    ],
                   ),
-                  destinations: [
-                    eachItem(
-                      () {
-                        tabsRouter.setActiveIndex(0);
-                      },
-                      "assets/svg/home.svg",
-                      "Главная",
-                      tabsRouter.activeIndex == 0,
-                    ),
-                    eachItem(
-                      () {
-                        tabsRouter.setActiveIndex(1);
-                      },
-                      "assets/svg/schedule.svg",
-                      "Расписание",
-                      tabsRouter.activeIndex == 1,
-                    ),
-                    eachItem(
-                      () async {
-                        tabsRouter.setActiveIndex(2);
-                        if (showOnlyKnownOnMap || recommendedShown) {
-                          event.setShowOnlyKnown(false).then((value) => event.setShowRecommended(false))
-                          .then((value) async {
-                            await event.getGymsList(
-                              context,
-                              ref.watch(settingsProvider).knownActivities,
-                              ref.watch(mapProvider).recommendedGyms,
-                            );
-                            await event.getGetListOfGymsFromDiapozone();
-                            await event.setFlexes();
-                            await event.getAllMarkers(context, activityNotifier: activityNotifier);
-                            event.addUserLocationMarker();
-                          });
-                        }
-                        if (mapPageBottomCardShown) {
-                          ref.read(mapProvider.notifier)
-                            ..removePopUp()
-                            ..showLocationButton();
-                        }
-                      },
-                      "assets/svg/map.svg",
-                      "Поиск занятий",
-                      tabsRouter.activeIndex == 2,
-                    ),
-                  ],
                 );
               },
             ));
@@ -133,7 +145,9 @@ Widget eachItem(
     child: ColoredBox(
       color: Colors.white,
       child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Container(
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
           width: 60.w,
           height: 30.h,
           padding: EdgeInsets.symmetric(vertical: 2.h),
@@ -148,9 +162,11 @@ Widget eachItem(
         6.verticalSpace,
         CustomText(
           text: title,
-          fontSize: 13.sp,
+          fontSize: 12.sp,
           fontWeight: FontWeight.w500,
           color: AppColors.blueColor,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       ]),
     ),

@@ -660,6 +660,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     state = state.copyWith(autoRenewal: val);
   }
 
+  void setAutoRenewalGyms(bool val) {
+    state = state.copyWith(autoRenewalGyms: val);
+  }
+
   Future<void> purchaseSubscription(BuildContext context,
       {required int id, required bool autoRenewal}) async {
     final connected = await AppConnectivity().connectivity();

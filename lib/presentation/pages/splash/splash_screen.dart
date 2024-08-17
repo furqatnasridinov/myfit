@@ -23,7 +23,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         if (LocalStorage.getUserName().isEmpty || LocalStorage.getUserLastName().isEmpty) {
           context.replaceRoute(const Registration3Route());
         }else{
-          context.replaceRoute(const BottomNavigationHandlerRoute());
+          //context.replaceRoute(const BottomNavigationHandlerRoute());
+          context.replaceRoute(const Registration3Route());
         }       
       },
       goLogin: () {

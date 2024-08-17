@@ -1,5 +1,8 @@
 import 'package:myfit/infrastructure/models/data/addresses.dart';
+import 'package:myfit/infrastructure/models/data/payment.dart';
 import 'package:myfit/infrastructure/models/data/subscribtion_card.dart';
+
+import '../../infrastructure/models/response/user_schedules_response.dart';
 
 class DummyData {
   final List<Addresses> dummyAddresses = [
@@ -50,6 +53,106 @@ class DummyData {
 
   final List<String> genders = ["Мужчина", "Женщина"];
 
+  static final List<Map<String, dynamic>> weekdays = [
+    {
+      "name" : "Пн",
+      "id" : 1,
+    },
+    {
+      "name" : "Вт",
+      "id" : 2,
+    },
+    {
+      "name" : "Ср",
+      "id" : 3,
+    },
+    {
+      "name" : "Чт",
+      "id" : 4,
+    },
+    {
+      "name" : "Пт",
+      "id" : 5,
+    },
+    {
+      "name" : "Сб",
+      "id" : 6,
+    },
+    {
+      "name" : "Вс",
+      "id" : 7,
+    },
+  ];
+
+  static final List<Gym> dummyGyms = [
+    Gym(
+      name: "Crystall",
+      address: "ул. Лёни Ленина, д. 12, БЦ “Big Мук”",
+      mainPictureUrl: "GYMS/35/mainPicture/09_03_2024_15_40_56_985.jpg",
+      id: 35
+    ),
+    Gym(
+      name: "Top DOG Fight Club",
+      address: "ул. Лёни Ленина, д. 12, БЦ “Big Мук”",
+    ),
+    Gym(
+      name: "Crystall",
+      address: "ул. Лёни Ленина, д. 12, БЦ “Big Мук”",
+      mainPictureUrl: "GYMS/35/mainPicture/09_03_2024_15_40_56_985.jpg",
+    )
+  ];
+
+  static final List<Payment> payments = [
+    Payment(
+      id: 1,
+      source: "Оплата за посещение зала",
+      description: "Абонемент: Бойцовский клуб. Вечер",
+      amount: 500,
+      date: DateTime.now().subtract(const Duration(days: 1, hours: 10)),
+      
+      pic: "GYMS/35/mainPicture/09_03_2024_15_40_56_985.jpg",
+    ),
+    Payment(
+      id: 2,
+      source: "Оплата за посещение зала",
+      description: "Абонемент: Бойцовский клуб. Вечер",
+      amount: 500,
+      date: DateTime.now().subtract(const Duration(days: 1)),
+      pic: "GYMS/35/mainPicture/09_03_2024_15_40_56_985.jpg",
+    ),
+    Payment(
+      id: 3,
+      source: "Оплата за посещение зала",
+      description: "Абонемент: Бойцовский клуб. Вечер",
+      amount: 500,
+      date: DateTime.now().subtract(const Duration(days: 2)),
+      pic: "GYMS/35/mainPicture/09_03_2024_15_40_56_985.jpg",
+    ),
+    Payment(
+      id: 4,
+      source: "Оплата за посещение зала",
+      description: "Абонемент: Бойцовский клуб. Вечер",
+      amount: 500,
+      date: DateTime.now().subtract(const Duration(days: 2)),
+      pic: "GYMS/35/mainPicture/09_03_2024_15_40_56_985.jpg",
+    ),
+    Payment(
+      id: 5,
+      source: "Оплата за посещение зала",
+      description: "Абонемент: Бойцовский клуб. Вечер",
+      amount: 500,
+      date: DateTime.now().subtract(const Duration(days: 3)),
+      pic: "GYMS/35/mainPicture/09_03_2024_15_40_56_985.jpg",
+    ),
+    Payment(
+      id: 6,
+      source: "Оплата за посещение зала",
+      description: "Абонемент: Бойцовский клуб. Вечер",
+      amount: 500,
+      date: DateTime.now().subtract(const Duration(days: 3)),
+      pic: "GYMS/35/mainPicture/09_03_2024_15_40_56_985.jpg",
+    )
+  ];
   /* final List<NotificationModel> notifications = [
     NotificationModel(
       id: 1,

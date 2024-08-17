@@ -8,6 +8,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:myfit/presentation/pages/main2/widget/stats_skeleton.dart';
 
 class UserStatsBlock extends StatelessWidget {
   const UserStatsBlock({
@@ -20,7 +21,10 @@ class UserStatsBlock extends StatelessWidget {
       builder: (context, ref, child) {
         final statsForMonth = ref.watch(main2Provider).statsForMonth;
         final loading = ref.watch(main2Provider).statsMonthIsloading;
-        if (statsForMonth.isEmpty) {
+        if (loading) {
+          return const StatsSkeleton();
+        } 
+        if (statsForMonth.isEmpty && !loading) {
           return const SizedBox.shrink();
         }
         return Padding(
@@ -36,73 +40,68 @@ class UserStatsBlock extends StatelessWidget {
                   text: "Ваша статистика за месяц",
                   fontSize: 13.sp,
                   fontWeight: FontWeight.w600,
+                  height: 1.1,
                 ),
                 10.verticalSpace,
-                loading
-                    ? CustomText(
-                        text: "Ваша статистика загружается...",
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w400,
-                      )
-                    : SizedBox(
-                        //color: Colors.green,
-                        //height: 73.h,
-                        width: double.maxFinite,
-                        child: Row(
-                          //mainAxisAlignment: MainAxisAlignment.center,
+                SizedBox(
+                  //color: Colors.green,
+                  //height: 73.h,
+                  width: double.maxFinite,
+                  child: Row(
+                    //mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // pie chart part
+                      Container(
+                        width: 62.w,
+                        height: 62.h,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.backgroundColor,
+                          border: Border.all(
+                            color: AppColors.fadedBlueBorder,
+                            width: 1.w,
+                          ),
+                        ),
+                        padding: EdgeInsets.all(4.r),
+                        child: Stack(
                           children: [
-                            // pie chart part
-                            Container(
-                              width: 62.w,
-                              height: 62.h,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: AppColors.backgroundColor,
-                                border: Border.all(
-                                  color: AppColors.fadedBlueBorder,
-                                  width: 1.w,
-                                ),
+                            PieChart(
+                              PieChartData(
+                                sections: showingSections(statsForMonth),
                               ),
-                              padding: EdgeInsets.all(4.r),
-                              child: Stack(
-                                children: [
-                                  PieChart(
-                                    PieChartData(
-                                      sections: showingSections(statsForMonth),
-                                    ),
-                                  ),
+                            ),
 
-                                  // heart icon
-                                  Align(
-                                    alignment: Alignment.center,
-                                    child: Icon(
-                                      Icons.favorite,
-                                      color: AppColors.goldText,
-                                      size: 20.r,
-                                    ),
-                                  )
-                                ],
+                            // heart icon
+                            Align(
+                              alignment: Alignment.center,
+                              child: Icon(
+                                Icons.favorite,
+                                color: AppColors.goldText,
+                                size: 20.r,
                               ),
-                            ),
-                            20.horizontalSpace,
-                            // texts
-                            Expanded(
-                              child: Wrap(
-                                runSpacing: 5.h,
-                                spacing: 5.w,
-                                children: List.generate(
-                                  statsForMonth.length,
-                                  (index) => _indicator(
-                                    AppHelpers().getColorOfActivity(
-                                        statsForMonth[index].lessonType ?? ""),
-                                    statsForMonth[index].lessonType ?? "",
-                                  ),
-                                ),
-                              ),
-                            ),
+                            )
                           ],
                         ),
                       ),
+                      20.horizontalSpace,
+                      // texts
+                      Expanded(
+                        child: Wrap(
+                          runSpacing: 5.h,
+                          spacing: 5.w,
+                          children: List.generate(
+                            statsForMonth.length,
+                            (index) => _indicator(
+                              AppHelpers().getColorOfActivity(
+                                  statsForMonth[index].lessonType ?? ""),
+                              statsForMonth[index].lessonType ?? "",
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -133,7 +132,6 @@ class UserStatsBlock extends StatelessWidget {
   Widget _indicator(Color color, String text) {
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
-      //crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(
           width: 6.w,
@@ -150,6 +148,7 @@ class UserStatsBlock extends StatelessWidget {
           text: text,
           fontSize: 10.sp,
           fontWeight: FontWeight.w500,
+          height: 1.2,
         ),
       ],
     );

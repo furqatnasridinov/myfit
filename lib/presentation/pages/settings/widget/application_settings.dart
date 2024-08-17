@@ -85,6 +85,14 @@ class ApplicationSettings extends StatelessWidget {
         ), */
         10.verticalSpace,
         eachBlock(
+          "assets/svg/card_outlined.svg",
+          "Оплата",
+          () {
+            context.router.push(const PaymentSettingsRoute());
+          },
+        ),
+        10.verticalSpace,
+        eachBlock(
           "assets/svg/call_us.svg",
           "Связь с разработчиками",
           () {

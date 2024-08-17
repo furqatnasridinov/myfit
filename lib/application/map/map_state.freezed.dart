@@ -17,6 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$MapState {
   bool get isloading => throw _privateConstructorUsedError;
+  bool get getLocationLoading => throw _privateConstructorUsedError;
   Position? get userPosition => throw _privateConstructorUsedError;
   Set<Marker> get listOfMarkers => throw _privateConstructorUsedError;
   Marker? get activeMarker => throw _privateConstructorUsedError;
@@ -58,6 +59,7 @@ abstract class $MapStateCopyWith<$Res> {
   @useResult
   $Res call(
       {bool isloading,
+      bool getLocationLoading,
       Position? userPosition,
       Set<Marker> listOfMarkers,
       Marker? activeMarker,
@@ -98,6 +100,7 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
   @override
   $Res call({
     Object? isloading = null,
+    Object? getLocationLoading = null,
     Object? userPosition = freezed,
     Object? listOfMarkers = null,
     Object? activeMarker = freezed,
@@ -126,6 +129,10 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
       isloading: null == isloading
           ? _value.isloading
           : isloading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      getLocationLoading: null == getLocationLoading
+          ? _value.getLocationLoading
+          : getLocationLoading // ignore: cast_nullable_to_non_nullable
               as bool,
       userPosition: freezed == userPosition
           ? _value.userPosition
@@ -234,6 +241,7 @@ abstract class _$$MapStateImplCopyWith<$Res>
   @useResult
   $Res call(
       {bool isloading,
+      bool getLocationLoading,
       Position? userPosition,
       Set<Marker> listOfMarkers,
       Marker? activeMarker,
@@ -272,6 +280,7 @@ class __$$MapStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? isloading = null,
+    Object? getLocationLoading = null,
     Object? userPosition = freezed,
     Object? listOfMarkers = null,
     Object? activeMarker = freezed,
@@ -300,6 +309,10 @@ class __$$MapStateImplCopyWithImpl<$Res>
       isloading: null == isloading
           ? _value.isloading
           : isloading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      getLocationLoading: null == getLocationLoading
+          ? _value.getLocationLoading
+          : getLocationLoading // ignore: cast_nullable_to_non_nullable
               as bool,
       userPosition: freezed == userPosition
           ? _value.userPosition
@@ -403,6 +416,7 @@ class __$$MapStateImplCopyWithImpl<$Res>
 class _$MapStateImpl extends _MapState {
   const _$MapStateImpl(
       {this.isloading = false,
+      this.getLocationLoading = false,
       this.userPosition = null,
       final Set<Marker> listOfMarkers = const {},
       this.activeMarker = null,
@@ -422,8 +436,8 @@ class _$MapStateImpl extends _MapState {
           activitiesWithGymsInsideFromSelectedDiapozone = const [],
       this.showMapOnly = false,
       this.mapScreenShot = null,
-      this.topFlexValue = 0.21,
-      this.bottomFlexValue = 0.6,
+      this.topFlexValue = 0.41,
+      this.bottomFlexValue = 0.4,
       this.isLocationIconHidden = false,
       this.isGymsPopupShown = false,
       this.selectedLessonTypeFromMap = "",
@@ -441,6 +455,9 @@ class _$MapStateImpl extends _MapState {
   @override
   @JsonKey()
   final bool isloading;
+  @override
+  @JsonKey()
+  final bool getLocationLoading;
   @override
   @JsonKey()
   final Position? userPosition;
@@ -563,7 +580,7 @@ class _$MapStateImpl extends _MapState {
 
   @override
   String toString() {
-    return 'MapState(isloading: $isloading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, activeMarker: $activeMarker, selectedDiapozone: $selectedDiapozone, locationPermissionDenied: $locationPermissionDenied, locationServiceIsNotEnabled: $locationServiceIsNotEnabled, gymFoundBySearching: $gymFoundBySearching, isSearchbarOpened: $isSearchbarOpened, showOnlyKnown: $showOnlyKnown, showRecommended: $showRecommended, selectedGym: $selectedGym, gymsFoundBySearch: $gymsFoundBySearch, lessonsFoundBySearch: $lessonsFoundBySearch, activitiesWithGymsInsideAll: $activitiesWithGymsInsideAll, activitiesWithGymsInsideFromSelectedDiapozone: $activitiesWithGymsInsideFromSelectedDiapozone, showMapOnly: $showMapOnly, mapScreenShot: $mapScreenShot, topFlexValue: $topFlexValue, bottomFlexValue: $bottomFlexValue, isLocationIconHidden: $isLocationIconHidden, isGymsPopupShown: $isGymsPopupShown, selectedLessonTypeFromMap: $selectedLessonTypeFromMap, recommendedGyms: $recommendedGyms)';
+    return 'MapState(isloading: $isloading, getLocationLoading: $getLocationLoading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, activeMarker: $activeMarker, selectedDiapozone: $selectedDiapozone, locationPermissionDenied: $locationPermissionDenied, locationServiceIsNotEnabled: $locationServiceIsNotEnabled, gymFoundBySearching: $gymFoundBySearching, isSearchbarOpened: $isSearchbarOpened, showOnlyKnown: $showOnlyKnown, showRecommended: $showRecommended, selectedGym: $selectedGym, gymsFoundBySearch: $gymsFoundBySearch, lessonsFoundBySearch: $lessonsFoundBySearch, activitiesWithGymsInsideAll: $activitiesWithGymsInsideAll, activitiesWithGymsInsideFromSelectedDiapozone: $activitiesWithGymsInsideFromSelectedDiapozone, showMapOnly: $showMapOnly, mapScreenShot: $mapScreenShot, topFlexValue: $topFlexValue, bottomFlexValue: $bottomFlexValue, isLocationIconHidden: $isLocationIconHidden, isGymsPopupShown: $isGymsPopupShown, selectedLessonTypeFromMap: $selectedLessonTypeFromMap, recommendedGyms: $recommendedGyms)';
   }
 
   @override
@@ -573,6 +590,8 @@ class _$MapStateImpl extends _MapState {
             other is _$MapStateImpl &&
             (identical(other.isloading, isloading) ||
                 other.isloading == isloading) &&
+            (identical(other.getLocationLoading, getLocationLoading) ||
+                other.getLocationLoading == getLocationLoading) &&
             (identical(other.userPosition, userPosition) ||
                 other.userPosition == userPosition) &&
             const DeepCollectionEquality()
@@ -628,6 +647,7 @@ class _$MapStateImpl extends _MapState {
   int get hashCode => Object.hashAll([
         runtimeType,
         isloading,
+        getLocationLoading,
         userPosition,
         const DeepCollectionEquality().hash(_listOfMarkers),
         activeMarker,
@@ -664,6 +684,7 @@ class _$MapStateImpl extends _MapState {
 abstract class _MapState extends MapState {
   const factory _MapState(
       {final bool isloading,
+      final bool getLocationLoading,
       final Position? userPosition,
       final Set<Marker> listOfMarkers,
       final Marker? activeMarker,
@@ -692,6 +713,8 @@ abstract class _MapState extends MapState {
 
   @override
   bool get isloading;
+  @override
+  bool get getLocationLoading;
   @override
   Position? get userPosition;
   @override
