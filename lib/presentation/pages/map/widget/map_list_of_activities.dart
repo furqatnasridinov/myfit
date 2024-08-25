@@ -40,9 +40,11 @@ class MapListOfActivities extends StatefulWidget {
 class _MapListOfActivitiesState extends State<MapListOfActivities> {
   @override
   Widget build(BuildContext context) {
+    final List<LessonTypeWithGymsInside> list = widget.state.activitiesWithGymsInsideFromSelectedDiapozone;
+    
      WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.state.activitiesWithGymsInsideFromSelectedDiapozone.length > 4 &&
-          widget.state.activitiesWithGymsInsideFromSelectedDiapozone.last.isOpened) {
+      if (list.length > 4 &&
+          list.last.isOpened) {
           widget.activitiesListController.animateTo(
           400,
           curve: Curves.linear,
@@ -50,11 +52,11 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
         );
       }
     });
-    return widget.state.isloading
-        ? const SearchingActivitiesCard()
-        : widget.state.activitiesWithGymsInsideFromSelectedDiapozone.isEmpty && !widget.state.isloading
-            ? NoGymsInSelectedDiapozone(event: widget.event)
-            : SizedBox(
+    if (widget.state.isloading) {
+      return const SearchingActivitiesCard();
+    }
+    if (list.isNotEmpty && !widget.state.isloading) {
+      return SizedBox(
                 child: Column(
                 children: [
                   if (widget.state.locationPermissionDenied || widget.state.locationServiceIsNotEnabled)
@@ -62,78 +64,14 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                       event: widget.event,
                       state: widget.state,
                     ),
-
-                    // map ui type 2  
-
-                    /* DefaultTabController(
-                      length: widget.state.activitiesWithGymsInsideFromSelectedDiapozone.length,
-                      child: Column(
-                      children: [
-                        TabBar(
-                          isScrollable: true,
-                          labelColor: Colors.white,
-                          unselectedLabelColor: Colors.black,
-                          indicatorColor: Colors.transparent,
-                          //indicatorSize: TabBarIndicatorSize.tab,
-                          dividerColor: Colors.transparent,
-                          //labelPadding: EdgeInsets.all(8.r),
-                          padding: EdgeInsets.zero,
-                          labelStyle: GoogleFonts.raleway(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          //indicatorPadding: EdgeInsets.only(left: 16.w),
-                          tabAlignment: TabAlignment.start,
-                          indicator: BoxDecoration(
-                            color: AppColors.blueColor,
-                            borderRadius: BorderRadius.circular(6.r),
-                          ),
-                          tabs: widget.state.activitiesWithGymsInsideFromSelectedDiapozone.map(
-                            (LessonTypeWithGymsInside el) {
-                              return Container(
-                                padding: EdgeInsets.all(8.r),
-                                //color:  Colors.white,
-                                child: Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    AppHelpers().getIconSvg(el.lessontype ?? "??"),
-                                    height: 15.h,
-                                  ),
-                                  10.horizontalSpace,
-                                  Text(el.lessontype ?? "??"),
-                                ]),
-                              );
-                            }
-                            ).toList() as List<Widget>,
-                        ),
-                        /* Expanded(
-                          child: TabBarView(
-                            children: widget.state.activitiesWithGymsInsideFromSelectedDiapozone.map((Gymdata gym) {
-                              return _tabContentBuilder(
-                                gym.name,
-                                gym.address,
-                                gym.visitedCount,
-                                gym.visitPerMonth,
-                                gym.distanceFromClient ?? 3469,
-                                "",
-                                gym.isSelected,
-                                () {
-                                  // ваш код обработчика нажатия
-                                },
-                              );
-                            }).toList(),
-                          ),
-                        ), */
-                      ],
-                    ),), */
                   ListView.builder(
                     //controller: widget.activitiesListController,
                     physics: const NeverScrollableScrollPhysics(),
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    itemCount: widget.state.activitiesWithGymsInsideFromSelectedDiapozone.length,
+                    itemCount: list.length,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
-                      final currentActivity = widget.state.activitiesWithGymsInsideFromSelectedDiapozone[index];
+                      final currentActivity = list[index];
                       return _listOfActivitiesBuilder(
                           currentActivity.lessontype ?? "??",
                           currentActivity.listOfGyms!.length.toString(),
@@ -151,7 +89,7 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                             }
                           }
                         } else {
-                          for (var el in widget.state.activitiesWithGymsInsideFromSelectedDiapozone) {
+                          for (var el in list) {
                             if (el.isOpened && el != currentActivity) {
                               el.isOpened = false;
                             }
@@ -162,7 +100,12 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                     },
                   ),
                 ],
-              ));
+              )) ;
+    }
+    if (list.isEmpty && !widget.state.isloading) {
+      return NoGymsInSelectedDiapozone(event: widget.event);
+    }
+    return const SizedBox();
   }
 
   _listOfActivitiesBuilder(
@@ -286,9 +229,12 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                                     gymsList[index].isSelected = !gymsList[index].isSelected;
                                     setState(() {});
                                     //
-                                    activityEvent.getActivityTypes(context,false,
+                                    if (mounted) {
+                                      activityEvent.getActivityTypes(context,false,
                                         ref.watch(mapProvider).selectedLessonTypeFromMap,
+                                        getOnlyLessons: true,
                                         gymId: gymsList[index].id!);
+                                    }
                                     widget.controller.future.then((value) {
                                       value.animateCamera(CameraUpdate.newCameraPosition(
                                         CameraPosition(
@@ -337,7 +283,9 @@ _listOfGymsBuilder(
     onTap: onTap,
     child: Padding(
       padding: EdgeInsets.only(bottom: 5.h),
-      child: DecoratedBox(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
         decoration: BoxDecoration(
           //color: Colors.red,
           borderRadius: BorderRadius.circular(8.r),

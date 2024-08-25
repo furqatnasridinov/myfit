@@ -45,8 +45,6 @@ class TheOneWithChips extends StatelessWidget {
                           await event.removeSelectedCalendarDay();
                           event
                             ..setSingleSelectedActivity(current)
-                            //..getDescribtionAndPeculiarities(current)
-                            //..getPhotosOfSelectedActivity(current)
                             ..getLessonsOfSelectedActivity(current, true);
                         },
                         child: AnimationButtonEffect(

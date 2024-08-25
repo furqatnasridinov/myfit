@@ -13,6 +13,7 @@ class UserInstance {
   int? height;
   String? birthdayDate;
   String? changePhotoDate;
+  int? crmClientId;
 
   UserInstance(
       {this.id,
@@ -27,7 +28,10 @@ class UserInstance {
       this.age,
       this.weight,
       this.height,
-      this.birthdayDate});
+      this.birthdayDate,
+      this.changePhotoDate,
+      this.crmClientId
+      });
 
   UserInstance.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -49,6 +53,7 @@ class UserInstance {
     height = json['height'];
     birthdayDate = json['birthdayDate'];
     changePhotoDate = json['changePhotoDate'];
+    crmClientId = json['clientId'];
   }
 
   Map<String, dynamic> toJson() {
@@ -71,6 +76,7 @@ class UserInstance {
     data['height'] = height;
     data['birthdayDate'] = birthdayDate;
     data['changePhotoDate'] = changePhotoDate;
+    data['clientId'] = crmClientId;
     return data;
   }
 }

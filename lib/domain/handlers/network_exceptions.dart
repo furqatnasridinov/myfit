@@ -205,13 +205,15 @@ class NetworkExceptions with _$NetworkExceptions {
     }, unexpectedError: () {
       errorMessage = "Unexpected error occurred";
     }, requestTimeout: () {
-      errorMessage = "Connection request timeout";
+      errorMessage = "Не можем соединиться с сервером. Попробуйте зайти позже.";
+      //errorMessage = "Connection request timeout";
     }, noInternetConnection: () {
       errorMessage = "No internet connection";
     }, conflict: () {
       errorMessage = "Error due to a conflict";
     }, sendTimeout: () {
-      errorMessage = "Send timeout in connection with API server";
+      errorMessage = "Не можем соединиться с сервером. Попробуйте зайти позже.";
+      //errorMessage = "Send timeout in connection with API server";
     }, unableToProcess: () {
       errorMessage = "Unable to process the data";
     }, defaultError: (String error) {

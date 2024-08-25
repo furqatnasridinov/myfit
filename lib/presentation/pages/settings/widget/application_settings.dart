@@ -3,6 +3,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myfit/application/main2/main2_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
+import 'package:myfit/application/membership/membership_provider.dart';
 import 'package:myfit/application/notification/notification_provider.dart';
 import 'package:myfit/application/registration/registration_provider.dart';
 import 'package:myfit/application/schedule/schedule_provider.dart';
@@ -85,6 +86,14 @@ class ApplicationSettings extends StatelessWidget {
         ), */
         10.verticalSpace,
         eachBlock(
+          "assets/svg/card_outlined.svg",
+          "Оплата",
+          () {
+            context.router.push(const PaymentSettingsRoute());
+          },
+        ),
+        10.verticalSpace,
+        eachBlock(
           "assets/svg/call_us.svg",
           "Связь с разработчиками",
           () {
@@ -159,6 +168,7 @@ class ApplicationSettings extends StatelessWidget {
                                       ref.invalidate(registrationProvider);
                                       ref.invalidate(scheduleProvider);
                                       ref.invalidate(settingsProvider);
+                                      ref.invalidate(membershipProvider);
                                       await LocalStorage.instance.logOut();
                                       // remove all routes and replace with splash route
                                       context.router.replaceAll([const SplashRoute()]);

@@ -1,4 +1,6 @@
 class AppConstants {
+  static const bool isTest = false;
+
   //  urls
   static const String baseUrl = "https://myfit-russia.ru/";
   static const String getYandexMapImage = "https://static-maps.yandex.ru/1.x/";
@@ -33,6 +35,7 @@ class AppConstants {
   static const String sendPhoneNumber = "api/user/loginCode";
   static const String sendCodeConfirmation = "api/user/loginCodeConfirmation";
   static const String updateFcmToken = "api/user/updateFcmToken";
+  static const String searchMembership = "api/crm/membership/search";
   //static const String getInfoForType = "api/gym/3/infoForType";
   //static const String enrollToGym = "api/schedule/1/add";
 
@@ -53,6 +56,7 @@ class AppConstants {
   // shared prefs keys
   static const String keyPhoneNumber = "key_phone_number";
   static const String keyUserId = "key_user_id";
+  static const String keyUserCrmId = "key_user_crm_id";
   static const String keyToken = "key_token";
   static const String keyUserName = "key_username";
   static const String keyUserLastName = "key_user_lastname";

@@ -9,8 +9,8 @@ import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:myfit/presentation/components/custom_textfield.dart';
 import 'package:myfit/presentation/pages/auth/registration3/widget/bottom_wave.dart';
 import 'package:myfit/presentation/pages/auth/registration3/widget/medium_wave.dart';
+import 'package:myfit/presentation/pages/auth/registration3/widget/myfit_logo_expandable.dart';
 import 'package:myfit/presentation/pages/auth/registration3/widget/top_wave.dart';
-import 'package:myfit/presentation/router/app_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +18,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myfit/presentation/router/app_router.gr.dart';
 import '../../../../infrastructure/models/response/auth_response.dart';
 
 @RoutePage()
@@ -44,6 +45,7 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
   bool isCityNotSelected = false;
   City? selectedCity;
   bool isAllFieldsSumbitted = false;
+  bool showWelcomeText = false;
   bool showReplayButton = false;
   bool topGapRemoved = false;
   bool hideButton = false;
@@ -52,6 +54,20 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
   void setSelectedCity(City city) {
     selectedCity = city;
     setState(() {});
+  }
+
+  Future<void> waitAndGoMain() async{
+    await Future.delayed(const Duration(milliseconds: 500));
+    showWelcomeText = true;
+    setState(() {});
+    await Future.delayed(const Duration(milliseconds: 2000));
+    if (!AppConstants.isTest) {
+      context.router.replaceAll([const Main2Route()]);
+    }
+    if (AppConstants.isTest) {
+      showReplayButton = true;
+      setState(() {});
+    }
   }
 
   @override
@@ -228,23 +244,14 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
           ),
           
           // main body
+          if (!isAllFieldsSumbitted)
           Padding(
             padding: EdgeInsets.symmetric(horizontal:  16.w),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  89.verticalSpace,
-                  Hero(
-                    tag: AppConstants.registration3Hero,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: SvgPicture.asset(
-                        "assets/svg/myfitNew.svg",
-                      ),
-                    ),
-                  ),
-                  40.verticalSpace,
+                children: [                  
+                  280.verticalSpace,
                   CustomText(
                     text: "Данные необходимы для посещения заведений",
                     fontSize: 14.sp,
@@ -538,7 +545,13 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                                 fontWeight: FontWeight.w600,
                                 showProgress: buttonLoading,
                                 onPressed: () async {
-                                  if (nameController.text.length > 2 && cityController.text.isNotEmpty && surNameController.text.length > 2) {
+                                  if (AppConstants.isTest) {
+                                    buttonLoading = false;
+                                    isAllFieldsSumbitted = true;
+                                    setState(() {});
+                                    waitAndGoMain();
+                                  } else {
+                                    if (nameController.text.length > 1 && cityController.text.isNotEmpty && surNameController.text.length > 2) {
                                     buttonLoading = true;
                                     setState(() {});
                                     if (nameController.text != LocalStorage.getUserName()) {
@@ -561,8 +574,7 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                                     buttonLoading = false;
                                     isAllFieldsSumbitted = true;
                                     setState(() {});
-                                    await Future.delayed(const Duration(milliseconds: 200));
-                                    context.router.push(const Registration4Route());
+                                    waitAndGoMain();
                                   } else {
                                     if (nameController.text.length < 2) {
                                       isNameNotGiven = true;
@@ -577,6 +589,8 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
                                       setState(() {});
                                     }
                                   }
+                                  }
+                                  
                                 },
                                 text: "Продолжить",
                               ),
@@ -591,6 +605,53 @@ class _Registration3ScreenState extends ConsumerState<Registration3Screen> {
             ),
           ),
 
+          MyfitLogoExpandable(isAllFieldsSumbitted: isAllFieldsSumbitted),
+
+          AnimatedOpacity(
+            duration: const Duration(milliseconds: 300),
+            opacity: showWelcomeText ? 1 : 0,
+            curve: Curves.easeInOut,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 130.h),
+              child: Center(
+                child: CustomText(
+                  textAlign: TextAlign.center,
+                  text: "Добро пожаловать в команду",
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+
+          if(AppConstants.isTest)
+          Padding(
+            padding: const EdgeInsets.all(16.0).copyWith(top: 600.h),
+            child: AnimatedOpacity(
+            duration: const Duration(milliseconds: 300),
+            opacity: showReplayButton ? 1 : 0,
+            curve: Curves.easeInOut,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 80.h),
+              child: Center(
+                child: CustomButton(
+                  buttonColor: AppColors.blueColor,
+                  textColor: Colors.white,
+                  borderColor: AppColors.blueBorder,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  onPressed: () {
+                    showReplayButton = false;
+                    showWelcomeText = false;
+                    isAllFieldsSumbitted = false;
+                    setState(() {});
+                  },
+                  text: "Повторить анимацию",
+                ),
+              ),
+            ),
+            ),
+          ),
            /* // cloud 1 
           Positioned(
             top: 117.h,

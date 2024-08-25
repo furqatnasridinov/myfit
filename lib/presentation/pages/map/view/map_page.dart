@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:myfit/application/activity/activity_notifier.dart';
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
+import 'package:myfit/application/membership/membership_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/models/data/place_model.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
@@ -44,6 +45,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with WidgetsBindingObserv
     clusterManager = initClusterManager();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      initDatas();
       if (ref.watch(mapProvider).showMapOnly) {
         ref.read(mapProvider.notifier).reduceMap();
       }
@@ -119,6 +121,28 @@ class _MapScreenState extends ConsumerState<MapScreen> with WidgetsBindingObserv
     wasLocationPermissionDenied = permission == LocationPermission.denied;
   }
 
+  Future<void> initDatas() async {
+    final Position? userPosition = ref.watch(mapProvider).userPosition;
+    final event = ref.read(mapProvider.notifier);
+    final ActivityNotifier activityNotifier = ref.read(activityProvider.notifier);
+    event.setIsLoading(true);
+    if (userPosition == null) {
+      await event.getUserLocation();
+    }
+    await event.getGymsList(
+      context,
+      ref.watch(settingsProvider).knownActivities,
+      ref.watch(mapProvider).recommendedGyms,
+      gymIds: ref.watch(membershipProvider).gymIds,
+    );
+    await event.getGetListOfGymsFromDiapozone();
+    event.setFlexes();
+    event.setIsLoading(false);
+    await event.addUserLocationMarker(
+        avatar: ref.watch(settingsProvider).avatar);
+    await event.getAllMarkers(context, activityNotifier: activityNotifier);
+  }
+
   Future<void> checkPermissionAndSetLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied ||
@@ -165,7 +189,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with WidgetsBindingObserv
     final double width = MediaQuery.of(context).size.width;
     final state = ref.watch(mapProvider);
     final event = ref.read(mapProvider.notifier);
-    final ActivityNotifier activityNotifier = ref.read(activityProvider.notifier);
+    //final ActivityNotifier activityNotifier = ref.read(activityProvider.notifier);
 
     ref.listen(mapProvider, (previous, next) {
       if (previous!.showRecommended != next.showRecommended && !next.showRecommended) {
@@ -278,15 +302,6 @@ class _MapScreenState extends ConsumerState<MapScreen> with WidgetsBindingObserv
                               onMapCreated:(GoogleMapController controller) async {
                                 _controller.complete(controller);
                                 clusterManager?.setMapId(controller.mapId);
-                                await event.getGymsList(
-                                  context,
-                                  ref.watch(settingsProvider).knownActivities,
-                                  ref.watch(mapProvider).recommendedGyms,
-                                );
-                                await event.getGetListOfGymsFromDiapozone();
-                                event.setFlexes();
-                                await event.addUserLocationMarker(avatar: ref.watch(settingsProvider).avatar);
-                                await event.getAllMarkers(context, activityNotifier: activityNotifier);
                               },
                               onCameraMove: (position) {
                                 //clusterManager?.onCameraMove(position);
@@ -320,32 +335,36 @@ class _MapScreenState extends ConsumerState<MapScreen> with WidgetsBindingObserv
                           }
                         },
                         child: AnimationButtonEffect(
-                          child: CustomCard(
-                              radius: 8.r,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  15.horizontalSpace,
-                                  CustomText(
-                                    text: state.showMapOnly ? "Показать список активностей" : "Карта на весь экран",
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  10.horizontalSpace,
-                                  SizedBox(
-                                    width: 18.w,
-                                    height: 18.h,
-                                    child: Center(
-                                      child: SvgPicture.asset(
-                                        state.showMapOnly ? "assets/svg/arrow_down.svg" : "assets/svg/arrow_up.svg",
-                                        width: 18.w,
-                                        height: 18.h,
+                          child: AnimatedSize(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                            child: CustomCard(
+                                radius: 8.r,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    15.horizontalSpace,
+                                    CustomText(
+                                      text: state.showMapOnly ? "Показать список активностей" : "Карта на весь экран",
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    10.horizontalSpace,
+                                    SizedBox(
+                                      width: 18.w,
+                                      height: 18.h,
+                                      child: Center(
+                                        child: SvgPicture.asset(
+                                          state.showMapOnly ? "assets/svg/arrow_down.svg" : "assets/svg/arrow_up.svg",
+                                          width: 18.w,
+                                          height: 18.h,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  15.horizontalSpace,
-                                ],
-                              )),
+                                    15.horizontalSpace,
+                                  ],
+                                )),
+                          ),
                         ),
                       ),
                     ),

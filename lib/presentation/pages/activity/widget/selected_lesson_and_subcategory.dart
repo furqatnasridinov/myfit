@@ -25,7 +25,6 @@ class SelectedLessonAndSubcategory extends StatelessWidget {
                   final String selectedLesson = ref.watch(activityProvider).selectedActivity ?? "";
                   final String selectedSubcategory = ref.watch(activityProvider).selectedSubCategory?.name ?? "";
                   return Wrap(
-                    
                     children: [
                       CustomText(
                         text: selectedLesson,
@@ -33,13 +32,15 @@ class SelectedLessonAndSubcategory extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                       10.horizontalSpace,
+                      if (selectedSubcategory.isNotEmpty)
                       CustomText(
                         text: "/",
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
                         color: AppColors.blueText,
                       ),
-                      10.horizontalSpace,
+                      if (selectedSubcategory.isNotEmpty) 10.horizontalSpace,
+                      if (selectedSubcategory.isNotEmpty)
                       CustomText(
                         text: selectedSubcategory,
                         fontSize: 16.sp,

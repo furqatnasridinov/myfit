@@ -535,6 +535,13 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
             state = state.copyWith(avatar: data["object"]["pictureUrl"]);
             LocalStorage.setAvatar(data["object"]["pictureUrl"]);
           }
+          final int? crmClientIdFromServer = user.crmClientId;
+          final int idFromLocalStorage = LocalStorage.getUserCrmId();
+          if (crmClientIdFromServer != null) {
+            if (crmClientIdFromServer != idFromLocalStorage) {
+              LocalStorage.setUserCrmId(crmClientIdFromServer);
+            }
+          }
         }
         //debugPrint(data.toString());
       }, failure: (error, statusCode, operationInfo) {
@@ -658,6 +665,10 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
 
   void setAutoRenewal(bool val) {
     state = state.copyWith(autoRenewal: val);
+  }
+
+  void setAutoRenewalGyms(bool val) {
+    state = state.copyWith(autoRenewalGyms: val);
   }
 
   Future<void> purchaseSubscription(BuildContext context,

@@ -1,6 +1,4 @@
 // ignore_for_file: must_be_immutable
-
-import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -97,7 +95,7 @@ class UiDropDownMenu extends StatelessWidget {
                 ? ClipRRect(
                     borderRadius: BorderRadius.circular(6.0),
                     child: Container(
-                      color: AppColors.backgroundColor,
+                      //color: AppColors.backgroundColor,
                       padding: const EdgeInsets.all(3.0),
                       child: icon,
                     ),

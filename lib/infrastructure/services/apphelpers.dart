@@ -98,8 +98,14 @@ class AppHelpers {
   }
 
   static void showCustomBottomSnack(
-      BuildContext context, String text, String svgPath,
-      {int marginBottom = 25}) {
+      BuildContext context, 
+      String text, 
+      String svgPath,
+      {int marginBottom = 25,
+       ColorFilter? colorFilter = const ColorFilter.mode(
+        AppColors.blueColor,
+        BlendMode.srcIn,)
+      }) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
           content: Row(
@@ -116,10 +122,7 @@ class AppHelpers {
                     padding: EdgeInsets.all(5.r),
                     child: SvgPicture.asset(
                       svgPath,
-                      colorFilter: const ColorFilter.mode(
-                        AppColors.blueColor,
-                        BlendMode.srcIn,
-                      ),
+                      colorFilter: colorFilter
                     ),
                   ),
                 ),
@@ -148,6 +151,44 @@ class AppHelpers {
           duration: const Duration(seconds: 4),
           behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.white),
+    );
+  }
+
+  static void showCusomDialog({
+   required BuildContext context,
+   Color backgroundColor = Colors.white,
+   double insetPadding = 16,
+   double topLeftRadius = 16,
+    double bottomLeftRadius = 16,
+    double bottomRightRadius = 16,
+    double topRightRadius = 16,
+    Color borderColor = Colors.transparent,
+    double elevation = 0,
+    double contentPadding = 16,
+    required Widget child,
+  }){
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: backgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(topLeftRadius.r),
+              bottomLeft: Radius.circular(bottomLeftRadius.r),
+              bottomRight: Radius.circular(bottomRightRadius.r),
+              topRight: Radius.circular(topRightRadius.r),
+            ),
+            side:  BorderSide(color: borderColor),
+          ),
+          elevation: elevation,
+          insetPadding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Padding(
+            padding: EdgeInsets.all(contentPadding.r),
+            child: child,
+          ),
+        );
+      },
     );
   }
 
@@ -459,6 +500,40 @@ class AppHelpers {
     }
   }
 
+  static List<int> getWeekdayIds(List<String> list){
+    // from "MONDAY" to 1
+    if (list.isEmpty) {
+      return [];
+    }
+    List<int> result = [];
+    for (String day in list) {
+      switch (day) {
+        case "MONDAY":
+          result.add(1);
+          break;
+        case "TUESDAY":
+          result.add(2);
+          break;
+        case "WEDNESDAY":
+          result.add(3);
+          break;
+        case "THURSDAY":
+          result.add(4);
+          break;
+        case "FRIDAY":
+          result.add(5);
+          break;
+        case "SATURDAY":
+          result.add(6);
+          break;
+        case "SUNDAY":
+          result.add(7);
+          break;
+      }
+    }
+    return result;
+  }
+
   static NotificationType getNotificationType(String str) {
     switch (str) {
       case "FINISH_LESSON":
@@ -475,6 +550,23 @@ class AppHelpers {
         return NotificationType.lessonStartsWithin15minutes;
       default:
         return NotificationType.system;
+    }
+  }
+
+  static String getMembershipTypeTranslated(String type){
+    if (type.isEmpty) {
+      return "";
+    }
+    // MONTH -> Месяц
+    switch (type) {
+      case "MONTH":
+        return "Месяц";
+      case "HALF_YEAR":
+        return "Полгода";
+      case "YEAR":
+        return "Год";
+      default:
+        return "Другое";
     }
   }
 
@@ -516,15 +608,23 @@ class AppHelpers {
     return "${dateTime.year}-$month-$day@$hours:$minutes";
   }
 
-  static String getCalendarlikeStringFromDateTime(DateTime dateTime) {
+  static String getCalendarlikeStringFromDateTime(DateTime dateTime, {bool fullYear = true}) {
     // from 2024-05-25 08:00:00.000 to 25.05.2024
     try {
       String month = dateTime.month.toString().padLeft(2, '0');
       String day = dateTime.day.toString().padLeft(2, '0');
-      return "$day.$month.${dateTime.year}";
+      int year = fullYear ? dateTime.year : dateTime.year % 100;
+      return "$day.$month.$year";
     } catch (e) {
       return "catched error getCalendarlikeStringFromDateTime";
     }
+  }
+
+  static String getTimeAndMinuteFromDt(DateTime dateTime) {
+    // from 2024-05-25 08:00:00.000 to 08:00
+    String hours = dateTime.hour.toString().padLeft(2, '0');
+    String minutes = dateTime.minute.toString().padLeft(2, '0');
+    return "$hours:$minutes";
   }
 
   static String getBirthdayLikeInServer(String text) {
@@ -672,6 +772,24 @@ class AppHelpers {
                 id: e.mapsId.value == "user" ? AppConstants.userMarkerId : int.parse(e.mapsId.value))).toList();
       }
   }
+
+static String formatDateTimeToString(DateTime dateTime) {
+  // from 2024-06-09 00:00:00.000 to 25 Мая 2024, // Сегодня, Вчера
+  final DateTime now = DateTime.now();
+  final DateTime yesterday = now.subtract(const Duration(days: 1));
+
+  if (dateTime.year == now.year && dateTime.month == now.month && dateTime.day == now.day) {
+    return 'Сегодня';
+  } else if (dateTime.year == yesterday.year && dateTime.month == yesterday.month && dateTime.day == yesterday.day) {
+    return 'Вчера';
+  } else {
+    final int day = dateTime.day;
+    final String month = getMonth(dateTime.month);
+    final int year = dateTime.year;
+    return '$day $month $year';
+  }
+}
+
  
 
 }

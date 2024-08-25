@@ -120,7 +120,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
 
   Future<void> getActivityTypes(
       BuildContext context, bool selectFirst, String selectedActivityFromMap,
-      {bool isFromMap = false, required int gymId}) async {
+      {bool isFromMap = false, required int gymId, getOnlyLessons = false,}) async {
     await Future.delayed(const Duration(milliseconds: 10));
     final connected = await AppConnectivity().connectivity();
     if (connected) {
@@ -135,24 +135,24 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
             state = state.copyWith(
               activityTypes: activities,
               isActivitiesListLoading: false,
-            );            
-            if (selectedActivityFromMap.isNotEmpty) {
-              state = state.copyWith(selectedActivity: selectedActivityFromMap);
-             final List<SubCategory> formattedList =  (map[selectedActivityFromMap] as List).map((e) => SubCategory.fromJson(e)).toList();
-             setDescribtionsAndPhotosOfSubcategory(formattedList[0]);
-              state = state.copyWith(
-                subCategories: formattedList,
-                selectedSubCategory: formattedList[0],
-              );
+            );
+            if (!getOnlyLessons) {
+              final String selectedActivity = selectedActivityFromMap.isNotEmpty ? selectedActivityFromMap : (selectedActivityFromMap.isEmpty && selectFirst) ? activities[0] : "";
+              state = state.copyWith(selectedActivity: selectedActivity);
+            if (map[selectedActivity] == null || map[selectedActivity]?.isEmpty) {
+              state = state.copyWith(subCategories: [], selectedSubCategory: null);
+              setDescribtionsAndPhotosOfSubcategory(null);
+            }else{
+              final List<SubCategory> formattedList =  (map[selectedActivity] as List).map((e) => SubCategory.fromJson(e)).toList();
+              if (formattedList.isNotEmpty) {
+                formattedList.sort((a, b) => a.orderNumber!.compareTo(b.orderNumber!.toInt()));
+                setDescribtionsAndPhotosOfSubcategory(formattedList[0]);
+                state = state.copyWith(
+                  subCategories: formattedList,
+                  selectedSubCategory: formattedList[0],
+                );
+              }
             }
-            if (selectFirst && selectedActivityFromMap.isEmpty) {
-              state = state.copyWith(selectedActivity: activities[0]);
-              final List<SubCategory> formattedList =  (map[activities[0]] as List).map((e) => SubCategory.fromJson(e)).toList();
-              setDescribtionsAndPhotosOfSubcategory(formattedList[0]);
-              state = state.copyWith(
-                subCategories: formattedList,
-                selectedSubCategory: formattedList[0],
-              );
             }
           }
         },
@@ -166,22 +166,75 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
+  Future<void> setSingleSelectedActivity(String? value) async {
+    if (value == state.selectedActivity || value == null) {
+      return;
+    } else {
+      state = state.copyWith(selectedActivity: value);
+      final Map<String,dynamic> map = state.lessonTypesAndSubcategories;
+      if (!map[value]?.isEmpty) {
+         final List<SubCategory> formattedList = (map[value] as List).map((e) => SubCategory.fromJson(e)).toList();
+         formattedList.sort((a, b) => a.orderNumber!.compareTo(b.orderNumber!.toInt()));
+        if (formattedList.isNotEmpty) {
+          state = state.copyWith(
+            subCategories: formattedList,
+            selectedSubCategory: formattedList[0],
+          );
+          setDescribtionsAndPhotosOfSubcategory(formattedList[0]);
+        }
+      }else{
+        state = state.copyWith(subCategories: [], selectedSubCategory: null);
+        getDescribtionAndPeculiarities(value);
+        getPhotosOfSelectedActivity(value);
+      }
+    }
+  }
+
   void changeSelectedSubCategory(SubCategory subCategory) {
     state = state.copyWith(selectedSubCategory: subCategory);
     setDescribtionsAndPhotosOfSubcategory(subCategory);
   }
 
-  void setDescribtionsAndPhotosOfSubcategory(SubCategory subCategory){
-    if (subCategory.inheritance == true) {
+  void setDescribtionsAndPhotosOfSubcategory(SubCategory? subCategory){
+    if (subCategory?.inheritance == true || subCategory == null) {
       getDescribtionAndPeculiarities(state.selectedActivity ?? "");
       getPhotosOfSelectedActivity(state.selectedActivity ?? "");
     }else{
       final DescribtionAndPeculiarities data = DescribtionAndPeculiarities(
         typeDescription: subCategory.typeDescription, 
         peculiarities: subCategory.peculiarities);
-      final List<String> photos = subCategory.gymSubActivePictures ?? [];
-      state = state.copyWith(describtionAndPeculiarities: data, photosOfSelectedActivity: photos);
+      final List photosListJson = subCategory.gymSubActivePictures ?? [];
+      List<String> photos = [];
+      if (photosListJson.isNotEmpty) {
+        for (var element in photosListJson) {
+          photos.add(element["pictureUrl"]);
+        }
+      }
+      state = state.copyWith(
+        describtionAndPeculiarities: data, 
+        photosOfSelectedActivity: photos
+      );
     }
+  }
+
+  void resetLastGymInfo(){
+    state = state.copyWith(
+      gym: null,
+      describtionAndPeculiarities: null,
+      activityTypes: [],
+      allPhotos: {},
+      allLessons: {},
+      lessonsOfSelectedActivity: [],
+      daysInWhichWeHaveLessons: [],
+      selectedCalendarDay: "",
+      lessonsToShowAfterSelectingADay: [],
+      selectedActivity: "",
+      photosOfSelectedActivity: [],
+      infosForType: {},
+      subCategories: [],
+      selectedSubCategory: null,
+      lessonTypesAndSubcategories: {},
+    );
   }
 
   Future<void> getAllPhotos(BuildContext context, int gymId) async {
@@ -219,8 +272,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     final connected = await AppConnectivity().connectivity();
     if (connected) {
       state = state.copyWith(infoForTypeLoading: true);
-      final response =
-          await _activityRepositoryInterface.getInfoForType(id: id);
+      final response = await _activityRepositoryInterface.getInfoForType(id: id);
       response.when(
         success: (data) {
           if (data["object"] != null) {
@@ -232,8 +284,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
         },
         failure: (error, statusCode, operationInfo) {
           state = state.copyWith(infoForTypeLoading: false);
-          AppHelpers.showErrorSnack(
-              context, NetworkExceptions.getErrorMessage(error));
+          AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
         },
       );
     } else {
@@ -338,21 +389,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
     }
   }
 
-  Future<void> setSingleSelectedActivity(String? value) async {
-    if (value == state.selectedActivity || value == null) {
-      return;
-    } else {
-      final Map<String,dynamic> map = state.lessonTypesAndSubcategories;
-      final List<SubCategory> formattedList = (map[value] as List).map((e) => SubCategory.fromJson(e)).toList();
-      final SubCategory selectedSubCategory = formattedList[0];
-      setDescribtionsAndPhotosOfSubcategory(selectedSubCategory);
-      state = state.copyWith(
-        selectedActivity: value,
-        subCategories: formattedList,
-        selectedSubCategory: selectedSubCategory,
-      );
-    }
-  }
+  
 
   Future<void> getAllLessons(
     BuildContext context,
@@ -368,9 +405,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       response.when(
         success: (data) {
           if (data.isNotEmpty) {
-            state = state.copyWith(
-              allLessons: data,
-            );
+            state = state.copyWith(allLessons: data);
           }
           state = state.copyWith(isSchedulesLoading: false);
         },
@@ -396,15 +431,13 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
       allLessons[key].forEach((el) {
         if (el["lessonType"] == selectedActivity) {
           try {
-            final DateTime startTime =
-                DateTime.parse(el["date"].toString().replaceAll("@", " "));
+            final DateTime startTime =DateTime.parse(el["date"].toString().replaceAll("@", " "));
             final lesson = Lesson(
                 id: el["id"],
                 date: el["date"],
                 calendarDate: formatOriginalToCalendar(el["date"]),
                 startTime: returnOnlyTime(el["date"]),
-                endTime:
-                    getEndingTime(returnOnlyTime(el["date"]), el["duration"]),
+                endTime:getEndingTime(returnOnlyTime(el["date"]), el["duration"]),
                 description: el["description"],
                 duration: formatDuration(el["duration"]),
                 lessonType: el["lessonType"],
@@ -412,14 +445,14 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
                 repeat: el["repeat"] != null ? el["repeat"].cast<int>() : [],
                 canSignUp: el["canSignUp"],
                 lessonState: el["lessonState"] ?? false,
-                showInCalendar: DateTime.now()
-                    .isBefore(startTime.subtract(const Duration(minutes: 30))),
+                showInCalendar: DateTime.now().isBefore(startTime.subtract(const Duration(minutes: 30))),
                 isDeleted: el["deleteLesson"] ?? false,
                 isLoading: false,
+                subcategories:(el['gymSubActives'] as List)
+                    .map((i) => Subcategory.fromJson(i))
+                    .toList(),
                 autoAccept: el["autoAccept"] ?? false);
-            if (lesson.showInCalendar! &&
-                !lesson.isDeleted! &&
-                lesson.canSignUp!) {
+            if (lesson.showInCalendar! && !lesson.isDeleted! && lesson.canSignUp!) {
               listToCollectLessons.add(lesson);
               if (!listToColllectDays.contains(lesson.calendarDate)) {
                 listToColllectDays.add(lesson.calendarDate ?? "");

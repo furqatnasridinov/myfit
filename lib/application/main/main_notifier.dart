@@ -1,4 +1,3 @@
-import 'package:geolocator/geolocator.dart';
 import 'package:myfit/application/main/main_state.dart';
 import 'package:myfit/domain/handlers/network_exceptions.dart';
 import 'package:myfit/domain/interface/main.dart';
@@ -95,6 +94,7 @@ class MainNotifier extends StateNotifier<MainState> {
   Future<void> getActivitiesNearBy(BuildContext context) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
+      state = state.copyWith(getNearestActivitiesLoading: true);
       final response = await _mainRepositoryInterface.getGymsList();
       response.when(
         success: (data) {
@@ -109,10 +109,11 @@ class MainNotifier extends StateNotifier<MainState> {
             );
             listcha.add(data);
           });
-          state = state.copyWith(activitiesNearClient: listcha);
+          state = state.copyWith(activitiesNearClient: listcha, getNearestActivitiesLoading: false);
         },
         failure: (error, statusCode, operationInfo) {
           AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
+          state = state.copyWith(getNearestActivitiesLoading: false);
         },
       );
     } else {

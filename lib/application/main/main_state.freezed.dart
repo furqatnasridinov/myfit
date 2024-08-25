@@ -17,6 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$MainState {
   bool get isloading => throw _privateConstructorUsedError;
+  bool get getNearestActivitiesLoading => throw _privateConstructorUsedError;
   GetAdvantagesResponse? get advantages => throw _privateConstructorUsedError;
   GetSubscribtionsResponse? get subscribtions =>
       throw _privateConstructorUsedError;
@@ -44,6 +45,7 @@ abstract class $MainStateCopyWith<$Res> {
   @useResult
   $Res call(
       {bool isloading,
+      bool getNearestActivitiesLoading,
       GetAdvantagesResponse? advantages,
       GetSubscribtionsResponse? subscribtions,
       GetCommentsResponse? comments,
@@ -71,6 +73,7 @@ class _$MainStateCopyWithImpl<$Res, $Val extends MainState>
   @override
   $Res call({
     Object? isloading = null,
+    Object? getNearestActivitiesLoading = null,
     Object? advantages = freezed,
     Object? subscribtions = freezed,
     Object? comments = freezed,
@@ -87,6 +90,10 @@ class _$MainStateCopyWithImpl<$Res, $Val extends MainState>
       isloading: null == isloading
           ? _value.isloading
           : isloading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      getNearestActivitiesLoading: null == getNearestActivitiesLoading
+          ? _value.getNearestActivitiesLoading
+          : getNearestActivitiesLoading // ignore: cast_nullable_to_non_nullable
               as bool,
       advantages: freezed == advantages
           ? _value.advantages
@@ -146,6 +153,7 @@ abstract class _$$MainStateImplCopyWith<$Res>
   @useResult
   $Res call(
       {bool isloading,
+      bool getNearestActivitiesLoading,
       GetAdvantagesResponse? advantages,
       GetSubscribtionsResponse? subscribtions,
       GetCommentsResponse? comments,
@@ -171,6 +179,7 @@ class __$$MainStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? isloading = null,
+    Object? getNearestActivitiesLoading = null,
     Object? advantages = freezed,
     Object? subscribtions = freezed,
     Object? comments = freezed,
@@ -187,6 +196,10 @@ class __$$MainStateImplCopyWithImpl<$Res>
       isloading: null == isloading
           ? _value.isloading
           : isloading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      getNearestActivitiesLoading: null == getNearestActivitiesLoading
+          ? _value.getNearestActivitiesLoading
+          : getNearestActivitiesLoading // ignore: cast_nullable_to_non_nullable
               as bool,
       advantages: freezed == advantages
           ? _value.advantages
@@ -241,6 +254,7 @@ class __$$MainStateImplCopyWithImpl<$Res>
 class _$MainStateImpl extends _MainState {
   const _$MainStateImpl(
       {this.isloading = false,
+      this.getNearestActivitiesLoading = false,
       this.advantages = null,
       this.subscribtions = null,
       this.comments = null,
@@ -259,6 +273,9 @@ class _$MainStateImpl extends _MainState {
   @override
   @JsonKey()
   final bool isloading;
+  @override
+  @JsonKey()
+  final bool getNearestActivitiesLoading;
   @override
   @JsonKey()
   final GetAdvantagesResponse? advantages;
@@ -308,7 +325,7 @@ class _$MainStateImpl extends _MainState {
 
   @override
   String toString() {
-    return 'MainState(isloading: $isloading, advantages: $advantages, subscribtions: $subscribtions, comments: $comments, activeStepState: $activeStepState, advantagesAutoPlayMode: $advantagesAutoPlayMode, commentActiveStepper: $commentActiveStepper, commentsAutoPlayMode: $commentsAutoPlayMode, activitiesNearClient: $activitiesNearClient, listOfMarkers: $listOfMarkers, commentsContainerHeight: $commentsContainerHeight, latlongsYandexApi: $latlongsYandexApi)';
+    return 'MainState(isloading: $isloading, getNearestActivitiesLoading: $getNearestActivitiesLoading, advantages: $advantages, subscribtions: $subscribtions, comments: $comments, activeStepState: $activeStepState, advantagesAutoPlayMode: $advantagesAutoPlayMode, commentActiveStepper: $commentActiveStepper, commentsAutoPlayMode: $commentsAutoPlayMode, activitiesNearClient: $activitiesNearClient, listOfMarkers: $listOfMarkers, commentsContainerHeight: $commentsContainerHeight, latlongsYandexApi: $latlongsYandexApi)';
   }
 
   @override
@@ -318,6 +335,10 @@ class _$MainStateImpl extends _MainState {
             other is _$MainStateImpl &&
             (identical(other.isloading, isloading) ||
                 other.isloading == isloading) &&
+            (identical(other.getNearestActivitiesLoading,
+                    getNearestActivitiesLoading) ||
+                other.getNearestActivitiesLoading ==
+                    getNearestActivitiesLoading) &&
             (identical(other.advantages, advantages) ||
                 other.advantages == advantages) &&
             (identical(other.subscribtions, subscribtions) ||
@@ -347,6 +368,7 @@ class _$MainStateImpl extends _MainState {
   int get hashCode => Object.hash(
       runtimeType,
       isloading,
+      getNearestActivitiesLoading,
       advantages,
       subscribtions,
       comments,
@@ -369,6 +391,7 @@ class _$MainStateImpl extends _MainState {
 abstract class _MainState extends MainState {
   const factory _MainState(
       {final bool isloading,
+      final bool getNearestActivitiesLoading,
       final GetAdvantagesResponse? advantages,
       final GetSubscribtionsResponse? subscribtions,
       final GetCommentsResponse? comments,
@@ -384,6 +407,8 @@ abstract class _MainState extends MainState {
 
   @override
   bool get isloading;
+  @override
+  bool get getNearestActivitiesLoading;
   @override
   GetAdvantagesResponse? get advantages;
   @override

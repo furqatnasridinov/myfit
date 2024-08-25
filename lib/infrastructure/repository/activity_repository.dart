@@ -24,7 +24,7 @@ class ActivityRepository implements ActivityRepositoryInterface {
   }
 
   @override
-  Future<ApiResult<Map<String,dynamic>>>  getActivities(
+  Future<ApiResult<Map<String,dynamic>>>getActivities(
       {required int gymId}) async {
     try {
       final client = inject<HttpService>().clientDio();
@@ -64,7 +64,6 @@ class ActivityRepository implements ActivityRepositoryInterface {
       final response = await client.get(
         "api/gym/$gymId/photo",
       );
-
       return ApiResult.success(
         data: response.data,
       );

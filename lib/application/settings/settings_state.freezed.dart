@@ -51,6 +51,7 @@ mixin _$SettingsState {
   bool get isChangeSubscribtionLoading => throw _privateConstructorUsedError;
   String get cardNumber => throw _privateConstructorUsedError;
   bool get autoRenewal => throw _privateConstructorUsedError;
+  bool get autoRenewalGyms => throw _privateConstructorUsedError;
   bool get dropDownOpened => throw _privateConstructorUsedError;
   bool get genderDropDownOpened => throw _privateConstructorUsedError;
   List<String> get missingInfo => throw _privateConstructorUsedError;
@@ -115,6 +116,7 @@ abstract class $SettingsStateCopyWith<$Res> {
       bool isChangeSubscribtionLoading,
       String cardNumber,
       bool autoRenewal,
+      bool autoRenewalGyms,
       bool dropDownOpened,
       bool genderDropDownOpened,
       List<String> missingInfo,
@@ -180,6 +182,7 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     Object? isChangeSubscribtionLoading = null,
     Object? cardNumber = null,
     Object? autoRenewal = null,
+    Object? autoRenewalGyms = null,
     Object? dropDownOpened = null,
     Object? genderDropDownOpened = null,
     Object? missingInfo = null,
@@ -328,6 +331,10 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.autoRenewal
           : autoRenewal // ignore: cast_nullable_to_non_nullable
               as bool,
+      autoRenewalGyms: null == autoRenewalGyms
+          ? _value.autoRenewalGyms
+          : autoRenewalGyms // ignore: cast_nullable_to_non_nullable
+              as bool,
       dropDownOpened: null == dropDownOpened
           ? _value.dropDownOpened
           : dropDownOpened // ignore: cast_nullable_to_non_nullable
@@ -446,6 +453,7 @@ abstract class _$$SettingsStateImplCopyWith<$Res>
       bool isChangeSubscribtionLoading,
       String cardNumber,
       bool autoRenewal,
+      bool autoRenewalGyms,
       bool dropDownOpened,
       bool genderDropDownOpened,
       List<String> missingInfo,
@@ -509,6 +517,7 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     Object? isChangeSubscribtionLoading = null,
     Object? cardNumber = null,
     Object? autoRenewal = null,
+    Object? autoRenewalGyms = null,
     Object? dropDownOpened = null,
     Object? genderDropDownOpened = null,
     Object? missingInfo = null,
@@ -657,6 +666,10 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value.autoRenewal
           : autoRenewal // ignore: cast_nullable_to_non_nullable
               as bool,
+      autoRenewalGyms: null == autoRenewalGyms
+          ? _value.autoRenewalGyms
+          : autoRenewalGyms // ignore: cast_nullable_to_non_nullable
+              as bool,
       dropDownOpened: null == dropDownOpened
           ? _value.dropDownOpened
           : dropDownOpened // ignore: cast_nullable_to_non_nullable
@@ -768,6 +781,7 @@ class _$SettingsStateImpl extends _SettingsState {
       this.isChangeSubscribtionLoading = false,
       this.cardNumber = "**** **** **** 1234",
       this.autoRenewal = false,
+      this.autoRenewalGyms = false,
       this.dropDownOpened = false,
       this.genderDropDownOpened = false,
       final List<String> missingInfo = const [],
@@ -910,6 +924,9 @@ class _$SettingsStateImpl extends _SettingsState {
   final bool autoRenewal;
   @override
   @JsonKey()
+  final bool autoRenewalGyms;
+  @override
+  @JsonKey()
   final bool dropDownOpened;
   @override
   @JsonKey()
@@ -984,7 +1001,7 @@ class _$SettingsStateImpl extends _SettingsState {
 
   @override
   String toString() {
-    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, gender: $gender, birthday: $birthday, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, user: $user, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue, isNoAccessChangingPhoto: $isNoAccessChangingPhoto, isPhotoUploading: $isPhotoUploading, currentSubscribtion: $currentSubscribtion, nextSubscribtion: $nextSubscribtion, allAvailableSubscriptions: $allAvailableSubscriptions, allSubsLoading: $allSubsLoading, bonusSubsLength: $bonusSubsLength, promocodeController: $promocodeController, isChangeSubscribtionLoading: $isChangeSubscribtionLoading, cardNumber: $cardNumber, autoRenewal: $autoRenewal, dropDownOpened: $dropDownOpened, genderDropDownOpened: $genderDropDownOpened, missingInfo: $missingInfo, promocodeValue: $promocodeValue, isPromocodeLoading: $isPromocodeLoading, promocodesHistory: $promocodesHistory, promocodesQueue: $promocodesQueue, isPromocodeSuccess: $isPromocodeSuccess, isPromocodeError: $isPromocodeError, promocodeErrorMessage: $promocodeErrorMessage, newPromocodeDescription: $newPromocodeDescription, referalInfo: $referalInfo, referalInfoLoading: $referalInfoLoading, takeBonusButtonClicked: $takeBonusButtonClicked, isFromReferalDeepLink: $isFromReferalDeepLink, referalDeepLinkValue: $referalDeepLinkValue, showPromocodeResponseInPromodesSection: $showPromocodeResponseInPromodesSection, avatarTmp: $avatarTmp)';
+    return 'SettingsState(isloading: $isloading, isCitiesLoading: $isCitiesLoading, cityTextFieldHasFocus: $cityTextFieldHasFocus, phoneNumber: $phoneNumber, selectedCity: $selectedCity, listOfCities: $listOfCities, knownActivities: $knownActivities, userName: $userName, userLastName: $userLastName, age: $age, weight: $weight, height: $height, avatar: $avatar, gender: $gender, birthday: $birthday, isPhoneEditModeEnabled: $isPhoneEditModeEnabled, isEmailEditModeEnabled: $isEmailEditModeEnabled, reminderTime: $reminderTime, user: $user, isReminderDisabled: $isReminderDisabled, qrcodeValue: $qrcodeValue, isNoAccessChangingPhoto: $isNoAccessChangingPhoto, isPhotoUploading: $isPhotoUploading, currentSubscribtion: $currentSubscribtion, nextSubscribtion: $nextSubscribtion, allAvailableSubscriptions: $allAvailableSubscriptions, allSubsLoading: $allSubsLoading, bonusSubsLength: $bonusSubsLength, promocodeController: $promocodeController, isChangeSubscribtionLoading: $isChangeSubscribtionLoading, cardNumber: $cardNumber, autoRenewal: $autoRenewal, autoRenewalGyms: $autoRenewalGyms, dropDownOpened: $dropDownOpened, genderDropDownOpened: $genderDropDownOpened, missingInfo: $missingInfo, promocodeValue: $promocodeValue, isPromocodeLoading: $isPromocodeLoading, promocodesHistory: $promocodesHistory, promocodesQueue: $promocodesQueue, isPromocodeSuccess: $isPromocodeSuccess, isPromocodeError: $isPromocodeError, promocodeErrorMessage: $promocodeErrorMessage, newPromocodeDescription: $newPromocodeDescription, referalInfo: $referalInfo, referalInfoLoading: $referalInfoLoading, takeBonusButtonClicked: $takeBonusButtonClicked, isFromReferalDeepLink: $isFromReferalDeepLink, referalDeepLinkValue: $referalDeepLinkValue, showPromocodeResponseInPromodesSection: $showPromocodeResponseInPromodesSection, avatarTmp: $avatarTmp)';
   }
 
   @override
@@ -1051,6 +1068,8 @@ class _$SettingsStateImpl extends _SettingsState {
                 other.cardNumber == cardNumber) &&
             (identical(other.autoRenewal, autoRenewal) ||
                 other.autoRenewal == autoRenewal) &&
+            (identical(other.autoRenewalGyms, autoRenewalGyms) ||
+                other.autoRenewalGyms == autoRenewalGyms) &&
             (identical(other.dropDownOpened, dropDownOpened) ||
                 other.dropDownOpened == dropDownOpened) &&
             (identical(other.genderDropDownOpened, genderDropDownOpened) ||
@@ -1067,8 +1086,7 @@ class _$SettingsStateImpl extends _SettingsState {
                 .equals(other._promocodesQueue, _promocodesQueue) &&
             (identical(other.isPromocodeSuccess, isPromocodeSuccess) ||
                 other.isPromocodeSuccess == isPromocodeSuccess) &&
-            (identical(other.isPromocodeError, isPromocodeError) ||
-                other.isPromocodeError == isPromocodeError) &&
+            (identical(other.isPromocodeError, isPromocodeError) || other.isPromocodeError == isPromocodeError) &&
             (identical(other.promocodeErrorMessage, promocodeErrorMessage) || other.promocodeErrorMessage == promocodeErrorMessage) &&
             (identical(other.newPromocodeDescription, newPromocodeDescription) || other.newPromocodeDescription == newPromocodeDescription) &&
             (identical(other.referalInfo, referalInfo) || other.referalInfo == referalInfo) &&
@@ -1115,6 +1133,7 @@ class _$SettingsStateImpl extends _SettingsState {
         isChangeSubscribtionLoading,
         cardNumber,
         autoRenewal,
+        autoRenewalGyms,
         dropDownOpened,
         genderDropDownOpened,
         const DeepCollectionEquality().hash(_missingInfo),
@@ -1176,6 +1195,7 @@ abstract class _SettingsState extends SettingsState {
       final bool isChangeSubscribtionLoading,
       final String cardNumber,
       final bool autoRenewal,
+      final bool autoRenewalGyms,
       final bool dropDownOpened,
       final bool genderDropDownOpened,
       final List<String> missingInfo,
@@ -1260,6 +1280,8 @@ abstract class _SettingsState extends SettingsState {
   String get cardNumber;
   @override
   bool get autoRenewal;
+  @override
+  bool get autoRenewalGyms;
   @override
   bool get dropDownOpened;
   @override

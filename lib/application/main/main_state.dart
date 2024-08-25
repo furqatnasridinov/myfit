@@ -11,6 +11,7 @@ part 'main_state.freezed.dart';
 class MainState with _$MainState {
   const factory MainState({
     @Default(false) bool isloading,
+     @Default(false) bool getNearestActivitiesLoading,
     @Default(null) GetAdvantagesResponse? advantages,
     @Default(null) GetSubscribtionsResponse? subscribtions,
     @Default(null) GetCommentsResponse? comments,

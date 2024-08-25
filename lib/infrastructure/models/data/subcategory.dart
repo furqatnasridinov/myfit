@@ -4,7 +4,7 @@ class SubCategory {
   String? peculiarities;
   String? name;
   int? orderNumber;
-  List<String>? gymSubActivePictures;
+  List? gymSubActivePictures;
   bool? inheritance;
 
   SubCategory(
@@ -22,7 +22,7 @@ class SubCategory {
     peculiarities = json['peculiarities'];
     name = json['name'];
     orderNumber = json['orderNumber'];
-    gymSubActivePictures = json['gymSubActivePictures'].cast<String>();
+    gymSubActivePictures = json['gymSubActivePictures'];
     inheritance = json['inheritance'];
   }
 

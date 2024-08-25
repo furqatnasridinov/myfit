@@ -32,26 +32,28 @@ class MapNotifier extends StateNotifier<MapState> {
   final MainRepositoryInterface _mainRepositoryInterface;
 
   Future<void> getUserLocation() async {
-    // state = state.copyWith(isloading: true);
+     state = state.copyWith(getLocationLoading: true);
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied ||
         permission == LocationPermission.deniedForever) {
-      state = state.copyWith(locationPermissionDenied: true);
       setLocationFromSelectedCity();
       permission = await Geolocator.requestPermission();
     }
     if (permission == LocationPermission.always ||
         permission == LocationPermission.whileInUse) {
       try {
-        final postion = await Geolocator.getCurrentPosition(
-            desiredAccuracy: LocationAccuracy.high);
-        state = state.copyWith(userPosition: postion);
-        state = state.copyWith(locationPermissionDenied: false);
+        final postion = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+        state = state.copyWith(
+          userPosition: postion,
+          getLocationLoading: false,
+          locationPermissionDenied: false
+          );
       } catch (e) {
-        state = state.copyWith(locationServiceIsNotEnabled: true);
+        state = state.copyWith(locationServiceIsNotEnabled: true, getLocationLoading: false);
         setLocationFromSelectedCity();
       }
     }
+    state = state.copyWith(getLocationLoading: false);
   }
 
   Future<void> getAllMarkers(BuildContext context, {ActivityNotifier? activityNotifier}) async {
@@ -155,8 +157,8 @@ class MapNotifier extends StateNotifier<MapState> {
         markersList.removeWhere((element) => element.markerId.value == "user");
       }
       markersList.add(updatedMarker);
-      final withCalculatedDistances = // and sort
-          calculateDistanceOfGyms(state.activitiesWithGymsInsideAll);
+      // and sort
+      final withCalculatedDistances = calculateDistanceOfGyms(state.activitiesWithGymsInsideAll);
       state = state.copyWith(activitiesWithGymsInsideAll: withCalculatedDistances);
       state = state.copyWith(listOfMarkers: markersList);
       state = state.copyWith(locationPermissionDenied: false);
@@ -356,15 +358,31 @@ class MapNotifier extends StateNotifier<MapState> {
     state = state.copyWith(showRecommended: value);
   }
 
+  void setShowGymsOnlyWithMembership(bool value) {
+    state = state.copyWith(showGymsOnlyWithMembership: value);
+  }
+
+  Future<void> resetFilterMap()async{
+    if (state.showOnlyKnown) {
+      state = state.copyWith(showOnlyKnown: false);
+    }
+    if (state.showRecommended) {
+      state = state.copyWith(showRecommended: false);
+    }
+    if (state.showGymsOnlyWithMembership) {
+      state = state.copyWith(showGymsOnlyWithMembership: false);
+    }
+  }
+
   Future<void> getGymsList(
     BuildContext context,
     List<String> knownActivities,
     Map<String, dynamic> recommended,
+    {List<int> gymIds = const []}
   ) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
-      state = state.copyWith(isloading: true);
-      //await setFlexes();
+      setFlexes();
       final response = await _mainRepositoryInterface.getGymsList();
       response.when(
         success: (data) {
@@ -398,9 +416,27 @@ class MapNotifier extends StateNotifier<MapState> {
                 lessontype: key,
                 listOfGyms: (value as List).map((gym) => Gymdata.fromJson(gym)).toList(),
               );
+              if (state.showGymsOnlyWithMembership) {
+                if (gymIds.isNotEmpty) {
+                  data.listOfGyms?.removeWhere((element) => !gymIds.contains(element.id));
+                }else{
+                  data.listOfGyms = [];
+                }
+              }
               listToCollectActivitiesWithGyms.add(data);
             });
           }
+          // Создаем временный список для хранения элементов, которые нужно удалить
+          final List<LessonTypeWithGymsInside> elementsToRemove = [];
+          
+          for (var element in listToCollectActivitiesWithGyms) {
+            if (element.listOfGyms!.isEmpty) {
+              elementsToRemove.add(element);
+            }
+          }
+          
+          // Удаляем элементы после завершения итерации
+          listToCollectActivitiesWithGyms.removeWhere((element) => elementsToRemove.contains(element));
           // and sort
           final withCalculatedDistances = calculateDistanceOfGyms(listToCollectActivitiesWithGyms);
           state = state.copyWith(activitiesWithGymsInsideAll: withCalculatedDistances);
@@ -409,12 +445,9 @@ class MapNotifier extends StateNotifier<MapState> {
           AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
         },
       );
-      state = state.copyWith(isloading: false);
-      // setFlexes();
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
-    state = state.copyWith(isloading: false);
   }
 
   List<LessonTypeWithGymsInside> calculateDistanceOfGyms(
@@ -456,6 +489,10 @@ class MapNotifier extends StateNotifier<MapState> {
     return formattedDistance; // in kilometer
   }
 
+  void setIsLoading(bool value) {
+    state = state.copyWith(isloading: value);
+  }
+
   List<ActivityNearClient> getFilteredActivitiesNearClient(List<ActivityNearClient> list) {
   // Функция для фильтрации списка по заданному максимальному расстоянию
   List<ActivityNearClient> filterList(double maxDistance) {
@@ -477,7 +514,7 @@ class MapNotifier extends StateNotifier<MapState> {
   }
 
   // Первая фильтрация с максимальным расстоянием 1 км
-  List<ActivityNearClient> firstFilterResult = filterList(3.0);
+  List<ActivityNearClient> firstFilterResult = filterList(30.0);
   return firstFilterResult;
 }
 
@@ -493,8 +530,8 @@ class MapNotifier extends StateNotifier<MapState> {
 
   void setFlexesLoading() {
     state = state.copyWith(
-      topFlexValue: 0.21,
-      bottomFlexValue: 0.6,
+       topFlexValue: 0.41,
+        bottomFlexValue: 0.4,
     );
   }
 
@@ -505,10 +542,7 @@ class MapNotifier extends StateNotifier<MapState> {
     int listOfgymsInside = isAnyOpened
         ? (list.firstWhere((element) => element.isOpened).listOfGyms?.length ?? 0): 0;
     if (state.isloading) {
-      state = state.copyWith(
-        topFlexValue: 0.21,
-        bottomFlexValue: 0.6,
-      );
+      setFlexesLoading();
     }
 
     if (list.isEmpty && !state.isloading) {

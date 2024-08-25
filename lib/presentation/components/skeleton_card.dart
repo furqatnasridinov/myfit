@@ -8,7 +8,8 @@ class SkeletonCard extends StatelessWidget {
   final bool isBlue;
   double height;
   double width;
- SkeletonCard({super.key, this.isBlue = false, this.height = 24, this.width = 24});
+  double borderRadius;
+ SkeletonCard({super.key, this.isBlue = false, this.height = 24, this.width = 24, this.borderRadius = 8});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class SkeletonCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: isBlue ? AppColors.skeletonBg :AppColors.skeletonSecondary,
           borderRadius: BorderRadius.all(
-            Radius.circular(8.r),
+            Radius.circular(borderRadius.r),
           ),
         ),
       ),
