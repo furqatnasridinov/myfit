@@ -23,6 +23,45 @@ class MembershipNotifier extends StateNotifier<MembershipState>{
     );
   }
 
+  Future<void>getAllMemberships(BuildContext context)async{
+    final bool connected = await AppConnectivity().connectivity();
+    if (connected) {
+      try {
+        state = state.copyWith(getAllMembershipsLoading: true);
+        final response = await membershipRepositoryInterface.getAllMemberships();
+        response.when(
+          success: (data){
+            if (data.isNotEmpty) {
+              // collect id of gyms that have membership
+              List<int> gymsWithMembership = [];
+              for (var element in data) {
+                if (element.gyms!.isNotEmpty) {
+                  for (var gym in element.gyms!) {
+                    if (!gymsWithMembership.contains(gym.id)) {
+                      gymsWithMembership.add(gym.id ?? 0);
+                    }
+                  }
+                }
+              }
+              state = state.copyWith(
+                gymIds: gymsWithMembership,
+                getAllMembershipsLoading: false,
+              );
+            }
+          }, 
+          failure: (error, statusCode, info) {
+            state = state.copyWith(getAllMembershipsLoading: false);
+           // AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
+          },
+        );
+      } catch (e) {
+        debugPrint("getAllMemberships error: $e");
+      }
+    }else{
+      AppHelpers.showCheckTopSnackBar(context);
+    }
+  }
+
   Future<void> getMembershipByGymId(BuildContext context,{required int gymId}) async{
     final bool connected = await AppConnectivity().connectivity();
     if (connected) {
@@ -51,19 +90,23 @@ class MembershipNotifier extends StateNotifier<MembershipState>{
     final bool connected = await AppConnectivity().connectivity();
     if (connected) {
       try {
-        final response = await membershipRepositoryInterface.getMemberShipByUserId(userId: int.parse(LocalStorage.getUserId()));
+        setUserMembershipsLoading(true);
+        final int crmUserId = LocalStorage.getUserCrmId();
+        final response = await membershipRepositoryInterface.getMemberShipByUserId(userId: crmUserId);
         response.when(
           success: (data){
             if (data.isNotEmpty) {
               state = state.copyWith(membershipsOfUser: data);
             }
-            debugPrint("getMembershipByUserId data: $data");
+            setUserMembershipsLoading(false);
           }, 
           failure: (error, statusCode, info) {
-            AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
+            setUserMembershipsLoading(false);
+            //AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
           },
         );
       } catch (e) {
+        setUserMembershipsLoading(false);
         debugPrint("getMembershipByUserId error: $e");
       }
     }else{
@@ -71,27 +114,39 @@ class MembershipNotifier extends StateNotifier<MembershipState>{
     }
   }
 
-  Future<void> buyMemberShip(BuildContext context,{required int membershipId}) async{
+  Future<void> buyMemberShip(BuildContext context,{required int membershipId, Function? onSuccess}) async{
     final bool connected = await AppConnectivity().connectivity();
     if (connected) {
       try {
-        final int userId = int.parse(LocalStorage.getUserId());
-        final response = await membershipRepositoryInterface.buyMembership(userId: userId, membershipId: membershipId);
+        setBuyLoading(true);
+        final response = await membershipRepositoryInterface.buyMembership(membershipId: membershipId);
         response.when(
           success: (data){
-            //
-            
+            if (data.isNotEmpty) {
+              AppHelpers.showSuccessSnack(context, "Абонемент успешно куплен");
+              onSuccess?.call();
+            }
           }, 
           failure: (error, statusCode, info) {
             AppHelpers.showErrorSnack(context, NetworkExceptions.getErrorMessage(error));
+            setBuyLoading(false);
           },
         );
       } catch (e) {
-        debugPrint("getMembershipByUserId error: $e");
+        debugPrint("buyMemberShip error: $e");
+        setBuyLoading(false);
       }
     }else{
       AppHelpers.showCheckTopSnackBar(context);
     }
+  }
+
+  void setBuyLoading(bool value){
+    state = state.copyWith(buyMembershipLoading: value);
+  }
+
+  void setUserMembershipsLoading(bool value){
+    state = state.copyWith(getUserMembershipsLoading: value);
   }
 
   void getMembershipsToShow(){

@@ -358,14 +358,30 @@ class MapNotifier extends StateNotifier<MapState> {
     state = state.copyWith(showRecommended: value);
   }
 
+  void setShowGymsOnlyWithMembership(bool value) {
+    state = state.copyWith(showGymsOnlyWithMembership: value);
+  }
+
+  Future<void> resetFilterMap()async{
+    if (state.showOnlyKnown) {
+      state = state.copyWith(showOnlyKnown: false);
+    }
+    if (state.showRecommended) {
+      state = state.copyWith(showRecommended: false);
+    }
+    if (state.showGymsOnlyWithMembership) {
+      state = state.copyWith(showGymsOnlyWithMembership: false);
+    }
+  }
+
   Future<void> getGymsList(
     BuildContext context,
     List<String> knownActivities,
     Map<String, dynamic> recommended,
+    {List<int> gymIds = const []}
   ) async {
     final connect = await AppConnectivity().connectivity();
     if (connect) {
-      state = state.copyWith(isloading: true);
       setFlexes();
       final response = await _mainRepositoryInterface.getGymsList();
       response.when(
@@ -400,9 +416,27 @@ class MapNotifier extends StateNotifier<MapState> {
                 lessontype: key,
                 listOfGyms: (value as List).map((gym) => Gymdata.fromJson(gym)).toList(),
               );
+              if (state.showGymsOnlyWithMembership) {
+                if (gymIds.isNotEmpty) {
+                  data.listOfGyms?.removeWhere((element) => !gymIds.contains(element.id));
+                }else{
+                  data.listOfGyms = [];
+                }
+              }
               listToCollectActivitiesWithGyms.add(data);
             });
           }
+          // Создаем временный список для хранения элементов, которые нужно удалить
+          final List<LessonTypeWithGymsInside> elementsToRemove = [];
+          
+          for (var element in listToCollectActivitiesWithGyms) {
+            if (element.listOfGyms!.isEmpty) {
+              elementsToRemove.add(element);
+            }
+          }
+          
+          // Удаляем элементы после завершения итерации
+          listToCollectActivitiesWithGyms.removeWhere((element) => elementsToRemove.contains(element));
           // and sort
           final withCalculatedDistances = calculateDistanceOfGyms(listToCollectActivitiesWithGyms);
           state = state.copyWith(activitiesWithGymsInsideAll: withCalculatedDistances);
@@ -414,7 +448,6 @@ class MapNotifier extends StateNotifier<MapState> {
     } else {
       AppHelpers.showCheckTopSnackBar(context);
     }
-    state = state.copyWith(isloading: false);
   }
 
   List<LessonTypeWithGymsInside> calculateDistanceOfGyms(
@@ -454,6 +487,10 @@ class MapNotifier extends StateNotifier<MapState> {
     double formattedDistance = double.parse(distanceInKm.toStringAsFixed(1).replaceAll(RegExp(r"([.]*0)(?!.*\d)"), ""),
     );
     return formattedDistance; // in kilometer
+  }
+
+  void setIsLoading(bool value) {
+    state = state.copyWith(isloading: value);
   }
 
   List<ActivityNearClient> getFilteredActivitiesNearClient(List<ActivityNearClient> list) {

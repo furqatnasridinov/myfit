@@ -23,6 +23,10 @@ mixin _$MembershipState {
   List<Subcategory> get subCategories => throw _privateConstructorUsedError;
   List<MemberShip> get memberships => throw _privateConstructorUsedError;
   List<MemberShip> get membershipsToShow => throw _privateConstructorUsedError;
+  List<int> get gymIds => throw _privateConstructorUsedError;
+  bool get getAllMembershipsLoading => throw _privateConstructorUsedError;
+  bool get getUserMembershipsLoading => throw _privateConstructorUsedError;
+  bool get buyMembershipLoading => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $MembershipStateCopyWith<MembershipState> get copyWith =>
@@ -42,7 +46,11 @@ abstract class $MembershipStateCopyWith<$Res> {
       List<MemberShip> membershipsOfUser,
       List<Subcategory> subCategories,
       List<MemberShip> memberships,
-      List<MemberShip> membershipsToShow});
+      List<MemberShip> membershipsToShow,
+      List<int> gymIds,
+      bool getAllMembershipsLoading,
+      bool getUserMembershipsLoading,
+      bool buyMembershipLoading});
 }
 
 /// @nodoc
@@ -65,6 +73,10 @@ class _$MembershipStateCopyWithImpl<$Res, $Val extends MembershipState>
     Object? subCategories = null,
     Object? memberships = null,
     Object? membershipsToShow = null,
+    Object? gymIds = null,
+    Object? getAllMembershipsLoading = null,
+    Object? getUserMembershipsLoading = null,
+    Object? buyMembershipLoading = null,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -95,6 +107,22 @@ class _$MembershipStateCopyWithImpl<$Res, $Val extends MembershipState>
           ? _value.membershipsToShow
           : membershipsToShow // ignore: cast_nullable_to_non_nullable
               as List<MemberShip>,
+      gymIds: null == gymIds
+          ? _value.gymIds
+          : gymIds // ignore: cast_nullable_to_non_nullable
+              as List<int>,
+      getAllMembershipsLoading: null == getAllMembershipsLoading
+          ? _value.getAllMembershipsLoading
+          : getAllMembershipsLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      getUserMembershipsLoading: null == getUserMembershipsLoading
+          ? _value.getUserMembershipsLoading
+          : getUserMembershipsLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      buyMembershipLoading: null == buyMembershipLoading
+          ? _value.buyMembershipLoading
+          : buyMembershipLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -114,7 +142,11 @@ abstract class _$$MembershipStateImplCopyWith<$Res>
       List<MemberShip> membershipsOfUser,
       List<Subcategory> subCategories,
       List<MemberShip> memberships,
-      List<MemberShip> membershipsToShow});
+      List<MemberShip> membershipsToShow,
+      List<int> gymIds,
+      bool getAllMembershipsLoading,
+      bool getUserMembershipsLoading,
+      bool buyMembershipLoading});
 }
 
 /// @nodoc
@@ -135,6 +167,10 @@ class __$$MembershipStateImplCopyWithImpl<$Res>
     Object? subCategories = null,
     Object? memberships = null,
     Object? membershipsToShow = null,
+    Object? gymIds = null,
+    Object? getAllMembershipsLoading = null,
+    Object? getUserMembershipsLoading = null,
+    Object? buyMembershipLoading = null,
   }) {
     return _then(_$MembershipStateImpl(
       isloading: null == isloading
@@ -165,6 +201,22 @@ class __$$MembershipStateImplCopyWithImpl<$Res>
           ? _value._membershipsToShow
           : membershipsToShow // ignore: cast_nullable_to_non_nullable
               as List<MemberShip>,
+      gymIds: null == gymIds
+          ? _value._gymIds
+          : gymIds // ignore: cast_nullable_to_non_nullable
+              as List<int>,
+      getAllMembershipsLoading: null == getAllMembershipsLoading
+          ? _value.getAllMembershipsLoading
+          : getAllMembershipsLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      getUserMembershipsLoading: null == getUserMembershipsLoading
+          ? _value.getUserMembershipsLoading
+          : getUserMembershipsLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      buyMembershipLoading: null == buyMembershipLoading
+          ? _value.buyMembershipLoading
+          : buyMembershipLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -179,11 +231,16 @@ class _$MembershipStateImpl extends _MembershipState {
       final List<MemberShip> membershipsOfUser = const [],
       final List<Subcategory> subCategories = const [],
       final List<MemberShip> memberships = const [],
-      final List<MemberShip> membershipsToShow = const []})
+      final List<MemberShip> membershipsToShow = const [],
+      final List<int> gymIds = const [],
+      this.getAllMembershipsLoading = false,
+      this.getUserMembershipsLoading = false,
+      this.buyMembershipLoading = false})
       : _membershipsOfUser = membershipsOfUser,
         _subCategories = subCategories,
         _memberships = memberships,
         _membershipsToShow = membershipsToShow,
+        _gymIds = gymIds,
         super._();
 
   @override
@@ -233,9 +290,28 @@ class _$MembershipStateImpl extends _MembershipState {
     return EqualUnmodifiableListView(_membershipsToShow);
   }
 
+  final List<int> _gymIds;
+  @override
+  @JsonKey()
+  List<int> get gymIds {
+    if (_gymIds is EqualUnmodifiableListView) return _gymIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_gymIds);
+  }
+
+  @override
+  @JsonKey()
+  final bool getAllMembershipsLoading;
+  @override
+  @JsonKey()
+  final bool getUserMembershipsLoading;
+  @override
+  @JsonKey()
+  final bool buyMembershipLoading;
+
   @override
   String toString() {
-    return 'MembershipState(isloading: $isloading, selectedActivity: $selectedActivity, selectedSubCategory: $selectedSubCategory, membershipsOfUser: $membershipsOfUser, subCategories: $subCategories, memberships: $memberships, membershipsToShow: $membershipsToShow)';
+    return 'MembershipState(isloading: $isloading, selectedActivity: $selectedActivity, selectedSubCategory: $selectedSubCategory, membershipsOfUser: $membershipsOfUser, subCategories: $subCategories, memberships: $memberships, membershipsToShow: $membershipsToShow, gymIds: $gymIds, getAllMembershipsLoading: $getAllMembershipsLoading, getUserMembershipsLoading: $getUserMembershipsLoading, buyMembershipLoading: $buyMembershipLoading)';
   }
 
   @override
@@ -256,7 +332,16 @@ class _$MembershipStateImpl extends _MembershipState {
             const DeepCollectionEquality()
                 .equals(other._memberships, _memberships) &&
             const DeepCollectionEquality()
-                .equals(other._membershipsToShow, _membershipsToShow));
+                .equals(other._membershipsToShow, _membershipsToShow) &&
+            const DeepCollectionEquality().equals(other._gymIds, _gymIds) &&
+            (identical(
+                    other.getAllMembershipsLoading, getAllMembershipsLoading) ||
+                other.getAllMembershipsLoading == getAllMembershipsLoading) &&
+            (identical(other.getUserMembershipsLoading,
+                    getUserMembershipsLoading) ||
+                other.getUserMembershipsLoading == getUserMembershipsLoading) &&
+            (identical(other.buyMembershipLoading, buyMembershipLoading) ||
+                other.buyMembershipLoading == buyMembershipLoading));
   }
 
   @override
@@ -268,7 +353,11 @@ class _$MembershipStateImpl extends _MembershipState {
       const DeepCollectionEquality().hash(_membershipsOfUser),
       const DeepCollectionEquality().hash(_subCategories),
       const DeepCollectionEquality().hash(_memberships),
-      const DeepCollectionEquality().hash(_membershipsToShow));
+      const DeepCollectionEquality().hash(_membershipsToShow),
+      const DeepCollectionEquality().hash(_gymIds),
+      getAllMembershipsLoading,
+      getUserMembershipsLoading,
+      buyMembershipLoading);
 
   @JsonKey(ignore: true)
   @override
@@ -286,7 +375,11 @@ abstract class _MembershipState extends MembershipState {
       final List<MemberShip> membershipsOfUser,
       final List<Subcategory> subCategories,
       final List<MemberShip> memberships,
-      final List<MemberShip> membershipsToShow}) = _$MembershipStateImpl;
+      final List<MemberShip> membershipsToShow,
+      final List<int> gymIds,
+      final bool getAllMembershipsLoading,
+      final bool getUserMembershipsLoading,
+      final bool buyMembershipLoading}) = _$MembershipStateImpl;
   const _MembershipState._() : super._();
 
   @override
@@ -303,6 +396,14 @@ abstract class _MembershipState extends MembershipState {
   List<MemberShip> get memberships;
   @override
   List<MemberShip> get membershipsToShow;
+  @override
+  List<int> get gymIds;
+  @override
+  bool get getAllMembershipsLoading;
+  @override
+  bool get getUserMembershipsLoading;
+  @override
+  bool get buyMembershipLoading;
   @override
   @JsonKey(ignore: true)
   _$$MembershipStateImplCopyWith<_$MembershipStateImpl> get copyWith =>

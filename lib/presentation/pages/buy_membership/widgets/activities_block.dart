@@ -180,6 +180,7 @@ Widget activityChip({
   Function()? onTap,
   showIcon = true,
   isGreyBorder = false,
+  Key? key,
 }) {
   final Color borderColor = isGreyBorder ? const Color.fromRGBO(226, 226, 226, 1) : AppColors.blueColor;
   return GestureDetector(

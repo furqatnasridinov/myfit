@@ -6,7 +6,9 @@ import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/membership/membership_notifier.dart';
 import 'package:myfit/application/membership/membership_provider.dart';
 import 'package:myfit/infrastructure/models/data/lesson.dart';
+import 'package:myfit/infrastructure/models/data/membership.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/local_storage.dart';
 import 'package:myfit/presentation/components/custom_search_bar.dart';
 import 'package:myfit/presentation/pages/buy_membership/widgets/widgets.dart';
 
@@ -25,9 +27,14 @@ class _BuyMembershipScreenState extends ConsumerState<BuyMembershipScreen> {
   void initState() {
     final MembershipNotifier notifier = ref.read(membershipProvider.notifier);
     final int gymId = ref.read(activityProvider).gym?.id ?? 0;
+    final List<MemberShip> userMemberships = ref.read(membershipProvider).membershipsOfUser;
+    final int crmUserId = LocalStorage.getUserCrmId();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       notifier.resetLastInfos();
       notifier.getMembershipByGymId(context, gymId: gymId);
+      if (userMemberships.isEmpty && crmUserId != 0) {
+        notifier.getMembershipByUserId(context);
+      }
     },);
     super.initState();
   }

@@ -51,6 +51,7 @@ class _BottomNavigationHandlerScreenState extends ConsumerState<BottomNavigation
                 final mapPageBottomCardShown = ref.watch(mapProvider).isGymsPopupShown;
                 final showOnlyKnownOnMap = ref.watch(mapProvider).showOnlyKnown;
                 final recommendedShown = ref.watch(mapProvider).showRecommended;
+                final showGymsOnlyWithMembership = ref.watch(mapProvider).showGymsOnlyWithMembership;
                 final ActivityNotifier activityNotifier = ref.read(activityProvider.notifier);
                 final event = ref.read(mapProvider.notifier);
                 return SafeArea(
@@ -92,15 +93,17 @@ class _BottomNavigationHandlerScreenState extends ConsumerState<BottomNavigation
                       eachItem(
                         () async {
                           tabsRouter.setActiveIndex(2);
-                          if (showOnlyKnownOnMap || recommendedShown) {
-                            event.setShowOnlyKnown(false).then((value) => event.setShowRecommended(false))
+                          if (showOnlyKnownOnMap || recommendedShown || showGymsOnlyWithMembership) {
+                            event.resetFilterMap()
                             .then((value) async {
+                              event.setIsLoading(true);
                               await event.getGymsList(
                                 context,
-                                ref.watch(settingsProvider).knownActivities,
-                                ref.watch(mapProvider).recommendedGyms,
+                                [],
+                                {},
                               );
                               await event.getGetListOfGymsFromDiapozone();
+                              event.setIsLoading(false);
                               await event.setFlexes();
                               await event.getAllMarkers(context, activityNotifier: activityNotifier);
                               event.addUserLocationMarker();

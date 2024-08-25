@@ -21,6 +21,10 @@ class MapPageTopSection extends StatelessWidget {
         builder: (context, ref, child) {
           final event = ref.read(mapProvider.notifier);
           final double selectedDiapozone = ref.watch(mapProvider).selectedDiapozone;
+          final bool showGymsOnlyWithMembership = ref.watch(mapProvider).showGymsOnlyWithMembership;
+          final bool showOnlyKnown = ref.watch(mapProvider).showOnlyKnown;
+          final bool showRecommended = ref.watch(mapProvider).showRecommended;
+          final canResetFilter = showGymsOnlyWithMembership || showOnlyKnown || showRecommended;
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -58,9 +62,10 @@ class MapPageTopSection extends StatelessWidget {
                       right: 16.w,
                       bottom: 30.h,
                     ),
-                    height: 360.h,
+                    height: canResetFilter ? 360 : 290.h,
                     child: DiapozoneBottomSheet(
                       event: event,
+                      canResetFilter: canResetFilter,
                     ),
                   );
                 },

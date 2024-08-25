@@ -64,7 +64,6 @@ class ActivityRepository implements ActivityRepositoryInterface {
       final response = await client.get(
         "api/gym/$gymId/photo",
       );
-
       return ApiResult.success(
         data: response.data,
       );

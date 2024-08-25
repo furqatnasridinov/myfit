@@ -9,8 +9,9 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i23;
+import 'package:flutter/cupertino.dart' as _i25;
 import 'package:flutter/material.dart' as _i24;
-import 'package:myfit/infrastructure/models/data/membership.dart' as _i25;
+import 'package:myfit/infrastructure/models/data/membership.dart' as _i26;
 import 'package:myfit/presentation/pages/activity/view/activity_page.dart'
     as _i1;
 import 'package:myfit/presentation/pages/auth/registration/registration_page.dart'
@@ -354,8 +355,8 @@ class MapRoute extends _i23.PageRouteInfo<void> {
 class MembershipDetailsRoute
     extends _i23.PageRouteInfo<MembershipDetailsRouteArgs> {
   MembershipDetailsRoute({
-    _i24.Key? key,
-    required _i25.MemberShip membership,
+    _i25.Key? key,
+    required _i26.MemberShip membership,
     bool? boughtAlready = false,
     List<_i23.PageRouteInfo>? children,
   }) : super(
@@ -381,9 +382,9 @@ class MembershipDetailsRouteArgs {
     this.boughtAlready = false,
   });
 
-  final _i24.Key? key;
+  final _i25.Key? key;
 
-  final _i25.MemberShip membership;
+  final _i26.MemberShip membership;
 
   final bool? boughtAlready;
 

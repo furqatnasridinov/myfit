@@ -6,6 +6,7 @@ import 'package:myfit/application/registration/registration_state.dart';
 import 'package:myfit/domain/handlers/network_exceptions.dart';
 import 'package:myfit/domain/interface/register.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:myfit/infrastructure/services/app_validator.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/infrastructure/services/connectivity.dart';
@@ -131,10 +132,9 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
       final response = await _registerRepositoryInterface.codeConfirmation(phoneNumber, code);
       response.when(
         success: (data) async {
-          /* PageRouteInfo<dynamic> nextRoute = data.user?.firstName == null 
+          PageRouteInfo<dynamic> nextRoute = data.user?.firstName == null || AppConstants.isTest
               ? const Registration3Route()
-              : const Main2Route(); */
-          PageRouteInfo<dynamic> nextRoute = const Registration3Route(); // remove this
+              : const Main2Route();
           await LocalStorage.setToken(data.jwtToken ?? "");
           await LocalStorage.setPhoneNumber(phoneNumber);
           await LocalStorage.setUserId(data.user?.id.toString() ?? "0");

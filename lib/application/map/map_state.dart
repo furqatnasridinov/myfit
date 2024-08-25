@@ -13,7 +13,7 @@ part 'map_state.freezed.dart';
 @freezed
 class MapState with _$MapState {
   const factory MapState({
-    @Default(false) bool isloading,
+    @Default(true) bool isloading,
     @Default(false) bool getLocationLoading,
     @Default(null) Position? userPosition,
     @Default({}) Set<Marker> listOfMarkers,
@@ -25,6 +25,7 @@ class MapState with _$MapState {
     @Default(false) bool isSearchbarOpened,
     @Default(false) bool showOnlyKnown,
     @Default(false) bool showRecommended,
+    @Default(false) bool showGymsOnlyWithMembership,
     @Default(null) Gym? selectedGym,
     @Default([]) List<GymData> gymsFoundBySearch,
     @Default([]) List<LessonFoundBySearch> lessonsFoundBySearch,

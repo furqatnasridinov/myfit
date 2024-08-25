@@ -1,6 +1,7 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, use_build_context_synchronously
 
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:myfit/application/membership/membership_notifier.dart';
 import 'package:myfit/application/membership/membership_provider.dart';
+import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/models/data/lesson.dart';
 import 'package:myfit/infrastructure/models/data/membership.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
@@ -21,6 +23,8 @@ import 'package:myfit/presentation/components/ui_dropdown_menu.dart';
 import 'package:myfit/presentation/pages/activity/widget/the_one_with_image.dart';
 import 'package:myfit/presentation/pages/buy_membership/widgets/activities_block.dart';
 import 'package:myfit/presentation/pages/buy_membership/widgets/gym_block.dart';
+import 'package:myfit/presentation/pages/memberships/widget/activities_expandable.dart';
+import 'package:myfit/presentation/router/app_router.gr.dart';
 
 import 'widgets/result_list.dart';
 
@@ -28,10 +32,15 @@ import 'widgets/result_list.dart';
 class MembershipDetailsScreen extends StatelessWidget {
   final MemberShip membership;
   bool? boughtAlready;
-  MembershipDetailsScreen({super.key, required this.membership, this.boughtAlready = false});
+  MembershipDetailsScreen(
+      {super.key, required this.membership, this.boughtAlready = false});
 
   @override
   Widget build(BuildContext context) {
+    final List<String> subs = membership.lessonSubTypes
+              ?.map((e) => e.name ?? "")
+              .toList() ??
+              [];
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar: CustomSearchBar(
@@ -43,17 +52,46 @@ class MembershipDetailsScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              if(boughtAlready == true)
-              _textAndDropDown(),
+              if (boughtAlready == true) _textAndDropDown(),
               GymBlock(
                 gyms: membership.gyms ?? [],
                 boughtAlready: boughtAlready!,
               ),
               32.verticalSpace,
-              payments(membership,boughtAlready!),
+              payments(membership, boughtAlready!),
               32.verticalSpace,
-              commonSubInfoBlock(title: membership.name ?? "", text: membership.description ?? ""),
-              activityAndSubs(membership, !boughtAlready!),
+              commonSubInfoBlock(
+                  title: membership.name ?? "",
+                  text: membership.description ?? ""),
+              if (boughtAlready == false)
+                activityAndSubs(membership, !boughtAlready!),
+              if (boughtAlready == true)
+                CustomCard(child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ActivitiesExpandable(
+                        activities: membership.lessonTypes ?? [],
+                        showBigButton: true,
+                        maxLines: 2,
+                      ),
+                    16.verticalSpace,
+                    if (subs.isNotEmpty)
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 10.h),
+                        child: CustomText(
+                          text: "Включает:",
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ActivitiesExpandable(
+                      activities: subs,
+                      maxLines: 3,
+                      showIconOnChips: false,
+                      showBigButton: true,
+                    ),
+                  ],
+                ),),
               5.verticalSpace,
               timeLines(membership),
               5.verticalSpace,
@@ -102,13 +140,12 @@ Widget _textAndDropDown() {
             {
               'title': 'Отменить абонемент',
               'icon': SvgPicture.asset(
-                  "assets/svg/closeRedFilled.svg",
-                  width: 28.w,
-                  height: 28.h,
-                ),
+                "assets/svg/closeRedFilled.svg",
+                width: 28.w,
+                height: 28.h,
+              ),
               'action': () => {}
             },
-            
           ],
           customOffset: [-45.0.w, -35.0.h],
           width: 290.w,
@@ -138,7 +175,8 @@ Widget _textAndDropDown() {
 Widget payments(MemberShip membership, bool boughtAlready) {
   final String buttonText = boughtAlready == true ? "Продлить" : "Оплатить";
   final int price = membership.price ?? 0;
-  final String prolongation = AppHelpers.getMembershipTypeTranslated(membership.type ?? "");
+  final String prolongation =
+      AppHelpers.getMembershipTypeTranslated(membership.type ?? "");
   return SizedBox(
     width: double.infinity,
     height: 40.h,
@@ -154,11 +192,13 @@ Widget payments(MemberShip membership, bool boughtAlready) {
             ),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: Row(children: [
-                CustomText(text: "на $prolongation", fontSize: 14.sp),
-                10.horizontalSpace,
-                SvgPicture.asset("assets/svg/arrow_down.svg"),
-              ],),
+              child: Row(
+                children: [
+                  CustomText(text: "на $prolongation", fontSize: 14.sp),
+                  10.horizontalSpace,
+                  SvgPicture.asset("assets/svg/arrow_down.svg"),
+                ],
+              ),
             ),
           ),
         ),
@@ -175,7 +215,7 @@ Widget payments(MemberShip membership, bool boughtAlready) {
                 children: [
                   Expanded(
                     child: Padding(
-                      padding:  EdgeInsets.all(1.r),
+                      padding: EdgeInsets.all(1.r),
                       child: SizedBox(
                         height: double.maxFinite,
                         child: DecoratedBox(
@@ -199,36 +239,62 @@ Widget payments(MemberShip membership, bool boughtAlready) {
                   ),
                   Expanded(
                     child: Padding(
-                      padding:  EdgeInsets.all(1.r),
-                      child: Consumer(builder: (context, ref, child) {
-                        return GestureDetector(
-                        onTap: () {
-                          if (!boughtAlready) {
-                            HapticFeedback.mediumImpact();
-                            ref.read(membershipProvider.notifier).buyMemberShip(context, membershipId: membership.id ?? 0);
-                          }
+                      padding: EdgeInsets.all(1.r),
+                      child: Consumer(
+                        builder: (context, ref, child) {
+                          final bool loading = ref
+                              .watch(membershipProvider)
+                              .buyMembershipLoading;
+                          final MembershipNotifier notifier =
+                              ref.read(membershipProvider.notifier);
+                          return GestureDetector(
+                            onTap: () {
+                              if (!boughtAlready) {
+                                HapticFeedback.mediumImpact();
+                                onSuccess() async {
+                                  await ref
+                                      .read(settingsProvider.notifier)
+                                      .getUser(context);
+                                  notifier.getMembershipByUserId(context);
+                                  notifier.setBuyLoading(false);
+                                  context.router
+                                      .replaceAll([const MembershipsRoute()]);
+                                }
+
+                                ref
+                                    .read(membershipProvider.notifier)
+                                    .buyMemberShip(
+                                      context,
+                                      membershipId: membership.id ?? 0,
+                                      onSuccess: onSuccess,
+                                    );
+                              }
+                            },
+                            child: SizedBox(
+                                height: double.maxFinite,
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: AppColors.blueColor,
+                                    borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(5.r),
+                                      bottomRight: Radius.circular(5.r),
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: loading
+                                        ? CupertinoActivityIndicator(
+                                            radius: 10.r, color: Colors.white)
+                                        : CustomText(
+                                            text: buttonText,
+                                            fontSize: 14.sp,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                  ),
+                                )),
+                          );
                         },
-                        child: SizedBox(
-                          height: double.maxFinite,
-                          child: DecoratedBox(decoration: BoxDecoration(
-                            color: AppColors.blueColor,
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(5.r),
-                              bottomRight: Radius.circular(5.r),
-                            ),
-                          ),
-                          child: Center(
-                              child: CustomText(
-                                text: buttonText,
-                                fontSize: 14.sp,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          )
-                        ),
-                      );
-                      },),
+                      ),
                     ),
                   ),
                 ],
@@ -247,8 +313,9 @@ Widget activityAndSubs(MemberShip membership, bool canReset) {
     child: Consumer(
       builder: (context, ref, child) {
         final List<String> activities = membership.lessonTypes ?? [];
-        final MembershipNotifier notifier = ref.read(membershipProvider.notifier);
-          /*final List<Subcategory> subcategories = ref.watch(membershipProvider).subCategories;
+        final MembershipNotifier notifier =
+            ref.read(membershipProvider.notifier);
+        /*final List<Subcategory> subcategories = ref.watch(membershipProvider).subCategories;
         final Subcategory? selectedSubCategory = ref.watch(membershipProvider).selectedSubCategory;
        final List<Subcategory>? subActivities = selectedSubCategory !=null &&  membership.lessonSubTypes!.isNotEmpty && 
         membership.lessonSubTypes?.any((el)=> el.id == selectedSubCategory.id) == true ? membership.lessonSubTypes : [];
@@ -260,21 +327,24 @@ Widget activityAndSubs(MemberShip membership, bool canReset) {
             Wrap(
               spacing: 10.w,
               runSpacing: 10.h,
-              children: activities.map((e) => activityChip(
-              activity: e,
-              onTap: () {
-                if (canReset) {
-                  notifier
-                  ..resetSelectedActivity()
-                  ..resetSelectedSubCategory();
-                  context.router.pop();
-                }
-              },
-            ),).toList(),
+              children: activities
+                  .map(
+                    (e) => activityChip(
+                      activity: e,
+                      onTap: () {
+                        if (canReset) {
+                          notifier
+                            ..resetSelectedActivity()
+                            ..resetSelectedSubCategory();
+                          context.router.pop();
+                        }
+                      },
+                    ),
+                  )
+                  .toList(),
             ),
-            
-            if(subActivities!.isNotEmpty)
-            Column(
+            if (subActivities!.isNotEmpty)
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   16.verticalSpace,
@@ -293,8 +363,10 @@ Widget activityAndSubs(MemberShip membership, bool canReset) {
                               isGreyBorder: true,
                               showIcon: false,
                               onTap: () {
-                                notifier.resetSelectedSubCategory();
-                                context.router.pop();
+                                if (canReset) {
+                                  notifier.resetSelectedSubCategory();
+                                  context.router.pop();
+                                }
                               },
                             ))
                         .toList(),
@@ -310,9 +382,12 @@ Widget activityAndSubs(MemberShip membership, bool canReset) {
 
 Widget timeLines(MemberShip membership) {
   final List<Map<String, dynamic>> weekdays = DummyData.weekdays;
-  final List<int> selectedIds = AppHelpers.getWeekdayIds(membership.daysOfWeek ?? []);
-  final String startTime = membership.startTime ?? membership.gyms?.first.startTime ?? "";
-  final String endTime = membership.endTime ?? membership.gyms?.first.endTime ?? "";
+  final List<int> selectedIds =
+      AppHelpers.getWeekdayIds(membership.daysOfWeek ?? []);
+  final String startTime =
+      membership.startTime ?? membership.gyms?.first.startTime ?? "";
+  final String endTime =
+      membership.endTime ?? membership.gyms?.first.endTime ?? "";
   return CustomCard(
     width: double.maxFinite,
     child: Column(
@@ -335,7 +410,9 @@ Widget timeLines(MemberShip membership) {
           child: ListView.builder(
             itemCount: weekdays.length,
             itemBuilder: (context, index) {
-              return weekday(isSelected: selectedIds.contains(index +1), text: weekdays[index]["name"]);
+              return weekday(
+                  isSelected: selectedIds.contains(index + 1),
+                  text: weekdays[index]["name"]);
             },
             scrollDirection: Axis.horizontal,
           ),

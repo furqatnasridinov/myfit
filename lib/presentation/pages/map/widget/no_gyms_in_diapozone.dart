@@ -1,4 +1,5 @@
 import 'package:myfit/application/map/map_notifier.dart';
+import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/presentation/components/custom_card.dart';
@@ -18,7 +19,12 @@ class NoGymsInSelectedDiapozone extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(bottom: 10.h),
-      child: CustomCard(
+      child: Consumer(builder: (context, ref, child) {
+        final bool showGymsOnlyWithMembership = ref.watch(mapProvider).showGymsOnlyWithMembership;
+          final bool showOnlyKnown = ref.watch(mapProvider).showOnlyKnown;
+          final bool showRecommended = ref.watch(mapProvider).showRecommended;
+          final canResetFilter =showGymsOnlyWithMembership || showOnlyKnown || showRecommended;
+        return CustomCard(
         child: RichText(
           text: TextSpan(
             children: [
@@ -43,12 +49,11 @@ class NoGymsInSelectedDiapozone extends StatelessWidget {
                         right: 16.w,
                         bottom: 40.h,
                       ),
-                      height: 290.h,
-                      child: Consumer(builder: (context, ref, child) {
-                        return DiapozoneBottomSheet(
-                          event: event,
-                        );
-                      }),
+                      height: canResetFilter ? 360 : 290.h,
+                      child: DiapozoneBottomSheet(
+                        event: event,
+                        canResetFilter: canResetFilter,
+                      ),
                     );
                   },
                 text: "Изменить радиус",
@@ -60,7 +65,8 @@ class NoGymsInSelectedDiapozone extends StatelessWidget {
             ],
           ),
         ),
-      ),
+      );
+      },),
     );
   }
 }

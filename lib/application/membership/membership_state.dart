@@ -17,6 +17,10 @@ class MembershipState with _$MembershipState {
     @Default([]) List<Subcategory> subCategories,
     @Default([]) List<MemberShip> memberships,
     @Default([]) List<MemberShip> membershipsToShow,
+    @Default([]) List<int> gymIds,
+    @Default(false) bool getAllMembershipsLoading,
+    @Default(false) bool getUserMembershipsLoading,
+    @Default(false) bool buyMembershipLoading,
   }) = _MembershipState;
   const MembershipState._();
 }

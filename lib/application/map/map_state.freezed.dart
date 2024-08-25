@@ -28,6 +28,7 @@ mixin _$MapState {
   bool get isSearchbarOpened => throw _privateConstructorUsedError;
   bool get showOnlyKnown => throw _privateConstructorUsedError;
   bool get showRecommended => throw _privateConstructorUsedError;
+  bool get showGymsOnlyWithMembership => throw _privateConstructorUsedError;
   Gym? get selectedGym => throw _privateConstructorUsedError;
   List<GymData> get gymsFoundBySearch => throw _privateConstructorUsedError;
   List<LessonFoundBySearch> get lessonsFoundBySearch =>
@@ -70,6 +71,7 @@ abstract class $MapStateCopyWith<$Res> {
       bool isSearchbarOpened,
       bool showOnlyKnown,
       bool showRecommended,
+      bool showGymsOnlyWithMembership,
       Gym? selectedGym,
       List<GymData> gymsFoundBySearch,
       List<LessonFoundBySearch> lessonsFoundBySearch,
@@ -111,6 +113,7 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
     Object? isSearchbarOpened = null,
     Object? showOnlyKnown = null,
     Object? showRecommended = null,
+    Object? showGymsOnlyWithMembership = null,
     Object? selectedGym = freezed,
     Object? gymsFoundBySearch = null,
     Object? lessonsFoundBySearch = null,
@@ -173,6 +176,10 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
       showRecommended: null == showRecommended
           ? _value.showRecommended
           : showRecommended // ignore: cast_nullable_to_non_nullable
+              as bool,
+      showGymsOnlyWithMembership: null == showGymsOnlyWithMembership
+          ? _value.showGymsOnlyWithMembership
+          : showGymsOnlyWithMembership // ignore: cast_nullable_to_non_nullable
               as bool,
       selectedGym: freezed == selectedGym
           ? _value.selectedGym
@@ -252,6 +259,7 @@ abstract class _$$MapStateImplCopyWith<$Res>
       bool isSearchbarOpened,
       bool showOnlyKnown,
       bool showRecommended,
+      bool showGymsOnlyWithMembership,
       Gym? selectedGym,
       List<GymData> gymsFoundBySearch,
       List<LessonFoundBySearch> lessonsFoundBySearch,
@@ -291,6 +299,7 @@ class __$$MapStateImplCopyWithImpl<$Res>
     Object? isSearchbarOpened = null,
     Object? showOnlyKnown = null,
     Object? showRecommended = null,
+    Object? showGymsOnlyWithMembership = null,
     Object? selectedGym = freezed,
     Object? gymsFoundBySearch = null,
     Object? lessonsFoundBySearch = null,
@@ -354,6 +363,10 @@ class __$$MapStateImplCopyWithImpl<$Res>
           ? _value.showRecommended
           : showRecommended // ignore: cast_nullable_to_non_nullable
               as bool,
+      showGymsOnlyWithMembership: null == showGymsOnlyWithMembership
+          ? _value.showGymsOnlyWithMembership
+          : showGymsOnlyWithMembership // ignore: cast_nullable_to_non_nullable
+              as bool,
       selectedGym: freezed == selectedGym
           ? _value.selectedGym
           : selectedGym // ignore: cast_nullable_to_non_nullable
@@ -415,7 +428,7 @@ class __$$MapStateImplCopyWithImpl<$Res>
 
 class _$MapStateImpl extends _MapState {
   const _$MapStateImpl(
-      {this.isloading = false,
+      {this.isloading = true,
       this.getLocationLoading = false,
       this.userPosition = null,
       final Set<Marker> listOfMarkers = const {},
@@ -427,6 +440,7 @@ class _$MapStateImpl extends _MapState {
       this.isSearchbarOpened = false,
       this.showOnlyKnown = false,
       this.showRecommended = false,
+      this.showGymsOnlyWithMembership = false,
       this.selectedGym = null,
       final List<GymData> gymsFoundBySearch = const [],
       final List<LessonFoundBySearch> lessonsFoundBySearch = const [],
@@ -501,6 +515,9 @@ class _$MapStateImpl extends _MapState {
   @override
   @JsonKey()
   final bool showRecommended;
+  @override
+  @JsonKey()
+  final bool showGymsOnlyWithMembership;
   @override
   @JsonKey()
   final Gym? selectedGym;
@@ -580,7 +597,7 @@ class _$MapStateImpl extends _MapState {
 
   @override
   String toString() {
-    return 'MapState(isloading: $isloading, getLocationLoading: $getLocationLoading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, activeMarker: $activeMarker, selectedDiapozone: $selectedDiapozone, locationPermissionDenied: $locationPermissionDenied, locationServiceIsNotEnabled: $locationServiceIsNotEnabled, gymFoundBySearching: $gymFoundBySearching, isSearchbarOpened: $isSearchbarOpened, showOnlyKnown: $showOnlyKnown, showRecommended: $showRecommended, selectedGym: $selectedGym, gymsFoundBySearch: $gymsFoundBySearch, lessonsFoundBySearch: $lessonsFoundBySearch, activitiesWithGymsInsideAll: $activitiesWithGymsInsideAll, activitiesWithGymsInsideFromSelectedDiapozone: $activitiesWithGymsInsideFromSelectedDiapozone, showMapOnly: $showMapOnly, mapScreenShot: $mapScreenShot, topFlexValue: $topFlexValue, bottomFlexValue: $bottomFlexValue, isLocationIconHidden: $isLocationIconHidden, isGymsPopupShown: $isGymsPopupShown, selectedLessonTypeFromMap: $selectedLessonTypeFromMap, recommendedGyms: $recommendedGyms)';
+    return 'MapState(isloading: $isloading, getLocationLoading: $getLocationLoading, userPosition: $userPosition, listOfMarkers: $listOfMarkers, activeMarker: $activeMarker, selectedDiapozone: $selectedDiapozone, locationPermissionDenied: $locationPermissionDenied, locationServiceIsNotEnabled: $locationServiceIsNotEnabled, gymFoundBySearching: $gymFoundBySearching, isSearchbarOpened: $isSearchbarOpened, showOnlyKnown: $showOnlyKnown, showRecommended: $showRecommended, showGymsOnlyWithMembership: $showGymsOnlyWithMembership, selectedGym: $selectedGym, gymsFoundBySearch: $gymsFoundBySearch, lessonsFoundBySearch: $lessonsFoundBySearch, activitiesWithGymsInsideAll: $activitiesWithGymsInsideAll, activitiesWithGymsInsideFromSelectedDiapozone: $activitiesWithGymsInsideFromSelectedDiapozone, showMapOnly: $showMapOnly, mapScreenShot: $mapScreenShot, topFlexValue: $topFlexValue, bottomFlexValue: $bottomFlexValue, isLocationIconHidden: $isLocationIconHidden, isGymsPopupShown: $isGymsPopupShown, selectedLessonTypeFromMap: $selectedLessonTypeFromMap, recommendedGyms: $recommendedGyms)';
   }
 
   @override
@@ -613,6 +630,9 @@ class _$MapStateImpl extends _MapState {
                 other.showOnlyKnown == showOnlyKnown) &&
             (identical(other.showRecommended, showRecommended) ||
                 other.showRecommended == showRecommended) &&
+            (identical(other.showGymsOnlyWithMembership, showGymsOnlyWithMembership) ||
+                other.showGymsOnlyWithMembership ==
+                    showGymsOnlyWithMembership) &&
             (identical(other.selectedGym, selectedGym) ||
                 other.selectedGym == selectedGym) &&
             const DeepCollectionEquality()
@@ -633,14 +653,10 @@ class _$MapStateImpl extends _MapState {
                 other.topFlexValue == topFlexValue) &&
             (identical(other.bottomFlexValue, bottomFlexValue) ||
                 other.bottomFlexValue == bottomFlexValue) &&
-            (identical(other.isLocationIconHidden, isLocationIconHidden) ||
-                other.isLocationIconHidden == isLocationIconHidden) &&
-            (identical(other.isGymsPopupShown, isGymsPopupShown) ||
-                other.isGymsPopupShown == isGymsPopupShown) &&
-            (identical(other.selectedLessonTypeFromMap, selectedLessonTypeFromMap) ||
-                other.selectedLessonTypeFromMap == selectedLessonTypeFromMap) &&
-            const DeepCollectionEquality()
-                .equals(other._recommendedGyms, _recommendedGyms));
+            (identical(other.isLocationIconHidden, isLocationIconHidden) || other.isLocationIconHidden == isLocationIconHidden) &&
+            (identical(other.isGymsPopupShown, isGymsPopupShown) || other.isGymsPopupShown == isGymsPopupShown) &&
+            (identical(other.selectedLessonTypeFromMap, selectedLessonTypeFromMap) || other.selectedLessonTypeFromMap == selectedLessonTypeFromMap) &&
+            const DeepCollectionEquality().equals(other._recommendedGyms, _recommendedGyms));
   }
 
   @override
@@ -658,6 +674,7 @@ class _$MapStateImpl extends _MapState {
         isSearchbarOpened,
         showOnlyKnown,
         showRecommended,
+        showGymsOnlyWithMembership,
         selectedGym,
         const DeepCollectionEquality().hash(_gymsFoundBySearch),
         const DeepCollectionEquality().hash(_lessonsFoundBySearch),
@@ -695,6 +712,7 @@ abstract class _MapState extends MapState {
       final bool isSearchbarOpened,
       final bool showOnlyKnown,
       final bool showRecommended,
+      final bool showGymsOnlyWithMembership,
       final Gym? selectedGym,
       final List<GymData> gymsFoundBySearch,
       final List<LessonFoundBySearch> lessonsFoundBySearch,
@@ -735,6 +753,8 @@ abstract class _MapState extends MapState {
   bool get showOnlyKnown;
   @override
   bool get showRecommended;
+  @override
+  bool get showGymsOnlyWithMembership;
   @override
   Gym? get selectedGym;
   @override

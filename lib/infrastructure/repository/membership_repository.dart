@@ -32,11 +32,11 @@ class MembershipRepository implements MembershipRepositoryInterface{
   }
   
   @override
-  Future<ApiResult<Map<String, dynamic>>> buyMembership({required int userId, required int membershipId}) async{
+  Future<ApiResult<Map<String, dynamic>>> buyMembership({required int membershipId}) async{
     try {
       final client = inject<HttpService>().clientDio();
       final response = await client.post(
-        "api/crm/client/$userId/$membershipId"
+        "api/crm/client/$membershipId"
       );
       return ApiResult.success(
         data: response.data,
@@ -56,6 +56,27 @@ class MembershipRepository implements MembershipRepositoryInterface{
       final client = inject<HttpService>().clientDio();
       final response = await client.get(
         "api/crm/client/$userId/membership"
+      );
+      final List list = response.data["object"] as List;
+      final List<MemberShip> returnVal = list.isEmpty ? [] : list.map((e) => MemberShip.fromJson(e)).toList();
+      return ApiResult.success(
+        data: returnVal,
+      );
+    } catch (e) {
+      // throw e;
+      return ApiResult.failure(
+        error: NetworkExceptions.getDioException(e),
+        statusCode: NetworkExceptions.getDioStatus(e),
+      );
+    }
+  }
+  
+  @override
+  Future<ApiResult<List<MemberShip>>> getAllMemberships() async{
+    try {
+      final client = inject<HttpService>().clientDio();
+      final response = await client.get(
+        "api/crm/membership"
       );
       final List list = response.data["object"] as List;
       final List<MemberShip> returnVal = list.isEmpty ? [] : list.map((e) => MemberShip.fromJson(e)).toList();

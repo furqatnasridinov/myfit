@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:myfit/application/membership/membership_notifier.dart';
 import 'package:myfit/application/membership/membership_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/presentation/components/custom_search_bar.dart';
@@ -20,7 +21,9 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
 
   @override
   void initState() {
-    //ref.read(membershipProvider.notifier).getMembershipByUserId(context);
+    final MembershipNotifier notifier = ref.read(membershipProvider.notifier);
+    notifier.getAllMemberships(context);
+    notifier.getMembershipByUserId(context);
     super.initState();
   }
   @override

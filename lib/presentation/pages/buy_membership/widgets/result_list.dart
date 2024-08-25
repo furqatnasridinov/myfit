@@ -35,10 +35,13 @@ class ResultList extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           itemCount: memberships.length,
           itemBuilder: (context, index) {
+            final List<MemberShip> userMemberships = ref.watch(membershipProvider).membershipsOfUser;
+            final bool boughtAlready = userMemberships.any((element) => element.id == memberships[index].id);
           final MemberShip membership = memberships[index];
           return membershipCard(
             context: context,
             membership: membership,
+            boughtAlready: boughtAlready,
           );
         },
         ),
@@ -51,6 +54,7 @@ class ResultList extends StatelessWidget {
 Widget membershipCard({
   required BuildContext context,
   required MemberShip membership, 
+  required bool boughtAlready,
 }) {
   List<int> selectedWeekdaysIds = AppHelpers.getWeekdayIds(membership.daysOfWeek ?? membership.gyms?.first.daysOfWeek ?? []);
   final List<Map<String, dynamic>> weekdays = DummyData.weekdays;
@@ -58,7 +62,7 @@ Widget membershipCard({
   final String endTime = membership.endTime ?? membership.gyms?.first.endTime ?? "";
   return GestureDetector(
     onTap: () {
-      context.router.push( MembershipDetailsRoute(membership: membership));
+      context.router.push( MembershipDetailsRoute(membership: membership, boughtAlready: boughtAlready));
     },
     child: Padding(
       padding: EdgeInsets.only(bottom: 10.h),

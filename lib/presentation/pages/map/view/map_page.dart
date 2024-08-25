@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:myfit/application/activity/activity_notifier.dart';
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
+import 'package:myfit/application/membership/membership_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/models/data/place_model.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
@@ -44,7 +45,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with WidgetsBindingObserv
     clusterManager = initClusterManager();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      //initDatas();
+      initDatas();
       if (ref.watch(mapProvider).showMapOnly) {
         ref.read(mapProvider.notifier).reduceMap();
       }
@@ -121,19 +122,22 @@ class _MapScreenState extends ConsumerState<MapScreen> with WidgetsBindingObserv
   }
 
   Future<void> initDatas() async {
-    //final Position? userPosition = ref.watch(mapProvider).userPosition;
+    final Position? userPosition = ref.watch(mapProvider).userPosition;
     final event = ref.read(mapProvider.notifier);
     final ActivityNotifier activityNotifier = ref.read(activityProvider.notifier);
-    /* if (userPosition == null) {
+    event.setIsLoading(true);
+    if (userPosition == null) {
       await event.getUserLocation();
-    } */
+    }
     await event.getGymsList(
       context,
       ref.watch(settingsProvider).knownActivities,
       ref.watch(mapProvider).recommendedGyms,
+      gymIds: ref.watch(membershipProvider).gymIds,
     );
     await event.getGetListOfGymsFromDiapozone();
     event.setFlexes();
+    event.setIsLoading(false);
     await event.addUserLocationMarker(
         avatar: ref.watch(settingsProvider).avatar);
     await event.getAllMarkers(context, activityNotifier: activityNotifier);
@@ -185,7 +189,7 @@ class _MapScreenState extends ConsumerState<MapScreen> with WidgetsBindingObserv
     final double width = MediaQuery.of(context).size.width;
     final state = ref.watch(mapProvider);
     final event = ref.read(mapProvider.notifier);
-    final ActivityNotifier activityNotifier = ref.read(activityProvider.notifier);
+    //final ActivityNotifier activityNotifier = ref.read(activityProvider.notifier);
 
     ref.listen(mapProvider, (previous, next) {
       if (previous!.showRecommended != next.showRecommended && !next.showRecommended) {
@@ -298,18 +302,6 @@ class _MapScreenState extends ConsumerState<MapScreen> with WidgetsBindingObserv
                               onMapCreated:(GoogleMapController controller) async {
                                 _controller.complete(controller);
                                 clusterManager?.setMapId(controller.mapId);
-                                /* if (state.userPosition == null) {
-                                  await event.getUserLocation();
-                                } */
-                                await event.getGymsList(
-                                  context,
-                                  ref.watch(settingsProvider).knownActivities,
-                                  ref.watch(mapProvider).recommendedGyms,
-                                );
-                                await event.getGetListOfGymsFromDiapozone();
-                                event.setFlexes();
-                                await event.addUserLocationMarker(avatar: ref.watch(settingsProvider).avatar);
-                                await event.getAllMarkers(context, activityNotifier: activityNotifier);
                               },
                               onCameraMove: (position) {
                                 //clusterManager?.onCameraMove(position);

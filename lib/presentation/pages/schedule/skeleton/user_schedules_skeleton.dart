@@ -30,11 +30,11 @@ Widget emptyDay(){
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-      SkeletonCard(width: 150.w, isBlue: true),
+      SkeletonCard(width: 150.w, isBlue: true, borderRadius: 4),
       10.verticalSpace,
       Row(children: [
         10.horizontalSpace,
-        SkeletonCard(width: 250.w, height: 15.h, isBlue: true),
+        SkeletonCard(width: 250.w, height: 15.h, isBlue: true,borderRadius: 4),
         const Spacer(),
         SkeletonCard(width: 40.w, height: 40.h, isBlue: true)
       ],),
@@ -49,7 +49,7 @@ Widget dayWithLesson(){
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(children: [
-          SkeletonCard(width: 210.w, isBlue: true),
+          SkeletonCard(width: 210.w, isBlue: true,borderRadius: 4),
           const Spacer(),
           SkeletonCard(width: 40.w, height: 40.h, isBlue: true)
         ],),

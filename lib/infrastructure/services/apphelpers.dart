@@ -98,8 +98,14 @@ class AppHelpers {
   }
 
   static void showCustomBottomSnack(
-      BuildContext context, String text, String svgPath,
-      {int marginBottom = 25}) {
+      BuildContext context, 
+      String text, 
+      String svgPath,
+      {int marginBottom = 25,
+       ColorFilter? colorFilter = const ColorFilter.mode(
+        AppColors.blueColor,
+        BlendMode.srcIn,)
+      }) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
           content: Row(
@@ -116,10 +122,7 @@ class AppHelpers {
                     padding: EdgeInsets.all(5.r),
                     child: SvgPicture.asset(
                       svgPath,
-                      colorFilter: const ColorFilter.mode(
-                        AppColors.blueColor,
-                        BlendMode.srcIn,
-                      ),
+                      colorFilter: colorFilter
                     ),
                   ),
                 ),

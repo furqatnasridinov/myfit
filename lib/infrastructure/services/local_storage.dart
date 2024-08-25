@@ -198,6 +198,25 @@ class LocalStorage {
     }
   }
 
+  // save user id
+  static Future<void> setUserCrmId(int? id) async {
+    if (_preferences != null) {
+      await _preferences?.setInt(
+        AppConstants.keyUserCrmId,
+        id ?? 0,
+      );
+    }
+  }
+
+  // get user id
+  static int getUserCrmId() =>
+      _preferences?.getInt(AppConstants.keyUserCrmId) ?? 0;
+
+  // remove user id
+  static void removeUserCrmId() => _preferences?.remove(AppConstants.keyUserCrmId);
+
+  
+
   // get user token
   static String getToken() =>
       _preferences?.getString(AppConstants.keyToken) ?? "";
@@ -397,7 +416,8 @@ class LocalStorage {
 
   // log out
   Future<void> logOut() async {
-    removeToken();
+    _preferences?.clear();
+    /* removeToken();
     removePhone();
     removeUserId();
     removeUserName();
@@ -415,6 +435,7 @@ class LocalStorage {
     removeLoginTime();
     removeWhenUploadingPhotoOpens();
     removeBirthday();
+    removeUserCrmId(); */
     // ...
   }
 }

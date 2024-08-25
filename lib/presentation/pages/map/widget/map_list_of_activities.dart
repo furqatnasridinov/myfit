@@ -52,12 +52,11 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
         );
       }
     });
-
-    return widget.state.isloading
-        ? const SearchingActivitiesCard()
-        : list.isEmpty && !widget.state.isloading
-            ? NoGymsInSelectedDiapozone(event: widget.event)
-            : SizedBox(
+    if (widget.state.isloading) {
+      return const SearchingActivitiesCard();
+    }
+    if (list.isNotEmpty && !widget.state.isloading) {
+      return SizedBox(
                 child: Column(
                 children: [
                   if (widget.state.locationPermissionDenied || widget.state.locationServiceIsNotEnabled)
@@ -101,7 +100,12 @@ class _MapListOfActivitiesState extends State<MapListOfActivities> {
                     },
                   ),
                 ],
-              ));
+              )) ;
+    }
+    if (list.isEmpty && !widget.state.isloading) {
+      return NoGymsInSelectedDiapozone(event: widget.event);
+    }
+    return const SizedBox();
   }
 
   _listOfActivitiesBuilder(
