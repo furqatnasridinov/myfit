@@ -6,5 +6,5 @@ import 'package:myfit/domain/di/dependency_manager.dart';
 
 final membershipProvider =
     StateNotifierProvider<MembershipNotifier, MembershipState>(
-  (ref) => MembershipNotifier(membershipRepo),
+  (ref) => MembershipNotifier(membershipRepo, gymRepo),
 );

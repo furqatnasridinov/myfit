@@ -19,28 +19,48 @@ import 'package:myfit/presentation/components/custom_card.dart';
 import 'package:myfit/presentation/components/custom_search_bar.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:myfit/presentation/components/dummy_data.dart';
+import 'package:myfit/presentation/components/skeleton_card.dart';
 import 'package:myfit/presentation/components/ui_dropdown_menu.dart';
 import 'package:myfit/presentation/pages/activity/widget/the_one_with_image.dart';
 import 'package:myfit/presentation/pages/buy_membership/widgets/activities_block.dart';
 import 'package:myfit/presentation/pages/buy_membership/widgets/gym_block.dart';
 import 'package:myfit/presentation/pages/memberships/widget/activities_expandable.dart';
 import 'package:myfit/presentation/router/app_router.gr.dart';
-
 import 'widgets/result_list.dart';
 
 @RoutePage()
-class MembershipDetailsScreen extends StatelessWidget {
+class MembershipDetailsScreen extends ConsumerStatefulWidget {
   final MemberShip membership;
   bool? boughtAlready;
-  MembershipDetailsScreen(
-      {super.key, required this.membership, this.boughtAlready = false});
+  MembershipDetailsScreen({
+    super.key,
+    required this.membership,
+    this.boughtAlready = false,
+  });
+
+  @override
+  ConsumerState<MembershipDetailsScreen> createState() =>
+      _MembershipDetailsScreenState();
+}
+
+class _MembershipDetailsScreenState
+    extends ConsumerState<MembershipDetailsScreen> {
+  @override
+  void initState() {
+    final MembershipNotifier notifier = ref.read(membershipProvider.notifier);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      notifier
+      ..resetLastInfos()
+      ..getAllActivityDatas(membership: widget.membership);
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final List<String> subs = membership.lessonSubTypes
-              ?.map((e) => e.name ?? "")
-              .toList() ??
-              [];
+    final List<String> subs =
+        widget.membership.lessonSubTypes?.map((e) => e.name ?? "").toList() ??
+            [];
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar: CustomSearchBar(
@@ -52,57 +72,83 @@ class MembershipDetailsScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              if (boughtAlready == true) _textAndDropDown(),
+              if (widget.boughtAlready == true) _textAndDropDown(),
               GymBlock(
-                gyms: membership.gyms ?? [],
-                boughtAlready: boughtAlready!,
+                gyms: widget.membership.gyms ?? [],
+                boughtAlready: widget.boughtAlready!,
               ),
               32.verticalSpace,
-              payments(membership, boughtAlready!),
+              payments(widget.membership, widget.boughtAlready!),
               32.verticalSpace,
               commonSubInfoBlock(
-                  title: membership.name ?? "",
-                  text: membership.description ?? ""),
-              if (boughtAlready == false)
-                activityAndSubs(membership, !boughtAlready!),
-              if (boughtAlready == true)
-                CustomCard(child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ActivitiesExpandable(
-                        activities: membership.lessonTypes ?? [],
+                  title: widget.membership.name ?? "",
+                  text: widget.membership.description ?? ""),
+              if (widget.boughtAlready == false)
+                activityAndSubs(widget.membership, !widget.boughtAlready!),
+              if (widget.boughtAlready == true)
+                Consumer(builder: (context, ref, child) {
+                  final bool loading = ref.watch(membershipProvider).activityDatasLoading;
+                  return CustomCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if(loading)
+                      _skeleton(count: 3),
+                      if(!loading)
+                      ActivitiesExpandable(
+                        activities: widget.membership.lessonTypes ?? [],
                         showBigButton: true,
                         maxLines: 2,
+                        canTap: true,
+                        isActivity: true,
+                        membership: widget.membership,
                       ),
-                    16.verticalSpace,
-                    if (subs.isNotEmpty)
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 10.h),
-                        child: CustomText(
-                          text: "Включает:",
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ActivitiesExpandable(
-                      activities: subs,
-                      maxLines: 3,
-                      showIconOnChips: false,
-                      showBigButton: true,
-                    ),
-                  ],
-                ),),
+                      16.verticalSpace,
+                      if (subs.isNotEmpty)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 10.h),
+                              child: loading ? SkeletonCard(
+                                width: 120, 
+                                isBlue: true, 
+                                height: 20,
+                                borderRadius: 4) : CustomText(
+                                text: "Включает:",
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            if(loading)
+                            _skeleton(),
+                            if(!loading)
+                            ActivitiesExpandable(
+                              activities: subs,
+                              maxLines: 3,
+                              showIconOnChips: false,
+                              showBigButton: true,
+                              canTap: true,
+                              isActivity: false,
+                              membership: widget.membership,
+                            ),
+                          ],
+                        )
+                    ],
+                  ),
+                );
+                },),
               5.verticalSpace,
-              timeLines(membership),
+              timeLines(widget.membership),
               5.verticalSpace,
               commonSubInfoBlock(
                 title: "Информация о доступных льготах и скидках:",
-                text: membership.privileges ?? "",
+                text: widget.membership.privileges ?? "",
               ),
-              commonSubInfoBlock(text: membership.restrictions ?? ""),
+              commonSubInfoBlock(text: widget.membership.restrictions ?? ""),
               commonSubInfoBlock(
                 title: "Условия отмены и заморозки абонемента:",
-                text: membership.freezingCancellation ?? "",
+                text: widget.membership.freezingCancellation ?? "",
               ),
               20.verticalSpace,
             ],
@@ -256,18 +302,17 @@ Widget payments(MemberShip membership, bool boughtAlready) {
                                       .read(settingsProvider.notifier)
                                       .getUser(context);
                                   notifier.getMembershipByUserId(context);
+                                  notifier.getAllMemberships(context);
                                   notifier.setBuyLoading(false);
                                   context.router
                                       .replaceAll([const MembershipsRoute()]);
                                 }
 
-                                ref
-                                    .read(membershipProvider.notifier)
-                                    .buyMemberShip(
-                                      context,
-                                      membershipId: membership.id ?? 0,
-                                      onSuccess: onSuccess,
-                                    );
+                                notifier.buyMemberShip(
+                                  context,
+                                  membershipId: membership.id ?? 0,
+                                  onSuccess: onSuccess,
+                                );
                               }
                             },
                             child: SizedBox(
@@ -448,6 +493,24 @@ Widget commonSubInfoBlock({
           height: 1.1,
         ),
       ],
+    ),
+  );
+}
+
+Widget _skeleton({
+  int count = 5,
+}){
+  return Wrap(
+    spacing: 10.w,
+    runSpacing: 10.h,
+    children: List.generate(
+      count,
+      (index) => SkeletonCard(
+        borderRadius: 8,
+        height: 34,
+        width: 120 + index * 10,
+        isBlue: true,
+      ),
     ),
   );
 }

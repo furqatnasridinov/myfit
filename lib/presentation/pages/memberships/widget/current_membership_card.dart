@@ -57,6 +57,7 @@ class CurrentMembershipCard extends ConsumerWidget {
                 16.verticalSpace,
                 _dateAndPrice(
                   price: memberShip.price.toString(),
+                  endDate: memberShip.endDate ?? "",
                   type: AppHelpers.getMembershipTypeTranslated(
                       memberShip.type ?? ""),
                 ),
@@ -78,7 +79,7 @@ class CurrentMembershipCard extends ConsumerWidget {
                   showIconOnChips: false,
                 ),
                 16.verticalSpace,
-                timeLineIndicator(context),
+                timeLineIndicator(context, memberShip.endDate ?? "", memberShip.type ?? ""),
               ],
             ),
           );
@@ -400,9 +401,10 @@ Widget _dialogContent({
 
 Widget _dateAndPrice({
   String type = "На месяц",
-  String endDate = "до 18.09.24г",
+  String endDate = "18.09.24г",
   String price = "5499",
 }) {
+  final String formatted = AppHelpers.getMembershipEndDate(endDate);
   return Row(
     children: [
       CustomCard(
@@ -415,7 +417,7 @@ Widget _dateAndPrice({
           padding: EdgeInsets.symmetric(horizontal: 12.w),
           child: Center(
             child: CustomText(
-              text: "На $type, до $endDate",
+              text: "На $type, до $formatted",
               fontSize: 14.sp,
               fontWeight: FontWeight.w500,
             ),
@@ -444,8 +446,13 @@ Widget _dateAndPrice({
   );
 }
 
-Widget timeLineIndicator(BuildContext context) {
+Widget timeLineIndicator(BuildContext context, String endDate, String type) {
+  double currentProgress = 0;
   final double width = MediaQuery.of(context).size.width;
+  final DateTime? end = endDate.isNotEmpty ? DateTime.parse(endDate.replaceAll("T", " ")) : null;
+  if (end != null) {
+    currentProgress = AppHelpers.getMembershipProgress(endDate: end, prolongation: type);
+  }
   return Stack(
     children: [
       SizedBox(
@@ -461,7 +468,7 @@ Widget timeLineIndicator(BuildContext context) {
       Positioned(
         left: 0,
         child: SizedBox(
-          width: width / 3,
+          width: width * currentProgress,
           height: 4.h,
           child: DecoratedBox(
               decoration: BoxDecoration(

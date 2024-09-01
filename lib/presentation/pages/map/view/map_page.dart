@@ -207,6 +207,10 @@ class _MapScreenState extends ConsumerState<MapScreen> with WidgetsBindingObserv
           );
         });
       }
+      if (previous.showGymsOnlyWithMembership != next.showGymsOnlyWithMembership && 
+          next.showGymsOnlyWithMembership) {
+        initDatas();
+      }
 
       // when we get the list of markers, we set them to cluster manager
       if (previous.listOfMarkers != next.listOfMarkers && next.listOfMarkers.isNotEmpty) {

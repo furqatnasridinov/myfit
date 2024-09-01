@@ -17,6 +17,8 @@ class MemberShip {
   String? privileges;
   String? restrictions;
   String? freezingCancellation;
+  String? endDate;
+  String? state;
 
   MemberShip(
       {this.id,
@@ -32,7 +34,9 @@ class MemberShip {
       this.description,
       this.privileges,
       this.restrictions,
-      this.freezingCancellation});
+      this.freezingCancellation,
+      this.endDate,
+      this.state});
 
   MemberShip.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -59,6 +63,8 @@ class MemberShip {
     privileges = json['privileges'];
     restrictions = json['restrictions'];
     freezingCancellation = json['freezingCancellation'];
+    endDate = json['endData'];
+    state = json['state'];
   }
 
 }

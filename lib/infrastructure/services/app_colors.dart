@@ -21,4 +21,5 @@ class AppColors {
   static const Color redText = Color.fromRGBO(255, 61, 0, 1);
   static const Color primaryFadedBorder = Color.fromRGBO(157, 193, 245, 1);
   static const Color disabledButton = Color.fromRGBO(220, 220, 220, 1);
+  static const Color greyNew = Color.fromRGBO(226, 226, 226, 1);
 }

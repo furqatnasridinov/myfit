@@ -142,8 +142,7 @@ class AppHelpers {
               ),
             ],
           ),
-          margin:
-              EdgeInsets.only(left: 25.w, right: 25.w, bottom: marginBottom.h),
+          margin: EdgeInsets.only(left: 25.w, right: 25.w, bottom: marginBottom.h),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.r),
             side: BorderSide(color: AppColors.blueColor, width: 1.w),
@@ -446,6 +445,30 @@ class AppHelpers {
     String hours = dateTime.hour.toString().padLeft(2, '0');
     String minutes = dateTime.minute.toString().padLeft(2, '0');
     return "$hours:$minutes";
+  }
+
+  static String getMembershipEndDate(String serverDate){
+    // from 2024-08-23T18:18:27 to 23.08.2024
+    if (serverDate.isEmpty) {
+      return "Не указано";
+    }else{
+      List<String> parts = serverDate.split('T');
+      return parts[0].split('-').reversed.join('.');
+    }
+  }
+
+  static double getMembershipProgress({
+    required DateTime endDate,
+    required String prolongation,
+  }){
+    final DateTime now = DateTime.now();
+    final DateTime purchaseDate = prolongation == "MONTH" ? endDate.subtract(const Duration(days: 30)) : 
+      endDate.subtract(const Duration(days: 365));
+    final int tottalDays = endDate.difference(purchaseDate).inDays;
+    final int passedDays = now.difference(purchaseDate).inDays;
+    final double progress = passedDays / tottalDays;
+    debugPrint("progress: $progress");
+    return progress;
   }
 
   static String getMonth(int month) {

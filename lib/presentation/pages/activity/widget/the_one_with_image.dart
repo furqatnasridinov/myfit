@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
 import 'package:myfit/presentation/components/custom_button.dart';
@@ -171,7 +170,9 @@ class _TheOneWithImageState extends State<TheOneWithImage> {
                       },
                       {
                         'title': 'Пожаловаться на неприемлемый контент',
-                        'icon': iconWrapper(svg: SvgPicture.asset(
+                        'icon': iconWrapper(
+                          isRedBg: true,
+                          svg: SvgPicture.asset(
                           "assets/svg/complaint.svg",
                           colorFilter: const ColorFilter.mode(
                             Colors.red,
@@ -250,6 +251,18 @@ class _TheOneWithImageState extends State<TheOneWithImage> {
 }
 
 void showPopUp(bool isFirstOne, BuildContext context) {
+  final String svgPath = isFirstOne
+      ? "assets/svg/complaint.svg"
+      : "assets/svg/complaint.svg";
+  final ColorFilter colorFilter = isFirstOne
+      ? const ColorFilter.mode(
+          AppColors.blueColor,
+          BlendMode.srcIn,
+        )
+      : const ColorFilter.mode(
+          Colors.red,
+          BlendMode.srcIn,
+        );
   showDialog(
       barrierDismissible: false,
       context: context,
@@ -282,29 +295,13 @@ void showPopUp(bool isFirstOne, BuildContext context) {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          width: 24.w,
-                          height: 24.h,
-                          decoration: BoxDecoration(
-                            color: AppColors.backgroundColor,
-                            borderRadius: BorderRadius.circular(6.r),
-                          ),
-                          child: Center(
-                            child: isFirstOne
-                                ? SvgPicture.asset(
-                                    "assets/svg/complaint.svg",
-                                    width: 15.w,
-                                    height: 15.h,
-                                  )
-                                : SvgPicture.asset(
-                                    "assets/svg/complaint.svg",
-                                    colorFilter: const ColorFilter.mode(
-                                      Colors.red,
-                                      BlendMode.srcIn,
-                                    ),
-                                    width: 15.w,
-                                    height: 15.h,
-                                  ),
+                        iconWrapper(
+                          isRedBg: !isFirstOne,
+                          svg: SvgPicture.asset(
+                            svgPath,
+                            height: 18.h,
+                            width: 18.w,
+                            colorFilter: colorFilter,
                           ),
                         ),
                         10.horizontalSpace,
@@ -383,12 +380,13 @@ void showPopUp(bool isFirstOne, BuildContext context) {
       });
 }
 
-Widget iconWrapper({required Widget svg}) {
+Widget iconWrapper({required Widget svg, bool isRedBg = false}) {
+  final Color bgColor = isRedBg ? const Color.fromRGBO(255, 61, 0, 0.04) : AppColors.backgroundColor;
   return SizedBox(
     width: 28.w,
     height: 28.h,
     child: DecoratedBox(decoration: BoxDecoration(
-      color: AppColors.backgroundColor,
+      color: bgColor,
       borderRadius: BorderRadius.circular(6.r),
     ),
     child: Padding(

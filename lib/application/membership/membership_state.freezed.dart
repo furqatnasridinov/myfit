@@ -27,6 +27,10 @@ mixin _$MembershipState {
   bool get getAllMembershipsLoading => throw _privateConstructorUsedError;
   bool get getUserMembershipsLoading => throw _privateConstructorUsedError;
   bool get buyMembershipLoading => throw _privateConstructorUsedError;
+  List<GymWithActivitiesData> get gymsWithActivitiesdatas =>
+      throw _privateConstructorUsedError;
+  bool get activityDatasLoading => throw _privateConstructorUsedError;
+  Gym? get selectedGym => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $MembershipStateCopyWith<MembershipState> get copyWith =>
@@ -50,7 +54,10 @@ abstract class $MembershipStateCopyWith<$Res> {
       List<int> gymIds,
       bool getAllMembershipsLoading,
       bool getUserMembershipsLoading,
-      bool buyMembershipLoading});
+      bool buyMembershipLoading,
+      List<GymWithActivitiesData> gymsWithActivitiesdatas,
+      bool activityDatasLoading,
+      Gym? selectedGym});
 }
 
 /// @nodoc
@@ -77,6 +84,9 @@ class _$MembershipStateCopyWithImpl<$Res, $Val extends MembershipState>
     Object? getAllMembershipsLoading = null,
     Object? getUserMembershipsLoading = null,
     Object? buyMembershipLoading = null,
+    Object? gymsWithActivitiesdatas = null,
+    Object? activityDatasLoading = null,
+    Object? selectedGym = freezed,
   }) {
     return _then(_value.copyWith(
       isloading: null == isloading
@@ -123,6 +133,18 @@ class _$MembershipStateCopyWithImpl<$Res, $Val extends MembershipState>
           ? _value.buyMembershipLoading
           : buyMembershipLoading // ignore: cast_nullable_to_non_nullable
               as bool,
+      gymsWithActivitiesdatas: null == gymsWithActivitiesdatas
+          ? _value.gymsWithActivitiesdatas
+          : gymsWithActivitiesdatas // ignore: cast_nullable_to_non_nullable
+              as List<GymWithActivitiesData>,
+      activityDatasLoading: null == activityDatasLoading
+          ? _value.activityDatasLoading
+          : activityDatasLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      selectedGym: freezed == selectedGym
+          ? _value.selectedGym
+          : selectedGym // ignore: cast_nullable_to_non_nullable
+              as Gym?,
     ) as $Val);
   }
 }
@@ -146,7 +168,10 @@ abstract class _$$MembershipStateImplCopyWith<$Res>
       List<int> gymIds,
       bool getAllMembershipsLoading,
       bool getUserMembershipsLoading,
-      bool buyMembershipLoading});
+      bool buyMembershipLoading,
+      List<GymWithActivitiesData> gymsWithActivitiesdatas,
+      bool activityDatasLoading,
+      Gym? selectedGym});
 }
 
 /// @nodoc
@@ -171,6 +196,9 @@ class __$$MembershipStateImplCopyWithImpl<$Res>
     Object? getAllMembershipsLoading = null,
     Object? getUserMembershipsLoading = null,
     Object? buyMembershipLoading = null,
+    Object? gymsWithActivitiesdatas = null,
+    Object? activityDatasLoading = null,
+    Object? selectedGym = freezed,
   }) {
     return _then(_$MembershipStateImpl(
       isloading: null == isloading
@@ -217,6 +245,18 @@ class __$$MembershipStateImplCopyWithImpl<$Res>
           ? _value.buyMembershipLoading
           : buyMembershipLoading // ignore: cast_nullable_to_non_nullable
               as bool,
+      gymsWithActivitiesdatas: null == gymsWithActivitiesdatas
+          ? _value._gymsWithActivitiesdatas
+          : gymsWithActivitiesdatas // ignore: cast_nullable_to_non_nullable
+              as List<GymWithActivitiesData>,
+      activityDatasLoading: null == activityDatasLoading
+          ? _value.activityDatasLoading
+          : activityDatasLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      selectedGym: freezed == selectedGym
+          ? _value.selectedGym
+          : selectedGym // ignore: cast_nullable_to_non_nullable
+              as Gym?,
     ));
   }
 }
@@ -235,12 +275,16 @@ class _$MembershipStateImpl extends _MembershipState {
       final List<int> gymIds = const [],
       this.getAllMembershipsLoading = false,
       this.getUserMembershipsLoading = false,
-      this.buyMembershipLoading = false})
+      this.buyMembershipLoading = false,
+      final List<GymWithActivitiesData> gymsWithActivitiesdatas = const [],
+      this.activityDatasLoading = false,
+      this.selectedGym = null})
       : _membershipsOfUser = membershipsOfUser,
         _subCategories = subCategories,
         _memberships = memberships,
         _membershipsToShow = membershipsToShow,
         _gymIds = gymIds,
+        _gymsWithActivitiesdatas = gymsWithActivitiesdatas,
         super._();
 
   @override
@@ -308,10 +352,26 @@ class _$MembershipStateImpl extends _MembershipState {
   @override
   @JsonKey()
   final bool buyMembershipLoading;
+  final List<GymWithActivitiesData> _gymsWithActivitiesdatas;
+  @override
+  @JsonKey()
+  List<GymWithActivitiesData> get gymsWithActivitiesdatas {
+    if (_gymsWithActivitiesdatas is EqualUnmodifiableListView)
+      return _gymsWithActivitiesdatas;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_gymsWithActivitiesdatas);
+  }
+
+  @override
+  @JsonKey()
+  final bool activityDatasLoading;
+  @override
+  @JsonKey()
+  final Gym? selectedGym;
 
   @override
   String toString() {
-    return 'MembershipState(isloading: $isloading, selectedActivity: $selectedActivity, selectedSubCategory: $selectedSubCategory, membershipsOfUser: $membershipsOfUser, subCategories: $subCategories, memberships: $memberships, membershipsToShow: $membershipsToShow, gymIds: $gymIds, getAllMembershipsLoading: $getAllMembershipsLoading, getUserMembershipsLoading: $getUserMembershipsLoading, buyMembershipLoading: $buyMembershipLoading)';
+    return 'MembershipState(isloading: $isloading, selectedActivity: $selectedActivity, selectedSubCategory: $selectedSubCategory, membershipsOfUser: $membershipsOfUser, subCategories: $subCategories, memberships: $memberships, membershipsToShow: $membershipsToShow, gymIds: $gymIds, getAllMembershipsLoading: $getAllMembershipsLoading, getUserMembershipsLoading: $getUserMembershipsLoading, buyMembershipLoading: $buyMembershipLoading, gymsWithActivitiesdatas: $gymsWithActivitiesdatas, activityDatasLoading: $activityDatasLoading, selectedGym: $selectedGym)';
   }
 
   @override
@@ -341,7 +401,13 @@ class _$MembershipStateImpl extends _MembershipState {
                     getUserMembershipsLoading) ||
                 other.getUserMembershipsLoading == getUserMembershipsLoading) &&
             (identical(other.buyMembershipLoading, buyMembershipLoading) ||
-                other.buyMembershipLoading == buyMembershipLoading));
+                other.buyMembershipLoading == buyMembershipLoading) &&
+            const DeepCollectionEquality().equals(
+                other._gymsWithActivitiesdatas, _gymsWithActivitiesdatas) &&
+            (identical(other.activityDatasLoading, activityDatasLoading) ||
+                other.activityDatasLoading == activityDatasLoading) &&
+            (identical(other.selectedGym, selectedGym) ||
+                other.selectedGym == selectedGym));
   }
 
   @override
@@ -357,7 +423,10 @@ class _$MembershipStateImpl extends _MembershipState {
       const DeepCollectionEquality().hash(_gymIds),
       getAllMembershipsLoading,
       getUserMembershipsLoading,
-      buyMembershipLoading);
+      buyMembershipLoading,
+      const DeepCollectionEquality().hash(_gymsWithActivitiesdatas),
+      activityDatasLoading,
+      selectedGym);
 
   @JsonKey(ignore: true)
   @override
@@ -379,7 +448,10 @@ abstract class _MembershipState extends MembershipState {
       final List<int> gymIds,
       final bool getAllMembershipsLoading,
       final bool getUserMembershipsLoading,
-      final bool buyMembershipLoading}) = _$MembershipStateImpl;
+      final bool buyMembershipLoading,
+      final List<GymWithActivitiesData> gymsWithActivitiesdatas,
+      final bool activityDatasLoading,
+      final Gym? selectedGym}) = _$MembershipStateImpl;
   const _MembershipState._() : super._();
 
   @override
@@ -404,6 +476,12 @@ abstract class _MembershipState extends MembershipState {
   bool get getUserMembershipsLoading;
   @override
   bool get buyMembershipLoading;
+  @override
+  List<GymWithActivitiesData> get gymsWithActivitiesdatas;
+  @override
+  bool get activityDatasLoading;
+  @override
+  Gym? get selectedGym;
   @override
   @JsonKey(ignore: true)
   _$$MembershipStateImplCopyWith<_$MembershipStateImpl> get copyWith =>

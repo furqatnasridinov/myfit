@@ -326,7 +326,7 @@ Widget dropDownPending(
                 width: 28.w,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: AppColors.backgroundColor,
+                    color: const Color.fromRGBO(255, 61, 0, 0.04),
                     borderRadius: BorderRadius.circular(6.r),
                   ),
                   child: Padding(
