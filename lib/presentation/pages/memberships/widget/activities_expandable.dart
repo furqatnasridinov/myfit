@@ -1,27 +1,45 @@
 // ignore_for_file: unused_element, must_be_immutable
 
 import 'dart:math';
-
 import 'package:auto_route/auto_route.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:myfit/application/activity/activity_provider.dart';
+import 'package:myfit/application/membership/membership_notifier.dart';
+import 'package:myfit/application/membership/membership_provider.dart';
+import 'package:myfit/infrastructure/models/data/gym_with_activities_data.dart';
+import 'package:myfit/infrastructure/models/data/lesson.dart';
+import 'package:myfit/infrastructure/models/data/membership.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/app_constants.dart';
 import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/presentation/components/custom_button.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
+import 'package:myfit/presentation/components/inter_text.dart';
+import 'package:myfit/presentation/pages/activity/widget/speciality.dart';
+import 'package:myfit/presentation/router/app_router.gr.dart';
+import '../../../../infrastructure/models/response/user_schedules_response.dart';
 
 class ActivitiesExpandable extends StatefulWidget {
   final List<String> activities;
   int maxLines;
   bool showIconOnChips;
   bool showBigButton;
+  bool canTap;
+  bool isActivity;
+  MemberShip? membership;
   ActivitiesExpandable({
     super.key,
     required this.activities,
+    this.membership,
     this.maxLines = 1,
     this.showIconOnChips = true,
     this.showBigButton = false,
+    this.canTap = false,
+    this.isActivity = false,
   });
 
   @override
@@ -43,7 +61,7 @@ class _ActivitiesExpandableState extends State<ActivitiesExpandable> {
     }
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       double maxWidth =sizedBoxKey.currentContext?.size?.width ?? double.maxFinite;
-      final double buttonWidth = widget.showBigButton ? 170.w : 34.w;
+      final double buttonWidth = widget.showBigButton ? 170.w : 60.w;
       maxWidth = maxWidth - buttonWidth;
       double currentWidth = 0;
       int currentLine = 1;
@@ -74,8 +92,9 @@ class _ActivitiesExpandableState extends State<ActivitiesExpandable> {
   }
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-    //height: 34.h,
+    return Consumer(builder: (context, ref, child) {
+      final MembershipNotifier notifier = ref.read(membershipProvider.notifier);
+      return SizedBox(
     key: sizedBoxKey,
     width: double.infinity,
     child: Wrap(
@@ -89,7 +108,25 @@ class _ActivitiesExpandableState extends State<ActivitiesExpandable> {
               activity: widget.activities[i],
               showIcon: widget.showIconOnChips,
               borderColor: const Color.fromRGBO(226, 226, 226, 1),
-              onTap: (){},
+              onTap: widget.canTap ? () {
+                if(widget.isActivity){
+                  // select activity
+                  notifier
+                  ..resetSelectedSubCategory()
+                  ..setSelectedActivity(widget.activities[i],selectGym: true);
+                }else{
+                  final Subcategory? subcategory = widget.membership?.lessonSubTypes?.firstWhere((element) => element.name == widget.activities[i]);
+                  // select subcategory
+                  notifier.resetSelectedActivity();
+                  if (subcategory != null) {
+                    notifier.setSelectedSubCategory(subcategory,selectGym: true);
+                  }
+                }
+                AppHelpers.showCusomDialog(
+                    context: context,
+                    child: _infoDialogContent(context),
+                );
+              } : (){},
             ),
         if (widget.activities.length > maxElements || isExpanded)
           GestureDetector(
@@ -109,17 +146,35 @@ class _ActivitiesExpandableState extends State<ActivitiesExpandable> {
               bigButton(
                 remains: widget.activities.length - maxElements, 
                 isOpened: isExpanded) : 
-              miniButton(),
+              miniButton(remains: widget.activities.length - maxElements),
           ),
       ] : widget.activities.map((activity) => _EachChipBuilder(
         key: keys[activity],
         activity: activity,
         showIcon: true,
-        borderColor: AppColors.blueColor,
-        onTap: (){},
+        borderColor: const Color.fromRGBO(226, 226, 226, 1),
+        onTap: widget.canTap ? () {
+                if(widget.isActivity){
+                  // select activity
+                  notifier.setSelectedActivity(activity,selectGym: true);
+                }else{
+                  // select subcategory
+                  final Subcategory? subcategory = widget.membership?.lessonSubTypes?.firstWhere((element) => element.name == activity);
+                  // select subcategory
+                  notifier.resetSelectedActivity();
+                  if (subcategory != null) {
+                    notifier.setSelectedSubCategory(subcategory,selectGym: true);
+                  }
+                }
+                AppHelpers.showCusomDialog(
+                    context: context,
+                    child: _infoDialogContent(context),
+                );
+              } : (){},
       )).toList(),
     ),
   );
+    },);
   }
 }
 
@@ -165,10 +220,12 @@ class _EachChipBuilder extends StatelessWidget {
   }
 }
 
-Widget miniButton() {
+Widget miniButton({
+  required int remains,
+}) {
   return SizedBox(
     height: 34.h,
-    width: 34.w,
+    width: 60.w,
     child: DecoratedBox(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -177,9 +234,9 @@ Widget miniButton() {
       ),
       child: Center(
         child: CustomText(
-          text: '...',
-          fontSize: 20.sp,
-          fontWeight: FontWeight.w700,
+          text: 'ещё $remains',
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w500,
         ),
       ),
     ),
@@ -282,5 +339,257 @@ Widget _dialogContent(
         text: "Закрыть",
       )
     ],
+  );
+}
+
+Widget _infoDialogContent(
+  BuildContext context,
+) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      CustomText(
+        text: "Заведение:",
+        fontSize: 16.sp,
+        fontWeight: FontWeight.w600,
+      ),
+      //16.verticalSpace,
+      Consumer(builder: (context, ref, child) {
+        final MembershipNotifier notifier = ref.read(membershipProvider.notifier);
+        final String selectedActivity = ref.watch(membershipProvider).selectedActivity;
+        final Subcategory? selectedSubCategory = ref.watch(membershipProvider).selectedSubCategory;
+        final String description = notifier.getDescriptionToShow();
+        final String peculiarities = notifier.getPeculiarityToShow();
+        final List<String> photos = notifier.getPhotosToShow();
+        return ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: 440.h),
+        child: Scrollbar(
+          radius: Radius.circular(10.r),
+          thickness: 7.w,
+          child: Consumer(
+            builder: (context, ref, child) {
+              //final List<GymWithActivitiesData> list = ref.watch(membershipProvider).gymsWithActivitiesdatas;
+              return SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _gymsHorizontalScroll(),
+                    16.verticalSpace,
+                    CustomText(
+                      text: selectedActivity.isEmpty ? selectedSubCategory?.name ?? "" : selectedActivity, 
+                      fontSize: 20.sp, 
+                      fontWeight: FontWeight.w600),
+                    16.verticalSpace,
+                    CustomText(
+                      text: "Описание:",
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    5.verticalSpace,
+                    CustomText(text: description, fontSize: 14.sp, height: 1.1),
+                    _photosBlock(photos: photos),
+                    _peculiarities(context,peculiarities: peculiarities),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      );
+      },),
+      16.verticalSpace,
+      CustomButton(
+        height: 40.h,
+        buttonColor: AppColors.blueColor,
+        borderColor: AppColors.blueBorder,
+        textColor: Colors.white,
+        fontSize: 14.sp,
+        onPressed: () {
+          context.router.pop();
+        },
+        text: "Закрыть",
+      )
+    ],
+  );
+}
+
+
+Widget _gymsHorizontalScroll(){
+  return Consumer(builder: (context, ref, child) {
+    final List<GymWithActivitiesData> originalList = ref.watch(membershipProvider).gymsWithActivitiesdatas;
+    final Gym? selectedGym = ref.watch(membershipProvider).selectedGym;
+    final String selectedActivity = ref.watch(membershipProvider).selectedActivity;
+    final Subcategory? selectedSubCategory = ref.watch(membershipProvider).selectedSubCategory;
+    // Создаем изменяемую копию списка
+    final List<GymWithActivitiesData> list = List.from(originalList);
+    list.removeWhere((el) => el.activitiesWithAllInfos.every((element) => 
+     selectedActivity.isNotEmpty ? element.activityName != selectedActivity : element.subs!.every((element) => element.name != selectedSubCategory?.name)));
+    final List<Gym> gyms = list.map((e) => e.gym).toList();
+    return Padding(
+    padding: EdgeInsets.only(top: 10.h),
+    child: SizedBox(
+      height: 34.h,
+      child: ListView.builder(
+        itemCount: gyms.length,
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          final Gym gym = gyms[index];
+          final bool isSelected = selectedGym != null && gym.id == selectedGym.id;
+          return Padding(
+            padding: EdgeInsets.only(right: 10.w),
+            child: GestureDetector(
+              onTap: () {
+                ref.read(membershipProvider.notifier).setSelectedGym(gym);
+              },
+              child: SizedBox(
+                height: 34.h,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.r),
+                    color: isSelected ? AppColors.blueColor : Colors.white,
+                    border: Border.all(color: isSelected ? AppColors.blueColor : AppColors.greyNew),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: Center(
+                      child: InterText(
+                        text: gym.name ?? "",
+                        fontSize: 12.sp,
+                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                        color: isSelected ? Colors.white : Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    ),
+  );
+  },);
+}
+
+Widget _photosBlock({
+  required List<String> photos,
+}){
+  if (photos.isEmpty) {
+    return const SizedBox();
+  }
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      16.verticalSpace,
+      CustomText(
+        text: "Фотографии",
+        fontSize: 16.sp,
+        fontWeight: FontWeight.w600,
+      ),
+      10.verticalSpace,
+      Container(
+          padding: EdgeInsets.all(16.r),
+          width: double.maxFinite,
+          height: 79.h,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16.r),
+            color: Colors.white,
+            border: Border.all(
+              color: AppColors.greyBorder,
+              width: 1.w,
+            ),
+          ),
+          child: Consumer(
+            builder: (context, ref, child) {
+              final event = ref.read(activityProvider.notifier);
+              return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: photos.length,
+                itemBuilder: (context, index) {
+                  final current = photos[index];
+                  String linkToCompressedPhoto = event.getLinkToCompressedPhoto(current);
+                  return InkWell(
+                    onTap: () {
+                      context.router.push(PhotoViewRoute(
+                        index: index,
+                        photos: photos,
+                      ));
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 10.w),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8.r),
+                        child: SizedBox(
+                          //color: Colors.red,
+                          width: 47.w,
+                          height: 47.h,
+                          child: Hero(
+                            tag: index,
+                            child: CachedNetworkImage(
+                              imageUrl:"${AppConstants.baseUrl}image/$linkToCompressedPhoto",
+                              fit: BoxFit.cover,
+                              errorWidget: (context, url, error) {
+                                return Image.asset(AppConstants.cristianBale);
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          )),
+    ],
+  );
+}
+
+Widget _peculiarities(BuildContext context, {String peculiarities = ""}) {
+  if (peculiarities.isEmpty) {
+    return const SizedBox(); 
+  }
+  return Padding(
+    padding: EdgeInsets.only(top: 16.h),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            CustomText(
+              text: "Особенности посещения",
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+            ),
+            GestureDetector(
+              onTap: () {
+                showSpecialityPopUp(context);
+              },
+              child: Container(
+                width: 26.w,
+                height: 26.h,
+                padding: EdgeInsets.all(3.5.r),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                ),
+                child: SvgPicture.asset(
+                  "assets/svg/question.svg",
+                ),
+              ),
+            )
+          ],
+        ),
+        10.verticalSpace,
+        CustomText(
+          text: peculiarities ?? "",
+          fontSize: 13.sp,
+          fontWeight: FontWeight.w400,
+          height: 1.0,
+        ),
+      ],
+    ),
   );
 }

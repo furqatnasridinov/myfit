@@ -5,6 +5,7 @@ import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/settings/settings_provider.dart';
 import 'package:myfit/infrastructure/services/app_colors.dart';
+import 'package:myfit/infrastructure/services/apphelpers.dart';
 import 'package:myfit/infrastructure/services/dynamic_link_handler.dart';
 import 'package:myfit/presentation/components/custom_text.dart';
 import 'package:myfit/presentation/router/app_router.gr.dart';
@@ -97,6 +98,12 @@ class _BottomNavigationHandlerScreenState extends ConsumerState<BottomNavigation
                             event.resetFilterMap()
                             .then((value) async {
                               event.setIsLoading(true);
+                              AppHelpers.showCustomBottomSnack(
+                                context,
+                                "Фильтр сброшен",
+                                colorFilter: null,
+                                "assets/svg/resetFilled.svg",
+                              );
                               await event.getGymsList(
                                 context,
                                 [],

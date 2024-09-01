@@ -34,7 +34,8 @@ class FilterAndPayment extends StatelessWidget {
               if (showGymsOnlyWithMembership) {
                 tabsRouter.setActiveIndex(2);
               }else{
-                context.router.push(const MapRoute());
+                //context.router.push(const MapRoute());
+                tabsRouter.setActiveIndex(2);
                 notifier.setShowGymsOnlyWithMembership(true);
               }
             },
@@ -43,6 +44,9 @@ class FilterAndPayment extends StatelessWidget {
           _iconAndText(
             iconPath: "assets/svg/card_icon.svg",
             text: "Настроить методы оплаты",
+            onTap: () {
+              context.router.push(const PaymentSettingsRoute());
+            },
           ),
         ],
       ),
@@ -58,21 +62,24 @@ Widget _iconAndText({
 }) {
   return GestureDetector(
     onTap: onTap,
-    child: Row(
-      children: [
-        SvgPicture.asset(
-          iconPath,
-          width: 28.w,
-          height: 28.h,
-        ),
-        10.horizontalSpace,
-        Flexible(
-            child: CustomText(
-          text: text,
-          fontSize: 14.sp,
-          height: 1.1,
-        )),
-      ],
+    child: ColoredBox(
+      color: Colors.transparent,
+      child: Row(
+        children: [
+          SvgPicture.asset(
+            iconPath,
+            width: 28.w,
+            height: 28.h,
+          ),
+          10.horizontalSpace,
+          Flexible(
+              child: CustomText(
+            text: text,
+            fontSize: 14.sp,
+            height: 1.1,
+          )),
+        ],
+      ),
     ),
   );
 }

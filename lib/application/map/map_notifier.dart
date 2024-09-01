@@ -514,7 +514,7 @@ class MapNotifier extends StateNotifier<MapState> {
   }
 
   // Первая фильтрация с максимальным расстоянием 1 км
-  List<ActivityNearClient> firstFilterResult = filterList(30.0);
+  List<ActivityNearClient> firstFilterResult = filterList(3.0);
   return firstFilterResult;
 }
 
