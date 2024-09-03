@@ -98,6 +98,7 @@ class _MembershipDetailsScreenState
                       ActivitiesExpandable(
                         activities: widget.membership.lessonTypes ?? [],
                         showBigButton: true,
+                        showIconOnChips: true,
                         maxLines: 2,
                         canTap: true,
                         isActivity: true,

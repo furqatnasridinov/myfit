@@ -62,7 +62,11 @@ class CurrentMembershipCard extends ConsumerWidget {
                       memberShip.type ?? ""),
                 ),
                 10.verticalSpace,
-                ActivitiesExpandable(activities: memberShip.lessonTypes ?? []),
+                ActivitiesExpandable(
+                  activities: memberShip.lessonTypes ?? [],
+                  showIconOnChips: true,
+                  maxLines: 1,
+                ),
                 16.verticalSpace,
                 if(subs.isNotEmpty)
                 Padding(

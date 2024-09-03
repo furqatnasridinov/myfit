@@ -149,32 +149,35 @@ class _GymBlockState extends State<GymBlock> {
         if(_gyms.length > 1)
           GestureDetector(
             onTap: toggleExpand,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CustomText(
-                      text: !isExpanded
-                          ? "Показать еще ${_gyms.length - 1} заведения"
-                          : "Скрыть",
-                      fontSize: 14.sp,
-                    ),
-                    10.horizontalSpace,
-                    TweenAnimationBuilder<double>(
-                      duration: const Duration(milliseconds: 300),
-                      tween: Tween(begin: 0, end: isExpanded ? 1.0 : 0),
-                      builder: (BuildContext context, double angle,
-                          Widget? child) {
-                        return Transform.rotate(
-                          angle: angle * pi,
-                          child: Icon(
-                            Icons.keyboard_arrow_down,
-                            size: 18.sp,
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+            child: ColoredBox(
+              color: Colors.transparent,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CustomText(
+                        text: !isExpanded
+                            ? "Показать еще ${_gyms.length - 1} заведения"
+                            : "Скрыть",
+                        fontSize: 14.sp,
+                      ),
+                      10.horizontalSpace,
+                      TweenAnimationBuilder<double>(
+                        duration: const Duration(milliseconds: 300),
+                        tween: Tween(begin: 0, end: isExpanded ? 1.0 : 0),
+                        builder: (BuildContext context, double angle,
+                            Widget? child) {
+                          return Transform.rotate(
+                            angle: angle * pi,
+                            child: Icon(
+                              Icons.keyboard_arrow_down,
+                              size: 18.sp,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+            ),
           ),
         ],
       );
