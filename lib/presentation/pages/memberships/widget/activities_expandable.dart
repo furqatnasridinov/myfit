@@ -1,5 +1,5 @@
 // ignore_for_file: unused_element, must_be_immutable
-
+import 'dart:developer' as developer;
 import 'dart:math';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -25,8 +25,8 @@ import '../../../../infrastructure/models/response/user_schedules_response.dart'
 
 class ActivitiesExpandable extends StatefulWidget {
   final List<String> activities;
-  int maxLines;
-  bool showIconOnChips;
+  final int maxLines;
+  final bool showIconOnChips;
   bool showBigButton;
   bool canTap;
   bool isActivity;
@@ -35,8 +35,8 @@ class ActivitiesExpandable extends StatefulWidget {
     super.key,
     required this.activities,
     this.membership,
-    this.maxLines = 1,
-    this.showIconOnChips = true,
+    required this.maxLines,
+    required this.showIconOnChips,
     this.showBigButton = false,
     this.canTap = false,
     this.isActivity = false,
@@ -62,7 +62,7 @@ class _ActivitiesExpandableState extends State<ActivitiesExpandable> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       double maxWidth =sizedBoxKey.currentContext?.size?.width ?? double.maxFinite;
       final double buttonWidth = widget.showBigButton ? 170.w : 60.w;
-      maxWidth = maxWidth - buttonWidth;
+      maxWidth = (maxWidth * widget.maxLines) - buttonWidth;
       double currentWidth = 0;
       int currentLine = 1;
       maxElements = 0;
@@ -151,7 +151,7 @@ class _ActivitiesExpandableState extends State<ActivitiesExpandable> {
       ] : widget.activities.map((activity) => _EachChipBuilder(
         key: keys[activity],
         activity: activity,
-        showIcon: true,
+        showIcon: widget.showIconOnChips,
         borderColor: const Color.fromRGBO(226, 226, 226, 1),
         onTap: widget.canTap ? () {
                 if(widget.isActivity){
