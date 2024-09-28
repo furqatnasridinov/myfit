@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:myfit/application/activity/activity_notifier.dart';
 import 'package:myfit/application/activity/activity_provider.dart';
 import 'package:myfit/application/map/map_provider.dart';
 import 'package:myfit/application/schedule/schedule_notifier.dart';
@@ -525,6 +526,9 @@ Widget _plusButton(
       final event = ref.read(mapProvider.notifier);
       final showOnlyKnownOnMap = ref.watch(mapProvider).showOnlyKnown;
       final showRecommended = ref.watch(mapProvider).showRecommended;
+      final recommendedShown = ref.watch(mapProvider).showRecommended;
+      final showGymsOnlyWithMembership = ref.watch(mapProvider).showGymsOnlyWithMembership;
+      final ActivityNotifier activityNotifier = ref.read(activityProvider.notifier);
       return UiDropDownMenu(
           width: double.maxFinite,
           maxWidth: 255.w,
@@ -552,7 +556,34 @@ Widget _plusButton(
                   ),
                 ),
               ),
-              'action': () => {context.router.push(const MapRoute())}
+              'action': () => {
+                    tabsRouter.setActiveIndex(2),
+                    if (showOnlyKnownOnMap ||
+                        recommendedShown ||
+                        showGymsOnlyWithMembership)
+                      {
+                        event.resetFilterMap().then((value) async {
+                          event.setIsLoading(true);
+                          AppHelpers.showCustomBottomSnack(
+                            context,
+                            "Фильтр сброшен",
+                            colorFilter: null,
+                            "assets/svg/resetFilled.svg",
+                          );
+                          await event.getGymsList(
+                            context,
+                            [],
+                            {},
+                          );
+                          await event.getGetListOfGymsFromDiapozone();
+                          event.setIsLoading(false);
+                          await event.setFlexes();
+                          await event.getAllMarkers(context,
+                              activityNotifier: activityNotifier);
+                          event.addUserLocationMarker();
+                        })
+                      }
+                  }
             },
             if (ref.watch(settingsProvider).knownActivities.isNotEmpty)
               {

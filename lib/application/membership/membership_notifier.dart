@@ -48,11 +48,9 @@ class MembershipNotifier extends StateNotifier<MembershipState>{
                   }
                 }
               }
-              state = state.copyWith(
-                gymIds: gymsWithMembership,
-                getAllMembershipsLoading: false,
-              );
+              state = state.copyWith(gymIds: gymsWithMembership);
             }
+            state = state.copyWith(getAllMembershipsLoading: false);
           }, 
           failure: (error, statusCode, info) {
             state = state.copyWith(getAllMembershipsLoading: false);
@@ -101,7 +99,8 @@ class MembershipNotifier extends StateNotifier<MembershipState>{
         response.when(
           success: (data){
             if (data.isNotEmpty) {
-              state = state.copyWith(membershipsOfUser: data);
+              final List<MemberShip> activesOnly = data.where((element) => element.state == "ACTIVE").toList();
+              state = state.copyWith(membershipsOfUser: activesOnly);
             }
             setUserMembershipsLoading(false);
           }, 

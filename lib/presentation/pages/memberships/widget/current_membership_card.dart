@@ -83,7 +83,14 @@ class CurrentMembershipCard extends ConsumerWidget {
                   showIconOnChips: false,
                 ),
                 16.verticalSpace,
-                timeLineIndicator(context, memberShip.endDate ?? "", memberShip.type ?? ""),
+                timeLineIndicator(
+                  context,
+                  endDate:  memberShip.endDate ?? "",
+                  type: memberShip.type ?? "",
+                  count: memberShip.count ?? 0,
+                  left: memberShip.left ?? 0,
+                  isQuantitative: memberShip.quantitative ?? false,
+                ),
               ],
             ),
           );
@@ -93,7 +100,8 @@ class CurrentMembershipCard extends ConsumerWidget {
       return const SizedBox();
     }
   }
-}                                                                                            
+}   
+                                                                                         
 Widget _skeleton() {
   return SizedBox(
     width: double.maxFinite,
@@ -189,7 +197,7 @@ Widget _noMembership() {
   return CustomCard(
     child: Center(
         child: CustomText(
-      text: "У вас еще нет купленных абонементов",
+      text: "У вас нет действующих абонементов",
       fontSize: 14.sp,
     )),
   );
@@ -450,12 +458,25 @@ Widget _dateAndPrice({
   );
 }
 
-Widget timeLineIndicator(BuildContext context, String endDate, String type) {
+Widget timeLineIndicator(
+  BuildContext context, {
+  required bool isQuantitative,
+  required int count,
+  required int left,
+  required String endDate,
+  required String type,
+}) {
   double currentProgress = 0;
   final double width = MediaQuery.of(context).size.width;
   final DateTime? end = endDate.isNotEmpty ? DateTime.parse(endDate.replaceAll("T", " ")) : null;
   if (end != null) {
-    currentProgress = AppHelpers.getMembershipProgress(endDate: end, prolongation: type);
+    currentProgress = AppHelpers.getMembershipProgress(
+      endDate: end,
+      prolongation: type,
+      count: count,
+      left: left,
+      isQuantitative: isQuantitative,
+    );
   }
   return Stack(
     children: [
@@ -481,6 +502,14 @@ Widget timeLineIndicator(BuildContext context, String endDate, String type) {
           )),
         ),
       ),
+      if(isQuantitative)
+          Padding(
+            padding:  EdgeInsets.only(top: 16.h),
+            child: CustomText(
+              text: "Осталось посещений $left из $count",
+              fontSize: 14.sp,
+            ),
+          ),
     ],
   );
 }

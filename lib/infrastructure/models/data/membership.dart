@@ -19,7 +19,9 @@ class MemberShip {
   String? freezingCancellation;
   String? endDate;
   String? state;
-
+  int? count;
+  int? left;
+  bool? quantitative;
   MemberShip(
       {this.id,
       this.gyms,
@@ -36,7 +38,10 @@ class MemberShip {
       this.restrictions,
       this.freezingCancellation,
       this.endDate,
-      this.state});
+      this.state,
+      this.count,
+      this.left,
+      this.quantitative});
 
   MemberShip.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -65,6 +70,9 @@ class MemberShip {
     freezingCancellation = json['freezingCancellation'];
     endDate = json['endData'];
     state = json['state'];
+    count = json['count'];
+    left = json['left'];
+    quantitative = json['quantitative'];
   }
 
 }

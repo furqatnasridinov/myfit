@@ -460,15 +460,25 @@ class AppHelpers {
   static double getMembershipProgress({
     required DateTime endDate,
     required String prolongation,
-  }){
-    final DateTime now = DateTime.now();
-    final DateTime purchaseDate = prolongation == "MONTH" ? endDate.subtract(const Duration(days: 30)) : 
-      endDate.subtract(const Duration(days: 365));
-    final int tottalDays = endDate.difference(purchaseDate).inDays;
-    final int passedDays = now.difference(purchaseDate).inDays;
-    final double progress = passedDays / tottalDays;
-    debugPrint("progress: $progress");
-    return progress;
+    required bool isQuantitative,
+    required int count,
+    required int left,
+  }) {
+    if (isQuantitative) {
+      final double progress = 1- (left / count);
+      debugPrint("progress: $progress");
+      return progress;
+    } else {
+      final DateTime now = DateTime.now();
+      final DateTime purchaseDate = prolongation == "MONTH"
+          ? endDate.subtract(const Duration(days: 30))
+          : endDate.subtract(const Duration(days: 365));
+      final int tottalDays = endDate.difference(purchaseDate).inDays;
+      final int passedDays = now.difference(purchaseDate).inDays;
+      final double progress = passedDays / tottalDays;
+      debugPrint("progress: $progress");
+      return progress;
+    }
   }
 
   static String getMonth(int month) {
