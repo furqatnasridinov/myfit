@@ -33,6 +33,7 @@ class SystemNotification extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool visitRefreshed = title.contains("обновились посещения");
+    //final bool membershipIsGoingToExpire = title.contains("закончится через");
     return CustomCard(
       marginBottom: 16.h,
       child: Column(
@@ -41,14 +42,14 @@ class SystemNotification extends StatelessWidget {
           Row(
             children: [
               if(visitRefreshed)
-              buildBatteryTitle(),
+              _buildBatteryTitle(),
               if(!visitRefreshed)
               Row(
                 children: [
                   Padding(
                     padding: EdgeInsets.all(3.r),
                     child: SvgPicture.asset(
-                      "assets/svg/question2.svg",
+                      _getSvgPath(title),
                       width: 24.w,
                       height: 24.h,
                     ),
@@ -93,12 +94,15 @@ class SystemNotification extends StatelessWidget {
             fontWeight: FontWeight.w600,
             height: 1.1,
           ),
-          16.verticalSpace,
-          CustomText(
-            text: description,
-            fontSize: 13.sp,
-            fontWeight: FontWeight.w400,
-            height: 1.1,
+          if(title != description)
+          Padding(
+            padding: EdgeInsets.only(top: 16.h),
+            child: CustomText(
+              text: description,
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w400,
+              height: 1.1,
+            ),
           ),
           16.verticalSpace,
           Consumer(
@@ -106,13 +110,13 @@ class SystemNotification extends StatelessWidget {
               //final isFromSeach = ref.watch(activityProvider).isFromSearch;
               return CustomButton(
                 onPressed: () {
-                  context.router.push(const MapRoute());
+                  context.router.push(_getNextRoute(title, gymId: gymId));
                   /* if (isFromSeach) {
                     ref.read(activityProvider.notifier).setIsFromSearch(false);
                   }
                   context.router.push(ActivityRoute(gymId: gymId)); */
                 },
-                text: "Открыть карту заведений",
+                text: _getButtonText(title),
                 buttonColor: Colors.white,
                 textColor: Colors.black,
                 fontSize: 13.sp,
@@ -164,7 +168,7 @@ class SystemNotification extends StatelessWidget {
 }
 
 
-Widget buildBatteryTitle(){
+Widget _buildBatteryTitle(){
   return Row(
     children: [
       SvgPicture.asset(
@@ -181,4 +185,25 @@ Widget buildBatteryTitle(){
       ),
     ],
   );
+}
+
+String _getButtonText(String title){
+  if(title.contains("закончится через")){
+    return "Настройка оплаты и автопродление";
+  }
+  return "Открыть карту заведений";
+}
+
+PageRouteInfo<dynamic> _getNextRoute(String title, {int gymId = 0}){
+  if(title.contains("закончится через")){
+    return const PaymentSettingsRoute();
+  }
+  return const MapRoute();
+}
+
+String _getSvgPath(String title){
+  if(title.contains("закончится через")){
+    return "assets/svg/card_icon.svg";
+  }
+  return "assets/svg/question2.svg";
 }

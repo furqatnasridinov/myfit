@@ -77,12 +77,13 @@ class _MembershipDetailsScreenState
                 gyms: widget.membership.gyms ?? [],
                 boughtAlready: widget.boughtAlready!,
               ),
-              32.verticalSpace,
-              payments(widget.membership, widget.boughtAlready!),
+              /* 32.verticalSpace,
+              payments(widget.membership, widget.boughtAlready!), */
               32.verticalSpace,
               commonSubInfoBlock(
                   title: widget.membership.name ?? "",
-                  text: widget.membership.description ?? ""),
+                  text: widget.membership.description ?? "",
+              ),
               if (widget.boughtAlready == false)
                 activityAndSubs(widget.membership, !widget.boughtAlready!),
               if (widget.boughtAlready == true)
@@ -222,8 +223,7 @@ Widget _textAndDropDown() {
 Widget payments(MemberShip membership, bool boughtAlready) {
   final String buttonText = boughtAlready == true ? "Продлить" : "Оплатить";
   final int price = membership.price ?? 0;
-  final String prolongation =
-      AppHelpers.getMembershipTypeTranslated(membership.type ?? "");
+  final String prolongation = AppHelpers.getMembershipTypeTranslated(membership.type ?? "");
   return SizedBox(
     width: double.infinity,
     height: 40.h,
@@ -250,7 +250,7 @@ Widget payments(MemberShip membership, bool boughtAlready) {
           ),
         ),
         16.horizontalSpace,
-        Expanded(
+         Expanded(
           child: SizedBox(
             height: 40.h,
             child: DecoratedBox(
@@ -347,7 +347,7 @@ Widget payments(MemberShip membership, bool boughtAlready) {
               ),
             ),
           ),
-        ),
+        ), 
       ],
     ),
   );

@@ -37,6 +37,8 @@ class _BottomNavigationHandlerScreenState extends ConsumerState<BottomNavigation
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     return AutoTabsRouter(
+      curve: Curves.easeInOut,
+      duration: const Duration(milliseconds: 200),
       routes: const [
         Main2Route(),
         ScheduleRoute(),

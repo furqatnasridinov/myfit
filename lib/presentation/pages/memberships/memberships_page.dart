@@ -43,6 +43,8 @@ class _MembershipsScreenState extends ConsumerState<MembershipsScreen> {
               32.verticalSpace,
               const FilterAndPayment(),
               32.verticalSpace,
+              const ScannerButtons(),
+              32.verticalSpace,
               const CurrentMembershipCard(),
             ],
           ),
